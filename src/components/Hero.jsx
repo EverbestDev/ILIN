@@ -13,13 +13,13 @@ export default function Hero() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length);
-    }, 4000);
+    }, 5000);
     return () => clearInterval(interval);
   }, [images.length]);
 
   return (
     <section
-      className='flex flex-col justify-between px-6 pt-20 pb-6 md:px-20 bg-gray-50 md:pt-28 md:pb-10'
+      className='flex flex-col justify-between px-6 pb-6 pt-35 md:px-20 bg-gray-50 md:pt-30 md:pb-10'
       style={{ minHeight: "calc(100vh - 64px)" }} // subtract ONLY navbar
     >
       {/* Content row (text + image) */}

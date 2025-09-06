@@ -31,13 +31,13 @@ export default function About() {
       icon: <Globe className='w-10 h-10 text-blue-600' />,
       title: "Global Reach",
       desc: "We support over 50+ world languages with precise, human-level translation.",
-      cta: "Explore",
+      cta: "View Details",
     },
     {
       icon: <MessageSquare className='w-10 h-10 text-green-600' />,
       title: "Live Interpreting",
       desc: "Real-time interpretation for events, meetings, and international conferences.",
-      cta: "Discover",
+      cta: "View Details",
     },
     {
       icon: <BookOpen className='w-10 h-10 text-purple-600' />,
