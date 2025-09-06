@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleLinkClick = () => {
+    setIsOpen(false); // close menu when clicking a link
+  };
 
   return (
     <nav className='fixed top-0 left-0 z-50 w-full bg-white shadow-md'>
@@ -67,34 +72,41 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Dropdown */}
-      {isOpen && (
-        <div className='px-6 py-4 space-y-4 bg-white shadow-inner md:hidden'>
-          <Link to='/' className='block'>
-            Home
-          </Link>
-          <Link to='/about' className='block'>
-            About
-          </Link>
-          <Link to='/services' className='block'>
-            Services
-          </Link>
-          <Link to='/languages' className='block'>
-            Languages
-          </Link>
-          <Link to='/contact' className='block'>
-            Contact
-          </Link>
-          <div className='flex flex-col gap-3 pt-3'>
-            <button className='w-full px-4 py-2 text-gray-700 border rounded-lg hover:bg-gray-100'>
-              Login
-            </button>
-            <button className='w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700'>
-              Get Quote
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Mobile Dropdown with animation */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className='px-6 py-4 space-y-4 bg-white shadow-inner md:hidden'>
+            <Link to='/' className='block' onClick={handleLinkClick}>
+              Home
+            </Link>
+            <Link to='/about' className='block' onClick={handleLinkClick}>
+              About
+            </Link>
+            <Link to='/services' className='block' onClick={handleLinkClick}>
+              Services
+            </Link>
+            <Link to='/languages' className='block' onClick={handleLinkClick}>
+              Languages
+            </Link>
+            <Link to='/contact' className='block' onClick={handleLinkClick}>
+              Contact
+            </Link>
+            <div className='flex flex-col gap-3 pt-3'>
+              <button className='w-full px-4 py-2 text-gray-700 border rounded-lg hover:bg-gray-100'>
+                Login
+              </button>
+              <button className='w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700'>
+                Get Quote
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }

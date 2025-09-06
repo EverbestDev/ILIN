@@ -1,8 +1,31 @@
 import { motion } from "framer-motion";
-import { Globe, MessageSquare, BookOpen, Phone } from "lucide-react";
+import { Globe, BookOpen, Zap, Flag, MessageSquare, Phone } from "lucide-react";
 import aboutImg from "../assets/about.png";
 
 export default function About() {
+  const features = [
+    {
+      icon: <Globe className='w-10 h-10 mx-auto text-blue-600' />,
+      title: "50+ Languages",
+      desc: "Communicate seamlessly in more than 50 languages worldwide.",
+    },
+    {
+      icon: <BookOpen className='w-10 h-10 mx-auto text-green-600' />,
+      title: "Certified Experts",
+      desc: "Work with accredited translators and interpreters for guaranteed quality.",
+    },
+    {
+      icon: <Zap className='w-10 h-10 mx-auto text-yellow-500' />,
+      title: "Fast & Reliable Delivery",
+      desc: "Timely translations without compromising on accuracy.",
+    },
+    {
+      icon: <Flag className='w-10 h-10 mx-auto text-red-500' />,
+      title: "Cultural Accuracy",
+      desc: "Preserving cultural meaning and nuance in every translation.",
+    },
+  ];
+
   const highlights = [
     {
       icon: <Globe className='w-10 h-10 text-blue-600' />,
@@ -32,7 +55,25 @@ export default function About() {
 
   return (
     <section className='px-8 py-16 bg-white md:px-20' id='about'>
-      {/* Top section */}
+      {/* About Heading */}
+      <motion.div
+        initial={{ opacity: 0, y: -50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+        className='max-w-3xl mx-auto mb-12 text-center'>
+        <span className='inline-block px-6 py-2 mb-4 text-sm font-semibold text-blue-600 bg-blue-100 rounded-full'>
+          About Us
+        </span>
+        <p className='mt-2 text-lg leading-relaxed text-gray-600'>
+          We are a professional translation and interpretation company helping
+          businesses, organizations, and individuals communicate seamlessly
+          across cultures. With certified translators and cultural experts, we
+          ensure your message is delivered with clarity and precision.
+        </p>
+      </motion.div>
+
+      {/* Image + Features grid */}
       <div className='flex flex-col items-center gap-12 md:flex-row'>
         {/* Image side */}
         <motion.div
@@ -48,46 +89,38 @@ export default function About() {
           />
         </motion.div>
 
-        {/* Text side */}
+        {/* Features side */}
         <motion.div
           initial={{ opacity: 0, x: 100 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className='w-full md:w-1/2'>
-          <h2 className='mb-6 text-3xl font-bold text-gray-800 md:text-4xl'>
-            About Us
-          </h2>
-          <p className='mb-6 text-lg leading-relaxed text-gray-600'>
-            We are a professional translation and interpretation company helping
-            businesses, organizations, and individuals communicate seamlessly
-            across cultures. With certified translators and cultural experts, we
-            ensure your message is delivered with clarity and precision.
-          </p>
+          className='grid w-full grid-cols-1 gap-6 md:w-1/2 sm:grid-cols-2'>
+          {features.map((item, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.2 }}
+              viewport={{ once: true }}
+              className='relative p-6 overflow-hidden text-center transition bg-white shadow-md group rounded-xl hover:shadow-lg'>
+              {/* Animated blue line (inside card) */}
+              <span className='absolute top-0 w-0 h-1 transition-all duration-500 bg-blue-600 left-1/2 group-hover:w-full group-hover:left-0'></span>
 
-          {/* Highlights */}
-          <ul className='grid grid-cols-1 gap-4 text-gray-700 sm:grid-cols-2'>
-            <li className='flex items-center space-x-2'>
-              <span className='text-green-500'>✔</span>
-              <span>50+ Languages</span>
-            </li>
-            <li className='flex items-center space-x-2'>
-              <span className='text-green-500'>✔</span>
-              <span>Certified Experts</span>
-            </li>
-            <li className='flex items-center space-x-2'>
-              <span className='text-green-500'>✔</span>
-              <span>Fast & Reliable Delivery</span>
-            </li>
-            <li className='flex items-center space-x-2'>
-              <span className='text-green-500'>✔</span>
-              <span>Cultural Accuracy</span>
-            </li>
-          </ul>
+              {item.icon}
+              <h4 className='mt-4 text-lg font-semibold text-gray-800'>
+                {item.title}
+              </h4>
+              <p className='mt-2 text-sm text-gray-600'>{item.desc}</p>
+              <button className='px-4 py-2 mt-4 text-white transition bg-blue-600 rounded-lg hover:bg-blue-700'>
+                Learn More
+              </button>
+            </motion.div>
+          ))}
         </motion.div>
       </div>
 
-      {/* Options as cards */}
+      {/* What We Offer */}
       <div className='mt-20 text-center'>
         <h3 className='text-2xl font-bold text-gray-800 md:text-3xl'>
           What We Offer
@@ -105,11 +138,11 @@ export default function About() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.2 }}
               viewport={{ once: true }}
-              className='bg-white shadow-md rounded-2xl p-6 flex flex-col items-center text-center hover:shadow-xl transition'>
+              className='flex flex-col items-center p-6 text-center transition bg-white shadow-md rounded-2xl hover:shadow-xl'>
               {item.icon}
               <h4 className='mt-4 text-xl font-semibold'>{item.title}</h4>
               <p className='mt-2 text-gray-600'>{item.desc}</p>
-              <button className='mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition'>
+              <button className='px-4 py-2 mt-4 text-white transition bg-blue-600 rounded-lg hover:bg-blue-700'>
                 {item.cta}
               </button>
             </motion.div>
