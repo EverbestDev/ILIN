@@ -21,3 +21,8 @@
   display: flex;
   animation: marquee 60s linear infinite;
 }
+
+html, body {
+  overflow-x: hidden;
+  overflow-y: scroll;
+}

@@ -26,12 +26,19 @@ export default function Navbar() {
 
         {/* Right - Buttons (desktop) */}
         <div className='hidden space-x-4 md:flex'>
-          <button className='px-4 py-2 text-gray-900 transition border border-orange-500 rounded-lg hover:bg-orange-500 hover:text-white'>
+          <motion.button
+            whileTap={{ scale: 0.9, opacity: 0.8 }}
+            whileHover={{ scale: 1.05 }}
+            className='px-4 py-2 text-gray-900 transition border border-orange-500 rounded-lg hover:bg-orange-500 hover:text-white'>
             Login
-          </button>
-          <button className='px-4 py-2 text-white transition bg-blue-600 rounded-lg hover:bg-blue-700'>
+          </motion.button>
+
+          <motion.button
+            whileTap={{ scale: 0.9, opacity: 0.8 }}
+            whileHover={{ scale: 1.05 }}
+            className='px-4 py-2 text-white transition bg-blue-600 rounded-lg hover:bg-blue-700'>
             Get Quote
-          </button>
+          </motion.button>
         </div>
 
         {/* Mobile Menu Button */}
