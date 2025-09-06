@@ -44,12 +44,19 @@ export default function Hero() {
           </p>
 
           <div className='space-x-4'>
-            <button className='px-6 py-3 text-white transition-colors duration-300 bg-blue-600 rounded-lg shadow-lg hover:bg-blue-700'>
+            <motion.button
+              whileTap={{ scale: 0.95, opacity: 0.8 }}
+              whileHover={{ scale: 1.05 }}
+              className='px-6 py-3 text-white transition-colors duration-300 bg-blue-600 rounded-lg shadow-lg hover:bg-blue-700'>
               Get a Quote
-            </button>
-            <button className='px-6 py-3 text-gray-900 transition-colors duration-300 border border-orange-500 rounded-lg hover:bg-orange-500 hover:text-white'>
+            </motion.button>
+
+            <motion.button
+              whileTap={{ scale: 0.95, opacity: 0.8 }}
+              whileHover={{ scale: 1.05 }}
+              className='px-6 py-3 text-gray-900 transition-colors duration-300 border border-orange-500 rounded-lg hover:bg-orange-500 hover:text-white'>
               Learn More
-            </button>
+            </motion.button>
           </div>
         </motion.div>
 
@@ -71,7 +78,7 @@ export default function Hero() {
       </div>
 
       {/* Marquee (hidden on small, visible on md+) */}
-      <div className='hidden md:block w-screen relative left-1/2 right-1/2 -mx-[50vw] mt-2'>
+      <div className='hidden w-full mt-2 overflow-hidden md:block'>
         <LanguageMarquee />
       </div>
     </section>

@@ -6,7 +6,7 @@ import About from "./components/About";
 function App() {
   return (
     <Router>
-      <div className='min-h-[1000vh] bg-white'>
+      <div className='min-h-screen bg-white'>
         <Nav />
 
         <Routes>
