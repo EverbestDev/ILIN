@@ -1,7 +1,7 @@
 // LanguageMarquee.jsx
 export default function LanguageMarquee() {
   return (
-    <div className='w-full py-3 overflow-hidden bg-blue-600'>
+    <div className='w-screen py-3 overflow-hidden bg-blue-600'>
       <div className='relative flex whitespace-nowrap'>
         {/* First set of texts */}
         <div className='flex animate-marquee'>

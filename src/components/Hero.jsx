@@ -78,7 +78,7 @@ export default function Hero() {
       </div>
 
       {/* Marquee (hidden on small, visible on md+) */}
-      <div className='hidden w-full mt-2 overflow-hidden md:block'>
+      <div className='hidden md:block w-screen relative left-1/2 right-1/2 -mx-[50vw] mt-2'>
         <LanguageMarquee />
       </div>
     </section>

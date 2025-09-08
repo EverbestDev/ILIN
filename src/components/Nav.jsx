@@ -104,7 +104,7 @@ export default function Navbar() {
               Contact
             </Link>
             <div className='flex flex-col gap-3 pt-3'>
-              <button className='w-full px-4 py-2 text-gray-700 border rounded-lg hover:bg-gray-100'>
+              <button className='w-full px-4 py-2 text-gray-700 border border-orange-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500'>
                 Login
               </button>
               <button className='w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700'>
