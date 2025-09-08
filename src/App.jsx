@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Nav from "./components/Nav";
 import Hero from "./components/Hero";
 import About from "./components/About";
+import ServicesOverview from "./components/ServicesOverview";
+import LanguagesSupport from "./components/LanguagesSupport";
 
 function App() {
   return (
@@ -16,8 +18,8 @@ function App() {
               <>
                 <Hero />
                 <About />
-                {/* <Services /> */}
-                {/* <Languages /> */}
+                <ServicesOverview />
+                <LanguagesSupport />
                 {/* <Contact /> */}
               </>
             }
