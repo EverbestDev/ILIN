@@ -6,12 +6,12 @@ import About from "./components/About";
 function App() {
   return (
     <Router>
-      <div className='min-h-screen bg-white'>
+      <div className="min-h-screen bg-white">
         <Nav />
 
         <Routes>
           <Route
-            path='/'
+            path="/"
             element={
               <>
                 <Hero />
@@ -19,48 +19,76 @@ function App() {
                 {/* <Services /> */}
                 {/* <Languages /> */}
                 {/* <Contact /> */}
-                {/* <Quote /> */}
               </>
             }
           />
 
           <Route
-            path='/about'
+            path="/about"
             element={
-              <div className='pt-20 text-2xl text-center font-open-sans'>
-                About Page
+              <div className="max-w-4xl px-6 pt-24 mx-auto">
+                <h1 className="mb-8 text-3xl font-bold text-center">
+                  About ILI-Nigeria
+                </h1>
+                <p className="text-lg text-gray-600">
+                  About page content coming soon...
+                </p>
               </div>
             }
           />
+
           <Route
-            path='/services'
+            path="/services"
             element={
-              <div className='pt-20 text-2xl text-center font-open-sans'>
-                Services Page
+              <div className="max-w-4xl px-6 pt-24 mx-auto">
+                <h1 className="mb-8 text-3xl font-bold text-center">
+                  Our Services
+                </h1>
+                <p className="text-lg text-gray-600">
+                  Services content coming soon...
+                </p>
               </div>
             }
           />
+
           <Route
-            path='/languages'
+            path="/languages"
             element={
-              <div className='pt-20 text-2xl text-center font-open-sans'>
-                Languages Page
+              <div className="max-w-4xl px-6 pt-24 mx-auto">
+                <h1 className="mb-8 text-3xl font-bold text-center">
+                  Languages We Support
+                </h1>
+                <p className="text-lg text-gray-600">
+                  Languages content coming soon...
+                </p>
               </div>
             }
           />
+
           <Route
-            path='/contact'
+            path="/contact"
             element={
-              <div className='pt-20 text-2xl text-center font-lato'>
-                Contact Page
+              <div className="max-w-4xl px-6 pt-24 mx-auto">
+                <h1 className="mb-8 text-3xl font-bold text-center">
+                  Contact Us
+                </h1>
+                <p className="text-lg text-gray-600">
+                  Contact form coming soon...
+                </p>
               </div>
             }
           />
+
           <Route
-            path='/quote'
+            path="/quote"
             element={
-              <div className='pt-20 text-2xl text-center font-lato'>
-                Quote Request Page
+              <div className="max-w-4xl px-6 pt-24 mx-auto">
+                <h1 className="mb-8 text-3xl font-bold text-center">
+                  Get a Quote
+                </h1>
+                <p className="text-lg text-gray-600">
+                  Quote form coming soon...
+                </p>
               </div>
             }
           />
