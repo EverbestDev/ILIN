@@ -1,11 +1,14 @@
 import { motion } from "framer-motion";
 import { Globe, BookOpen, Zap, Flag, MessageSquare, Phone } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import aboutImg from "../assets/about.png";
 
 export default function About() {
+  const navigate = useNavigate();
+
   const features = [
     {
-      icon: <Globe className="w-10 h-10 mx-auto text-blue-600" />,
+      icon: <Globe className="w-10 h-10 mx-auto text-green-600" />,
       title: "50+ Languages",
       desc: "Communicate seamlessly in more than 50 languages worldwide.",
     },
@@ -28,7 +31,7 @@ export default function About() {
 
   const highlights = [
     {
-      icon: <Globe className="w-10 h-10 text-blue-600" />,
+      icon: <Globe className="w-10 h-10 text-green-600" />,
       title: "Global Translation Services",
       desc: "We support over 50+ world languages with precise, human-level translation. Our certified translators ensure your message maintains its meaning and cultural nuance across all languages.",
       cta: "Get a Quote",
@@ -58,6 +61,14 @@ export default function About() {
   const featuredService = highlights.find((item) => item.featured);
   const otherServices = highlights.filter((item) => !item.featured);
 
+  const handleGetQuote = () => {
+    navigate("/quote");
+  };
+
+  const handleLearnMore = () => {
+    navigate("/about");
+  };
+
   return (
     <section className="px-8 py-16 bg-white md:px-20" id="about">
       {/* About Heading */}
@@ -68,7 +79,7 @@ export default function About() {
         viewport={{ once: true }}
         className="max-w-3xl mx-auto mb-12 text-center"
       >
-        <span className="inline-block px-6 py-2 mb-4 text-sm font-semibold text-blue-600 bg-blue-100 rounded-full">
+        <span className="inline-block px-6 py-2 mb-4 text-sm font-semibold text-green-600 bg-green-100 rounded-full">
           About Us
         </span>
         <p className="mt-2 text-lg leading-relaxed text-gray-600">
@@ -113,15 +124,18 @@ export default function About() {
               viewport={{ once: true }}
               className="relative p-6 overflow-hidden text-center transition bg-white shadow-md group rounded-xl hover:shadow-lg"
             >
-              {/* Animated blue line (inside card) */}
-              <span className="absolute top-0 w-0 h-1 transition-all duration-500 bg-blue-600 left-1/2 group-hover:w-full group-hover:left-0"></span>
+              {/* Animated green line (inside card) */}
+              <span className="absolute top-0 w-0 h-1 transition-all duration-500 bg-green-600 left-1/2 group-hover:w-full group-hover:left-0"></span>
 
               {item.icon}
               <h4 className="mt-4 text-lg font-semibold text-gray-800">
                 {item.title}
               </h4>
               <p className="mt-2 text-sm text-gray-600">{item.desc}</p>
-              <button className="px-4 py-2 mt-4 text-white transition bg-blue-600 rounded-lg hover:bg-blue-700">
+              <button
+                onClick={handleLearnMore}
+                className="px-4 py-2 mt-4 text-white transition bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
                 Learn More
               </button>
             </motion.div>
@@ -148,7 +162,7 @@ export default function About() {
             viewport={{ once: true }}
             className="mt-12 mb-16"
           >
-            <div className="relative overflow-hidden shadow-2xl bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl">
+            <div className="relative overflow-hidden shadow-2xl bg-gradient-to-r from-green-600 to-emerald-600 rounded-3xl">
               <div className="absolute inset-0 bg-black opacity-10"></div>
               <div className="relative px-8 py-12 md:px-16 md:py-16">
                 <div className="flex flex-col items-center text-center text-white">
@@ -162,12 +176,22 @@ export default function About() {
                     {featuredService.desc}
                   </p>
                   <div className="flex flex-col gap-4 sm:flex-row">
-                    <button className="px-8 py-4 font-semibold text-blue-600 transition-all duration-300 transform bg-white shadow-lg rounded-xl hover:bg-gray-100 hover:scale-105">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={handleGetQuote}
+                      className="px-8 py-4 font-semibold text-green-600 transition-all duration-300 transform bg-white shadow-lg rounded-xl hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-white"
+                    >
                       {featuredService.cta}
-                    </button>
-                    <button className="px-8 py-4 font-semibold text-white transition-all duration-300 border-2 border-white rounded-xl hover:bg-white hover:text-blue-600">
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={handleLearnMore}
+                      className="px-8 py-4 font-semibold text-white transition-all duration-300 border-2 border-white rounded-xl hover:bg-white hover:text-green-600 focus:outline-none focus:ring-2 focus:ring-white"
+                    >
                       Learn More
-                    </button>
+                    </motion.button>
                   </div>
                 </div>
               </div>
@@ -189,10 +213,16 @@ export default function About() {
               viewport={{ once: true }}
               className="flex flex-col items-center p-6 text-center transition duration-300 bg-white shadow-md rounded-2xl hover:shadow-xl hover:transform hover:scale-105"
             >
-              <div className="mb-4">{item.icon}</div>
+              {/* Animated icon background */}
+              <div
+                className={`w-16 h-16 mb-4 rounded-2xl ${item.bgColor} ${item.hoverBg} transition-all duration-300 flex items-center justify-center hover:scale-110 hover:rotate-3`}
+              >
+                {item.icon}
+              </div>
+
               <h4 className="mb-2 text-xl font-semibold">{item.title}</h4>
               <p className="flex-grow mb-4 text-gray-600">{item.desc}</p>
-              <button className="px-4 py-2 text-white transition bg-blue-600 rounded-lg hover:bg-blue-700">
+              <button className="px-4 py-2 text-white transition bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
                 {item.cta}
               </button>
             </motion.div>
