@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Nav from "./components/Nav";
 import Hero from "./components/Hero";
 import About from "./components/About";
-import ServicesOverview from "./components/ServicesOverview";
+// import ServicesOverview from "./components/ServicesOverview";
 import LanguagesSupport from "./components/LanguagesSupport";
 import IndustryExpertise from "./components/IndustryExpertise";
 import WhyChooseILI from "./components/WhyChooseILI";
@@ -20,7 +20,7 @@ function App() {
               <>
                 <Hero />
                 <About />
-                <ServicesOverview />
+                {/* <ServicesOverview /> */}
                 <LanguagesSupport />
                 <IndustryExpertise />
                 <WhyChooseILI />
