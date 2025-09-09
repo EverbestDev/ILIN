@@ -4,6 +4,8 @@ import Hero from "./components/Hero";
 import About from "./components/About";
 import ServicesOverview from "./components/ServicesOverview";
 import LanguagesSupport from "./components/LanguagesSupport";
+import IndustryExpertise from "./components/IndustryExpertise";
+import WhyChooseILI from "./components/WhyChooseILI";
 
 function App() {
   return (
@@ -20,6 +22,9 @@ function App() {
                 <About />
                 <ServicesOverview />
                 <LanguagesSupport />
+                <IndustryExpertise />
+                <WhyChooseILI />
+                {/* <Contact /> */}
                 {/* <Contact /> */}
               </>
             }
