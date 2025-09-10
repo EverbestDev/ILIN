@@ -6,6 +6,7 @@ import About from "./components/About";
 import LanguagesSupport from "./components/LanguagesSupport";
 import IndustryExpertise from "./components/IndustryExpertise";
 import WhyChooseILI from "./components/WhyChooseILI";
+import ProcessWalkthrough from "./components/ProcessWalkthrough"
 
 function App() {
   return (
@@ -24,6 +25,8 @@ function App() {
                 <LanguagesSupport />
                 <IndustryExpertise />
                 <WhyChooseILI />
+                <ProcessWalkthrough />
+                {/* <Contact /> */}
                 {/* <Contact /> */}
                 {/* <Contact /> */}
               </>
