@@ -8,6 +8,9 @@ import IndustryExpertise from "./components/IndustryExpertise";
 import WhyChooseILI from "./components/WhyChooseILI";
 import ProcessWalkthrough from "./components/ProcessWalkthrough"
 import PricingPackages from "./components/PricingPackages"
+import SuccessStories from "./components/SuccessStories"
+import MeetOurTeam from "./components/MeetOurTeam"
+import TechnologyTools from "./components/TechnologyTools";
 
 function App() {
   return (
@@ -28,7 +31,9 @@ function App() {
                 <WhyChooseILI />
                 <ProcessWalkthrough />
                 <PricingPackages />
-                {/* <Contact /> */}
+                <SuccessStories />
+                <MeetOurTeam />
+                <TechnologyTools />
                 {/* <Contact /> */}
               </>
             }
