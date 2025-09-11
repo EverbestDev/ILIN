@@ -28,28 +28,25 @@ export default function Hero() {
   };
 
   return (
-    <section
-      className="flex flex-col justify-between px-6 pt-24 pb-2 md:px-20 bg-gray-50 md:pt-28 md:pb-10"
-      style={{ minHeight: "calc(100vh - 64px)" }} // subtract navbar height
-    >
+    <section className="flex flex-col justify-between px-6 pt-24 pb-2 md:px-20 md:pt-28 md:pb">
       {/* Content row (text + image) */}
       <div className="flex flex-col items-center justify-between gap-8 md:flex-row md:gap-12">
         {/* Text side */}
         <motion.div
           initial={{ x: -100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 1 }}
           className="flex-1 max-w-lg text-center md:text-left"
         >
-          <h1 className="mb-6 text-4xl font-bold leading-tight md:text-5xl">
+          <h1 className="mb-6 text-4xl font-bold leading-tight">
             Breaking <span className="text-green-600">Language Barriers</span>,{" "}
             Building <span className="text-green-600">Global Connections</span>
           </h1>
 
-          <p className="mb-8 text-lg leading-relaxed text-gray-600">
+          <p className="mb-8 leading-relaxed text-gray-600 text-md">
             We provide professional translation and interpretation services in
             over{" "}
-            <span className="font-semibold text-green-600">50+ languages</span>.
+            <span className="font-bold text-green-600">200+ languages</span>.
             From documents, websites, and apps to voiceovers and real-time
             interpretation, our certified experts ensure your message reaches
             the world with clarity and cultural accuracy.
@@ -80,8 +77,8 @@ export default function Hero() {
         <motion.div
           initial={{ x: 100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex-1 relative w-full max-w-[400px] h-[300px] md:w-[450px] md:h-[450px] overflow-hidden"
+          transition={{ duration: 1, delay: 0.8 }}
+          className="flex-1 relative w-full h-[300px] md:w-[450px] md:h-[450px] overflow-hidden rounded-2xl"
         >
           <AnimatePresence mode="wait">
             <motion.img
@@ -113,7 +110,7 @@ export default function Hero() {
       </div>
 
       {/* Marquee (hidden on mobile, visible on md+) */}
-      <div className="hidden md:block w-screen relative left-1/2 right-1/2 -mx-[50vw] mt-8">
+      <div className="hidden md:block w-screen relative left-1/2 right-1/2 -mx-[50vw] mt-6">
         <LanguageMarquee />
       </div>
     </section>
