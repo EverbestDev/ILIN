@@ -264,8 +264,8 @@ export default function MeetOurTeam() {
           </div>
 
           {/* Join Team */}
-          <div className="p-6 text-center bg-blue-50 rounded-xl">
-            <Users className="w-12 h-12 mx-auto mb-4 text-blue-600" />
+          <div className="p-6 text-center bg-orange-50 rounded-xl">
+            <Users className="w-12 h-12 mx-auto mb-4 text-orange-600" />
             <h3 className="mb-3 text-xl font-bold text-gray-900">
               Join Our Team
             </h3>
@@ -274,7 +274,7 @@ export default function MeetOurTeam() {
             </p>
             <button
               onClick={handleJoinTeam}
-              className="inline-flex items-center px-6 py-3 font-medium text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-700"
+              className="inline-flex items-center px-6 py-3 font-medium text-orange-600 transition-colors bg-white border-2 border-orange-500 rounded-lg hover:bg-orange-500 hover:text-white"
             >
               Apply Now
               <ArrowRight className="w-5 h-5 ml-2" />

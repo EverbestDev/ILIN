@@ -274,12 +274,12 @@ export default function TechnologyTools() {
         viewport={{ once: true }}
         className="max-w-2xl mx-auto text-center"
       >
-        <div className="p-8 shadow-lg bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl">
+        <div className="p-8 shadow-lg bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl">
           <Globe className="w-12 h-12 mx-auto mb-4 text-white" />
           <h3 className="mb-4 text-xl font-bold text-white">
             Experience the Technology Advantage
           </h3>
-          <p className="mb-6 text-blue-100">
+          <p className="mb-6 text-green-100">
             Let our advanced tools and expert team deliver superior translations
             for your project
           </p>
@@ -287,7 +287,7 @@ export default function TechnologyTools() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleGetQuote}
-            className="inline-flex items-center px-8 py-3 font-medium text-blue-600 transition-all duration-300 bg-white rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-white"
+            className="inline-flex items-center px-8 py-3 font-medium text-green-600 transition-all duration-300 bg-white rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-white"
           >
             Start Your Project
             <ArrowRight className="w-5 h-5 ml-2" />
