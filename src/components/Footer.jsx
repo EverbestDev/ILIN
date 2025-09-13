@@ -46,7 +46,11 @@ export default function Footer() {
   ];
 
   const socialLinks = [
-    { icon: <Facebook className="w-5 h-5" />, name: "Facebook", url: "#" },
+    {
+      icon: <Facebook className="w-5 h-5" />,
+      name: "Facebook",
+      url: "https://www.facebook.com/share/1FDihmFcBU/",
+    },
     { icon: <Twitter className="w-5 h-5" />, name: "Twitter", url: "#" },
     { icon: <Linkedin className="w-5 h-5" />, name: "LinkedIn", url: "#" },
     { icon: <Instagram className="w-5 h-5" />, name: "Instagram", url: "#" },
@@ -64,7 +68,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="text-white bg-gray-900">
+    <footer className="text-white bg-gradient-to-b from-green-900 to-green-950">
       {/* Main Footer Content */}
       <div className="px-6 py-16 md:px-20">
         <div className="mx-auto max-w-7xl">
