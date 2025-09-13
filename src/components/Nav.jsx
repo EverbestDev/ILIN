@@ -19,7 +19,11 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 z-50 w-full bg-white shadow-md">
       <div className="flex items-center justify-between px-6 py-4 mx-auto max-w-7xl">
         {/* Left - Logo */}
-        <div className="text-2xl font-bold text-green-600">ILI-Nigeria</div>
+        <div className="flex items-center gap-2 align-middle">
+          <img src="/src/assets/ILIN.jpg" alt="logo" 
+          className="h-8 cursor-pointer"/>
+          <div className="hidden text-2xl font-bold text-green-600 md:block">ILI-Nigeria</div>
+        </div>
 
         {/* Center - Nav Links (desktop) */}
         <div className="hidden space-x-8 font-medium text-gray-700 md:flex">

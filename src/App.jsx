@@ -6,11 +6,13 @@ import About from "./components/About";
 import LanguagesSupport from "./components/LanguagesSupport";
 import IndustryExpertise from "./components/IndustryExpertise";
 import WhyChooseILI from "./components/WhyChooseILI";
-import ProcessWalkthrough from "./components/ProcessWalkthrough"
-import PricingPackages from "./components/PricingPackages"
-import SuccessStories from "./components/SuccessStories"
-import MeetOurTeam from "./components/MeetOurTeam"
+import ProcessWalkthrough from "./components/ProcessWalkthrough";
+import PricingPackages from "./components/PricingPackages";
+import SuccessStories from "./components/SuccessStories";
+import MeetOurTeam from "./components/MeetOurTeam";
 import TechnologyTools from "./components/TechnologyTools";
+import ContactGetStarted from "./components/ContactGetStarted";
+import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -34,7 +36,8 @@ function App() {
                 <SuccessStories />
                 <MeetOurTeam />
                 <TechnologyTools />
-                {/* <Contact /> */}
+                <ContactGetStarted />
+                <Footer />
               </>
             }
           />
