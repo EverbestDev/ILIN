@@ -380,7 +380,7 @@ export default function WhyChooseILI() {
                 <div
                   className={`w-20 h-20 rounded-full shadow-lg flex items-center justify-center text-white font-bold text-xl ${testimonials[currentTestimonial].bgColor}`}
                 >
-                  {testimonials[currentTestimonial].initials}
+                  {testimonials[currentTestimonial].image}
                 </div>
               </div>
 
