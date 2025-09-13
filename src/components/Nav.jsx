@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import logo from "../assets/ILIN.jpg";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,15 +15,17 @@ export default function Navbar() {
     navigate("/quote");
     setIsOpen(false);
   };
+  const logoPics = logo;
 
   return (
     <nav className="fixed top-0 left-0 z-50 w-full bg-white shadow-md">
       <div className="flex items-center justify-between px-6 py-4 mx-auto max-w-7xl">
         {/* Left - Logo */}
         <div className="flex items-center gap-2 align-middle">
-          <img src="/src/assets/ILIN.jpg" alt="logo" 
-          className="h-8 cursor-pointer"/>
-          <div className="hidden text-2xl font-bold text-green-600 md:block">ILI-Nigeria</div>
+          <img src={logoPics} alt="logo" className="h-8 cursor-pointer" />
+          <div className="hidden text-2xl font-bold text-green-600 md:block">
+            ILI-Nigeria
+          </div>
         </div>
 
         {/* Center - Nav Links (desktop) */}
