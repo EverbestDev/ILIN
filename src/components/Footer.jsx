@@ -11,11 +11,11 @@ import {
   Linkedin,
   Instagram,
   Youtube,
-  ArrowRight,
   Award,
   Shield,
   CheckCircle,
-  ExternalLink,
+  Send,
+  ArrowRight,
 } from "lucide-react";
 
 export default function Footer() {
@@ -34,33 +34,21 @@ export default function Footer() {
     { name: "Website Localization", path: "/services" },
     { name: "Live Interpretation", path: "/services" },
     { name: "Certified Translation", path: "/services" },
-    { name: "Business Solutions", path: "/services" },
   ];
 
   const industries = [
     { name: "Legal & Immigration", path: "/services" },
     { name: "Medical & Healthcare", path: "/services" },
     { name: "Business & Finance", path: "/services" },
-    { name: "Education", path: "/services" },
-    { name: "Government", path: "/services" },
+    { name: "Educational Institutions", path: "/services" },
   ];
 
   const socialLinks = [
-    {
-      icon: <Facebook className="w-5 h-5" />,
-      name: "Facebook",
-      url: "https://www.facebook.com/share/1FDihmFcBU/",
-    },
+    { icon: <Facebook className="w-5 h-5" />, name: "Facebook", url: "#" },
     { icon: <Twitter className="w-5 h-5" />, name: "Twitter", url: "#" },
     { icon: <Linkedin className="w-5 h-5" />, name: "LinkedIn", url: "#" },
     { icon: <Instagram className="w-5 h-5" />, name: "Instagram", url: "#" },
     { icon: <Youtube className="w-5 h-5" />, name: "YouTube", url: "#" },
-  ];
-
-  const certifications = [
-    { name: "ISO 17100 Certified", icon: <Award className="w-4 h-4" /> },
-    { name: "GDPR Compliant", icon: <Shield className="w-4 h-4" /> },
-    { name: "ISO 27001 Security", icon: <CheckCircle className="w-4 h-4" /> },
   ];
 
   const handleLinkClick = (path) => {
@@ -68,242 +56,316 @@ export default function Footer() {
   };
 
   return (
-    <footer className="text-white bg-gradient-to-b from-green-900 to-green-950">
+    <footer className="overflow-hidden bg-green-600 rounded-t-xl md:rounded-t-none">
+      {/* Newsletter Section */}
+      <div className="px-6 py-12 bg-green-700 md:px-20">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center"
+          >
+            <h3 className="mb-4 text-2xl font-bold text-white">
+              Stay Updated with Translation Insights
+            </h3>
+            <p className="max-w-2xl mx-auto mb-8 text-green-100">
+              Get expert tips, industry news, and special offers delivered to
+              your inbox. Join 5,000+ professionals who trust our insights.
+            </p>
+            <div className="flex flex-col max-w-md gap-4 mx-auto sm:flex-row">
+              <input
+                type="email"
+                placeholder="Enter your email address"
+                className="flex-1 px-6 py-4 text-gray-900 placeholder-gray-500 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center justify-center px-8 py-4 font-semibold text-white transition-colors bg-orange-500 rounded-lg hover:bg-orange-600"
+              >
+                <Send className="w-5 h-5 mr-2" />
+                Subscribe
+              </motion.button>
+            </div>
+            <p className="mt-4 text-sm text-green-200">
+              No spam. Unsubscribe anytime. We respect your privacy.
+            </p>
+          </motion.div>
+        </div>
+      </div>
+
       {/* Main Footer Content */}
       <div className="px-6 py-16 md:px-20">
         <div className="mx-auto max-w-7xl">
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
-            {/* Company Info */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-              className="lg:col-span-1"
-            >
-              <div className="mb-6">
-                <h2 className="mb-4 text-2xl font-bold text-green-400">
-                  ILI-Nigeria
-                </h2>
-                <p className="mb-6 leading-relaxed text-gray-300">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-4">
+            {/* Company Information */}
+            <div className="lg:col-span-1">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                {/* Logo */}
+                <div className="flex items-center mb-6">
+                  <div className="flex items-center justify-center w-12 h-12 mr-4 bg-white rounded-lg">
+                    <Globe className="w-8 h-8 text-green-600" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-white">ILI-Nigeria</h2>
+                </div>
+
+                <p className="mb-8 leading-relaxed text-green-100">
                   Nigeria's premier translation and interpretation service.
                   Breaking language barriers and building global connections
                   since 2010.
                 </p>
-              </div>
 
-              {/* Contact Info */}
-              <div className="mb-6 space-y-4">
-                <div className="flex items-center text-gray-300">
-                  <Phone className="w-5 h-5 mr-3 text-green-400" />
-                  <span>+234 1 234 5678</span>
-                </div>
-                <div className="flex items-center text-gray-300">
-                  <Mail className="w-5 h-5 mr-3 text-green-400" />
-                  <span>hello@ili-nigeria.com</span>
-                </div>
-                <div className="flex items-start text-gray-300">
-                  <MapPin className="flex-shrink-0 w-5 h-5 mt-1 mr-3 text-green-400" />
-                  <span>Victoria Island, Lagos State, Nigeria</span>
-                </div>
-                <div className="flex items-center text-gray-300">
-                  <Clock className="w-5 h-5 mr-3 text-green-400" />
-                  <span>Mon-Fri 8AM-6PM WAT</span>
-                </div>
-              </div>
-
-              {/* Social Links */}
-              <div>
-                <p className="mb-3 text-sm text-gray-400">Follow Us</p>
-                <div className="flex space-x-3">
-                  {socialLinks.map((social, index) => (
-                    <motion.a
-                      key={index}
-                      href={social.url}
-                      whileHover={{ scale: 1.1, y: -2 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="flex items-center justify-center w-10 h-10 text-gray-400 transition-colors bg-gray-800 rounded-lg hover:text-green-400 hover:bg-gray-700"
-                      aria-label={social.name}
-                    >
-                      {social.icon}
-                    </motion.a>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Quick Links */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              viewport={{ once: true }}
-            >
-              <h3 className="mb-6 text-lg font-semibold text-white">
-                Quick Links
-              </h3>
-              <ul className="space-y-3">
-                {quickLinks.map((link, index) => (
-                  <li key={index}>
-                    <button
-                      onClick={() => handleLinkClick(link.path)}
-                      className="flex items-center text-gray-300 transition-colors hover:text-green-400 group"
-                    >
-                      <ArrowRight className="w-4 h-4 mr-2 transition-all transform -translate-x-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0" />
-                      {link.name}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-
-            {/* Services */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              viewport={{ once: true }}
-            >
-              <h3 className="mb-6 text-lg font-semibold text-white">
-                Our Services
-              </h3>
-              <ul className="mb-8 space-y-3">
-                {services.map((service, index) => (
-                  <li key={index}>
-                    <button
-                      onClick={() => handleLinkClick(service.path)}
-                      className="flex items-center text-gray-300 transition-colors hover:text-green-400 group"
-                    >
-                      <ArrowRight className="w-4 h-4 mr-2 transition-all transform -translate-x-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0" />
-                      {service.name}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-
-              <div>
-                <h4 className="mb-3 text-sm font-semibold text-gray-400">
-                  Industries We Serve
-                </h4>
-                <ul className="space-y-2">
-                  {industries.slice(0, 3).map((industry, index) => (
-                    <li key={index} className="text-sm text-gray-500">
-                      {industry.name}
-                    </li>
-                  ))}
-                  <li className="text-sm text-gray-500">+ 5 more industries</li>
-                </ul>
-              </div>
-            </motion.div>
-
-            {/* Newsletter & Certifications */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              viewport={{ once: true }}
-            >
-              <h3 className="mb-6 text-lg font-semibold text-white">
-                Stay Updated
-              </h3>
-              <p className="mb-4 text-sm text-gray-300">
-                Get translation tips and industry updates delivered to your
-                inbox.
-              </p>
-
-              <div className="mb-8">
-                <div className="flex">
-                  <input
-                    type="email"
-                    placeholder="Your email address"
-                    className="flex-1 px-4 py-3 text-white placeholder-gray-400 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:border-green-400"
-                  />
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="px-6 py-3 transition-colors bg-green-600 rounded-r-lg hover:bg-green-700"
-                  >
-                    <ArrowRight className="w-5 h-5" />
-                  </motion.button>
-                </div>
-                <p className="mt-2 text-xs text-gray-500">
-                  No spam. Unsubscribe anytime.
-                </p>
-              </div>
-
-              {/* Certifications */}
-              <div>
-                <h4 className="mb-4 text-sm font-semibold text-gray-400">
-                  Certifications
-                </h4>
-                <div className="space-y-3">
-                  {certifications.map((cert, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center text-sm text-gray-300"
-                    >
-                      <div className="flex items-center justify-center w-6 h-6 mr-3 bg-green-600 rounded bg-opacity-20">
-                        {cert.icon}
-                      </div>
-                      {cert.name}
+                {/* Contact Information */}
+                <div className="mb-8 space-y-4">
+                  <div className="flex items-center text-green-100">
+                    <Phone className="w-5 h-5 mr-3 text-white" />
+                    <div>
+                      <p className="font-semibold">+234 1 234 5678</p>
+                      <p className="text-sm text-green-200">Main Office Line</p>
                     </div>
-                  ))}
+                  </div>
+                  <div className="flex items-center text-green-100">
+                    <Mail className="w-5 h-5 mr-3 text-white" />
+                    <div>
+                      <p className="font-semibold">hello@ili-nigeria.com</p>
+                      <p className="text-sm text-green-200">24-hour response</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start text-green-100">
+                    <MapPin className="w-5 h-5 mt-1 mr-3 text-white" />
+                    <div>
+                      <p className="font-semibold">Victoria Island, Lagos</p>
+                      <p className="text-sm text-green-200">
+                        Lagos State, Nigeria
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Social Media */}
+                <div>
+                  <h4 className="mb-4 font-semibold text-white">
+                    Connect With Us
+                  </h4>
+                  <div className="flex space-x-4">
+                    {socialLinks.map((social, index) => (
+                      <motion.a
+                        key={index}
+                        href={social.url}
+                        whileHover={{ scale: 1.1, y: -2 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="flex items-center justify-center w-12 h-12 text-white transition-colors bg-green-700 rounded-lg shadow-lg hover:bg-orange-500"
+                        aria-label={social.name}
+                      >
+                        {social.icon}
+                      </motion.a>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Navigation Links */}
+            <div className="lg:col-span-3">
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+                {/* Quick Links */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.1 }}
+                  viewport={{ once: true }}
+                >
+                  <h3 className="mb-6 text-xl font-bold text-white">
+                    Quick Links
+                  </h3>
+                  <ul className="space-y-3">
+                    {quickLinks.map((link, index) => (
+                      <li key={index}>
+                        <motion.button
+                          whileHover={{ x: 5 }}
+                          onClick={() => handleLinkClick(link.path)}
+                          className="flex items-center text-green-100 transition-all duration-300 hover:text-white group"
+                        >
+                          <ArrowRight className="w-4 h-4 mr-2 transition-opacity opacity-0 group-hover:opacity-100" />
+                          {link.name}
+                        </motion.button>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+
+                {/* Services */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  viewport={{ once: true }}
+                >
+                  <h3 className="mb-6 text-xl font-bold text-white">
+                    Our Services
+                  </h3>
+                  <ul className="space-y-3">
+                    {services.map((service, index) => (
+                      <li key={index}>
+                        <motion.button
+                          whileHover={{ x: 5 }}
+                          onClick={() => handleLinkClick(service.path)}
+                          className="flex items-center text-green-100 transition-all duration-300 hover:text-white group"
+                        >
+                          <ArrowRight className="w-4 h-4 mr-2 transition-opacity opacity-0 group-hover:opacity-100" />
+                          {service.name}
+                        </motion.button>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+
+                {/* Industries */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  viewport={{ once: true }}
+                >
+                  <h3 className="mb-6 text-xl font-bold text-white">
+                    Industries
+                  </h3>
+                  <ul className="space-y-3">
+                    {industries.map((industry, index) => (
+                      <li key={index}>
+                        <motion.button
+                          whileHover={{ x: 5 }}
+                          onClick={() => handleLinkClick(industry.path)}
+                          className="flex items-center text-green-100 transition-all duration-300 hover:text-white group"
+                        >
+                          <ArrowRight className="w-4 h-4 mr-2 transition-opacity opacity-0 group-hover:opacity-100" />
+                          {industry.name}
+                        </motion.button>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              </div>
+
+              {/* Business Hours & Certifications */}
+              <div className="grid grid-cols-1 gap-8 mt-12 md:grid-cols-2">
+                {/* Business Hours */}
+                <div className="p-6 bg-green-700 bg-opacity-50 rounded-2xl">
+                  <div className="flex items-center mb-4">
+                    <Clock className="w-6 h-6 mr-3 text-orange-400" />
+                    <h4 className="text-lg font-bold text-white">
+                      Business Hours
+                    </h4>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-green-100">Monday - Friday</span>
+                      <span className="font-semibold text-white">
+                        8:00 AM - 6:00 PM
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-green-100">Saturday</span>
+                      <span className="font-semibold text-white">
+                        9:00 AM - 2:00 PM
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-green-100">Sunday</span>
+                      <span className="text-green-300">Closed</span>
+                    </div>
+                    <div className="pt-3 mt-4 border-t border-green-500">
+                      <div className="flex items-center text-orange-300">
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        <span className="text-sm font-medium">
+                          Emergency support available 24/7
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Certifications */}
+                <div className="p-6 bg-green-700 bg-opacity-50 rounded-2xl">
+                  <h4 className="flex items-center mb-4 text-lg font-bold text-white">
+                    <Award className="w-6 h-6 mr-3 text-orange-400" />
+                    Our Certifications
+                  </h4>
+                  <div className="space-y-4">
+                    <div className="flex items-center">
+                      <div className="flex items-center justify-center w-10 h-10 mr-3 rounded-lg bg-amber-100">
+                        <Award className="w-5 h-5 text-amber-600" />
+                      </div>
+                      <span className="font-medium text-white">
+                        ISO 17100 Certified
+                      </span>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="flex items-center justify-center w-10 h-10 mr-3 bg-blue-100 rounded-lg">
+                        <Shield className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <span className="font-medium text-white">
+                        GDPR Compliant
+                      </span>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="flex items-center justify-center w-10 h-10 mr-3 bg-green-100 rounded-lg">
+                        <CheckCircle className="w-5 h-5 text-green-600" />
+                      </div>
+                      <span className="font-medium text-white">
+                        ISO 27001 Security
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-gray-800">
-        <div className="px-6 py-6 md:px-20">
-          <div className="mx-auto max-w-7xl">
-            <div className="flex flex-col items-center justify-between md:flex-row">
-              {/* Copyright */}
-              <div className="flex items-center mb-4 md:mb-0">
-                <Globe className="w-5 h-5 mr-2 text-green-400" />
-                <p className="text-sm text-gray-400">
-                  © 2024 ILI-Nigeria. All rights reserved.
-                </p>
+      <div className="px-6 py-6 bg-green-800 md:px-20">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex flex-col items-center justify-between gap-6 lg:flex-row">
+            {/* Copyright */}
+            <div className="flex items-center">
+              <div className="flex items-center justify-center w-10 h-10 mr-3 bg-green-600 rounded-lg">
+                <Globe className="w-5 h-5 text-white" />
               </div>
-
-              {/* Legal Links */}
-              <div className="flex items-center mb-4 space-x-6 md:mb-0">
-                <button className="text-sm text-gray-400 transition-colors hover:text-green-400">
-                  Privacy Policy
-                </button>
-                <button className="text-sm text-gray-400 transition-colors hover:text-green-400">
-                  Terms of Service
-                </button>
-                <button className="text-sm text-gray-400 transition-colors hover:text-green-400">
-                  Cookie Policy
-                </button>
-              </div>
-
-              {/* Language/Region */}
-              <div className="flex items-center text-sm text-gray-400">
-                <MapPin className="w-4 h-4 mr-2" />
-                <span>Nigeria</span>
-                <span className="mx-2">•</span>
-                <span>English</span>
-              </div>
+              <p className="font-medium text-green-100">
+                © 2025 ILI-Nigeria. All rights reserved.
+              </p>
             </div>
 
-            {/* Additional Info */}
-            <div className="pt-6 mt-6 border-t border-gray-800">
-              <div className="text-center">
-                <p className="max-w-4xl mx-auto text-xs leading-relaxed text-gray-500">
-                  ILI-Nigeria is a registered translation and interpretation
-                  company in Nigeria. We provide professional language services
-                  across Africa and internationally. All translations are
-                  performed by certified linguists and subject matter experts.
-                  <span className="block mt-2">
-                    RC Number: 123456789 • Licensed by the Corporate Affairs
-                    Commission, Nigeria
-                  </span>
-                </p>
-              </div>
+            {/* Legal Links */}
+            <div className="flex flex-wrap items-center gap-6">
+              <button className="font-medium text-green-100 transition-colors hover:text-white">
+                Privacy Policy
+              </button>
+              <span className="text-green-400">•</span>
+              <button className="font-medium text-green-100 transition-colors hover:text-white">
+                Terms of Service
+              </button>
+              <span className="text-green-400">•</span>
+              <button className="font-medium text-green-100 transition-colors hover:text-white">
+                Cookie Policy
+              </button>
+            </div>
+
+            {/* Language/Region */}
+            <div className="flex items-center px-4 py-2 bg-green-700 rounded-lg">
+              <MapPin className="w-4 h-4 mr-2 text-white" />
+              <span className="font-medium text-white">Nigeria</span>
+              <span className="mx-3 text-green-300">•</span>
+              <span className="font-medium text-white">English</span>
             </div>
           </div>
         </div>
