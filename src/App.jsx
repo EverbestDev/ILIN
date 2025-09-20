@@ -13,6 +13,7 @@ import MeetOurTeam from "./components/MeetOurTeam";
 import TechnologyTools from "./components/TechnologyTools";
 import ContactGetStarted from "./components/ContactGetStarted";
 import Footer from "./components/Footer";
+import ScrollToTop from "./components/ScrollToTop";
 
 //About Page imports
 import AboutPage from "./pages/AboutPage";
@@ -24,6 +25,7 @@ import QuotePage from "./pages/QuotePage";
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <div className="min-h-screen bg-white">
         <Nav />
 
