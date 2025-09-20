@@ -15,7 +15,7 @@ import ContactGetStarted from "./components/ContactGetStarted";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
 
-//About Page imports
+//Pages imports
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import LanguagesPage from "./pages/LangauagesPage";
