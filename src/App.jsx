@@ -14,6 +14,13 @@ import TechnologyTools from "./components/TechnologyTools";
 import ContactGetStarted from "./components/ContactGetStarted";
 import Footer from "./components/Footer";
 
+//About Page imports
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
+import LanguagesPage from "./pages/LangauagesPage";
+import ServicesPage from "./pages/ServicesPage";
+import QuotePage from "./pages/QuotePage";
+
 function App() {
   return (
     <Router>
@@ -37,81 +44,21 @@ function App() {
                 <MeetOurTeam />
                 <TechnologyTools />
                 <ContactGetStarted />
-                <Footer />
               </>
             }
           />
 
-          <Route
-            path="/about"
-            element={
-              <div className="max-w-4xl px-6 pt-24 mx-auto">
-                <h1 className="mb-8 text-3xl font-bold text-center">
-                  About ILI-Nigeria
-                </h1>
-                <p className="text-lg text-gray-600">
-                  About page content coming soon...
-                </p>
-              </div>
-            }
-          />
+          <Route path="/about" element={<AboutPage />} />
 
-          <Route
-            path="/services"
-            element={
-              <div className="max-w-4xl px-6 pt-24 mx-auto">
-                <h1 className="mb-8 text-3xl font-bold text-center">
-                  Our Services
-                </h1>
-                <p className="text-lg text-gray-600">
-                  Services content coming soon...
-                </p>
-              </div>
-            }
-          />
+          <Route path="/services" element={<ServicesPage />} />
 
-          <Route
-            path="/languages"
-            element={
-              <div className="max-w-4xl px-6 pt-24 mx-auto">
-                <h1 className="mb-8 text-3xl font-bold text-center">
-                  Languages We Support
-                </h1>
-                <p className="text-lg text-gray-600">
-                  Languages content coming soon...
-                </p>
-              </div>
-            }
-          />
+          <Route path="/languages" element={<LanguagesPage />} />
 
-          <Route
-            path="/contact"
-            element={
-              <div className="max-w-4xl px-6 pt-24 mx-auto">
-                <h1 className="mb-8 text-3xl font-bold text-center">
-                  Contact Us
-                </h1>
-                <p className="text-lg text-gray-600">
-                  Contact form coming soon...
-                </p>
-              </div>
-            }
-          />
+          <Route path="/contact" element={<ContactPage />} />
 
-          <Route
-            path="/quote"
-            element={
-              <div className="max-w-4xl px-6 pt-24 mx-auto">
-                <h1 className="mb-8 text-3xl font-bold text-center">
-                  Get a Quote
-                </h1>
-                <p className="text-lg text-gray-600">
-                  Quote form coming soon...
-                </p>
-              </div>
-            }
-          />
+          <Route path="/quote" element={<QuotePage />} />
         </Routes>
+        <Footer />
       </div>
     </Router>
   );
