@@ -355,7 +355,7 @@ export default function QuotePage() {
       {/* Progress Steps */}
       <section className="px-6 py-12 bg-white/50 backdrop-blur-sm md:px-20">
         <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mx-auto">
             {steps.map((step, index) => (
               <div key={step.number} className="flex items-center flex-1">
                 <div className="flex flex-col items-center">
