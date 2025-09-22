@@ -13,6 +13,8 @@ import MeetOurTeam from "./components/MeetOurTeam";
 import TechnologyTools from "./components/TechnologyTools";
 import ContactGetStarted from "./components/ContactGetStarted";
 import Footer from "./components/Footer";
+
+// import scrolltotop
 import ScrollToTop from "./components/ScrollToTop";
 
 //Pages imports
