@@ -25,8 +25,8 @@ import QuotePage from "./pages/QuotePage";
 function App() {
   return (
     <Router>
-      <ScrollToTop />
       <div className="min-h-screen bg-white">
+        <ScrollToTop />
         <Nav />
 
         <Routes>
