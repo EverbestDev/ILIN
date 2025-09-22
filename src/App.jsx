@@ -15,7 +15,7 @@ import ContactGetStarted from "./components/ContactGetStarted";
 import Footer from "./components/Footer";
 
 // import scrolltotop
-import ScrollToTop from "./components/ScrollToTop";
+import TopScroll from "./components/TopScroll";
 
 //Pages imports
 import AboutPage from "./pages/AboutPage";
@@ -28,7 +28,7 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-white">
-        <ScrollToTop />
+        <TopScroll />
         <Nav />
 
         <Routes>
