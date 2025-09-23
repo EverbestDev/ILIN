@@ -1,0 +1,16 @@
+# robots.txt for ILI Nigeria
+# Allow all search engines to crawl the site
+User-agent: *
+Disallow:
+
+# Sitemap location (helps search engines index your pages faster)
+Sitemap: https://ilin-nigeria.vercel.app/sitemap.xml
+
+# Optional: Prevent certain sensitive directories from being crawled
+Disallow: /admin/
+Disallow: /backend/
+Disallow: /node_modules/
+Disallow: /private/
+
+# Crawl-delay (optional, prevents server overload)
+Crawl-delay: 5
