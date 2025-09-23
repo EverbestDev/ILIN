@@ -26,8 +26,8 @@ app.use(morgan("dev"));
 // ✅ CORS setup (allow Vite frontend)
 app.use(
   cors({
-    origin: "http://localhost:5173", // your React frontend
-    credentials: true,
+    origin: "https://ilin-nigeria.vercel.app", // your frontend URL
+    credentials: true, // if you need cookies/auth
   })
 );
 
