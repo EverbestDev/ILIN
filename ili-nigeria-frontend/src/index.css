@@ -1,0 +1,28 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-dark-green: #1a3c2b;
+  --font-lato: "Lato", sans-serif;
+  --font-open-sans: "Open Sans";
+  --color-brand-gold: #d4a017;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  animation: marquee 60s linear infinite;
+}
+
+html,
+body {
+  overflow-x: hidden;
+}
