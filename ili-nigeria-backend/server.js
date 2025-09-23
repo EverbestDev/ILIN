@@ -9,7 +9,7 @@ import morgan from "morgan";
 
 import connectDB from "./config/db.js";
 
-// 👉 Import routes
+//  Import routes
 import emailRoutes from "./routes/email.js";
 import contactRoutes from "./routes/contact.js"; // Add this near your other imports
 
@@ -23,7 +23,7 @@ app.use(express.json());
 app.use(helmet());
 app.use(morgan("dev"));
 
-// ✅ CORS setup (allow Vite frontend)
+//  CORS setup (allow Vite frontend)
 app.use(
   cors({
     origin: "https://ilin-nigeria.vercel.app", // your frontend URL
@@ -31,14 +31,14 @@ app.use(
   })
 );
 
-// 👉 Register routes
+//  Register routes
 app.use("/api", emailRoutes);
 app.use("/api/contact", contactRoutes); // Add this after app.use("/api", emailRoutes)
 
 // Test route
 app.get("/", (req, res) => {
-  res.send("Backend is running 🚀 with CORS fixed");
+  res.send("Backend is running with CORS fixed");
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(` Server running on port ${PORT}`));

@@ -1,5 +1,5 @@
-import { useState, useCallback } from "react";
-import { motion } from "framer-motion";
+import { useState, useCallback, useEffect, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
   Upload,
@@ -22,11 +22,36 @@ import {
   DollarSign,
   Calendar,
   MessageCircle,
+  AlertCircle,
+  Info,
+  ArrowLeft,
+  Check,
+  FileImage,
+  FileSpreadsheet,
 } from "lucide-react";
+
+// Debounce hook for performance optimization
+function useDebounce(value, delay) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
 
 export default function QuotePage() {
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(1);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({});
   const [formData, setFormData] = useState({
     // Project Details
     service: "",
@@ -54,6 +79,10 @@ export default function QuotePage() {
 
   const [dragActive, setDragActive] = useState(false);
   const [estimatedCost, setEstimatedCost] = useState(null);
+
+  // Debounced values for calculations
+  const debouncedWordCount = useDebounce(formData.wordCount, 500);
+  const debouncedPageCount = useDebounce(formData.pageCount, 500);
 
   const services = [
     {
@@ -178,6 +207,57 @@ export default function QuotePage() {
     },
   ];
 
+  // File type icons
+  const getFileIcon = (type) => {
+    if (type.includes("pdf")) return <File className="w-6 h-6 text-red-600" />;
+    if (type.includes("word") || type.includes("document"))
+      return <FileText className="w-6 h-6 text-blue-600" />;
+    if (type.includes("spreadsheet") || type.includes("excel"))
+      return <FileSpreadsheet className="w-6 h-6 text-green-600" />;
+    if (type.includes("image"))
+      return <FileImage className="w-6 h-6 text-purple-600" />;
+    return <File className="w-6 h-6 text-gray-600" />;
+  };
+
+  // Step validation functions
+  const validateStep = (stepNumber) => {
+    const errors = {};
+
+    switch (stepNumber) {
+      case 1:
+        if (!formData.service) errors.service = "Please select a service";
+        if (!formData.sourceLanguage)
+          errors.sourceLanguage = "Please select source language";
+        if (formData.targetLanguages.length === 0)
+          errors.targetLanguages = "Please select at least one target language";
+        break;
+
+      case 2:
+        if (
+          formData.documents.length === 0 &&
+          !formData.wordCount &&
+          !formData.pageCount
+        ) {
+          errors.documents = "Please upload files or provide word/page count";
+        }
+        break;
+
+      case 3:
+        // Optional step - no required fields
+        break;
+
+      case 4:
+        if (!formData.name.trim()) errors.name = "Name is required";
+        if (!formData.email.trim()) errors.email = "Email is required";
+        if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
+          errors.email = "Please enter a valid email";
+        }
+        break;
+    }
+
+    return errors;
+  };
+
   // File upload handlers
   const handleDrag = useCallback((e) => {
     e.preventDefault();
@@ -200,18 +280,52 @@ export default function QuotePage() {
   }, []);
 
   const handleFiles = (files) => {
-    const newFiles = Array.from(files).map((file) => ({
-      id: Date.now() + Math.random(),
-      file: file,
-      name: file.name,
-      size: file.size,
-      type: file.type,
-    }));
+    const maxFiles = 10;
+    const maxSizePerFile = 10 * 1024 * 1024; // 10MB
+    const maxTotalSize = 50 * 1024 * 1024; // 50MB total
+
+    const currentSize = formData.documents.reduce(
+      (sum, doc) => sum + doc.size,
+      0
+    );
+    const newFiles = Array.from(files).slice(
+      0,
+      maxFiles - formData.documents.length
+    );
+
+    const validFiles = [];
+    let totalNewSize = 0;
+
+    for (const file of newFiles) {
+      if (file.size > maxSizePerFile) {
+        alert(`File "${file.name}" is too large. Maximum size is 10MB.`);
+        continue;
+      }
+
+      if (currentSize + totalNewSize + file.size > maxTotalSize) {
+        alert("Total file size would exceed 50MB limit.");
+        break;
+      }
+
+      validFiles.push({
+        id: Date.now() + Math.random(),
+        file: file,
+        name: file.name,
+        size: file.size,
+        type: file.type,
+      });
+      totalNewSize += file.size;
+    }
 
     setFormData((prev) => ({
       ...prev,
-      documents: [...prev.documents, ...newFiles],
+      documents: [...prev.documents, ...validFiles],
     }));
+
+    // Clear validation error if files are uploaded
+    if (validFiles.length > 0) {
+      setValidationErrors((prev) => ({ ...prev, documents: undefined }));
+    }
   };
 
   const removeFile = (fileId) => {
@@ -221,22 +335,22 @@ export default function QuotePage() {
     }));
   };
 
-  // Cost calculation
-  const calculateEstimate = () => {
+  // Cost calculation with debounced values
+  const calculateEstimate = useMemo(() => {
     const service = services.find((s) => s.id === formData.service);
-    if (!service || (!formData.wordCount && !formData.pageCount)) return null;
+    if (!service || (!debouncedWordCount && !debouncedPageCount)) return null;
 
     let baseAmount = 0;
-    if (formData.wordCount) {
-      baseAmount = parseInt(formData.wordCount) * service.baseRate;
-    } else if (formData.pageCount) {
-      baseAmount = parseInt(formData.pageCount) * service.baseRate * 250; // 250 words per page
+    if (debouncedWordCount) {
+      baseAmount = parseInt(debouncedWordCount) * service.baseRate;
+    } else if (debouncedPageCount) {
+      baseAmount = parseInt(debouncedPageCount) * service.baseRate * 250;
     }
 
     const urgencyMultiplier =
       urgencyOptions.find((u) => u.id === formData.urgency)?.multiplier || 1;
     const certificationMultiplier = formData.certification ? 1.3 : 1;
-    const languageMultiplier = formData.targetLanguages.length || 1;
+    const languageMultiplier = Math.max(formData.targetLanguages.length, 1);
 
     const totalAmount =
       baseAmount *
@@ -251,44 +365,164 @@ export default function QuotePage() {
       languageMultiplier,
       totalAmount: Math.round(totalAmount),
     };
-  };
+  }, [
+    formData.service,
+    debouncedWordCount,
+    debouncedPageCount,
+    formData.urgency,
+    formData.certification,
+    formData.targetLanguages,
+    services,
+    urgencyOptions,
+  ]);
+
+  // Update estimated cost when calculation changes
+  useEffect(() => {
+    setEstimatedCost(calculateEstimate);
+  }, [calculateEstimate]);
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
 
-    // Recalculate estimate when relevant fields change
-    if (
-      [
-        "service",
-        "wordCount",
-        "pageCount",
-        "urgency",
-        "certification",
-        "targetLanguages",
-      ].includes(field)
-    ) {
-      const estimate = calculateEstimate();
-      setEstimatedCost(estimate);
+    // Clear validation error for this field
+    if (validationErrors[field]) {
+      setValidationErrors((prev) => ({ ...prev, [field]: undefined }));
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle quote submission
-    console.log("Quote request:", formData);
-    // Navigate to success page or show confirmation
+  // Remove target language tag
+  const removeTargetLanguage = (languageToRemove) => {
+    const newTargetLanguages = formData.targetLanguages.filter(
+      (lang) => lang !== languageToRemove
+    );
+    handleInputChange("targetLanguages", newTargetLanguages);
+  };
+
+  // Add target language
+  const addTargetLanguage = (language) => {
+    if (
+      !formData.targetLanguages.includes(language) &&
+      language !== formData.sourceLanguage
+    ) {
+      handleInputChange("targetLanguages", [
+        ...formData.targetLanguages,
+        language,
+      ]);
+    }
   };
 
   const nextStep = () => {
+    const errors = validateStep(activeStep);
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+
+    setValidationErrors({});
     if (activeStep < 4) setActiveStep(activeStep + 1);
   };
 
   const prevStep = () => {
+    setValidationErrors({});
     if (activeStep > 1) setActiveStep(activeStep - 1);
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Validate all steps
+    let allErrors = {};
+    for (let step = 1; step <= 4; step++) {
+      const stepErrors = validateStep(step);
+      allErrors = { ...allErrors, ...stepErrors };
+    }
+
+    if (Object.keys(allErrors).length > 0) {
+      setValidationErrors(allErrors);
+      // Find first step with error and navigate to it
+      for (let step = 1; step <= 4; step++) {
+        const stepErrors = validateStep(step);
+        if (Object.keys(stepErrors).length > 0) {
+          setActiveStep(step);
+          break;
+        }
+      }
+      return;
+    }
+
+    console.log("Quote request:", formData);
+    setShowSuccessModal(true);
+  };
+
+  // Success Modal Component
+  const SuccessModal = () => (
+    <AnimatePresence>
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="w-full max-w-md p-8 bg-white rounded-3xl shadow-2xl"
+          >
+            <div className="text-center">
+              <div className="flex items-center justify-center w-20 h-20 mx-auto mb-6 bg-green-100 rounded-full">
+                <CheckCircle className="w-10 h-10 text-green-600" />
+              </div>
+              <h3 className="mb-4 text-2xl font-bold text-gray-900">
+                Quote Request Sent!
+              </h3>
+              <p className="mb-6 text-gray-600">
+                Thank you for your request. We'll send you a detailed quote
+                within 30 minutes to {formData.email}.
+              </p>
+              <div className="space-y-3">
+                <button
+                  onClick={() => {
+                    setShowSuccessModal(false);
+                    // Reset form or navigate to another page
+                    navigate("/");
+                  }}
+                  className="w-full px-6 py-3 font-semibold text-white transition-colors bg-green-600 rounded-xl hover:bg-green-700"
+                >
+                  Return to Home
+                </button>
+                <button
+                  onClick={() => setShowSuccessModal(false)}
+                  className="w-full px-6 py-3 font-semibold text-gray-600 transition-colors bg-gray-100 rounded-xl hover:bg-gray-200"
+                >
+                  Submit Another Quote
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        if (e.key === "ArrowLeft" && activeStep > 1) {
+          e.preventDefault();
+          prevStep();
+        } else if (e.key === "ArrowRight" && activeStep < 4) {
+          e.preventDefault();
+          nextStep();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [activeStep]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50">
+      <SuccessModal />
+
       {/* Hero Section with Glassmorphism */}
       <section className="relative px-6 py-20 pt-32 overflow-hidden md:px-20">
         {/* Animated Background Elements */}
@@ -320,7 +554,7 @@ export default function QuotePage() {
               and no hidden fees.
             </p>
 
-            {/* Quick Benefits - Consistent card sizing */}
+            {/* Quick Benefits */}
             <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
               {quickBenefits.map((benefit, index) => (
                 <motion.div
@@ -330,12 +564,10 @@ export default function QuotePage() {
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   className="group"
                 >
-                  {/* Fixed height for consistency */}
                   <div className="flex flex-col h-48 p-6 transition-all duration-300 border border-gray-200 shadow-lg bg-white/80 backdrop-blur-sm rounded-2xl hover:shadow-xl group-hover:scale-105">
                     <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 transition-transform duration-300 bg-gray-100 rounded-2xl group-hover:scale-110">
                       {benefit.icon}
                     </div>
-                    {/* Flex grow content for even distribution */}
                     <div className="flex flex-col justify-center flex-1">
                       <h3 className="mb-2 text-lg font-bold text-gray-900">
                         {benefit.title}
@@ -352,18 +584,29 @@ export default function QuotePage() {
         </div>
       </section>
 
-      {/* Progress Steps */}
+      {/* Enhanced Progress Steps with better hover states */}
       <section className="px-6 py-12 bg-white/50 backdrop-blur-sm md:px-20">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mx-auto">
             {steps.map((step, index) => (
               <div key={step.number} className="flex items-center flex-1">
                 <div className="flex flex-col items-center">
-                  <div
-                    className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-300 ${
+                  <button
+                    onClick={() => {
+                      // Allow navigation to previous steps or current step
+                      if (step.number <= activeStep) {
+                        setActiveStep(step.number);
+                        setValidationErrors({});
+                      }
+                    }}
+                    className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-300 cursor-pointer hover:scale-105 ${
                       activeStep >= step.number
-                        ? "bg-green-600 text-white shadow-lg"
-                        : "bg-gray-200 text-gray-600"
+                        ? "bg-green-600 text-white shadow-lg hover:bg-green-700"
+                        : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                    } ${
+                      step.number <= activeStep
+                        ? "cursor-pointer"
+                        : "cursor-not-allowed"
                     }`}
                   >
                     {activeStep > step.number ? (
@@ -371,9 +614,15 @@ export default function QuotePage() {
                     ) : (
                       step.number
                     )}
-                  </div>
+                  </button>
                   <div className="mt-2 text-center">
-                    <p className="text-sm font-semibold text-gray-900">
+                    <p
+                      className={`text-sm font-semibold ${
+                        activeStep >= step.number
+                          ? "text-gray-900"
+                          : "text-gray-600"
+                      }`}
+                    >
                       {step.title}
                     </p>
                     <p className="hidden text-xs text-gray-600 md:block">
@@ -418,6 +667,13 @@ export default function QuotePage() {
                         <p className="mb-6 text-gray-600">
                           Select the type of translation service you need
                         </p>
+
+                        {validationErrors.service && (
+                          <div className="flex items-center p-3 mb-4 text-red-800 bg-red-100 border border-red-200 rounded-lg">
+                            <AlertCircle className="w-5 h-5 mr-2" />
+                            {validationErrors.service}
+                          </div>
+                        )}
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                           {services.map((service) => (
@@ -465,6 +721,14 @@ export default function QuotePage() {
                           <label className="block mb-3 text-sm font-semibold text-gray-900">
                             Source Language
                           </label>
+                          {validationErrors.sourceLanguage && (
+                            <div className="flex items-center p-2 mb-2 text-red-800 bg-red-100 border border-red-200 rounded">
+                              <AlertCircle className="w-4 h-4 mr-1" />
+                              <span className="text-sm">
+                                {validationErrors.sourceLanguage}
+                              </span>
+                            </div>
+                          )}
                           <select
                             value={formData.sourceLanguage}
                             onChange={(e) =>
@@ -473,7 +737,11 @@ export default function QuotePage() {
                                 e.target.value
                               )
                             }
-                            className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            className={`w-full p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                              validationErrors.sourceLanguage
+                                ? "border-red-300"
+                                : "border-gray-300"
+                            }`}
                           >
                             <option value="">Select source language</option>
                             {languages.map((lang) => (
@@ -488,23 +756,55 @@ export default function QuotePage() {
                           <label className="block mb-3 text-sm font-semibold text-gray-900">
                             Target Languages
                           </label>
+                          {validationErrors.targetLanguages && (
+                            <div className="flex items-center p-2 mb-2 text-red-800 bg-red-100 border border-red-200 rounded">
+                              <AlertCircle className="w-4 h-4 mr-1" />
+                              <span className="text-sm">
+                                {validationErrors.targetLanguages}
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Selected Languages Tags */}
+                          {formData.targetLanguages.length > 0 && (
+                            <div className="flex flex-wrap gap-2 p-3 mb-3 bg-gray-50 border border-gray-200 rounded-lg">
+                              {formData.targetLanguages.map((lang) => (
+                                <span
+                                  key={lang}
+                                  className="inline-flex items-center px-3 py-1 text-sm font-medium text-green-800 bg-green-100 rounded-full"
+                                >
+                                  {lang}
+                                  <button
+                                    type="button"
+                                    onClick={() => removeTargetLanguage(lang)}
+                                    className="ml-2 text-green-600 hover:text-green-800"
+                                  >
+                                    <X className="w-4 h-4" />
+                                  </button>
+                                </span>
+                              ))}
+                            </div>
+                          )}
+
                           <select
-                            multiple
-                            value={formData.targetLanguages}
-                            onChange={(e) =>
-                              handleInputChange(
-                                "targetLanguages",
-                                Array.from(
-                                  e.target.selectedOptions,
-                                  (option) => option.value
-                                )
-                              )
-                            }
-                            className="w-full h-32 p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            onChange={(e) => {
+                              if (e.target.value) {
+                                addTargetLanguage(e.target.value);
+                                e.target.value = "";
+                              }
+                            }}
+                            className={`w-full p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                              validationErrors.targetLanguages
+                                ? "border-red-300"
+                                : "border-gray-300"
+                            }`}
                           >
+                            <option value="">Add target language...</option>
                             {languages
                               .filter(
-                                (lang) => lang !== formData.sourceLanguage
+                                (lang) =>
+                                  lang !== formData.sourceLanguage &&
+                                  !formData.targetLanguages.includes(lang)
                               )
                               .map((lang) => (
                                 <option key={lang} value={lang}>
@@ -513,14 +813,15 @@ export default function QuotePage() {
                               ))}
                           </select>
                           <p className="mt-2 text-xs text-gray-500">
-                            Hold Ctrl/Cmd to select multiple languages
+                            Select languages one by one to build your target
+                            list
                           </p>
                         </div>
                       </div>
                     </div>
                   )}
 
-                  {/* Step 2: Document Upload */}
+                  {/* Step 2: Document Upload with Enhanced UX */}
                   {activeStep === 2 && (
                     <div className="space-y-8">
                       <div>
@@ -531,6 +832,13 @@ export default function QuotePage() {
                           Upload your files or provide word/page count for
                           accurate pricing
                         </p>
+
+                        {validationErrors.documents && (
+                          <div className="flex items-center p-3 mb-4 text-red-800 bg-red-100 border border-red-200 rounded-lg">
+                            <AlertCircle className="w-5 h-5 mr-2" />
+                            {validationErrors.documents}
+                          </div>
+                        )}
 
                         {/* File Upload Area */}
                         <div
@@ -560,39 +868,77 @@ export default function QuotePage() {
                             Supported formats: PDF, DOC, DOCX, TXT, RTF, ODT
                             (Max 10MB each)
                           </p>
+                          <p className="mb-4 text-sm text-gray-500">
+                            Maximum {10 - formData.documents.length} more files
+                            • Total size limit: 50MB
+                          </p>
                           <div className="inline-flex items-center px-6 py-3 text-white transition-colors bg-green-600 rounded-xl hover:bg-green-700">
                             <Upload className="w-5 h-5 mr-2" />
                             Choose Files
                           </div>
                         </div>
 
-                        {/* Uploaded Files */}
+                        {/* Uploaded Files with Enhanced Display */}
                         {formData.documents.length > 0 && (
                           <div className="mt-6">
-                            <h4 className="mb-3 font-semibold text-gray-900">
-                              Uploaded Files ({formData.documents.length})
-                            </h4>
-                            <div className="space-y-3">
+                            <div className="flex items-center justify-between mb-3">
+                              <h4 className="font-semibold text-gray-900">
+                                Uploaded Files ({formData.documents.length}/10)
+                              </h4>
+                              <div className="text-sm text-gray-600">
+                                Total:{" "}
+                                {(
+                                  formData.documents.reduce(
+                                    (sum, doc) => sum + doc.size,
+                                    0
+                                  ) /
+                                  1024 /
+                                  1024
+                                ).toFixed(1)}
+                                MB / 50MB
+                              </div>
+                            </div>
+
+                            {/* Progress bar for total file size */}
+                            <div className="w-full mb-4 bg-gray-200 rounded-full h-2">
+                              <div
+                                className="h-2 bg-green-600 rounded-full transition-all duration-300"
+                                style={{
+                                  width: `${Math.min(
+                                    (formData.documents.reduce(
+                                      (sum, doc) => sum + doc.size,
+                                      0
+                                    ) /
+                                      (50 * 1024 * 1024)) *
+                                      100,
+                                    100
+                                  )}%`,
+                                }}
+                              ></div>
+                            </div>
+
+                            <div className="space-y-3 max-h-60 overflow-y-auto">
                               {formData.documents.map((doc) => (
                                 <div
                                   key={doc.id}
-                                  className="flex items-center justify-between p-4 bg-gray-50 rounded-xl"
+                                  className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
                                 >
-                                  <div className="flex items-center">
-                                    <File className="w-6 h-6 mr-3 text-blue-600" />
-                                    <div>
-                                      <p className="font-medium text-gray-900">
+                                  <div className="flex items-center flex-1 min-w-0">
+                                    {getFileIcon(doc.type)}
+                                    <div className="ml-3 min-w-0 flex-1">
+                                      <p className="font-medium text-gray-900 truncate">
                                         {doc.name}
                                       </p>
                                       <p className="text-sm text-gray-600">
                                         {(doc.size / 1024 / 1024).toFixed(2)} MB
+                                        • {doc.type || "Unknown type"}
                                       </p>
                                     </div>
                                   </div>
                                   <button
                                     type="button"
                                     onClick={() => removeFile(doc.id)}
-                                    className="p-2 text-red-600 transition-colors rounded-lg hover:bg-red-50"
+                                    className="p-2 ml-4 text-red-600 transition-colors rounded-lg hover:bg-red-50"
                                   >
                                     <Trash2 className="w-5 h-5" />
                                   </button>
@@ -637,6 +983,10 @@ export default function QuotePage() {
                               />
                             </div>
                           </div>
+                          <p className="mt-3 text-sm text-gray-600">
+                            We estimate 250 words per page for calculation
+                            purposes
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -665,9 +1015,9 @@ export default function QuotePage() {
                                   onClick={() =>
                                     handleInputChange("urgency", option.id)
                                   }
-                                  className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 ${
+                                  className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 hover:shadow-md ${
                                     formData.urgency === option.id
-                                      ? "border-green-500 bg-green-50"
+                                      ? "border-green-500 bg-green-50 shadow-lg"
                                       : "border-gray-200 hover:border-gray-300"
                                   }`}
                                 >
@@ -708,7 +1058,7 @@ export default function QuotePage() {
                             </div>
 
                             <div className="space-y-4">
-                              <label className="flex items-center">
+                              <label className="flex items-center cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors">
                                 <input
                                   type="checkbox"
                                   checked={formData.certification}
@@ -720,12 +1070,17 @@ export default function QuotePage() {
                                   }
                                   className="w-5 h-5 mr-3 text-green-600 rounded focus:ring-green-500"
                                 />
-                                <span className="font-medium text-gray-900">
-                                  Certified Translation (+30%)
-                                </span>
+                                <div>
+                                  <span className="font-medium text-gray-900">
+                                    Certified Translation
+                                  </span>
+                                  <p className="text-sm text-gray-600">
+                                    +30% for official documents
+                                  </p>
+                                </div>
                               </label>
 
-                              <label className="flex items-center">
+                              <label className="flex items-center cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors">
                                 <input
                                   type="checkbox"
                                   checked={formData.glossary}
@@ -737,9 +1092,14 @@ export default function QuotePage() {
                                   }
                                   className="w-5 h-5 mr-3 text-green-600 rounded focus:ring-green-500"
                                 />
-                                <span className="font-medium text-gray-900">
-                                  Custom Glossary Support
-                                </span>
+                                <div>
+                                  <span className="font-medium text-gray-900">
+                                    Custom Glossary Support
+                                  </span>
+                                  <p className="text-sm text-gray-600">
+                                    Maintain consistent terminology
+                                  </p>
+                                </div>
                               </label>
                             </div>
                           </div>
@@ -760,13 +1120,19 @@ export default function QuotePage() {
                               rows="4"
                               className="w-full p-4 border border-gray-300 resize-none rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
                             ></textarea>
+                            <p className="mt-2 text-sm text-gray-500">
+                              {500 -
+                                (formData.specialInstructions?.length ||
+                                  0)}{" "}
+                              characters remaining
+                            </p>
                           </div>
                         </div>
                       </div>
                     </div>
                   )}
 
-                  {/* Step 4: Contact Information */}
+                  {/* Step 4: Contact Information with Enhanced Validation */}
                   {activeStep === 4 && (
                     <div className="space-y-8">
                       <div>
@@ -778,33 +1144,69 @@ export default function QuotePage() {
                         </p>
 
                         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                          <input
-                            type="text"
-                            value={formData.name}
-                            onChange={(e) =>
-                              handleInputChange("name", e.target.value)
-                            }
-                            placeholder="Full Name *"
-                            required
-                            className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
-                          />
-                          <input
-                            type="email"
-                            value={formData.email}
-                            onChange={(e) =>
-                              handleInputChange("email", e.target.value)
-                            }
-                            placeholder="Email Address *"
-                            required
-                            className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
-                          />
+                          <div>
+                            <label className="block mb-2 text-sm font-semibold text-gray-900">
+                              Full Name *
+                            </label>
+                            {validationErrors.name && (
+                              <div className="flex items-center p-2 mb-2 text-red-800 bg-red-100 border border-red-200 rounded">
+                                <AlertCircle className="w-4 h-4 mr-1" />
+                                <span className="text-sm">
+                                  {validationErrors.name}
+                                </span>
+                              </div>
+                            )}
+                            <input
+                              type="text"
+                              value={formData.name}
+                              onChange={(e) =>
+                                handleInputChange("name", e.target.value)
+                              }
+                              placeholder="Enter your full name"
+                              required
+                              className={`w-full p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                                validationErrors.name
+                                  ? "border-red-300"
+                                  : "border-gray-300"
+                              }`}
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block mb-2 text-sm font-semibold text-gray-900">
+                              Email Address *
+                            </label>
+                            {validationErrors.email && (
+                              <div className="flex items-center p-2 mb-2 text-red-800 bg-red-100 border border-red-200 rounded">
+                                <AlertCircle className="w-4 h-4 mr-1" />
+                                <span className="text-sm">
+                                  {validationErrors.email}
+                                </span>
+                              </div>
+                            )}
+                            <input
+                              type="email"
+                              value={formData.email}
+                              onChange={(e) =>
+                                handleInputChange("email", e.target.value)
+                              }
+                              placeholder="your.email@example.com"
+                              required
+                              className={`w-full p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                                validationErrors.email
+                                  ? "border-red-300"
+                                  : "border-gray-300"
+                              }`}
+                            />
+                          </div>
+
                           <input
                             type="tel"
                             value={formData.phone}
                             onChange={(e) =>
                               handleInputChange("phone", e.target.value)
                             }
-                            placeholder="Phone Number"
+                            placeholder="Phone Number (Optional)"
                             className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
                           />
                           <input
@@ -813,7 +1215,7 @@ export default function QuotePage() {
                             onChange={(e) =>
                               handleInputChange("company", e.target.value)
                             }
-                            placeholder="Company Name"
+                            placeholder="Company Name (Optional)"
                             className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
                           />
                         </div>
@@ -841,36 +1243,45 @@ export default function QuotePage() {
                     </div>
                   )}
 
-                  {/* Navigation Buttons */}
+                  {/* Enhanced Navigation Buttons with Keyboard Hints */}
                   <div className="flex justify-between mt-12">
                     <button
                       type="button"
                       onClick={prevStep}
                       disabled={activeStep === 1}
-                      className={`px-8 py-3 rounded-xl font-semibold transition-colors ${
+                      className={`flex items-center px-8 py-3 rounded-xl font-semibold transition-all duration-300 ${
                         activeStep === 1
                           ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                          : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                          : "bg-gray-200 text-gray-700 hover:bg-gray-300 hover:shadow-md"
                       }`}
                     >
+                      <ArrowLeft className="w-5 h-5 mr-2" />
                       Previous
+                      {activeStep > 1 && (
+                        <span className="ml-2 text-xs text-gray-500">
+                          (Ctrl+←)
+                        </span>
+                      )}
                     </button>
 
                     {activeStep < 4 ? (
                       <button
                         type="button"
                         onClick={nextStep}
-                        className="flex items-center px-8 py-3 font-semibold text-white transition-colors bg-green-600 rounded-xl hover:bg-green-700"
+                        className="flex items-center px-8 py-3 font-semibold text-white transition-all duration-300 bg-green-600 rounded-xl hover:bg-green-700 hover:shadow-lg"
                       >
                         Next Step
                         <ArrowRight className="w-5 h-5 ml-2" />
+                        <span className="ml-2 text-xs text-green-200">
+                          (Ctrl+→)
+                        </span>
                       </button>
                     ) : (
                       <motion.button
                         type="submit"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="flex items-center px-8 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl hover:from-green-700 hover:to-emerald-700"
+                        className="flex items-center px-8 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl hover:from-green-700 hover:to-emerald-700 hover:shadow-xl"
                       >
                         <Send className="w-5 h-5 mr-2" />
                         Get My Quote
@@ -881,10 +1292,10 @@ export default function QuotePage() {
               </motion.div>
             </div>
 
-            {/* Sidebar - Price Estimate & Summary */}
+            {/* Enhanced Sidebar - Price Estimate & Summary */}
             <div className="lg:col-span-1">
               <div className="sticky space-y-6 top-8">
-                {/* Real-time Price Estimate */}
+                {/* Real-time Price Estimate with Tooltip */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -895,9 +1306,20 @@ export default function QuotePage() {
                     <div className="flex items-center justify-center w-12 h-12 mr-4 bg-green-100 rounded-2xl">
                       <Calculator className="w-6 h-6 text-green-600" />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900">
-                      Price Estimate
-                    </h3>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900">
+                        Price Estimate
+                      </h3>
+                      {estimatedCost && (
+                        <button
+                          className="flex items-center text-sm text-gray-500 hover:text-gray-700"
+                          title="Calculation: Base rate × Words/Pages × Urgency × Certification × Languages"
+                        >
+                          <Info className="w-4 h-4 mr-1" />
+                          How is this calculated?
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   {estimatedCost ? (
@@ -909,6 +1331,9 @@ export default function QuotePage() {
                           </p>
                           <p className="text-3xl font-bold text-green-800">
                             ₦{estimatedCost.totalAmount.toLocaleString()}
+                          </p>
+                          <p className="text-xs text-green-600 mt-1">
+                            Final quote may vary ±10%
                           </p>
                         </div>
                       </div>
@@ -970,11 +1395,14 @@ export default function QuotePage() {
                       <p className="text-gray-600">
                         Complete the form to see your estimate
                       </p>
+                      <p className="text-sm text-gray-500 mt-2">
+                        Estimates update automatically as you type
+                      </p>
                     </div>
                   )}
                 </motion.div>
 
-                {/* Project Summary */}
+                {/* Enhanced Project Summary */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -1044,6 +1472,24 @@ export default function QuotePage() {
                             .find((u) => u.id === formData.urgency)
                             ?.name.split(" ")[0] || "Standard"}
                         </span>
+                      </div>
+                    )}
+
+                    {(formData.certification || formData.glossary) && (
+                      <div className="pt-2 border-t border-gray-200">
+                        <span className="text-sm text-gray-600">Add-ons:</span>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {formData.certification && (
+                            <span className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full">
+                              Certified
+                            </span>
+                          )}
+                          {formData.glossary && (
+                            <span className="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded-full">
+                              Glossary
+                            </span>
+                          )}
+                        </div>
                       </div>
                     )}
                   </div>

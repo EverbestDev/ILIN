@@ -24,9 +24,6 @@ import LanguagesPage from "./pages/LangauagesPage";
 import ServicesPage from "./pages/ServicesPage";
 import QuotePage from "./pages/QuotePage";
 
-//backend msg
-import BackEndMsg from "./components/BackEndMsg";
-
 function App() {
   return (
     <Router>
@@ -39,7 +36,6 @@ function App() {
             path="/"
             element={
               <>
-                <BackEndMsg />
                 <Hero />
                 <About />
                 {/* <ServicesOverview /> */}
