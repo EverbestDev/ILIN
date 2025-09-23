@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
@@ -18,6 +18,8 @@ import {
   Headphones,
   Shield,
   Zap,
+  XCircle,
+  Loader2,
 } from "lucide-react";
 
 export default function ContactPage() {
@@ -32,6 +34,9 @@ export default function ContactPage() {
     urgency: "standard",
   });
   const [activeContact, setActiveContact] = useState("form");
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
 
   const contactMethods = [
     {
@@ -140,16 +145,92 @@ export default function ContactPage() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission
-    console.log("Form submitted:", formData);
-    // Navigate to thank you page or show success message
+    setSuccess("");
+    setError("");
+
+    const validationMsg = validateForm(formData);
+    if (validationMsg) {
+      setError(validationMsg);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:5000/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setSuccess(
+          <span className="flex items-center gap-2">
+            <CheckCircle className="w-5 h-5 text-green-600" />
+            {data.message || "Inquiry submitted successfully"}
+          </span>
+        );
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          company: "",
+          service: "",
+          message: "",
+          urgency: "standard",
+        });
+      } else {
+        setError(
+          <span className="flex items-center gap-2">
+            <XCircle className="w-5 h-5 text-red-600" />
+            {data.message || "Failed to submit inquiry"}
+          </span>
+        );
+      }
+    } catch (err) {
+      setError(
+        <span className="flex items-center gap-2">
+          <XCircle className="w-5 h-5 text-red-600" />
+          {"Something went wrong. Try again later."}
+        </span>
+      );
+    }
+    setLoading(false);
   };
 
   const handleGetQuote = () => {
     navigate("/quote");
   };
+
+  function validateForm(formData) {
+    if (!formData.name.trim()) return "Name is required.";
+    if (!formData.email.trim()) return "Email is required.";
+    if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(formData.email))
+      return "Enter a valid email.";
+    if (!formData.message.trim()) return "Message is required.";
+    if (!formData.service.trim()) return "Please select a service.";
+    return "";
+  }
+
+  const isFormValid =
+    formData.name.trim() &&
+    formData.email.trim() &&
+    formData.message.trim() &&
+    formData.service.trim();
+
+  // Auto-hide success and error messages after 4 seconds
+  useEffect(() => {
+    let timer;
+    if (success || error) {
+      timer = setTimeout(() => {
+        setSuccess("");
+        setError("");
+      }, 4000); // 4 seconds
+    }
+    return () => clearTimeout(timer);
+  }, [success, error]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -233,9 +314,31 @@ export default function ContactPage() {
                   transition={{ duration: 0.8 }}
                   className="p-8 bg-white border border-gray-100 shadow-2xl rounded-3xl"
                 >
-                  <h2 className="mb-8 text-2xl font-bold text-gray-900">
+                  <h2 className="mb-8 text-2xl font-bold text-center text-gray-900 md:text-3xl ">
                     Send Us a Message
                   </h2>
+
+                  {/* Feedback messages (place above <form> */}
+                  {success && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="flex items-center justify-center gap-2 px-4 py-3 mb-4 font-semibold text-center text-green-800 border border-green-200 shadow-sm rounded-xl bg-green-50"
+                    >
+                      {success}
+                    </motion.div>
+                  )}
+                  {error && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="flex items-center justify-center gap-2 px-4 py-3 mb-4 font-semibold text-center text-red-800 border border-red-200 shadow-sm rounded-xl bg-red-50"
+                    >
+                      {error}
+                    </motion.div>
+                  )}
 
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -335,12 +438,23 @@ export default function ContactPage() {
 
                     <motion.button
                       type="submit"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="flex items-center justify-center w-full px-8 py-4 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl hover:from-green-700 hover:to-emerald-700 hover:shadow-xl"
+                      whileHover={{ scale: !loading ? 1.02 : 1 }}
+                      whileTap={{ scale: !loading ? 0.98 : 1 }}
+                      disabled={loading || !isFormValid}
+                      className={`flex items-center justify-center w-full px-8 py-4 font-semibold transition-all duration-300 shadow-lg rounded-xl
+    ${
+      loading
+        ? "bg-gray-300 cursor-not-allowed"
+        : "bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 hover:shadow-xl"
+    }
+    `}
                     >
-                      <Send className="w-5 h-5 mr-2" />
-                      Send Message
+                      {loading ? (
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      ) : (
+                        <Send className="w-5 h-5 mr-2" />
+                      )}
+                      {loading ? "Sending..." : "Send Message"}
                     </motion.button>
                   </form>
                 </motion.div>

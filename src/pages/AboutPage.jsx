@@ -130,11 +130,11 @@ export default function AboutPage() {
 
   const team = [
     {
-      name: "Dr. Olawoore Sufyan Ayemu",
+      name: "Dr. Adebayo Oladimeji",
       role: "Founder & CEO",
       description:
         "15+ years in linguistics and international business. PhD in Applied Linguistics from University of Lagos.",
-      initials: "SA",
+      initials: "AO",
       bgColor: "bg-green-600",
       specialization: "Strategic Leadership & Linguistics",
     },
@@ -178,7 +178,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="px-6 py-20 pt-32 bg-gradient-to-br from-green-100 to-emerald-50 md:px-20">
+      <section className="px-6 py-20 pt-32 bg-gradient-to-br from-green-50 to-emerald-50 md:px-20">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -362,7 +362,7 @@ export default function AboutPage() {
 
       {/* Timeline */}
       <section className="px-6 py-20 bg-white md:px-20">
-        <div className="max-w-4xl mx-auto">
+        <div className="relative max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -379,39 +379,41 @@ export default function AboutPage() {
             </p>
           </motion.div>
 
-          <div className="relative">
-            {/* Timeline Line */}
-            <div className="absolute w-1 h-full transform -translate-x-1/2 bg-green-200 left-1/2"></div>
+          {/* Mobile-first Timeline */}
+          <div className="space-y-8">
+            {timeline.map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="relative"
+              >
+                {/* Mobile Layout */}
+                <div className="block md:hidden">
+                  <div className="flex items-start">
+                    {/* Timeline Line and Dot */}
+                    <div className="flex flex-col items-center flex-shrink-0 mr-6">
+                      <div
+                        className={`w-6 h-6 rounded-full border-4 border-white shadow-lg ${
+                          item.highlight ? "bg-green-600" : "bg-gray-400"
+                        }`}
+                      ></div>
+                      {index < timeline.length - 1 && (
+                        <div className="w-0.5 h-16 bg-green-200 mt-2"></div>
+                      )}
+                    </div>
 
-            <div className="space-y-12">
-              {timeline.map((item, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: index % 2 === 0 ? -40 : 40 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className={`flex items-center ${
-                    index % 2 === 0 ? "justify-start" : "justify-end"
-                  }`}
-                >
-                  <div
-                    className={`w-5/12 ${
-                      index % 2 === 0 ? "text-right pr-8" : "text-left pl-8"
-                    }`}
-                  >
+                    {/* Content */}
                     <div
-                      className={`p-6 rounded-2xl shadow-lg ${
+                      className={`flex-1 p-6 rounded-2xl shadow-lg ${
                         item.highlight
                           ? "bg-green-50 border-2 border-green-200"
-                          : "bg-white"
+                          : "bg-white border border-gray-200"
                       }`}
                     >
-                      <div
-                        className={`flex items-center ${
-                          index % 2 === 0 ? "justify-end" : "justify-start"
-                        } mb-4`}
-                      >
+                      <div className="flex items-center mb-4">
                         <div
                           className={`w-12 h-12 ${
                             item.highlight ? "bg-green-600" : "bg-gray-600"
@@ -435,17 +437,75 @@ export default function AboutPage() {
                       </p>
                     </div>
                   </div>
+                </div>
 
-                  {/* Timeline Dot */}
+                {/* Desktop Layout */}
+                <div className="hidden md:block">
                   <div
-                    className={`absolute left-1/2 transform -translate-x-1/2 w-6 h-6 ${
-                      item.highlight ? "bg-green-600" : "bg-gray-400"
-                    } rounded-full border-4 border-white shadow-lg`}
-                  ></div>
-                </motion.div>
-              ))}
-            </div>
+                    className={`flex items-center ${
+                      index % 2 === 0 ? "justify-start" : "justify-end"
+                    }`}
+                  >
+                    <div
+                      className={`w-5/12 ${
+                        index % 2 === 0 ? "text-right pr-8" : "text-left pl-8"
+                      }`}
+                    >
+                      <div
+                        className={`p-6 rounded-2xl shadow-lg ${
+                          item.highlight
+                            ? "bg-green-50 border-2 border-green-200"
+                            : "bg-white border border-gray-200"
+                        }`}
+                      >
+                        <div
+                          className={`flex items-center ${
+                            index % 2 === 0 ? "justify-end" : "justify-start"
+                          } mb-4`}
+                        >
+                          <div
+                            className={`w-12 h-12 ${
+                              item.highlight ? "bg-green-600" : "bg-gray-600"
+                            } rounded-full flex items-center justify-center mr-3`}
+                          >
+                            <Calendar className="w-6 h-6 text-white" />
+                          </div>
+                          <span
+                            className={`text-2xl font-bold ${
+                              item.highlight
+                                ? "text-green-600"
+                                : "text-gray-900"
+                            }`}
+                          >
+                            {item.year}
+                          </span>
+                        </div>
+                        <h3 className="mb-3 text-xl font-bold text-gray-900">
+                          {item.title}
+                        </h3>
+                        <p className="leading-relaxed text-gray-600">
+                          {item.description}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Timeline Dot for Desktop */}
+                    <div
+                      className={`absolute left-1/2 transform -translate-x-1/2 w-6 h-6 ${
+                        item.highlight ? "bg-green-600" : "bg-gray-400"
+                      } rounded-full border-4 border-white shadow-lg`}
+                    ></div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
+
+          {/* Desktop Timeline Line */}
+          <div
+            className="absolute hidden w-1 transform -translate-x-1/2 bg-green-200 md:block left-1/2"
+            style={{ height: "calc(100% - 200px)", top: "200px" }}
+          ></div>
         </div>
       </section>
 
