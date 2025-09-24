@@ -7,11 +7,13 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 
+
 import connectDB from "./config/db.js";
 
 //  Import routes
 import emailRoutes from "./routes/email.js";
 import contactRoutes from "./routes/contact.js"; // Add this near your other imports
+import quoteRoutes from "./routes/quote.js";
 
 const app = express();
 
@@ -34,6 +36,7 @@ app.use(
 //  Register routes
 app.use("/api", emailRoutes);
 app.use("/api/contact", contactRoutes);
+app.use("/api/quotes", quoteRoutes);
 
 // Test route
 app.get("/", (req, res) => {

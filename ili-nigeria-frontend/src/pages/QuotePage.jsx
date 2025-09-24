@@ -334,7 +334,7 @@ export default function QuotePage() {
       documents: prev.documents.filter((doc) => doc.id !== fileId),
     }));
   };
-
+ 
   // Cost calculation with debounced values
   const calculateEstimate = useMemo(() => {
     const service = services.find((s) => s.id === formData.service);
@@ -427,7 +427,7 @@ export default function QuotePage() {
     if (activeStep > 1) setActiveStep(activeStep - 1);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validate all steps
@@ -439,7 +439,7 @@ export default function QuotePage() {
 
     if (Object.keys(allErrors).length > 0) {
       setValidationErrors(allErrors);
-      // Find first step with error and navigate to it
+      // Navigate to first step with errors
       for (let step = 1; step <= 4; step++) {
         const stepErrors = validateStep(step);
         if (Object.keys(stepErrors).length > 0) {
@@ -450,56 +450,159 @@ export default function QuotePage() {
       return;
     }
 
-    console.log("Quote request:", formData);
-    setShowSuccessModal(true);
+    try {
+      const formDataToSend = new FormData();
+
+      // Append text fields
+      for (const key in formData) {
+        if (key === "documents") {
+          // documents handled separately
+          continue;
+        } else if (key === "targetLanguages") {
+          // multiple values
+          formData[key].forEach((lang) =>
+            formDataToSend.append("targetLanguages[]", lang)
+          );
+        } else {
+          formDataToSend.append(key, formData[key]);
+        }
+      }
+
+      // Append files
+      formData.documents.forEach((doc) => {
+        formDataToSend.append("documents", doc.file);
+      });
+
+      // Send to backend
+      const res = await fetch("https://ilin-backend.onrender.com/api/quotes", {
+        method: "POST",
+        body: formDataToSend,
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        console.log("✅ Quote submitted:", data);
+        setShowSuccessModal(true);
+      } else {
+        console.error("❌ Failed:", data.message);
+        alert("Failed to submit quote. Please try again.");
+      }
+    } catch (error) {
+      console.error("❌ Error submitting quote:", error);
+      alert("Something went wrong. Please try again later.");
+    }
   };
+  
+  
+    
 
   // Success Modal Component
   const SuccessModal = () => (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       {showSuccessModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+        <>
+          {/* Backdrop */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="w-full max-w-md p-8 bg-white rounded-3xl shadow-2xl"
-          >
-            <div className="text-center">
-              <div className="flex items-center justify-center w-20 h-20 mx-auto mb-6 bg-green-100 rounded-full">
-                <CheckCircle className="w-10 h-10 text-green-600" />
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-50 bg-black bg-opacity-50"
+            onClick={() => setShowSuccessModal(false)}
+          />
+
+          {/* Modal */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{
+                duration: 0.3,
+                ease: [0.04, 0.62, 0.23, 0.98],
+              }}
+              className="w-full max-w-md p-8 bg-white shadow-2xl pointer-events-auto rounded-3xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="text-center">
+                <div className="flex items-center justify-center w-20 h-20 mx-auto mb-6 bg-green-100 rounded-full">
+                  <CheckCircle className="w-10 h-10 text-green-600" />
+                </div>
+                <h3 className="mb-4 text-2xl font-bold text-gray-900">
+                  Quote Request Sent!
+                </h3>
+                <p className="mb-6 text-gray-600">
+                  Thank you for your request. We'll send you a detailed quote
+                  within 30 minutes to {formData.email}.
+                </p>
+                <div className="space-y-3">
+                  <button
+                    onClick={handleReturnHome}
+                    className="w-full px-6 py-3 font-semibold text-white transition-colors bg-green-600 rounded-xl hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                  >
+                    Return to Home
+                  </button>
+                  <button
+                    onClick={handleSubmitAnother}
+                    className="w-full px-6 py-3 font-semibold text-gray-600 transition-colors bg-gray-100 rounded-xl hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                  >
+                    Submit Another Quote
+                  </button>
+                </div>
               </div>
-              <h3 className="mb-4 text-2xl font-bold text-gray-900">
-                Quote Request Sent!
-              </h3>
-              <p className="mb-6 text-gray-600">
-                Thank you for your request. We'll send you a detailed quote
-                within 30 minutes to {formData.email}.
-              </p>
-              <div className="space-y-3">
-                <button
-                  onClick={() => {
-                    setShowSuccessModal(false);
-                    // Reset form or navigate to another page
-                    navigate("/");
-                  }}
-                  className="w-full px-6 py-3 font-semibold text-white transition-colors bg-green-600 rounded-xl hover:bg-green-700"
-                >
-                  Return to Home
-                </button>
-                <button
-                  onClick={() => setShowSuccessModal(false)}
-                  className="w-full px-6 py-3 font-semibold text-gray-600 transition-colors bg-gray-100 rounded-xl hover:bg-gray-200"
-                >
-                  Submit Another Quote
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        </div>
+            </motion.div>
+          </div>
+        </>
       )}
     </AnimatePresence>
   );
+
+  const handleReturnHome = async () => {
+    // Close modal first
+    setShowSuccessModal(false);
+
+    // Wait for animation to complete before navigating
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    // Navigate to home
+    navigate("/");
+  };
+
+  const handleSubmitAnother = () => {
+    // Close modal
+    setShowSuccessModal(false);
+
+    // Reset form data
+    setFormData({
+      // Project Details
+      service: "",
+      sourceLanguage: "",
+      targetLanguages: [],
+      urgency: "standard",
+      certification: false,
+
+      // Document Details
+      documents: [],
+      wordCount: "",
+      pageCount: "",
+
+      // Client Details
+      name: "",
+      email: "",
+      phone: "",
+      company: "",
+
+      // Additional Requirements
+      specialInstructions: "",
+      industry: "",
+      glossary: false,
+    });
+
+    // Reset other states
+    setValidationErrors({});
+    setActiveStep(1);
+    setEstimatedCost(null);
+  };
 
   // Keyboard navigation
   useEffect(() => {
@@ -767,7 +870,7 @@ export default function QuotePage() {
 
                           {/* Selected Languages Tags */}
                           {formData.targetLanguages.length > 0 && (
-                            <div className="flex flex-wrap gap-2 p-3 mb-3 bg-gray-50 border border-gray-200 rounded-lg">
+                            <div className="flex flex-wrap gap-2 p-3 mb-3 border border-gray-200 rounded-lg bg-gray-50">
                               {formData.targetLanguages.map((lang) => (
                                 <span
                                   key={lang}
@@ -900,9 +1003,9 @@ export default function QuotePage() {
                             </div>
 
                             {/* Progress bar for total file size */}
-                            <div className="w-full mb-4 bg-gray-200 rounded-full h-2">
+                            <div className="w-full h-2 mb-4 bg-gray-200 rounded-full">
                               <div
-                                className="h-2 bg-green-600 rounded-full transition-all duration-300"
+                                className="h-2 transition-all duration-300 bg-green-600 rounded-full"
                                 style={{
                                   width: `${Math.min(
                                     (formData.documents.reduce(
@@ -917,15 +1020,15 @@ export default function QuotePage() {
                               ></div>
                             </div>
 
-                            <div className="space-y-3 max-h-60 overflow-y-auto">
+                            <div className="space-y-3 overflow-y-auto max-h-60">
                               {formData.documents.map((doc) => (
                                 <div
                                   key={doc.id}
-                                  className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                                  className="flex items-center justify-between p-4 transition-colors bg-gray-50 rounded-xl hover:bg-gray-100"
                                 >
                                   <div className="flex items-center flex-1 min-w-0">
                                     {getFileIcon(doc.type)}
-                                    <div className="ml-3 min-w-0 flex-1">
+                                    <div className="flex-1 min-w-0 ml-3">
                                       <p className="font-medium text-gray-900 truncate">
                                         {doc.name}
                                       </p>
@@ -1058,7 +1161,7 @@ export default function QuotePage() {
                             </div>
 
                             <div className="space-y-4">
-                              <label className="flex items-center cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors">
+                              <label className="flex items-center p-2 transition-colors rounded-lg cursor-pointer hover:bg-gray-50">
                                 <input
                                   type="checkbox"
                                   checked={formData.certification}
@@ -1080,7 +1183,7 @@ export default function QuotePage() {
                                 </div>
                               </label>
 
-                              <label className="flex items-center cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors">
+                              <label className="flex items-center p-2 transition-colors rounded-lg cursor-pointer hover:bg-gray-50">
                                 <input
                                   type="checkbox"
                                   checked={formData.glossary}
@@ -1332,7 +1435,7 @@ export default function QuotePage() {
                           <p className="text-3xl font-bold text-green-800">
                             ₦{estimatedCost.totalAmount.toLocaleString()}
                           </p>
-                          <p className="text-xs text-green-600 mt-1">
+                          <p className="mt-1 text-xs text-green-600">
                             Final quote may vary ±10%
                           </p>
                         </div>
@@ -1395,7 +1498,7 @@ export default function QuotePage() {
                       <p className="text-gray-600">
                         Complete the form to see your estimate
                       </p>
-                      <p className="text-sm text-gray-500 mt-2">
+                      <p className="mt-2 text-sm text-gray-500">
                         Estimates update automatically as you type
                       </p>
                     </div>
@@ -1480,12 +1583,12 @@ export default function QuotePage() {
                         <span className="text-sm text-gray-600">Add-ons:</span>
                         <div className="flex flex-wrap gap-1 mt-1">
                           {formData.certification && (
-                            <span className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full">
+                            <span className="px-2 py-1 text-xs text-green-700 bg-green-100 rounded-full">
                               Certified
                             </span>
                           )}
                           {formData.glossary && (
-                            <span className="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded-full">
+                            <span className="px-2 py-1 text-xs text-blue-700 bg-blue-100 rounded-full">
                               Glossary
                             </span>
                           )}
