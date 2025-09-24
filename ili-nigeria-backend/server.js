@@ -26,14 +26,14 @@ app.use(morgan("dev"));
 //  CORS setup (allow Vite frontend)
 app.use(
   cors({
-    origin: "https://ilin-nigeria.vercel.app", // your frontend URL
-    credentials: true, // if you need cookies/auth
+    origin: "https://ilin-nigeria.vercel.app", //  frontend URL
+    credentials: true, //  cookies/auth
   })
 );
 
 //  Register routes
 app.use("/api", emailRoutes);
-app.use("/api/contact", contactRoutes); // Add this after app.use("/api", emailRoutes)
+app.use("/api/contact", contactRoutes);
 
 // Test route
 app.get("/", (req, res) => {
