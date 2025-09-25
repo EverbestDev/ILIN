@@ -334,7 +334,7 @@ export default function QuotePage() {
       documents: prev.documents.filter((doc) => doc.id !== fileId),
     }));
   };
- 
+
   // Cost calculation with debounced values
   const calculateEstimate = useMemo(() => {
     const service = services.find((s) => s.id === formData.service);
@@ -378,17 +378,58 @@ export default function QuotePage() {
 
   // Update estimated cost when calculation changes
   useEffect(() => {
-    setEstimatedCost(calculateEstimate);
-  }, [calculateEstimate]);
+    const estimate = calculateEstimate(); // call the function
+    setEstimatedCost(estimate);
+  }, [
+    formData.service,
+    formData.wordCount,
+    formData.pageCount,
+    formData.urgency,
+    formData.certification,
+    formData.targetLanguages,
+  ]);
 
-  const handleInputChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  //  handleInputChange
+  const handleInputChange = (e) => {
+    const { name, value, type, checked, multiple, options } = e.target;
 
-    // Clear validation error for this field
-    if (validationErrors[field]) {
-      setValidationErrors((prev) => ({ ...prev, [field]: undefined }));
+    if (type === "checkbox") {
+      // For checkboxes (true/false)
+      setFormData((prev) => ({
+        ...prev,
+        [name]: checked,
+      }));
+    } else if (multiple) {
+      // For multi-select dropdowns
+      const selectedValues = Array.from(options)
+        .filter((o) => o.selected)
+        .map((o) => o.value);
+
+      setFormData((prev) => ({
+        ...prev,
+        [name]: selectedValues,
+      }));
+    } else {
+      // For normal inputs
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
     }
   };
+
+  //
+  useEffect(() => {
+    const estimate = calculateEstimate();
+    setEstimatedCost(estimate);
+  }, [
+    formData.service,
+    formData.wordCount,
+    formData.pageCount,
+    formData.urgency,
+    formData.certification,
+    formData.targetLanguages,
+  ]);
 
   // Remove target language tag
   const removeTargetLanguage = (languageToRemove) => {
@@ -492,9 +533,6 @@ export default function QuotePage() {
       alert("Something went wrong. Please try again later.");
     }
   };
-  
-  
-    
 
   // Success Modal Component
   const SuccessModal = () => (
