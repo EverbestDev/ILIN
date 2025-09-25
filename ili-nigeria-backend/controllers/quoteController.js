@@ -37,7 +37,7 @@ export const submitQuote = async (req, res) => {
 
     // Send email to admin
     await sendEmail(
-      process.env.ADMIN_EMAIL || "olawooreusamahabidemi@gmail.com",
+      process.env.ADMIN_EMAIL && "olawooreusamahabidemi@gmail.com",
       `New Quote Request from ${formData.name}`,
       `
         <p><strong>Service:</strong> ${formData.service}</p>
