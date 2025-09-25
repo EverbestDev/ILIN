@@ -9,10 +9,22 @@ console.log("KEY:", process.env.BREVO_API_KEY ? "Loaded....." : "Missing....");
 const transporter = nodemailer.createTransport({
   host: "smtp-relay.brevo.com",
   port: 587,
+  secure: false, // use TLS
   auth: {
     user: process.env.BREVO_USER,
     pass: process.env.BREVO_API_KEY,
   },
+  tls: {
+    rejectUnauthorized: false,
+  },
+});
+
+transporter.verify((error, success) => {
+  if (error) {
+    console.error("❌ SMTP connection failed:", error);
+  } else {
+    console.log("✅ SMTP server is ready to send emails");
+  }
 });
 
 const sendEmail = async (to, subject, html) => {
