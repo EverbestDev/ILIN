@@ -78,7 +78,6 @@ export default function QuotePage() {
   });
 
   const [dragActive, setDragActive] = useState(false);
-  const [estimatedCost, setEstimatedCost] = useState(null);
 
   // Debounced values for calculations
   const debouncedWordCount = useDebounce(formData.wordCount, 500);
@@ -335,8 +334,8 @@ export default function QuotePage() {
     }));
   };
 
-  // Cost calculation with debounced values
-  const calculateEstimate = useMemo(() => {
+  // FIXED: Cost calculation with proper memoization
+  const estimatedCost = useMemo(() => {
     const service = services.find((s) => s.id === formData.service);
     if (!service || (!debouncedWordCount && !debouncedPageCount)) return null;
 
@@ -371,86 +370,62 @@ export default function QuotePage() {
     debouncedPageCount,
     formData.urgency,
     formData.certification,
-    formData.targetLanguages,
+    formData.targetLanguages.length, // FIXED: Only track length, not the array itself
     services,
     urgencyOptions,
   ]);
 
-  // Update estimated cost when calculation changes
-  useEffect(() => {
-    const estimate = calculateEstimate(); // call the function
-    setEstimatedCost(estimate);
-  }, [
-    formData.service,
-    formData.wordCount,
-    formData.pageCount,
-    formData.urgency,
-    formData.certification,
-    formData.targetLanguages,
-  ]);
-
-  //  handleInputChange
-  const handleInputChange = (e) => {
-    const { name, value, type, checked, multiple, options } = e.target;
-
-    if (type === "checkbox") {
-      // For checkboxes (true/false)
-      setFormData((prev) => ({
-        ...prev,
-        [name]: checked,
-      }));
-    } else if (multiple) {
-      // For multi-select dropdowns
-      const selectedValues = Array.from(options)
-        .filter((o) => o.selected)
-        .map((o) => o.value);
-
-      setFormData((prev) => ({
-        ...prev,
-        [name]: selectedValues,
-      }));
-    } else {
-      // For normal inputs
+  // FIXED: handleInputChange function
+  const handleInputChange = useCallback(
+    (name, value) => {
       setFormData((prev) => ({
         ...prev,
         [name]: value,
       }));
-    }
-  };
 
-  //
-  useEffect(() => {
-    const estimate = calculateEstimate();
-    setEstimatedCost(estimate);
-  }, [
-    formData.service,
-    formData.wordCount,
-    formData.pageCount,
-    formData.urgency,
-    formData.certification,
-    formData.targetLanguages,
-  ]);
+      // Clear validation error for the field
+      if (validationErrors[name]) {
+        setValidationErrors((prev) => ({ ...prev, [name]: undefined }));
+      }
+    },
+    [validationErrors]
+  );
+
+  // FIXED: Input change handler for form elements
+  const handleFormInputChange = useCallback(
+    (e) => {
+      const { name, value, type, checked } = e.target;
+      handleInputChange(name, type === "checkbox" ? checked : value);
+    },
+    [handleInputChange]
+  );
 
   // Remove target language tag
-  const removeTargetLanguage = (languageToRemove) => {
-    const newTargetLanguages = formData.targetLanguages.filter(
-      (lang) => lang !== languageToRemove
-    );
-    handleInputChange("targetLanguages", newTargetLanguages);
-  };
+  const removeTargetLanguage = useCallback(
+    (languageToRemove) => {
+      const newTargetLanguages = formData.targetLanguages.filter(
+        (lang) => lang !== languageToRemove
+      );
+      handleInputChange("targetLanguages", newTargetLanguages);
+    },
+    [formData.targetLanguages, handleInputChange]
+  );
 
   // Add target language
-  const addTargetLanguage = (language) => {
-    if (
-      !formData.targetLanguages.includes(language) &&
-      language !== formData.sourceLanguage
-    ) {
-      handleInputChange("targetLanguages", [
-        ...formData.targetLanguages,
-        language,
-      ]);
-    }
-  };
+  const addTargetLanguage = useCallback(
+    (language) => {
+      if (
+        !formData.targetLanguages.includes(language) &&
+        language !== formData.sourceLanguage
+      ) {
+        handleInputChange("targetLanguages", [
+          ...formData.targetLanguages,
+          language,
+        ]);
+      }
+    },
+    [formData.targetLanguages, formData.sourceLanguage, handleInputChange]
+  );
 
   const nextStep = () => {
     const errors = validateStep(activeStep);
@@ -534,9 +509,9 @@ export default function QuotePage() {
     }
   };
 
-  // Success Modal Component
+  // FIXED: Success Modal Component - removed unnecessary animations and simplified
   const SuccessModal = () => (
-    <AnimatePresence mode="wait">
+    <AnimatePresence>
       {showSuccessModal && (
         <>
           {/* Backdrop */}
@@ -544,7 +519,6 @@ export default function QuotePage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
             className="fixed inset-0 z-50 bg-black bg-opacity-50"
             onClick={() => setShowSuccessModal(false)}
           />
@@ -552,13 +526,9 @@ export default function QuotePage() {
           {/* Modal */}
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{
-                duration: 0.3,
-                ease: [0.04, 0.62, 0.23, 0.98],
-              }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
               className="w-full max-w-md p-8 bg-white shadow-2xl pointer-events-auto rounded-3xl"
               onClick={(e) => e.stopPropagation()}
             >
@@ -596,50 +566,32 @@ export default function QuotePage() {
   );
 
   const handleReturnHome = async () => {
-    // Close modal first
     setShowSuccessModal(false);
-
-    // Wait for animation to complete before navigating
     await new Promise((resolve) => setTimeout(resolve, 300));
-
-    // Navigate to home
     navigate("/");
   };
 
   const handleSubmitAnother = () => {
-    // Close modal
     setShowSuccessModal(false);
-
-    // Reset form data
     setFormData({
-      // Project Details
       service: "",
       sourceLanguage: "",
       targetLanguages: [],
       urgency: "standard",
       certification: false,
-
-      // Document Details
       documents: [],
       wordCount: "",
       pageCount: "",
-
-      // Client Details
       name: "",
       email: "",
       phone: "",
       company: "",
-
-      // Additional Requirements
       specialInstructions: "",
       industry: "",
       glossary: false,
     });
-
-    // Reset other states
     setValidationErrors({});
     setActiveStep(1);
-    setEstimatedCost(null);
   };
 
   // Keyboard navigation
@@ -871,13 +823,9 @@ export default function QuotePage() {
                             </div>
                           )}
                           <select
+                            name="sourceLanguage"
                             value={formData.sourceLanguage}
-                            onChange={(e) =>
-                              handleInputChange(
-                                "sourceLanguage",
-                                e.target.value
-                              )
-                            }
+                            onChange={handleFormInputChange}
                             className={`w-full p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${
                               validationErrors.sourceLanguage
                                 ? "border-red-300"
@@ -1101,10 +1049,9 @@ export default function QuotePage() {
                               </label>
                               <input
                                 type="number"
+                                name="wordCount"
                                 value={formData.wordCount}
-                                onChange={(e) =>
-                                  handleInputChange("wordCount", e.target.value)
-                                }
+                                onChange={handleFormInputChange}
                                 placeholder="e.g., 1500"
                                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                               />
@@ -1115,10 +1062,9 @@ export default function QuotePage() {
                               </label>
                               <input
                                 type="number"
+                                name="pageCount"
                                 value={formData.pageCount}
-                                onChange={(e) =>
-                                  handleInputChange("pageCount", e.target.value)
-                                }
+                                onChange={handleFormInputChange}
                                 placeholder="e.g., 6"
                                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                               />
@@ -1183,10 +1129,9 @@ export default function QuotePage() {
                                 Industry
                               </label>
                               <select
+                                name="industry"
                                 value={formData.industry}
-                                onChange={(e) =>
-                                  handleInputChange("industry", e.target.value)
-                                }
+                                onChange={handleFormInputChange}
                                 className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
                               >
                                 <option value="">Select your industry</option>
@@ -1202,13 +1147,9 @@ export default function QuotePage() {
                               <label className="flex items-center p-2 transition-colors rounded-lg cursor-pointer hover:bg-gray-50">
                                 <input
                                   type="checkbox"
+                                  name="certification"
                                   checked={formData.certification}
-                                  onChange={(e) =>
-                                    handleInputChange(
-                                      "certification",
-                                      e.target.checked
-                                    )
-                                  }
+                                  onChange={handleFormInputChange}
                                   className="w-5 h-5 mr-3 text-green-600 rounded focus:ring-green-500"
                                 />
                                 <div>
@@ -1224,13 +1165,9 @@ export default function QuotePage() {
                               <label className="flex items-center p-2 transition-colors rounded-lg cursor-pointer hover:bg-gray-50">
                                 <input
                                   type="checkbox"
+                                  name="glossary"
                                   checked={formData.glossary}
-                                  onChange={(e) =>
-                                    handleInputChange(
-                                      "glossary",
-                                      e.target.checked
-                                    )
-                                  }
+                                  onChange={handleFormInputChange}
                                   className="w-5 h-5 mr-3 text-green-600 rounded focus:ring-green-500"
                                 />
                                 <div>
@@ -1250,15 +1187,12 @@ export default function QuotePage() {
                               Special Instructions
                             </label>
                             <textarea
+                              name="specialInstructions"
                               value={formData.specialInstructions}
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "specialInstructions",
-                                  e.target.value
-                                )
-                              }
+                              onChange={handleFormInputChange}
                               placeholder="Any specific requirements, style guides, or special instructions..."
                               rows="4"
+                              maxLength="500"
                               className="w-full p-4 border border-gray-300 resize-none rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
                             ></textarea>
                             <p className="mt-2 text-sm text-gray-500">
@@ -1299,10 +1233,9 @@ export default function QuotePage() {
                             )}
                             <input
                               type="text"
+                              name="name"
                               value={formData.name}
-                              onChange={(e) =>
-                                handleInputChange("name", e.target.value)
-                              }
+                              onChange={handleFormInputChange}
                               placeholder="Enter your full name"
                               required
                               className={`w-full p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${
@@ -1327,10 +1260,9 @@ export default function QuotePage() {
                             )}
                             <input
                               type="email"
+                              name="email"
                               value={formData.email}
-                              onChange={(e) =>
-                                handleInputChange("email", e.target.value)
-                              }
+                              onChange={handleFormInputChange}
                               placeholder="your.email@example.com"
                               required
                               className={`w-full p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${
@@ -1343,19 +1275,17 @@ export default function QuotePage() {
 
                           <input
                             type="tel"
+                            name="phone"
                             value={formData.phone}
-                            onChange={(e) =>
-                              handleInputChange("phone", e.target.value)
-                            }
+                            onChange={handleFormInputChange}
                             placeholder="Phone Number (Optional)"
                             className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
                           />
                           <input
                             type="text"
+                            name="company"
                             value={formData.company}
-                            onChange={(e) =>
-                              handleInputChange("company", e.target.value)
-                            }
+                            onChange={handleFormInputChange}
                             placeholder="Company Name (Optional)"
                             className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
                           />
@@ -1655,7 +1585,7 @@ export default function QuotePage() {
                 >
                   <div className="text-center">
                     <Award className="w-12 h-12 mx-auto mb-4 text-blue-600" />
-                    <h4 className="mb-2 font-bold text-gray-900">
+                     <h4 className="mb-2 font-bold text-gray-900">
                       Quality Guaranteed
                     </h4>
                     <p className="mb-4 text-sm text-gray-600">
