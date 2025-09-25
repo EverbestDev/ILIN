@@ -1,43 +1,39 @@
-import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import SibApiV3Sdk from "sib-api-v3-sdk";
 
 dotenv.config();
 
-console.log("USER:", process.env.BREVO_USER);
-console.log("KEY:", process.env.BREVO_API_KEY ? "Loaded....." : "Missing....");
+const client = SibApiV3Sdk.ApiClient.instance;
+const apiKey = client.authentications["api-key"];
+apiKey.apiKey = process.env.BREVO_API_KEY;
 
-const transporter = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com",
-  port: 587,
-  secure: false, // use TLS
-  auth: {
-    user: process.env.BREVO_USER,
-    pass: process.env.BREVO_API_KEY,
-  },
-  tls: {
-    rejectUnauthorized: false,
-  },
-});
+const tranEmailApi = new SibApiV3Sdk.TransactionalEmailsApi();
 
-transporter.verify((error, success) => {
-  if (error) {
-    console.error("❌ SMTP connection failed:", error);
-  } else {
-    console.log("✅ SMTP server is ready to send emails");
-  }
-});
-
+/**
+ * Send email via Brevo API
+ * @param {string} to - recipient email
+ * @param {string} subject - email subject
+ * @param {string} html - email HTML content
+ */
 const sendEmail = async (to, subject, html) => {
   try {
-    await transporter.sendMail({
-      from: `"ILI Nigeria" <olawooreusamahabidemi@gmail.com>`, //  verified sender
-      to,
+    const sendSmtpEmail = {
+      sender: {
+        name: "ILI Nigeria",
+        email: "olawooreusamahabidemi@gmail.com", // ✅ must be verified sender in Brevo
+      },
+      to: [{ email: to }],
       subject,
-      html,
-    });
-    console.log("Email sent successfully");
+      htmlContent: html,
+    };
+
+    const data = await tranEmailApi.sendTransacEmail(sendSmtpEmail);
+    console.log("✅ Email sent successfully:", data.messageId || data);
   } catch (error) {
-    console.error("Error sending email:", error);
+    console.error(
+      "❌ Error sending email via Brevo API:",
+      error.response?.body || error
+    );
   }
 };
 
