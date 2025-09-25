@@ -7,7 +7,6 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 
-
 import connectDB from "./config/db.js";
 
 //  Import routes
@@ -25,11 +24,21 @@ app.use(express.json());
 app.use(helmet());
 app.use(morgan("dev"));
 
-//  CORS setup (allow Vite frontend)
+//  CORS setup allow both local + production frontend
+const allowedOrigins = [
+  "http://localhost:5173", // local dev
+  "https://ilin-nigeria.vercel.app", // production
+];
+
 app.use(
   cors({
-    origin: "https://ilin-nigeria.vercel.app", //  frontend URL
-    credentials: true, //  cookies/auth
+    origin: (origin, callback) => {
+      if (!origin || !allowedOrigins.includes(origin)) {
+        return callback(new Error("Not allowed by CORS"), false);
+      }
+      return callback(null, true);
+    },
+    credentials: true,
   })
 );
 
