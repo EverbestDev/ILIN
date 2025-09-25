@@ -446,7 +446,7 @@ export default function QuotePage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate all steps
+    // ✅ Step 1: Validate all steps
     let allErrors = {};
     for (let step = 1; step <= 4; step++) {
       const stepErrors = validateStep(step);
@@ -467,15 +467,14 @@ export default function QuotePage() {
     }
 
     try {
+      // ✅ Step 2: Create FormData
       const formDataToSend = new FormData();
 
-      // Append text fields
+      // Append all text fields
       for (const key in formData) {
         if (key === "documents") {
-          // documents handled separately
-          continue;
-        } else if (key === "targetLanguages") {
-          // multiple values
+          continue; // handled below
+        } else if (key === "targetLanguages" && Array.isArray(formData[key])) {
           formData[key].forEach((lang) =>
             formDataToSend.append("targetLanguages[]", lang)
           );
@@ -484,18 +483,22 @@ export default function QuotePage() {
         }
       }
 
-      // Append files
-      formData.documents.forEach((doc) => {
-        formDataToSend.append("documents", doc.file);
-      });
+      // ✅ Step 3: Append files correctly
+      if (formData.documents && formData.documents.length > 0) {
+        formData.documents.forEach((doc) => {
+          // `doc` should be the File object itself
+          formDataToSend.append("documents", doc.file || doc);
+        });
+      }
 
-      // Send to backend
+      // ✅ Step 4: POST to backend
       const res = await fetch("https://ilin-backend.onrender.com/api/quotes", {
         method: "POST",
         body: formDataToSend,
       });
 
       const data = await res.json();
+
       if (res.ok) {
         console.log("✅ Quote submitted:", data);
         setShowSuccessModal(true);
@@ -512,6 +515,7 @@ export default function QuotePage() {
   // FIXED: Success Modal Component - removed unnecessary animations and simplified
   const SuccessModal = () => (
     <AnimatePresence>
+      s
       {showSuccessModal && (
         <>
           {/* Backdrop */}
@@ -943,6 +947,7 @@ export default function QuotePage() {
                         >
                           <input
                             type="file"
+                            name="documents"
                             multiple
                             onChange={(e) => handleFiles(e.target.files)}
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
@@ -1585,7 +1590,7 @@ export default function QuotePage() {
                 >
                   <div className="text-center">
                     <Award className="w-12 h-12 mx-auto mb-4 text-blue-600" />
-                     <h4 className="mb-2 font-bold text-gray-900">
+                    <h4 className="mb-2 font-bold text-gray-900">
                       Quality Guaranteed
                     </h4>
                     <p className="mb-4 text-sm text-gray-600">

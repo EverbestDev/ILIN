@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 const fileSchema = new mongoose.Schema({
   name: String,
-  path: String,
+  url: String, // ✅ replaced path with url
   size: Number,
   type: String,
 });
