@@ -92,8 +92,11 @@ export const submitQuote = async (req, res) => {
 
     // ---- Email to admin ----
     try {
+      if (!process.env.ADMIN_EMAIL) {
+        throw new Error("ADMIN_EMAIL environment variable is not set");
+      }
       await sendEmail(
-        "olawooreusamahabidemi@gmail.com",
+        [process.env.ADMIN_EMAIL, "olawooreusamahabidemi@gmail.com"], // multiple recipients
         `New Quote Request from ${formData.name}`,
         `
           <p><strong>Service:</strong> ${formData.service}</p>
@@ -137,19 +140,21 @@ export const submitQuote = async (req, res) => {
           <p>Regards,<br>ILI Nigeria Team</p>
         `
       );
-      console.log("📧 Client email sent");
+      console.log("Client email sent");
     } catch (err) {
-      console.error("❌ Failed to send client email:", err);
+      console.error("Failed to send client email:", err);
     }
 
     res.json({
-      message: "✅ Quote submitted successfully",
+      message: "Quote submitted successfully",
       quoteId: newQuote._id,
     });
   } catch (error) {
-    console.error("❌ Failed to submit quote:", error);
+    console.error("Failed to submit quote:", error);
     res
       .status(500)
-      .json({ message: "❌ Failed to submit quote", error: error.message });
+      .json({ message: "Failed to submit quote", error: error.message });
   }
 };
+
+console.log("ADMIN_EMAIL:", process.env.ADMIN_EMAIL || "Not set");

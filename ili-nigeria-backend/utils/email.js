@@ -17,23 +17,29 @@ const tranEmailApi = new SibApiV3Sdk.TransactionalEmailsApi();
  */
 const sendEmail = async (to, subject, html) => {
   try {
+    const recipients = Array.isArray(to)
+      ? to.map((email) => ({ email }))
+      : [{ email: to }];
     const sendSmtpEmail = {
       sender: {
         name: "ILI Nigeria",
-        email: "olawooreusamahabidemi@gmail.com", // ✅ must be verified sender in Brevo
+        email: "olawooreusamahabidemi@gmail.com",
       },
-      to: [{ email: to }],
+      to: recipients,
       subject,
       htmlContent: html,
     };
 
     const data = await tranEmailApi.sendTransacEmail(sendSmtpEmail);
-    console.log("✅ Email sent successfully:", data.messageId || data);
+    console.log("✅ Email sent successfully:", JSON.stringify(data, null, 2));
+    return data;
   } catch (error) {
     console.error(
       "❌ Error sending email via Brevo API:",
+      error.message,
       error.response?.body || error
     );
+    throw error;
   }
 };
 
