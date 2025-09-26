@@ -11,7 +11,7 @@ import connectDB from "./config/db.js";
 
 //  Import routes
 import emailRoutes from "./routes/email.js";
-import contactRoutes from "./routes/contact.js"; // Add this near your other imports
+import contactRoutes from "./routes/contact.js"; 
 import quoteRoutes from "./routes/quote.js";
 
 const app = express();
