@@ -23,6 +23,7 @@ import ContactPage from "./pages/ContactPage";
 import LanguagesPage from "./pages/LangauagesPage";
 import ServicesPage from "./pages/ServicesPage";
 import QuotePage from "./pages/QuotePage";
+import Login from "./pages/Login";
 
 function App() {
   return (
@@ -61,6 +62,7 @@ function App() {
           <Route path="/contact" element={<ContactPage />} />
 
           <Route path="/quote" element={<QuotePage />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
         <Footer />
       </div>

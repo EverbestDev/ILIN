@@ -15,6 +15,10 @@ export default function Navbar() {
     navigate("/quote");
     setIsOpen(false);
   };
+  const handleLogin = () => {
+    navigate("/login");
+    setIsOpen(false);
+  };
   const logoPics = logo;
 
   return (
@@ -67,6 +71,7 @@ export default function Navbar() {
           <motion.button
             whileTap={{ scale: 0.9, opacity: 0.8 }}
             whileHover={{ scale: 1.05 }}
+            onClick={handleLogin}
             className="px-4 py-2 text-gray-900 transition-colors duration-200 border border-orange-500 rounded-lg hover:bg-orange-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
           >
             Login
@@ -172,6 +177,7 @@ export default function Navbar() {
               <motion.button
                 whileTap={{ scale: 0.95, opacity: 0.8 }}
                 whileHover={{ scale: 1.02 }}
+                onClick={handleLogin}
                 className="w-full px-4 py-2 text-gray-700 transition-colors duration-200 border border-orange-500 rounded-lg hover:bg-orange-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
               >
                 Login
