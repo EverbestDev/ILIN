@@ -23,7 +23,7 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 z-50 w-full bg-white shadow-md">
-      <div className="flex items-center justify-between px-6 py-4 mx-auto max-w-7xl">
+      <div className="flex items-center justify-between px-6 py-3 md mx-auto max-w-7xl">
         {/* Left - Logo */}
         <div className="flex items-center gap-2 align-middle">
           <img src={logoPics} alt="logo" className="h-8 cursor-pointer" />

@@ -864,7 +864,7 @@ export default function QuotePage() {
                               {formData.targetLanguages.map((lang) => (
                                 <span
                                   key={lang}
-                                  className="inline-flex items-center px-3 py-1 text-sm font-medium text-green-800 bg-green-100 rounded-full"
+                                  className="inline-flex items-center px-3 py-1 text-sm font-medium text-green-800 bg-green-100 rounded-full "
                                 >
                                   {lang}
                                   <button
@@ -1320,7 +1320,7 @@ export default function QuotePage() {
                   )}
 
                   {/* Enhanced Navigation Buttons with Keyboard Hints */}
-                  <div className="flex justify-between mt-12">
+                  <div className="items-center justify-between block mt-12 space-x-4 md:flex">
                     <button
                       type="button"
                       onClick={prevStep}
