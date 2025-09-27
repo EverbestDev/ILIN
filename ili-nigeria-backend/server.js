@@ -9,7 +9,7 @@ import morgan from "morgan";
 
 import connectDB from "./config/db.js";
 
-//  Import routes
+// Import routes
 import emailRoutes from "./routes/email.js";
 import contactRoutes from "./routes/contact.js";
 import quoteRoutes from "./routes/quote.js";
@@ -25,25 +25,21 @@ app.use(express.json());
 app.use(helmet());
 app.use(morgan("dev"));
 
-//  CORS setup allow both local + production frontend
-const allowedOrigins = [
-  "http://localhost:5173", // local dev
-  "https://ilin-nigeria.vercel.app", // production
-];
-
+// CORS setup
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin || !allowedOrigins.includes(origin)) {
-        return callback(new Error("Not allowed by CORS"), false);
-      }
-      return callback(null, true);
-    },
+    origin: [
+      "http://localhost:5173",
+      "https://ilin-nigeria.vercel.app",
+      "https://ilin-nigeria.vercel.app/",
+    ],
+    methods: ["GET", "POST", "OPTIONS", "HEAD"],
     credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-//  Register routes
+// Register routes
 app.use("/api", emailRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/quotes", quoteRoutes);
@@ -55,4 +51,4 @@ app.get("/", (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(` Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
