@@ -1320,12 +1320,12 @@ export default function QuotePage() {
                   )}
 
                   {/* Enhanced Navigation Buttons with Keyboard Hints */}
-                  <div className="items-center justify-between block mt-12 space-x-4 md:flex">
+                  <div className="items-center justify-between block mt-12 space-x-4 space-y-4 md:flex md:space-y-0">
                     <button
                       type="button"
                       onClick={prevStep}
                       disabled={activeStep === 1}
-                      className={`flex items-center px-8 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                      className={`flex  items-center px-8 py-3 rounded-xl font-semibold transition-all duration-300 flex-1 md:flex-0 ${
                         activeStep === 1
                           ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                           : "bg-gray-200 text-gray-700 hover:bg-gray-300 hover:shadow-md"
