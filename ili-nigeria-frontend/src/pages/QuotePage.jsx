@@ -621,7 +621,7 @@ export default function QuotePage() {
       <SuccessModal />
 
       {/* Hero Section with Glassmorphism */}
-      <section className="relative px-6 py-20 pt-32 overflow-hidden md:px-20">
+      <section className="relative px-6 py-2 pt-32 overflow-hidden md:py-20 md:px-20">
         {/* Animated Background Elements */}
         <div className="absolute inset-0">
           <div className="absolute w-64 h-64 bg-green-200 rounded-full top-20 left-20 mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
@@ -645,7 +645,7 @@ export default function QuotePage() {
                 Quote in Minutes
               </span>
             </h1>
-            <p className="max-w-3xl mx-auto mb-12 text-xl leading-relaxed text-gray-600">
+            <p className="max-w-3xl mx-auto mb-12 text-sm leading-relaxed text-gray-600 md:text-xl">
               Get accurate pricing for your translation project. Our intelligent
               quote system provides instant estimates with transparent pricing
               and no hidden fees.
@@ -661,15 +661,15 @@ export default function QuotePage() {
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   className="group"
                 >
-                  <div className="flex flex-col h-48 p-6 transition-all duration-300 border border-gray-200 shadow-lg bg-white/80 backdrop-blur-sm rounded-2xl hover:shadow-xl group-hover:scale-105">
-                    <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 transition-transform duration-300 bg-gray-100 rounded-2xl group-hover:scale-110">
+                  <div className="flex flex-col p-6 pb-10 overflow-hidden transition-all duration-300 border border-gray-200 shadow-lg bg-white/80 backdrop-blur-sm rounded-2xl hover:shadow-xl group-hover:scale-105 h-52">
+                    <div className="flex items-center justify-center w-16 h-16 py-4 mx-auto mb-4 transition-transform duration-300 bg-gray-100 rounded-2xl group-hover:scale-110 md:py">
                       {benefit.icon}
                     </div>
-                    <div className="flex flex-col justify-center flex-1">
+                    <div className="flex flex-col justify-center flex-1 mb-8">
                       <h3 className="mb-2 text-lg font-bold text-gray-900">
                         {benefit.title}
                       </h3>
-                      <p className="text-sm leading-relaxed text-gray-600">
+                      <p className="mb-6 text-sm leading-relaxed text-gray-600">
                         {benefit.description}
                       </p>
                     </div>
@@ -682,11 +682,14 @@ export default function QuotePage() {
       </section>
 
       {/* Enhanced Progress Steps with better hover states */}
-      <section className="px-6 py-12 bg-white/50 backdrop-blur-sm md:px-20">
+      <section className="p-6 shadow-md md:py-12 bg-white/50 backdrop-blur-sm md:px-20">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mx-auto">
             {steps.map((step, index) => (
-              <div key={step.number} className="flex items-center flex-1">
+              <div
+                key={step.number}
+                className="flex items-center flex-1 mx-auto"
+              >
                 <div className="flex flex-col items-center">
                   <button
                     onClick={() => {
@@ -1320,12 +1323,12 @@ export default function QuotePage() {
                   )}
 
                   {/* Enhanced Navigation Buttons with Keyboard Hints */}
-                  <div className="items-center justify-between block mt-12 space-x-4 space-y-4 md:flex md:space-y-0">
+                  <div className="flex-col items-center justify-center mt-6 space-x-4 space-y-4 md:flex md:space-y-0 md:flex-row md:justify-between ">
                     <button
                       type="button"
                       onClick={prevStep}
                       disabled={activeStep === 1}
-                      className={`flex  items-center px-8 py-3 rounded-xl font-semibold transition-all duration-300 flex-1 md:flex-0 ${
+                      className={`flex  items-center px-8 py-3 rounded-xl font-semibold transition-all duration-300 w-full md:w-auto text-center align-middle justify-center ${
                         activeStep === 1
                           ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                           : "bg-gray-200 text-gray-700 hover:bg-gray-300 hover:shadow-md"
@@ -1344,7 +1347,7 @@ export default function QuotePage() {
                       <button
                         type="button"
                         onClick={nextStep}
-                        className="flex items-center px-8 py-3 font-semibold text-white transition-all duration-300 bg-green-600 rounded-xl hover:bg-green-700 hover:shadow-lg"
+                        className="flex items-center justify-center w-full px-8 py-3 font-semibold text-white transition-all duration-300 bg-green-600 rounded-xl hover:bg-green-700 hover:shadow-lg md:w-auto"
                       >
                         Next Step
                         <ArrowRight className="w-5 h-5 ml-2" />
