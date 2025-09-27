@@ -5,22 +5,18 @@ export const subscribe = async (req, res) => {
   try {
     const { email } = req.body;
 
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({ message: "Invalid email format" });
     }
 
-    // Check if email already exists
     const existingSubscriber = await Subscriber.findOne({ email });
     if (existingSubscriber) {
       return res.status(400).json({ message: "Email already subscribed" });
     }
 
-    // Save to DB
     await Subscriber.create({ email });
 
-    // Send confirmation email
     try {
       await sendEmail(
         email,
@@ -41,7 +37,7 @@ export const subscribe = async (req, res) => {
               <p>Regards,<br>ILI Nigeria Team</p>
             </div>
             <div style="text-align: center; color: #718096; font-size: 12px; margin-top: 20px;">
-              ILI Nigeria | hello@ili-nigeria.com | +234 803 123 4567
+              ILI Nigeria | official.intlng@gmail.com | +23481067382
             </div>
           </div>
         `
@@ -49,16 +45,14 @@ export const subscribe = async (req, res) => {
       console.log("📧 Subscription confirmation email sent to", email);
     } catch (err) {
       console.error("❌ Failed to send subscription email:", err);
-      // Don't fail the request if email fails, but log it
     }
 
-    // Send admin notification
     try {
       if (!process.env.ADMIN_EMAIL) {
         throw new Error("ADMIN_EMAIL environment variable is not set");
       }
       await sendEmail(
-        [process.env.ADMIN_EMAIL, "olawooreusamahabidemi@gmail.com"],
+        [process.env.ADMIN_EMAIL, "official.intlng@gmail.com"],
         `New Subscriber: ${email}`,
         `
           <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9fafb; padding: 20px;">
@@ -71,7 +65,7 @@ export const subscribe = async (req, res) => {
               <p><strong>Subscribed On:</strong> ${new Date().toLocaleString()}</p>
             </div>
             <div style="text-align: center; color: #718096; font-size: 12px; margin-top: 20px;">
-              ILI Nigeria | hello@ili-nigeria.com | +234 803 123 4567
+              ILI Nigeria | official.intlng@gmail.com | +23481067382
             </div>
           </div>
         `
@@ -84,8 +78,6 @@ export const subscribe = async (req, res) => {
     res.json({ message: "✅ Successfully subscribed" });
   } catch (error) {
     console.error("❌ Failed to subscribe:", error);
-    res
-      .status(500)
-      .json({ message: "❌ Failed to subscribe", error: error.message });
+    res.status(500).json({ message: "❌ Failed to subscribe", error: error.message });
   }
 };
