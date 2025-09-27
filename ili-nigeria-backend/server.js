@@ -47,7 +47,7 @@ app.use(
 app.use("/api", emailRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/quotes", quoteRoutes);
-app.use("/api/subscribe", subscriberRoutes);
+app.use("/api", subscriberRoutes);
 
 // Test route
 app.get("/", (req, res) => {
