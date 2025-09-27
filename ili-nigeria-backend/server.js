@@ -11,7 +11,7 @@ import connectDB from "./config/db.js";
 
 //  Import routes
 import emailRoutes from "./routes/email.js";
-import contactRoutes from "./routes/contact.js"; 
+import contactRoutes from "./routes/contact.js";
 import quoteRoutes from "./routes/quote.js";
 
 const app = express();
@@ -46,6 +46,7 @@ app.use(
 app.use("/api", emailRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/quotes", quoteRoutes);
+app.use("/api", subscriberRoutes);
 
 // Test route
 app.get("/", (req, res) => {
