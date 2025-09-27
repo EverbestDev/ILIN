@@ -29,6 +29,14 @@ export default function About() {
     },
   ];
 
+  const handleGetQuote = () => {
+    navigate("/quote");
+  };
+
+  const handleLearnMore = () => {
+    navigate("/about");
+  };
+
   const highlights = [
     {
       icon: <Globe className="w-10 h-10 text-green-600" />,
@@ -42,32 +50,27 @@ export default function About() {
       title: "Live Interpreting",
       desc: "Real-time interpretation for events, meetings, and international conferences.",
       cta: "View Details",
+      onClick: handleLearnMore,
     },
     {
       icon: <BookOpen className="w-10 h-10 text-purple-600" />,
       title: "Faith-Based Translation",
       desc: "Specialized expertise in religious and cultural translation with respect and accuracy.",
       cta: "View Details",
+      onClick: handleLearnMore,
     },
     {
       icon: <Phone className="w-10 h-10 text-red-600" />,
       title: "Support & Consultation",
       desc: "Guidance and support for businesses entering global markets.",
       cta: "View Details",
+      onClick: handleLearnMore,
     },
   ];
 
   // Separate featured service from others
   const featuredService = highlights.find((item) => item.featured);
   const otherServices = highlights.filter((item) => !item.featured);
-
-  const handleGetQuote = () => {
-    navigate("/quote");
-  };
-
-  const handleLearnMore = () => {
-    navigate("/about");
-  };
 
   return (
     <section className="px-8 py-16 bg-white md:px-20" id="about">
@@ -222,7 +225,10 @@ export default function About() {
 
               <h4 className="mb-2 text-xl font-semibold">{item.title}</h4>
               <p className="flex-grow mb-4 text-gray-600">{item.desc}</p>
-              <button className="px-4 py-2 text-white transition bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+              <button
+                onClick={item.onClick}
+                className="px-4 py-2 text-white transition bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
                 {item.cta}
               </button>
             </motion.div>
