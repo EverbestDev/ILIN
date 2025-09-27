@@ -13,6 +13,7 @@ import connectDB from "./config/db.js";
 import emailRoutes from "./routes/email.js";
 import contactRoutes from "./routes/contact.js";
 import quoteRoutes from "./routes/quote.js";
+import subscriberRoutes from "./routes/subscriber.js";
 
 const app = express();
 
@@ -46,7 +47,7 @@ app.use(
 app.use("/api", emailRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/quotes", quoteRoutes);
-app.use("/api", subscriberRoutes);
+app.use("/api/subscribe", subscriberRoutes);
 
 // Test route
 app.get("/", (req, res) => {
