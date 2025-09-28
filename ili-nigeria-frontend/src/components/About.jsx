@@ -8,7 +8,7 @@ export default function About() {
 
   const features = [
     {
-      icon: <Globe className="w-10 h-10 mx-auto text-green-600" />,
+      icon: <Globe className="w-10 h-10 mx-auto text-gray-50" />,
       title: "50+ Languages",
       desc: "Communicate seamlessly in more than 50 languages worldwide.",
     },

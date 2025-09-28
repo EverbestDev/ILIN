@@ -324,7 +324,7 @@ export default function ServicesPage() {
                 <p className="text-sm text-gray-600">Service Categories</p>
               </div>
               <div className="p-4 bg-white shadow-md rounded-xl">
-                <h3 className="text-2xl font-bold text-blue-600">50+</h3>
+                <h3 className="text-2xl font-bold text-blue-600">200+</h3>
                 <p className="text-sm text-gray-600">Languages Supported</p>
               </div>
               <div className="p-4 bg-white shadow-md rounded-xl">
@@ -341,7 +341,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Services Navigation */}
-      <section className="px-6 py-12 bg-white md:px-20">
+      <section className="px-6 py-4 pt-8 bg-white md:py-12 md:px-20">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-wrap justify-center gap-4 mb-12">
             {mainServices.map((service, index) => (

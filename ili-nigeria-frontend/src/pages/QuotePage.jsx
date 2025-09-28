@@ -681,7 +681,7 @@ export default function QuotePage() {
         </div>
       </section>
 
-      {/* Enhanced Progress Steps with better hover states */}
+      {/* Progress Steps */}
       <section className="p-6 shadow-md md:py-12 bg-white/50 backdrop-blur-sm md:px-20">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mx-auto">
