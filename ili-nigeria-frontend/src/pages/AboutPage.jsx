@@ -130,11 +130,11 @@ export default function AboutPage() {
 
   const team = [
     {
-      name: "Dr. Adebayo Oladimeji",
+      name: "Dr. Sufyan Ayemu",
       role: "Founder & CEO",
       description:
-        "15+ years in linguistics and international business. PhD in Applied Linguistics from University of Lagos.",
-      initials: "AO",
+        "15+ years in linguistics and international business. PhD in Applied Linguistics from University of Niamey, Niger.",
+      initials: "SA",
       bgColor: "bg-green-600",
       specialization: "Strategic Leadership & Linguistics",
     },
@@ -148,11 +148,11 @@ export default function AboutPage() {
       specialization: "Operations & Quality Management",
     },
     {
-      name: "Emmanuel Chen",
+      name: "Usamah Abidemi",
       role: "Technology Director",
       description:
         "Leading our digital transformation with cutting-edge translation technology and AI integration.",
-      initials: "EC",
+      initials: "UA",
       bgColor: "bg-purple-600",
       specialization: "Technology & Innovation",
     },
@@ -178,7 +178,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="px-6 py-20 pt-32 bg-gradient-to-br from-green-50 to-emerald-50 md:px-20">
+      <section className="px-6 py-2 pt-32 md:py-20 bg-gradient-to-br from-green-50 to-emerald-50 md:px-20">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
