@@ -490,7 +490,7 @@ export default function LanguagesSupport() {
         viewport={{ once: true }}
         className="max-w-4xl mx-auto text-center"
       >
-        <div className="p-8 shadow-xl bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl md:p-12">
+        <div className="p-8 shadow-xl  bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl md:p-12">
           <Globe className="w-16 h-16 mx-auto mb-6 text-white" />
           <h3 className="mb-4 text-2xl font-bold text-white md:text-3xl">
             Don't See Your Language?
