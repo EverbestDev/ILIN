@@ -5,7 +5,7 @@ import cloudinary from "cloudinary";
 // Get all quotes (Admin)
 export const getAllQuotes = async (req, res) => {
   try {
-    const quotes = await Quote.find().sort({ createdAt: -1 }); // newest first
+    const quotes = await Quote.find().sort({ createdAt: -1 });
     res.json(quotes);
   } catch (error) {
     console.error("Failed to fetch quotes:", error);
@@ -27,16 +27,43 @@ export const getQuoteById = async (req, res) => {
 };
 
 // Delete quote by ID (Admin)
+
 export const deleteQuote = async (req, res) => {
   try {
-    const deleted = await Quote.findByIdAndDelete(req.params.id);
-    if (!deleted) {
-      return res.status(404).json({ message: "❌ Quote not found" });
+    const quote = await Quote.findById(req.params.id);
+    if (!quote) {
+      return res.status(404).json({ message: "Quote not found" });
     }
-    res.json({ message: "✅ Quote deleted successfully" });
+
+    // If there are documents attached, remove them from Cloudinary
+    if (quote.documents && quote.documents.length > 0) {
+      for (const doc of quote.documents) {
+        try {
+          // Extract public_id from the Cloudinary URL
+          const publicId = doc.url
+            .split("/")
+            .slice(-2)
+            .join("/")
+            .replace(/\.[^/.]+$/, ""); // remove file extension
+
+          await cloudinary.v2.uploader.destroy(publicId, {
+            resource_type: "raw", // important for non-images (pdf/docx)
+          });
+
+          console.log(`Deleted from Cloudinary: ${publicId}`);
+        } catch (err) {
+          console.error(`Failed to delete ${doc.url} from Cloudinary`, err);
+        }
+      }
+    }
+
+    // Delete the quote record from DB
+    await Quote.findByIdAndDelete(req.params.id);
+
+    res.json({ message: "Quote and files deleted successfully" });
   } catch (error) {
-    console.error("❌ Failed to delete quote:", error);
-    res.status(500).json({ message: "❌ Failed to delete quote" });
+    console.error("Failed to delete quote:", error);
+    res.status(500).json({ message: "Failed to delete quote" });
   }
 };
 
@@ -71,22 +98,22 @@ const uploadToCloudinary = (fileBuffer, filename, mimetype) => {
 
 export const submitQuote = async (req, res) => {
   try {
-    console.log("📥 Incoming body:", req.body);
-    console.log("📎 Incoming files:", req.files);
+    console.log("Incoming body:", req.body);
+    console.log("Incoming files:", req.files);
 
     let files = [];
     if (req.files && req.files.length > 0) {
       files = await Promise.all(
         req.files.map(async (file) => {
           try {
-            console.log(`⬆️ Uploading to Cloudinary: ${file.originalname}`);
+            console.log(`⬆Uploading to Cloudinary: ${file.originalname}`);
             const uploaded = await uploadToCloudinary(
               file.buffer,
               file.originalname,
               file.mimetype
             );
 
-            console.log(`✅ Uploaded: ${uploaded.secure_url}`);
+            console.log(`Uploaded: ${uploaded.secure_url}`);
             return {
               name: file.originalname,
               url: uploaded.secure_url,
@@ -95,7 +122,7 @@ export const submitQuote = async (req, res) => {
             };
           } catch (err) {
             console.error(
-              `❌ Cloudinary upload failed for ${file.originalname}`,
+              `Cloudinary upload failed for ${file.originalname}`,
               err
             );
             throw err;
