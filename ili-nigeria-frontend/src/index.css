@@ -27,6 +27,8 @@ body {
   overflow-x: hidden;
 }
 
+
+/* Admin */
 @keyframes slide-in {
   from {
     transform: translateX(100%);
