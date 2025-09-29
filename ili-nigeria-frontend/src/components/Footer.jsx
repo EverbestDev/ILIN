@@ -53,43 +53,57 @@ export default function Footer() {
     { icon: <Twitter className="w-5 h-5" />, name: "Twitter", url: "#" },
     { icon: <Linkedin className="w-5 h-5" />, name: "LinkedIn", url: "#" },
     { icon: <Instagram className="w-5 h-5" />, name: "Instagram", url: "#" },
-    { icon: <MessageCircle className="w-5 h-5" />, name: "WhatsApp", url: "#" },
+    {
+      icon: <MessageCircle className="w-5 h-5" />,
+      name: "MessageCircle",
+      url: "#",
+    },
   ];
 
   const handleLinkClick = (path) => {
-    // Use your navigation method here
+
     console.log(`Navigate to: ${path}`);
   };
 
   const handleSubscribe = async (e) => {
-    e.preventDefault();
-    setMessage("");
-    setIsLoading(true);
+  e.preventDefault();
+  setMessage("");
+  setIsLoading(true);
 
-    try {
-      const response = await fetch(
-        "https://ilin-backend.onrender.com/api/subscribe",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        }
-      );
 
-      const data = await response.json();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email || email.trim() === "") {
+    setMessage(" Please enter an email address");
+    setIsLoading(false);
+    return;
+  }
+  if (!emailRegex.test(email)) {
+    setMessage("Please enter a valid email address");
+    setIsLoading(false);
+    return;
+  }
 
-      if (response.ok) {
-        setMessage("✅ Thanks for subscribing!");
-        setEmail("");
-      } else {
-        setMessage(`❌ ${data.message || "Failed to subscribe"}`);
-      }
-    } catch (error) {
-      setMessage("❌ Something went wrong. Please try again.");
-    } finally {
-      setIsLoading(false);
+  try {
+    const response = await fetch("https://ilin-backend.onrender.com/api/subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      setMessage("Thanks for subscribing!");
+      setEmail("");
+    } else {
+      setMessage(`${data.message || "Failed to subscribe"}`);
     }
-  };
+  } catch (error) {
+    setMessage("Something went wrong. Please try again.");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <footer className="overflow-hidden bg-gradient-to-br from-green-600 via-green-700 to-green-800 rounded-t-xl md:rounded-t-none">
@@ -114,7 +128,7 @@ export default function Footer() {
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value.trim())}
                 placeholder="Enter your email address"
                 className="flex-1 px-6 py-4 text-gray-900 placeholder-gray-500 transition-all duration-300 bg-white shadow-lg rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-400 focus:ring-opacity-50"
                 required
@@ -207,10 +221,10 @@ export default function Footer() {
                     </div>
                     <div>
                       <p className="font-semibold text-white">
-                        Plot 123, Language Plaza
+                        Itamerin, Ago-Iwoye
                       </p>
                       <p className="text-sm text-green-200">
-                        Lagos, Nigeria 100001
+                        Ogun, Nigeria 100001
                       </p>
                     </div>
                   </div>
@@ -244,7 +258,7 @@ export default function Footer() {
               <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
                 {/* Quick Links */}
                 <div>
-                  <h3 className="mb-8 text-xl font-bold text-white">
+                  <h3 className="mb-4 text-xl font-bold text-white">
                     Quick Links
                   </h3>
                   <ul className="space-y-4">
@@ -254,7 +268,7 @@ export default function Footer() {
                           onClick={() => handleLinkClick(link.path)}
                           className="flex items-center text-green-100 transition-all duration-300 hover:text-white group hover:translate-x-2"
                         >
-                          <ArrowRight className="w-5 h-5 mr-3 text-orange-400 transition-all duration-300 opacity-0 group-hover:opacity-100" />
+                          <ArrowRight className="hidden w-5 h-5 mr-3 text-orange-400 transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:flex" />
                           <span className="font-medium">{link.name}</span>
                         </button>
                       </li>
@@ -264,7 +278,7 @@ export default function Footer() {
 
                 {/* Services */}
                 <div>
-                  <h3 className="mb-8 text-xl font-bold text-white">
+                  <h3 className="mb-4 text-xl font-bold text-white">
                     Our Services
                   </h3>
                   <ul className="space-y-4">
@@ -274,7 +288,7 @@ export default function Footer() {
                           onClick={() => handleLinkClick(service.path)}
                           className="flex items-center text-green-100 transition-all duration-300 hover:text-white group hover:translate-x-2"
                         >
-                          <ArrowRight className="w-5 h-5 mr-3 text-orange-400 transition-all duration-300 opacity-0 group-hover:opacity-100" />
+                          <ArrowRight className="hidden w-5 h-5 mr-3 text-orange-400 transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:flex" />
                           <span className="font-medium">{service.name}</span>
                         </button>
                       </li>
@@ -284,7 +298,7 @@ export default function Footer() {
 
                 {/* Industries */}
                 <div>
-                  <h3 className="mb-8 text-xl font-bold text-white">
+                  <h3 className="mb-4 text-xl font-bold text-white">
                     Industries We Serve
                   </h3>
                   <ul className="space-y-4">
@@ -294,7 +308,7 @@ export default function Footer() {
                           onClick={() => handleLinkClick(industry.path)}
                           className="flex items-center text-green-100 transition-all duration-300 hover:text-white group hover:translate-x-2"
                         >
-                          <ArrowRight className="w-5 h-5 mr-3 text-orange-400 transition-all duration-300 opacity-0 group-hover:opacity-100" />
+                          <ArrowRight className="hidden w-5 h-5 mr-3 text-orange-400 transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:flex" />
                           <span className="font-medium">{industry.name}</span>
                         </button>
                       </li>

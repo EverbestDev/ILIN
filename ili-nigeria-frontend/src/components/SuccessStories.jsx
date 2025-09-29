@@ -272,9 +272,9 @@ export default function SuccessStories() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         viewport={{ once: true }}
-        className="max-w-2xl mx-auto text-center"
+        className="max-w-5xl mx-auto text-center"
       >
-        <div className="p-8 bg-white shadow-lg rounded-xl">
+        <div className="p-8 bg-white shadow-lg py-14 rounded-xl">
           <Target className="w-12 h-12 mx-auto mb-4 text-green-600" />
           <h3 className="mb-4 text-xl font-bold text-gray-900">
             Ready to Create Your Success Story?

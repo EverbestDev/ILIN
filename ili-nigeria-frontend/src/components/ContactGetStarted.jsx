@@ -23,34 +23,37 @@ export default function ContactGetStarted() {
       icon: <MessageCircle className="w-8 h-8 text-green-600" />,
       title: "WhatsApp Chat",
       description: "Instant response via WhatsApp",
-      detail: "+234 803 123 4567",
+      detail: "+234 810 906 7382",
       action: "Chat Now",
       bgColor: "bg-green-50",
       iconBg: "bg-green-100",
       borderColor: "border-green-200",
       available: "24/7 Available",
+      link: "https://wa.me/message/ERTDGUAJTMNUA1",
     },
     {
       icon: <Phone className="w-8 h-8 text-blue-600" />,
       title: "Phone Support",
       description: "Speak directly with our experts",
-      detail: "+234 1 234 5678",
+      detail: "+234 810 906 7382",
       action: "Call Now",
       bgColor: "bg-blue-50",
       iconBg: "bg-blue-100",
       borderColor: "border-blue-200",
       available: "Mon-Fri 8AM-6PM",
+      link: "",
     },
     {
       icon: <Mail className="w-8 h-8 text-purple-600" />,
       title: "Email Support",
       description: "Detailed project discussions",
-      detail: "hello@ili-nigeria.com",
+      detail: "official.intlng@gmail.com",
       action: "Send Email",
       bgColor: "bg-purple-50",
       iconBg: "bg-purple-100",
       borderColor: "border-purple-200",
       available: "24hr Response",
+      link: "mailto:official.intlng@gmail.com",
     },
   ];
 
@@ -83,8 +86,8 @@ export default function ContactGetStarted() {
 
   const offices = [
     {
-      city: "Lagos",
-      address: "Victoria Island, Lagos State",
+      city: "Ogun",
+      address: "Ago-Iwoye, Ogun State",
       isMain: true,
       hours: "Mon-Fri 8AM-6PM",
     },
@@ -95,12 +98,12 @@ export default function ContactGetStarted() {
       hours: "Mon-Fri 9AM-5PM",
     },
     {
-      city: "Port Harcourt",
-      address: "GRA Phase 2, Rivers State",
+      city: "Niamey, Niger Rep.",
+      address: "GRA Phase 2, Niamey",
       isMain: false,
       hours: "Mon-Fri 9AM-5PM",
     },
-  ];
+  ]; 
 
   const handleQuickQuote = () => {
     navigate("/quote");
@@ -166,18 +169,23 @@ export default function ContactGetStarted() {
                   {method.title}
                 </h4>
                 <p className="mb-4 text-gray-600">{method.description}</p>
-                <p className="mb-4 text-lg font-semibold text-green-600">
+                <a
+                  className="mb-4 text-lg font-semibold text-green-600"
+                  href={method.link}
+                >
                   {method.detail}
-                </p>
+                </a>
 
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-500">
                     {method.available}
                   </span>
-                  <div className="flex items-center font-medium text-green-600 transition-transform group-hover:translate-x-2">
-                    {method.action}
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </div>
+                  <a href={method.link}>
+                    <div className="flex items-center font-medium text-green-600 transition-transform group-hover:translate-x-2">
+                      {method.action}
+                      <ArrowRight className="w-5 h-5 ml-2" />
+                    </div>
+                  </a>
                 </div>
               </motion.div>
             ))}

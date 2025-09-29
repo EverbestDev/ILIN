@@ -9,7 +9,9 @@ export const subscribe = async (req, res) => {
     if (!emailRegex.test(email)) {
       return res.status(400).json({ message: "Invalid email format" });
     }
-
+    if (!email || email.trim() === "") {
+      return res.status(400).json({ message: "Email is required" });
+    }
     const existingSubscriber = await Subscriber.findOne({ email });
     if (existingSubscriber) {
       return res.status(400).json({ message: "Email already subscribed" });
@@ -42,9 +44,9 @@ export const subscribe = async (req, res) => {
           </div>
         `
       );
-      console.log("📧 Subscription confirmation email sent to", email);
+      console.log("Subscription confirmation email sent to", email);
     } catch (err) {
-      console.error("❌ Failed to send subscription email:", err);
+      console.error("Failed to send subscription email:", err);
     }
 
     try {
@@ -70,16 +72,16 @@ export const subscribe = async (req, res) => {
           </div>
         `
       );
-      console.log("📧 Admin notification sent for new subscriber");
+      console.log("Admin notification sent for new subscriber");
     } catch (err) {
-      console.error("❌ Failed to send admin notification:", err);
+      console.error("Failed to send admin notification:", err);
     }
 
     res.json({ message: "Successfully subscribed" });
   } catch (error) {
-    console.error("❌ Failed to subscribe:", error);
+    console.error("Failed to subscribe:", error);
     res
       .status(500)
-      .json({ message: "❌ Failed to subscribe", error: error.message });
+      .json({ message: "Failed to subscribe", error: error.message });
   }
 };
