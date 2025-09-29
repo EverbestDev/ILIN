@@ -33,7 +33,7 @@ app.use(
       "https://ilin-nigeria.vercel.app",
       "https://ilin-nigeria.vercel.app/",
     ],
-    methods: ["GET", "POST", "OPTIONS", "HEAD"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
   })
