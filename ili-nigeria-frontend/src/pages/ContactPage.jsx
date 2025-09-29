@@ -44,7 +44,7 @@ export default function ContactPage() {
       icon: <MessageCircle className="w-8 h-8 text-green-600" />,
       title: "WhatsApp Chat",
       description: "Get instant responses for quick questions and updates",
-      contact: "+234 803 123 4567",
+      contact: "+234 810 906 7382",
       availability: "24/7 Available",
       response: "Instant response",
       bgGradient: "from-green-500 to-emerald-600",
@@ -55,7 +55,7 @@ export default function ContactPage() {
       icon: <Phone className="w-8 h-8 text-blue-600" />,
       title: "Phone Support",
       description: "Speak directly with our translation experts",
-      contact: "+234 1 234 5678",
+      contact: "+234 810 906 7382",
       availability: "Mon-Fri 8AM-6PM",
       response: "Immediate assistance",
       bgGradient: "from-blue-500 to-indigo-600",
@@ -66,7 +66,7 @@ export default function ContactPage() {
       icon: <Mail className="w-8 h-8 text-purple-600" />,
       title: "Email Support",
       description: "Detailed discussions about your translation project",
-      contact: "hello@ili-nigeria.com",
+      contact: "official.intlng@gmail.com",
       availability: "24/7 Monitored",
       response: "Within 2 hours",
       bgGradient: "from-purple-500 to-violet-600",
@@ -81,8 +81,8 @@ export default function ContactPage() {
       fullAddress: "Plot 1234, Ahmadu Bello Way, Victoria Island, Lagos State",
       isMain: true,
       hours: "Mon-Fri: 8AM-6PM, Sat: 9AM-2PM",
-      phone: "+234 1 234 5678",
-      email: "lagos@ili-nigeria.com",
+      phone: "+234 810 906 7382",
+      email: "official.intlng@gmail.com",
     },
     {
       city: "Abuja",
@@ -90,8 +90,8 @@ export default function ContactPage() {
       fullAddress: "Suite 456, Central Business District, Abuja FCT",
       isMain: false,
       hours: "Mon-Fri: 9AM-5PM",
-      phone: "+234 9 876 5432",
-      email: "abuja@ili-nigeria.com",
+      phone: "+234 810 906 7382",
+      email: "official.intlng@gmail.com",
     },
     {
       city: "Port Harcourt",
@@ -99,8 +99,8 @@ export default function ContactPage() {
       fullAddress: "No. 78 Aba Road, GRA Phase 2, Port Harcourt, Rivers State",
       isMain: false,
       hours: "Mon-Fri: 9AM-5PM",
-      phone: "+234 8 456 7890",
-      email: "portharcourt@ili-nigeria.com",
+      phone: "+234 810 906 7382",
+      email: "official.intlng@gmail.com",
     },
   ];
 
@@ -544,10 +544,10 @@ export default function ContactPage() {
                   className="relative overflow-hidden group"
                 >
                   {/* Consistent card dimensions */}
-                  <div className="flex flex-col p-8 transition-all duration-300 bg-white border border-gray-100 shadow-xl h-80 rounded-3xl hover:shadow-2xl group-hover:scale-105">
+                  <div className="flex flex-col p-8 transition-all duration-300 bg-white border border-gray-100 shadow-xl h-90 rounded-3xl hover:shadow-2xl group-hover:scale-105">
                     {/* Icon */}
                     <div
-                      className={`w-20 h-20 ${method.iconBg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}
+                      className={`w-14 h-14 ${method.iconBg} py-2 md:py-6 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}
                     >
                       {method.icon}
                     </div>
