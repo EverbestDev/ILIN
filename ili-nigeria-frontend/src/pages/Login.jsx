@@ -1,6 +1,12 @@
 import react from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const navigate = useNavigate();
+
+  function handleLogin() {
+    navigate("/admin/quotes");
+  }
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <h1 className="mb-2 text-4xl font-bold text-green-800">Login Page</h1>
@@ -40,6 +46,7 @@ export default function Login() {
           <button
             className="px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700 focus:outline-none focus:shadow-outline"
             type="button"
+            onClick={handleLogin}
           >
             Login
           </button>
