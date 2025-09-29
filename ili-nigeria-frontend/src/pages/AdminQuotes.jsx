@@ -185,7 +185,7 @@ export default function AdminQuotes() {
   ).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen py-20 bg-gradient-to-br from-slate-50 to-slate-100 ">
       <div className="p-6 mx-auto max-w-7xl lg:p-8">
         {/* Header */}
         <div className="mb-8">
