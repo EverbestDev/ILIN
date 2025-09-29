@@ -1,16 +1,20 @@
 import express from "express";
 import multer from "multer";
-import { submitQuote } from "../controllers/quoteController.js";
+import {
+  submitQuote,
+  getAllQuotes,
+  getQuoteById,
+  deleteQuote,
+} from "../controllers/quoteController.js";
 
 const router = express.Router();
 
-// ✅ Multer config: memory storage instead of disk
+// memory storage + limits
 const storage = multer.memoryStorage();
 
-// ✅ File filter & limits
 const upload = multer({
   storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB per file
   fileFilter: (req, file, cb) => {
     const allowedTypes = [
       "application/pdf",
@@ -21,24 +25,20 @@ const upload = multer({
       "application/vnd.oasis.opendocument.text",
     ];
     if (!allowedTypes.includes(file.mimetype)) {
-      return cb(new Error("❌ Unsupported file type"));
+      return cb(new Error("Unsupported file type"));
     }
     cb(null, true);
   },
 });
 
-// ✅ Error-handling wrapper
+// Error-handling wrapper
 const uploadMiddleware = (req, res, next) => {
   upload.array("documents", 5)(req, res, (err) => {
     if (err instanceof multer.MulterError) {
       if (err.code === "LIMIT_FILE_SIZE") {
-        return res
-          .status(400)
-          .json({ message: "❌ File too large (max 10MB)" });
+        return res.status(400).json({ message: "File too large (max 10MB)" });
       }
-      return res
-        .status(400)
-        .json({ message: `❌ Upload error: ${err.message}` });
+      return res.status(400).json({ message: `Upload error: ${err.message}` });
     } else if (err) {
       return res.status(400).json({ message: err.message });
     }
@@ -46,7 +46,12 @@ const uploadMiddleware = (req, res, next) => {
   });
 };
 
-// POST /api/quotes
+// Client-facing: Submit quote
 router.post("/", uploadMiddleware, submitQuote);
+
+// Admin-facing
+router.get("/", getAllQuotes);
+router.get("/:id", getQuoteById);
+router.delete("/:id", deleteQuote);
 
 export default router;

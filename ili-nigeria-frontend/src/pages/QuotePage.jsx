@@ -78,6 +78,7 @@ export default function QuotePage() {
   });
 
   const [dragActive, setDragActive] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Debounced values for calculations
   const debouncedWordCount = useDebounce(formData.wordCount, 500);
@@ -446,7 +447,7 @@ export default function QuotePage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ✅ Step 1: Validate all steps
+    //Validate all steps
     let allErrors = {};
     for (let step = 1; step <= 4; step++) {
       const stepErrors = validateStep(step);
@@ -466,8 +467,10 @@ export default function QuotePage() {
       return;
     }
 
+    setIsSubmitting(true);
+
     try {
-      // ✅ Step 2: Create FormData
+      //Create FormData
       const formDataToSend = new FormData();
 
       // Append all text fields
@@ -483,7 +486,7 @@ export default function QuotePage() {
         }
       }
 
-      // ✅ Step 3: Append files correctly
+      // Append files correctly
       if (formData.documents && formData.documents.length > 0) {
         formData.documents.forEach((doc) => {
           // `doc` should be the File object itself
@@ -491,7 +494,7 @@ export default function QuotePage() {
         });
       }
 
-      // ✅ Step 4: POST to backend
+      // POST to backend
       const res = await fetch("https://ilin-backend.onrender.com/api/quotes", {
         method: "POST",
         body: formDataToSend,
@@ -500,19 +503,20 @@ export default function QuotePage() {
       const data = await res.json();
 
       if (res.ok) {
-        console.log("✅ Quote submitted:", data);
+        console.log("Quote submitted:", data);
         setShowSuccessModal(true);
       } else {
-        console.error("❌ Failed:", data.message);
+        console.error("Failed:", data.message);
         alert("Failed to submit quote. Please try again.");
       }
     } catch (error) {
-      console.error("❌ Error submitting quote:", error);
+      console.error("Error submitting quote:", error);
       alert("Something went wrong. Please try again later.");
+    } finally {
+      setIsSubmitting(false); // Stop loading
     }
   };
 
-  // FIXED: Success Modal Component - removed unnecessary animations and simplified
   const SuccessModal = () => (
     <AnimatePresence>
       s
@@ -622,7 +626,6 @@ export default function QuotePage() {
 
       {/* Hero Section with Glassmorphism */}
       <section className="relative px-6 py-2 pt-32 overflow-hidden md:py-20 md:px-20">
-        {/* Animated Background Elements */}
         <div className="absolute inset-0">
           <div className="absolute w-64 h-64 bg-green-200 rounded-full top-20 left-20 mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
           <div className="absolute w-64 h-64 delay-1000 bg-blue-200 rounded-full top-40 right-20 mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
@@ -1322,7 +1325,7 @@ export default function QuotePage() {
                     </div>
                   )}
 
-                  {/* Enhanced Navigation Buttons with Keyboard Hints */}
+                  {/*Navigation Buttons*/}
                   <div className="flex-col items-center justify-center mt-6 space-x-4 space-y-4 md:flex md:space-y-0 md:flex-row md:justify-between ">
                     <button
                       type="button"
@@ -1358,12 +1361,26 @@ export default function QuotePage() {
                     ) : (
                       <motion.button
                         type="submit"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="flex items-center px-8 py-3 font-semibold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl hover:from-green-700 hover:to-emerald-700 hover:shadow-xl"
+                        disabled={isSubmitting}
+                        whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
+                        whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
+                        className={`flex items-center px-8 py-3 font-semibold text-white transition-all duration-300 shadow-lg rounded-xl hover:shadow-xl ${
+                          isSubmitting
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+                        }`}
                       >
-                        <Send className="w-5 h-5 mr-2" />
-                        Get My Quote
+                        {isSubmitting ? (
+                          <>
+                            <div className="w-5 h-5 mr-2 border-2 border-white rounded-full border-t-transparent animate-spin"></div>
+                            Processing...
+                          </>
+                        ) : (
+                          <>
+                            <Send className="w-5 h-5 mr-2" />
+                            Get My Quote
+                          </>
+                        )}
                       </motion.button>
                     )}
                   </div>
@@ -1371,10 +1388,10 @@ export default function QuotePage() {
               </motion.div>
             </div>
 
-            {/* Enhanced Sidebar - Price Estimate & Summary */}
+            {/* Sidebar */}
             <div className="lg:col-span-1">
               <div className="sticky space-y-6 top-8">
-                {/* Real-time Price Estimate with Tooltip */}
+                {/* Real-time Price Estimate */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
