@@ -2,6 +2,44 @@ import Quote from "../models/Quote.js";
 import sendEmail from "../utils/email.js";
 import cloudinary from "cloudinary";
 
+// Get all quotes (Admin)
+export const getAllQuotes = async (req, res) => {
+  try {
+    const quotes = await Quote.find().sort({ createdAt: -1 }); // newest first
+    res.json(quotes);
+  } catch (error) {
+    console.error("Failed to fetch quotes:", error);
+    res.status(500).json({ message: "Failed to fetch quotes" });
+  }
+};
+// Get single quote by ID (Admin)
+export const getQuoteById = async (req, res) => {
+  try {
+    const quote = await Quote.findById(req.params.id);
+    if (!quote) {
+      return res.status(404).json({ message: "Quote not found" });
+    }
+    res.json(quote);
+  } catch (error) {
+    console.error("Failed to fetch quote:", error);
+    res.status(500).json({ message: "Failed to fetch quote" });
+  }
+};
+
+// Delete quote by ID (Admin)
+export const deleteQuote = async (req, res) => {
+  try {
+    const deleted = await Quote.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ message: "❌ Quote not found" });
+    }
+    res.json({ message: "✅ Quote deleted successfully" });
+  } catch (error) {
+    console.error("❌ Failed to delete quote:", error);
+    res.status(500).json({ message: "❌ Failed to delete quote" });
+  }
+};
+
 // Cloudinary config
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -88,7 +126,7 @@ export const submitQuote = async (req, res) => {
       documents: files,
     });
 
-    console.log("✅ Quote saved to DB:", newQuote._id);
+    console.log("Quote saved to DB:", newQuote._id);
 
     // ---- Email to admin ----
     try {
@@ -142,9 +180,9 @@ export const submitQuote = async (req, res) => {
           </div>
         `
       );
-      console.log("📧 Admin email sent");
+      console.log("Admin email sent");
     } catch (err) {
-      console.error("❌ Failed to send admin email:", err);
+      console.error("Failed to send admin email:", err);
     }
 
     // ---- Email to client ----
@@ -193,20 +231,20 @@ export const submitQuote = async (req, res) => {
           </div>
         `
       );
-      console.log("📧 Client email sent");
+      console.log("Client email sent");
     } catch (err) {
-      console.error("❌ Failed to send client email:", err);
+      console.error("Failed to send client email:", err);
     }
 
     res.json({
-      message: "✅ Quote submitted successfully",
+      message: "Quote submitted successfully",
       quoteId: newQuote._id,
     });
   } catch (error) {
-    console.error("❌ Failed to submit quote:", error);
+    console.error("Failed to submit quote:", error);
     res
       .status(500)
-      .json({ message: "❌ Failed to submit quote", error: error.message });
+      .json({ message: "Failed to submit quote", error: error.message });
   }
 };
 
