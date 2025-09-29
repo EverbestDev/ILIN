@@ -24,7 +24,7 @@ import LanguagesPage from "./pages/LangauagesPage";
 import ServicesPage from "./pages/ServicesPage";
 import QuotePage from "./pages/QuotePage";
 import Login from "./pages/Login";
-import AdminQuotes from "./pages/AdminQuotes";
+import AdminQuotes from "./Admin/AdminQuotes";
 
 function App() {
   return (
