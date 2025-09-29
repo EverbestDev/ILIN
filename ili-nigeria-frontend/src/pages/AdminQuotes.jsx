@@ -237,11 +237,11 @@ export default function AdminQuotes() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-3">
-            <div className="p-3 shadow-lg bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl">
+            <div className="p-3 shadow-lg bg-gradient-to-br from-green-600 to-green-700 rounded-xl">
               <Globe className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-slate-900">Translation Requests</h1>
+              <h1 className="text-4xl font-bold text-green-700">Translation Requests</h1>
               <p className="mt-1 text-slate-600">Breaking language barriers, connecting cultures worldwide</p>
             </div>
           </div>
@@ -251,7 +251,7 @@ export default function AdminQuotes() {
         <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3 lg:grid-cols-6">
           <div className="p-5 transition-shadow bg-white border shadow-sm rounded-xl border-slate-200 hover:shadow-md">
             <div className="flex items-center justify-between mb-2">
-              <FileText className="w-5 h-5 text-blue-600" />
+              <FileText className="w-5 h-5 text-green-600" />
               <span className="text-xs font-medium text-slate-500">TOTAL</span>
             </div>
             <p className="text-2xl font-bold text-slate-900">{stats.total}</p>
@@ -278,7 +278,7 @@ export default function AdminQuotes() {
 
           <div className="p-5 transition-shadow bg-white border shadow-sm rounded-xl border-slate-200 hover:shadow-md">
             <div className="flex items-center justify-between mb-2">
-              <Award className="w-5 h-5 text-green-600" />
+              <Award className="w-5 h-5 text-blue-900" />
               <span className="text-xs font-medium text-slate-500">CERTIFIED</span>
             </div>
             <p className="text-2xl font-bold text-slate-900">{stats.certified}</p>
@@ -315,7 +315,7 @@ export default function AdminQuotes() {
                 placeholder="Search by name, email, or service..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
               />
             </div>
 
@@ -325,14 +325,14 @@ export default function AdminQuotes() {
                 onClick={() => setShowFilters(!showFilters)}
                 className={`px-4 py-2.5 rounded-lg border font-medium transition-all flex items-center gap-2 ${
                   showFilters || activeFiltersCount > 0
-                    ? "bg-blue-50 border-blue-200 text-blue-700"
+                    ? "bg-blue-50 border-blue-200 text-green-700"
                     : "bg-white border-slate-300 text-slate-700 hover:bg-slate-50"
                 }`}
               >
                 <Filter className="w-4 h-4" />
                 Filters
                 {activeFiltersCount > 0 && (
-                  <span className="bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full">
+                  <span className="bg-green-600 text-white text-xs px-2 py-0.5 rounded-full">
                     {activeFiltersCount}
                   </span>
                 )}
@@ -354,7 +354,7 @@ export default function AdminQuotes() {
               <select
                 value={filterService}
                 onChange={(e) => setFilterService(e.target.value)}
-                className="px-3 py-2 text-sm border rounded-lg outline-none border-slate-300 focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 text-sm border rounded-lg outline-none border-slate-300 focus:ring-2 focus:ring-green-500"
               >
                 <option value="">All Services</option>
                 {[...new Set(quotes.map((q) => q.service))].map((s) => (
@@ -365,7 +365,7 @@ export default function AdminQuotes() {
               <select
                 value={filterUrgency}
                 onChange={(e) => setFilterUrgency(e.target.value)}
-                className="px-3 py-2 text-sm border rounded-lg outline-none border-slate-300 focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 text-sm border rounded-lg outline-none border-slate-300 focus:ring-2 focus:ring-green-500"
               >
                 <option value="">All Urgencies</option>
                 <option value="standard">Standard</option>
@@ -376,7 +376,7 @@ export default function AdminQuotes() {
               <select
                 value={filterCert}
                 onChange={(e) => setFilterCert(e.target.value)}
-                className="px-3 py-2 text-sm border rounded-lg outline-none border-slate-300 focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 text-sm border rounded-lg outline-none border-slate-300 focus:ring-2 focus:ring-green-500"
               >
                 <option value="">Certification</option>
                 <option value="yes">Certified</option>
@@ -386,7 +386,7 @@ export default function AdminQuotes() {
               <select
                 value={dateRange}
                 onChange={(e) => setDateRange(e.target.value)}
-                className="px-3 py-2 text-sm border rounded-lg outline-none border-slate-300 focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 text-sm border rounded-lg outline-none border-slate-300 focus:ring-2 focus:ring-green-500"
               >
                 <option value="all">All Time</option>
                 <option value="today">Today</option>
@@ -418,7 +418,7 @@ export default function AdminQuotes() {
         {/* Table */}
         {loading && (
           <div className="p-12 text-center bg-white border shadow-sm rounded-xl border-slate-200">
-            <div className="inline-block w-12 h-12 border-b-2 border-blue-600 rounded-full animate-spin"></div>
+            <div className="inline-block w-12 h-12 border-b-2 border-green-600 rounded-full animate-spin"></div>
             <p className="mt-4 text-slate-600">Loading translation requests...</p>
           </div>
         )}
@@ -462,11 +462,11 @@ export default function AdminQuotes() {
                       <tr key={q._id} className="transition-colors hover:bg-blue-50/30">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="flex items-center justify-center w-10 h-10 font-semibold text-white rounded-full bg-gradient-to-br from-blue-500 to-blue-600">
+                            <div className="flex items-center justify-center w-10 h-10 font-semibold text-white rounded-full bg-gradient-to-br from-green-500 to-green-600">
                               {q.name?.charAt(0).toUpperCase()}
                             </div>
                             <div>
-                              <span className="block font-medium text-slate-900">{q.name}</span>
+                              <span className="block font-medium text-green-900">{q.name}</span>
                               <span className="text-xs text-slate-500">{q.email}</span>
                             </div>
                           </div>
@@ -602,7 +602,7 @@ export default function AdminQuotes() {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
             <div className="bg-white rounded-2xl w-full max-w-3xl shadow-2xl max-h-[90vh] overflow-y-auto">
               {/* Modal Header */}
-              <div className="sticky top-0 flex items-center justify-between px-6 py-5 bg-gradient-to-r from-blue-600 to-blue-700 rounded-t-2xl">
+              <div className="sticky top-0 flex items-center justify-between px-6 py-5 bg-gradient-to-r from-green-600 to-green-700 rounded-t-2xl">
                 <div className="flex items-center gap-3">
                   <div className="flex items-center justify-center w-12 h-12 text-lg font-bold text-white rounded-full bg-white/20">
                     {selectedQuote.name?.charAt(0).toUpperCase()}
@@ -625,17 +625,17 @@ export default function AdminQuotes() {
                 {/* Client Info */}
                 <div className="p-5 border border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-xl">
                   <h3 className="flex items-center gap-2 mb-4 font-semibold text-slate-900">
-                    <Mail className="w-5 h-5 text-blue-600" />
+                    <Mail className="w-5 h-5 text-green-600" />
                     Client Information
                   </h3>
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
                       <span className="block mb-1 text-sm text-slate-600">Full Name</span>
-                      <span className="font-medium text-slate-900">{selectedQuote.name}</span>
+                      <span className="font-medium text-green-900">{selectedQuote.name}</span>
                     </div>
                     <div>
                       <span className="block mb-1 text-sm text-slate-600">Email Address</span>
-                      <a href={`mailto:${selectedQuote.email}`} className="font-medium text-blue-600 hover:underline">
+                      <a href={`mailto:${selectedQuote.email}`} className="font-medium text-green-600 hover:underline">
                         {selectedQuote.email}
                       </a>
                     </div>
@@ -725,13 +725,13 @@ export default function AdminQuotes() {
                         >
                           <div className="flex items-center gap-3">
                             <div className="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-lg">
-                              <FileText className="w-5 h-5 text-blue-600" />
+                              <FileText className="w-5 h-5 text-green-600" />
                             </div>
-                            <span className="font-medium text-slate-900 group-hover:text-blue-600">
+                            <span className="font-medium text-slate-900 group-hover:text-green-600">
                               {doc.name}
                             </span>
                           </div>
-                          <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-blue-600" />
+                          <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-green-600" />
                         </a>
                       ))}
                     </div>
@@ -774,7 +774,7 @@ export default function AdminQuotes() {
                 </div>
 
                 {/* Mission Statement */}
-                <div className="p-5 text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl">
+                <div className="p-5 text-white bg-gradient-to-r from-green-600 to-green-700 rounded-xl">
                   <div className="flex items-start gap-3">
                     <Globe className="flex-shrink-0 w-6 h-6 mt-1" />
                     <div>
