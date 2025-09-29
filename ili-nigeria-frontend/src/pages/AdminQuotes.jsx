@@ -25,7 +25,7 @@ export default function AdminQuotes() {
   const [error, setError] = useState(null);
   const [selectedQuote, setSelectedQuote] = useState(null);
 
-  // 🔍 Filters
+  // Filters
   const [search, setSearch] = useState("");
   const [filterService, setFilterService] = useState("");
   const [filterUrgency, setFilterUrgency] = useState("");
@@ -33,11 +33,11 @@ export default function AdminQuotes() {
   const [sortOrder, setSortOrder] = useState("newest");
   const [showFilters, setShowFilters] = useState(false);
 
-  // 📄 Pagination
+  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const quotesPerPage = 10;
 
-  // ✅ Fetch all quotes
+  // Fetch all quotes
   useEffect(() => {
     const fetchQuotes = async () => {
       try {
@@ -55,7 +55,7 @@ export default function AdminQuotes() {
     fetchQuotes();
   }, []);
 
-  // ✅ Apply search + filters + sort
+  //Apply search + filters + sort
   useEffect(() => {
     let results = [...quotes];
 
@@ -90,7 +90,7 @@ export default function AdminQuotes() {
     setCurrentPage(1);
   }, [search, filterService, filterUrgency, filterCert, sortOrder, quotes]);
 
-  // ✅ Delete a quote
+  //Delete a quote
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this quote?")) return;
 
@@ -98,13 +98,13 @@ export default function AdminQuotes() {
       const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to delete");
       setQuotes((prev) => prev.filter((q) => q._id !== id));
-      alert("Quote deleted successfully ✅");
+      alert("Quote deleted successfully");
     } catch (err) {
       alert("Error deleting: " + err.message);
     }
   };
 
-  // ✅ Fetch single quote details
+  //Fetch single quote details
   const handleView = async (id) => {
     try {
       const res = await fetch(`${API_URL}/${id}`);
@@ -116,7 +116,7 @@ export default function AdminQuotes() {
     }
   };
 
-  // ✅ Export to CSV
+  //Export to CSV
   const handleExportCSV = () => {
     const headers = [
       "Client Name",
@@ -162,7 +162,7 @@ export default function AdminQuotes() {
     setSortOrder("newest");
   };
 
-  // ✅ Pagination logic
+  //Pagination logic
   const indexOfLast = currentPage * quotesPerPage;
   const indexOfFirst = indexOfLast - quotesPerPage;
   const currentQuotes = filteredQuotes.slice(indexOfFirst, indexOfLast);
