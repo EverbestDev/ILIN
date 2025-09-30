@@ -3,9 +3,9 @@ import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebookF, FaLinkedinIn } from "react-icons/fa";
-import { Globe, Eye, EyeOff } from "lucide-react"; // <-- ADDED: Eye and EyeOff icons
+import { Globe, Eye, EyeOff } from "lucide-react";
 
-// Carousel Data
+// Carousel Data (Kept outside the component for performance)
 const carouselSlides = [
   {
     title: "Our Mission",
@@ -21,7 +21,7 @@ const carouselSlides = [
   },
 ];
 
-// Auth Sidebar Component (Full Height of the main area)
+// Auth Sidebar Component
 const AuthSidebar = ({ activeSlide }) => {
   const slide = carouselSlides[activeSlide];
   return (
@@ -71,7 +71,7 @@ export default function Login() {
   const [isSignup, setIsSignup] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [loading, setLoading] = useState(false);
-  // 👇 New state for password visibility
+  // State for password visibility
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -104,6 +104,7 @@ export default function Login() {
     // Simulate API call
     setTimeout(() => {
       setLoading(false);
+      // Logic for navigation (Keep as is)
       if (email.includes("admin")) {
         navigate("/admin/dashboard");
       } else {
@@ -111,160 +112,6 @@ export default function Login() {
       }
     }, 1500);
   }
-
-  // Form content based on toggle state
-  const FormContent = () => (
-    <>
-      {isSignup && (
-        <div>
-          <label
-            htmlFor="name"
-            className="block mb-1 text-sm font-medium text-gray-700"
-          >
-            Full Name
-          </label>
-          <input
-            id="name"
-            type="text"
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
-            placeholder="Your Name"
-          />
-        </div>
-      )}
-
-      <div>
-        <label
-          htmlFor="email"
-          className="block mb-1 text-sm font-medium text-gray-700"
-        >
-          Email Address
-        </label>
-        <input
-          id="email"
-          type="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
-          placeholder="you@example.com"
-        />
-      </div>
-
-      {/* Password Field with Eye Toggle */}
-      <div className="relative">
-        <label
-          htmlFor="password"
-          className="block mb-1 text-sm font-medium text-gray-700"
-        >
-          Password
-        </label>
-        <input
-          id="password"
-          // 👇 Dynamically set type based on state
-          type={showPassword ? "text" : "password"}
-          required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
-          placeholder="••••••••"
-        />
-        {/* Eye Button */}
-        <button
-          type="button"
-          onClick={() => setShowPassword(!showPassword)}
-          className="absolute inset-y-0 right-0 flex items-center pr-3 mt-6 text-gray-400 hover:text-gray-600 focus:outline-none"
-          aria-label={showPassword ? "Hide password" : "Show password"}
-        >
-          {showPassword ? (
-            <EyeOff className="w-5 h-5" />
-          ) : (
-            <Eye className="w-5 h-5" />
-          )}
-        </button>
-      </div>
-
-      {/* Confirm Password Field with Eye Toggle (only for Signup) */}
-      {isSignup && (
-        <div className="relative">
-          <label
-            htmlFor="confirmPassword"
-            className="block mb-1 text-sm font-medium text-gray-700"
-          >
-            Confirm Password
-          </label>
-          <input
-            id="confirmPassword"
-            // 👇 Dynamically set type based on state
-            type={showConfirmPassword ? "text" : "password"}
-            required
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
-            placeholder="••••••••"
-          />
-          {/* Eye Button */}
-          <button
-            type="button"
-            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            className="absolute inset-y-0 right-0 flex items-center pr-3 mt-6 text-gray-400 hover:text-gray-600 focus:outline-none"
-            aria-label={
-              showConfirmPassword
-                ? "Hide confirm password"
-                : "Show confirm password"
-            }
-          >
-            {showConfirmPassword ? (
-              <EyeOff className="w-5 h-5" />
-            ) : (
-              <Eye className="w-5 h-5" />
-            )}
-          </button>
-        </div>
-      )}
-
-      {!isSignup && (
-        <div className="flex items-center justify-between pt-2">
-          <div className="flex items-center">
-            <input
-              id="remember-me"
-              name="remember-me"
-              type="checkbox"
-              className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
-            />
-            <label
-              htmlFor="remember-me"
-              className="block ml-2 text-sm text-gray-900"
-            >
-              Remember me
-            </label>
-          </div>
-          <a
-            href="#"
-            className="text-sm font-medium text-green-600 hover:text-green-500"
-          >
-            Forgot password?
-          </a>
-        </div>
-      )}
-
-      <button
-        type="submit"
-        disabled={loading}
-        className="flex items-center justify-center w-full gap-2 px-4 py-3 text-sm font-medium text-white transition duration-150 border border-transparent rounded-lg shadow-sm bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
-      >
-        {loading ? (
-          <div className="w-5 h-5 border-b-2 border-white rounded-full animate-spin"></div>
-        ) : isSignup ? (
-          "Create Account"
-        ) : (
-          "Sign In"
-        )}
-      </button>
-    </>
-  );
 
   return (
     // min-h-full ensures the dual panel fills the remaining space between header and footer
@@ -276,6 +123,7 @@ export default function Login() {
       <div className="flex flex-col items-center justify-center w-full p-6 sm:p-12 lg:w-2/3 xl:w-3/5 bg-gray-50">
         {/* Form Container */}
         <motion.div
+          // Key ensures the form container animates when toggling between sign-in/sign-up
           key={isSignup ? "signup" : "login"}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -307,7 +155,157 @@ export default function Login() {
           </div>
 
           <form onSubmit={handleAuth} className="space-y-4">
-            <FormContent />
+            {/* INLINED FORM CONTENT START */}
+
+            {isSignup && (
+              <div>
+                <label
+                  htmlFor="name"
+                  className="block mb-1 text-sm font-medium text-gray-700"
+                >
+                  Full Name
+                </label>
+                <input
+                  id="name"
+                  type="text"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+                  placeholder="Your Name"
+                />
+              </div>
+            )}
+
+            <div>
+              <label
+                htmlFor="email"
+                className="block mb-1 text-sm font-medium text-gray-700"
+              >
+                Email Address
+              </label>
+              <input
+                id="email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+                placeholder="you@example.com"
+              />
+            </div>
+
+            {/* Password Field with Eye Toggle - FIXED POSITIONING */}
+            <div className="relative">
+              <label
+                htmlFor="password"
+                className="block mb-1 text-sm font-medium text-gray-700"
+              >
+                Password
+              </label>
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 pr-10 transition duration-150 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500" // Added pr-10 for icon padding
+                placeholder="••••••••"
+              />
+              {/* Eye Button: inset-y-0 sets top/bottom to 0, which makes it span the full height of the relative container. */}
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 focus:outline-none"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {/* Use a little bit of margin-top for slight vertical adjustment */}
+                {showPassword ? (
+                  <EyeOff className="w-5 h-5 mt-5" />
+                ) : (
+                  <Eye className="w-5 h-5 mt-5" />
+                )}
+              </button>
+            </div>
+
+            {/* Confirm Password Field with Eye Toggle (only for Signup) - FIXED POSITIONING */}
+            {isSignup && (
+              <div className="relative">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block mb-1 text-sm font-medium text-gray-700"
+                >
+                  Confirm Password
+                </label>
+                <input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full px-4 py-3 pr-10 transition duration-150 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500" // Added pr-10 for icon padding
+                  placeholder="••••••••"
+                />
+                {/* Eye Button */}
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 focus:outline-none"
+                  aria-label={
+                    showConfirmPassword
+                      ? "Hide confirm password"
+                      : "Show confirm password"
+                  }
+                >
+                  {/* Use a little bit of margin-top for slight vertical adjustment */}
+                  {showConfirmPassword ? (
+                    <EyeOff className="w-5 h-5 mt-5" />
+                  ) : (
+                    <Eye className="w-5 h-5 mt-5" />
+                  )}
+                </button>
+              </div>
+            )}
+
+            {!isSignup && (
+              <div className="flex items-center justify-between pt-2">
+                <div className="flex items-center">
+                  <input
+                    id="remember-me"
+                    name="remember-me"
+                    type="checkbox"
+                    className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                  />
+                  <label
+                    htmlFor="remember-me"
+                    className="block ml-2 text-sm text-gray-900"
+                  >
+                    Remember me
+                  </label>
+                </div>
+                <a
+                  href="#"
+                  className="text-sm font-medium text-green-600 hover:text-green-500"
+                >
+                  Forgot password?
+                </a>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex items-center justify-center w-full gap-2 px-4 py-3 text-sm font-medium text-white transition duration-150 border border-transparent rounded-lg shadow-sm bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
+            >
+              {loading ? (
+                <div className="w-5 h-5 border-b-2 border-white rounded-full animate-spin"></div>
+              ) : isSignup ? (
+                "Create Account"
+              ) : (
+                "Sign In"
+              )}
+            </button>
+            {/* INLINED FORM CONTENT END */}
           </form>
 
           {/* Divider */}
@@ -325,18 +323,21 @@ export default function Login() {
           {/* Social Login Buttons (Google, Facebook, LinkedIn) */}
           <div className="grid grid-cols-3 gap-3 mt-6">
             <button
+              type="button"
               onClick={() => console.log("Google Auth")}
               className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50"
             >
               <FcGoogle size={20} />
             </button>
             <button
+              type="button"
               onClick={() => console.log("Facebook Auth")}
               className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50"
             >
               <FaFacebookF size={20} className="text-blue-600" />
             </button>
             <button
+              type="button"
               onClick={() => console.log("LinkedIn Auth")}
               className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50"
             >
