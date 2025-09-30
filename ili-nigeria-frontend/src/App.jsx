@@ -2,8 +2,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import TopScroll from "./components/TopScroll";
 import DefaultLayout from "./layouts/DefaultLayout";
 import AdminLayout from "./layouts/AdminLayout";
+import ClientLayout from "./layouts/ClientLayout";
+import AuthLayout from "./layouts/AuthLayout"; // <-- AuthLayout Import
 
-// Client Pages
+// Default Pages
 import Hero from "./components/Hero";
 import About from "./components/About";
 import LanguagesSupport from "./components/LanguagesSupport";
@@ -15,12 +17,12 @@ import SuccessStories from "./components/SuccessStories";
 import MeetOurTeam from "./components/MeetOurTeam";
 import TechnologyTools from "./components/TechnologyTools";
 import ContactGetStarted from "./components/ContactGetStarted";
-import AboutPage from "./pages/AboutPage";
-import ContactPage from "./pages/ContactPage";
-import LanguagesPage from "./pages/LangauagesPage";
-import ServicesPage from "./pages/ServicesPage";
-import QuotePage from "./pages/QuotePage";
-import Login from "./pages/Login";
+import AboutPage from "./pages/Default/AboutPage";
+import ContactPage from "./pages/Default/ContactPage";
+import LanguagesPage from "./pages/Default/LangauagesPage";
+import ServicesPage from "./pages/Default/ServicesPage";
+import QuotePage from "./pages/Default/QuotePage";
+import Login from "./pages/Default/Login"; // <-- Login Import
 
 // Admin Pages
 import Dashboard from "./pages/Admin/Dashboard";
@@ -31,12 +33,19 @@ import Schedules from "./pages/Admin/Schedules";
 import Analytics from "./pages/Admin/Analytics";
 import Settings from "./pages/Admin/Settings";
 
+// Client Pages (Imports assuming they exist in ./pages/Client)
+import ClientDashboard from "./pages/Client/Dashboard";
+import ClientOrders from "./pages/Client/Orders";
+import ClientOrderDetails from "./pages/Client/OrderDetails";
+import ClientMessages from "./pages/Client/Messages";
+import ClientSettings from "./pages/Client/Settings";
+
 function App() {
   return (
     <Router>
       <TopScroll />
       <Routes>
-        {/* Client Pages */}
+        {/* Default Client/Public Pages - Use DefaultLayout */}
         <Route
           path="/"
           element={
@@ -102,15 +111,71 @@ function App() {
         />
 
         <Route
-          path="/login"
+          path="/request-quote"
           element={
             <DefaultLayout>
-              <Login />
+              <QuotePage />
             </DefaultLayout>
           }
         />
 
-        {/* Admin Pages */}
+        {/* ======================= AUTHENTICATION PAGE ======================= */}
+        <Route
+          path="/login"
+          element={
+            <AuthLayout>
+              <Login />
+            </AuthLayout>
+          }
+        />
+
+        {/* ======================= CLIENT DASHBOARD PAGES ======================= */}
+        <Route
+          path="/client/dashboard"
+          element={
+            <ClientLayout>
+              <ClientDashboard />
+            </ClientLayout>
+          }
+        />
+
+        <Route
+          path="/client/orders"
+          element={
+            <ClientLayout>
+              <ClientOrders />
+            </ClientLayout>
+          }
+        />
+
+        <Route
+          path="/client/orders/:orderId"
+          element={
+            <ClientLayout>
+              <ClientOrderDetails />
+            </ClientLayout>
+          }
+        />
+
+        <Route
+          path="/client/messages"
+          element={
+            <ClientLayout>
+              <ClientMessages />
+            </ClientLayout>
+          }
+        />
+
+        <Route
+          path="/client/settings"
+          element={
+            <ClientLayout>
+              <ClientSettings />
+            </ClientLayout>
+          }
+        />
+
+        {/* ========================= ADMIN PAGES ================================ */}
         <Route
           path="/admin/dashboard"
           element={
