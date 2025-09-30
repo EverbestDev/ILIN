@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
-import AdminNavbar from "../components/admin/AdminNavbar";
-import AdminSidebar from "../components/admin/AdminSidebar";
-import AdminFooter from "../components/admin/AdminFooter";
+import AdminNavbar from "../components/Admin/AdminNavbar";
+import AdminSidebar from "../components/Admin/AdminSidebar";
+import AdminFooter from "../components/Admin/AdminFooter";
 
 const AdminLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
