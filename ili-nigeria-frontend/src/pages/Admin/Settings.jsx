@@ -49,18 +49,15 @@ const Settings = () => {
     setTimeout(() => setNotification(null), 3000);
   };
 
-  const handleSaveProfile = (e) => {
-    e.preventDefault();
+  const handleSaveProfile = () => {
     showNotification("Profile updated successfully", "success");
   };
 
-  const handleSaveNotifications = (e) => {
-    e.preventDefault();
+  const handleSaveNotifications = () => {
     showNotification("Notification preferences saved", "success");
   };
 
-  const handleSaveBusiness = (e) => {
-    e.preventDefault();
+  const handleSaveBusiness = () => {
     showNotification("Business settings updated", "success");
   };
 
@@ -96,14 +93,14 @@ const Settings = () => {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-        <p className="text-gray-600 mt-1">
+        <p className="mt-1 text-gray-600">
           Manage your account and preferences
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-        <div className="border-b border-gray-200 px-6">
+      <div className="bg-white border border-gray-200 shadow-sm rounded-xl">
+        <div className="px-6 border-b border-gray-200">
           <nav className="flex gap-8 -mb-px">
             {tabs.map((tab) => {
               const Icon = tab.icon;
@@ -128,19 +125,19 @@ const Settings = () => {
         <div className="p-6">
           {/* Profile Tab */}
           {activeTab === "profile" && (
-            <form onSubmit={handleSaveProfile} className="space-y-6">
+            <div className="space-y-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900 mb-4">
+                <h2 className="mb-4 text-xl font-bold text-gray-900">
                   Profile Information
                 </h2>
-                <p className="text-sm text-gray-600 mb-6">
+                <p className="mb-6 text-sm text-gray-600">
                   Update your personal information and contact details
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
                     Full Name
                   </label>
                   <input
@@ -154,7 +151,7 @@ const Settings = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
                     Email Address
                   </label>
                   <input
@@ -168,7 +165,7 @@ const Settings = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
                     Phone Number
                   </label>
                   <input
@@ -182,7 +179,7 @@ const Settings = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
                     Role
                   </label>
                   <input
@@ -196,30 +193,30 @@ const Settings = () => {
 
               <div className="flex justify-end pt-4 border-t border-gray-200">
                 <button
-                  type="submit"
+                  onClick={handleSaveProfile}
                   className="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all flex items-center gap-2"
                 >
                   <Save className="w-4 h-4" />
                   Save Changes
                 </button>
               </div>
-            </form>
+            </div>
           )}
 
           {/* Notifications Tab */}
           {activeTab === "notifications" && (
-            <form onSubmit={handleSaveNotifications} className="space-y-6">
+            <div className="space-y-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900 mb-4">
+                <h2 className="mb-4 text-xl font-bold text-gray-900">
                   Notification Preferences
                 </h2>
-                <p className="text-sm text-gray-600 mb-6">
+                <p className="mb-6 text-sm text-gray-600">
                   Choose what updates you want to receive
                 </p>
               </div>
 
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between p-4 rounded-lg bg-gray-50">
                   <div className="flex items-start gap-3">
                     <Mail className="w-5 h-5 text-green-600 mt-0.5" />
                     <div>
@@ -247,7 +244,7 @@ const Settings = () => {
                   </label>
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between p-4 rounded-lg bg-gray-50">
                   <div className="flex items-start gap-3">
                     <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
                     <div>
@@ -275,7 +272,7 @@ const Settings = () => {
                   </label>
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between p-4 rounded-lg bg-gray-50">
                   <div className="flex items-start gap-3">
                     <User className="w-5 h-5 text-blue-600 mt-0.5" />
                     <div>
@@ -303,7 +300,7 @@ const Settings = () => {
                   </label>
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between p-4 rounded-lg bg-gray-50">
                   <div className="flex items-start gap-3">
                     <Mail className="w-5 h-5 text-purple-600 mt-0.5" />
                     <div>
@@ -331,7 +328,7 @@ const Settings = () => {
                   </label>
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between p-4 rounded-lg bg-gray-50">
                   <div className="flex items-start gap-3">
                     <FileText className="w-5 h-5 text-orange-600 mt-0.5" />
                     <div>
@@ -362,31 +359,31 @@ const Settings = () => {
 
               <div className="flex justify-end pt-4 border-t border-gray-200">
                 <button
-                  type="submit"
+                  onClick={handleSaveNotifications}
                   className="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all flex items-center gap-2"
                 >
                   <Save className="w-4 h-4" />
                   Save Preferences
                 </button>
               </div>
-            </form>
+            </div>
           )}
 
           {/* Business Tab */}
           {activeTab === "business" && (
-            <form onSubmit={handleSaveBusiness} className="space-y-6">
+            <div className="space-y-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900 mb-4">
+                <h2 className="mb-4 text-xl font-bold text-gray-900">
                   Business Settings
                 </h2>
-                <p className="text-sm text-gray-600 mb-6">
+                <p className="mb-6 text-sm text-gray-600">
                   Configure your business preferences and operational settings
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
                     Company Name
                   </label>
                   <input
@@ -400,8 +397,8 @@ const Settings = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    <Clock className="w-4 h-4 inline mr-1" />
+                  <label className="flex items-center block gap-1 mb-2 text-sm font-medium text-gray-700">
+                    <Clock className="w-4 h-4" />
                     Timezone
                   </label>
                   <select
@@ -422,8 +419,8 @@ const Settings = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    <DollarSign className="w-4 h-4 inline mr-1" />
+                  <label className="flex items-center block gap-1 mb-2 text-sm font-medium text-gray-700">
+                    <DollarSign className="w-4 h-4" />
                     Default Currency
                   </label>
                   <select
@@ -441,7 +438,7 @@ const Settings = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
                     Response Time Goal (hours)
                   </label>
                   <input
@@ -455,7 +452,7 @@ const Settings = () => {
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
                     Working Hours
                   </label>
                   <input
@@ -472,37 +469,37 @@ const Settings = () => {
 
               <div className="flex justify-end pt-4 border-t border-gray-200">
                 <button
-                  type="submit"
+                  onClick={handleSaveBusiness}
                   className="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all flex items-center gap-2"
                 >
                   <Save className="w-4 h-4" />
                   Save Settings
                 </button>
               </div>
-            </form>
+            </div>
           )}
 
           {/* Security Tab */}
           {activeTab === "security" && (
             <div className="space-y-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900 mb-4">
+                <h2 className="mb-4 text-xl font-bold text-gray-900">
                   Security Settings
                 </h2>
-                <p className="text-sm text-gray-600 mb-6">
+                <p className="mb-6 text-sm text-gray-600">
                   Manage your password and security preferences
                 </p>
               </div>
 
               {/* Change Password */}
-              <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
-                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <div className="p-6 border border-gray-200 bg-gray-50 rounded-xl">
+                <h3 className="flex items-center gap-2 mb-4 font-semibold text-gray-900">
                   <Lock className="w-5 h-5 text-green-600" />
                   Change Password
                 </h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block mb-2 text-sm font-medium text-gray-700">
                       Current Password
                     </label>
                     <input
@@ -511,7 +508,7 @@ const Settings = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block mb-2 text-sm font-medium text-gray-700">
                       New Password
                     </label>
                     <input
@@ -520,7 +517,7 @@ const Settings = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block mb-2 text-sm font-medium text-gray-700">
                       Confirm New Password
                     </label>
                     <input
@@ -529,7 +526,6 @@ const Settings = () => {
                     />
                   </div>
                   <button
-                    type="button"
                     onClick={() =>
                       showNotification(
                         "Password updated successfully",
@@ -544,35 +540,29 @@ const Settings = () => {
               </div>
 
               {/* API Keys */}
-              <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
-                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <div className="p-6 border border-gray-200 bg-gray-50 rounded-xl">
+                <h3 className="flex items-center gap-2 mb-4 font-semibold text-gray-900">
                   <Key className="w-5 h-5 text-blue-600" />
                   API Keys
                 </h3>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="mb-4 text-sm text-gray-600">
                   Manage API keys for integrations
                 </p>
-                <button
-                  type="button"
-                  className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-all"
-                >
+                <button className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-all">
                   Generate New API Key
                 </button>
               </div>
 
               {/* Data Export */}
-              <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
-                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <div className="p-6 border border-gray-200 bg-gray-50 rounded-xl">
+                <h3 className="flex items-center gap-2 mb-4 font-semibold text-gray-900">
                   <FileText className="w-5 h-5 text-purple-600" />
                   Data Export
                 </h3>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="mb-4 text-sm text-gray-600">
                   Download all your data in JSON format
                 </p>
-                <button
-                  type="button"
-                  className="px-6 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium transition-all"
-                >
+                <button className="px-6 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium transition-all">
                   Export All Data
                 </button>
               </div>
@@ -581,21 +571,7 @@ const Settings = () => {
         </div>
       </div>
 
-      <style>{`
-        @keyframes slide-in {
-          from {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-          to {
-            transform: translateX(0);
-            opacity: 1;
-          }
-        }
-        .animate-slide-in {
-          animation: slide-in 0.3s ease-out;
-        }
-      `}</style>
+     
     </div>
   );
 };
