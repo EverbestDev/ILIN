@@ -44,10 +44,10 @@ export const deleteQuote = async (req, res) => {
             .split("/")
             .slice(-2)
             .join("/")
-            .replace(/\.[^/.]+$/, ""); // remove file extension
+            .replace(/\.[^/.]+$/, ""); 
 
           await cloudinary.v2.uploader.destroy(publicId, {
-            resource_type: "raw", // important for non-images (pdf/docx)
+            resource_type: "raw", 
           });
 
           console.log(`Deleted from Cloudinary: ${publicId}`);
