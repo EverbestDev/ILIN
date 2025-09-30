@@ -186,12 +186,12 @@ const Schedules = () => {
       )}
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
             Schedule & Events
           </h1>
-          <p className="text-gray-600 mt-1">
+          <p className="mt-1 text-gray-600">
             Manage your meetings, calls, and deadlines
           </p>
         </div>
@@ -205,48 +205,48 @@ const Schedules = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+        <div className="p-5 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
           <div className="flex items-center justify-between mb-2">
             <Calendar className="w-5 h-5 text-green-600" />
             <span className="text-xs font-medium text-gray-500">TOTAL</span>
           </div>
           <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
-          <p className="text-xs text-gray-600 mt-1">All Events</p>
+          <p className="mt-1 text-xs text-gray-600">All Events</p>
         </div>
 
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+        <div className="p-5 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
           <div className="flex items-center justify-between mb-2">
             <Clock className="w-5 h-5 text-blue-600" />
             <span className="text-xs font-medium text-gray-500">TODAY</span>
           </div>
           <p className="text-2xl font-bold text-gray-900">{stats.today}</p>
-          <p className="text-xs text-gray-600 mt-1">Events Today</p>
+          <p className="mt-1 text-xs text-gray-600">Events Today</p>
         </div>
 
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+        <div className="p-5 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
           <div className="flex items-center justify-between mb-2">
             <CheckCircle className="w-5 h-5 text-purple-600" />
             <span className="text-xs font-medium text-gray-500">THIS WEEK</span>
           </div>
           <p className="text-2xl font-bold text-gray-900">{stats.thisWeek}</p>
-          <p className="text-xs text-gray-600 mt-1">Coming Up</p>
+          <p className="mt-1 text-xs text-gray-600">Coming Up</p>
         </div>
 
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+        <div className="p-5 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
           <div className="flex items-center justify-between mb-2">
             <AlertCircle className="w-5 h-5 text-orange-600" />
             <span className="text-xs font-medium text-gray-500">PENDING</span>
           </div>
           <p className="text-2xl font-bold text-gray-900">{stats.pending}</p>
-          <p className="text-xs text-gray-600 mt-1">Need Action</p>
+          <p className="mt-1 text-xs text-gray-600">Need Action</p>
         </div>
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Today's Events */}
-        <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+        <div className="p-6 bg-white border border-gray-200 shadow-sm lg:col-span-2 rounded-xl">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-gray-900">
               Today's Schedule
@@ -267,7 +267,7 @@ const Schedules = () => {
                 return (
                   <div
                     key={event.id}
-                    className="p-4 bg-gradient-to-r from-gray-50 to-green-50/30 rounded-xl border border-gray-200 hover:shadow-md transition-all cursor-pointer"
+                    className="p-4 transition-all border border-gray-200 cursor-pointer bg-gradient-to-r from-gray-50 to-green-50/30 rounded-xl hover:shadow-md"
                     onClick={() => {
                       setSelectedEvent(event);
                       setShowEventModal(true);
@@ -325,12 +325,12 @@ const Schedules = () => {
               })}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-600 font-medium">
+            <div className="py-12 text-center">
+              <Calendar className="w-16 h-16 mx-auto mb-3 text-gray-300" />
+              <p className="font-medium text-gray-600">
                 No events scheduled for today
               </p>
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="mt-1 text-sm text-gray-500">
                 Your calendar is clear!
               </p>
             </div>
@@ -338,8 +338,8 @@ const Schedules = () => {
         </div>
 
         {/* Upcoming Events Sidebar */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">
+        <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
+          <h2 className="mb-6 text-xl font-bold text-gray-900">
             Upcoming Events
           </h2>
 
@@ -350,7 +350,7 @@ const Schedules = () => {
                 return (
                   <div
                     key={event.id}
-                    className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-all cursor-pointer"
+                    className="p-3 transition-all border border-gray-200 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
                     onClick={() => {
                       setSelectedEvent(event);
                       setShowEventModal(true);
@@ -365,10 +365,10 @@ const Schedules = () => {
                         <EventIcon className="w-4 h-4" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-gray-900 text-sm truncate">
+                        <h4 className="text-sm font-medium text-gray-900 truncate">
                           {event.title}
                         </h4>
-                        <p className="text-xs text-gray-600 mt-1">
+                        <p className="mt-1 text-xs text-gray-600">
                           {new Date(event.date).toLocaleDateString("en-US", {
                             month: "short",
                             day: "numeric",
@@ -383,8 +383,8 @@ const Schedules = () => {
               })}
             </div>
           ) : (
-            <div className="text-center py-8">
-              <Clock className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+            <div className="py-8 text-center">
+              <Clock className="w-12 h-12 mx-auto mb-2 text-gray-300" />
               <p className="text-sm text-gray-600">No upcoming events</p>
             </div>
           )}
@@ -392,28 +392,28 @@ const Schedules = () => {
       </div>
 
       {/* All Events List */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="overflow-hidden bg-white border border-gray-200 shadow-sm rounded-xl">
         <div className="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-green-50/30">
           <h2 className="text-xl font-bold text-gray-900">All Events</h2>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="border-b border-gray-200 bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
                   Event
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
                   Type
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
                   Date & Time
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
                   Status
                 </th>
-                <th className="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-6 py-3 text-xs font-semibold tracking-wider text-center text-gray-600 uppercase">
                   Actions
                 </th>
               </tr>
@@ -424,7 +424,7 @@ const Schedules = () => {
                 return (
                   <tr
                     key={event.id}
-                    className="hover:bg-green-50/30 transition-colors"
+                    className="transition-colors hover:bg-green-50/30"
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
@@ -480,27 +480,27 @@ const Schedules = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex gap-2 justify-center">
+                      <div className="flex justify-center gap-2">
                         <button
                           onClick={() => {
                             setSelectedEvent(event);
                             setShowEventModal(true);
                           }}
-                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                          className="p-2 text-blue-600 transition-all rounded-lg hover:bg-blue-50"
                           title="View Details"
                         >
                           <Calendar className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => setShowAddModal(true)}
-                          className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-all"
+                          className="p-2 text-green-600 transition-all rounded-lg hover:bg-green-50"
                           title="Edit"
                         >
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => setDeleteConfirm(event)}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                          className="p-2 text-red-600 transition-all rounded-lg hover:bg-red-50"
                           title="Delete"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -517,14 +517,14 @@ const Schedules = () => {
 
       {/* Event Details Modal */}
       {showEventModal && selectedEvent && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl">
-            <div className="bg-gradient-to-r from-green-600 to-green-700 px-6 py-5 flex items-center justify-between rounded-t-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-2xl bg-white shadow-2xl rounded-2xl">
+            <div className="flex items-center justify-between px-6 py-5 bg-gradient-to-r from-green-600 to-green-700 rounded-t-2xl">
               <div className="flex items-center gap-3">
                 {(() => {
                   const EventIcon = getEventTypeIcon(selectedEvent.type);
                   return (
-                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                    <div className="flex items-center justify-center w-12 h-12 bg-white/20 rounded-xl">
                       <EventIcon className="w-6 h-6 text-white" />
                     </div>
                   );
@@ -533,7 +533,7 @@ const Schedules = () => {
                   <h2 className="text-xl font-bold text-white">
                     Event Details
                   </h2>
-                  <p className="text-green-100 text-sm capitalize">
+                  <p className="text-sm text-green-100 capitalize">
                     {selectedEvent.type.replace("-", " ")}
                   </p>
                 </div>
@@ -543,15 +543,15 @@ const Schedules = () => {
                   setShowEventModal(false);
                   setSelectedEvent(null);
                 }}
-                className="p-2 hover:bg-white/20 rounded-lg transition-all"
+                className="p-2 transition-all rounded-lg hover:bg-white/20"
               >
                 <X className="w-5 h-5 text-white" />
               </button>
             </div>
 
             <div className="p-6 space-y-6">
-              <div className="bg-gray-50 rounded-xl p-5 border border-gray-200">
-                <h3 className="font-bold text-xl text-gray-900 mb-4">
+              <div className="p-5 border border-gray-200 bg-gray-50 rounded-xl">
+                <h3 className="mb-4 text-xl font-bold text-gray-900">
                   {selectedEvent.title}
                 </h3>
 
@@ -606,14 +606,14 @@ const Schedules = () => {
 
                   {selectedEvent.attendees.length > 0 && (
                     <div className="flex items-start gap-3">
-                      <Users className="w-5 h-5 text-orange-600 mt-1" />
+                      <Users className="w-5 h-5 mt-1 text-orange-600" />
                       <div>
                         <p className="text-sm text-gray-600">Attendees</p>
                         <div className="flex flex-wrap gap-2 mt-1">
                           {selectedEvent.attendees.map((attendee, idx) => (
                             <span
                               key={idx}
-                              className="px-3 py-1 bg-orange-100 text-orange-700 text-sm rounded-full"
+                              className="px-3 py-1 text-sm text-orange-700 bg-orange-100 rounded-full"
                             >
                               {attendee}
                             </span>
@@ -640,8 +640,8 @@ const Schedules = () => {
               </div>
 
               {selectedEvent.description && (
-                <div className="bg-blue-50 rounded-xl p-5 border border-blue-200">
-                  <h4 className="font-semibold text-gray-900 mb-2">
+                <div className="p-5 border border-blue-200 bg-blue-50 rounded-xl">
+                  <h4 className="mb-2 font-semibold text-gray-900">
                     Description
                   </h4>
                   <p className="text-gray-700">{selectedEvent.description}</p>
@@ -649,7 +649,7 @@ const Schedules = () => {
               )}
             </div>
 
-            <div className="bg-gray-50 border-t border-gray-200 px-6 py-4 flex justify-end gap-3 rounded-b-2xl">
+            <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-2xl">
               <button
                 onClick={() => {
                   setShowEventModal(false);
@@ -684,27 +684,27 @@ const Schedules = () => {
 
       {/* Add/Edit Event Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl">
-            <div className="bg-gradient-to-r from-green-600 to-green-700 px-6 py-5 flex items-center justify-between rounded-t-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-2xl bg-white shadow-2xl rounded-2xl">
+            <div className="flex items-center justify-between px-6 py-5 bg-gradient-to-r from-green-600 to-green-700 rounded-t-2xl">
               <h2 className="text-xl font-bold text-white">Add New Event</h2>
               <button
                 onClick={() => setShowAddModal(false)}
-                className="p-2 hover:bg-white/20 rounded-lg transition-all"
+                className="p-2 transition-all rounded-lg hover:bg-white/20"
               >
                 <X className="w-5 h-5 text-white" />
               </button>
             </div>
 
             <div className="p-6">
-              <p className="text-center text-gray-600 py-8">
+              <p className="py-8 text-center text-gray-600">
                 Event creation form will be implemented here with form fields
                 for title, type, date, time, location, attendees, and
                 description.
               </p>
             </div>
 
-            <div className="bg-gray-50 border-t border-gray-200 px-6 py-4 flex justify-end gap-3 rounded-b-2xl">
+            <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-2xl">
               <button
                 onClick={() => setShowAddModal(false)}
                 className="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-white font-medium transition-all"
@@ -727,36 +727,36 @@ const Schedules = () => {
 
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl">
             <div className="p-6">
-              <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-red-500 to-red-600 mx-auto mb-4 shadow-lg">
+              <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full shadow-lg bg-gradient-to-br from-red-500 to-red-600">
                 <Trash2 className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 text-center mb-2">
+              <h3 className="mb-2 text-2xl font-bold text-center text-gray-900">
                 Delete Event?
               </h3>
-              <p className="text-gray-600 text-center mb-2">
+              <p className="mb-2 text-center text-gray-600">
                 You're about to delete:
               </p>
-              <div className="bg-gray-50 rounded-lg p-3 mb-6">
-                <p className="text-center font-semibold text-gray-900">
+              <div className="p-3 mb-6 rounded-lg bg-gray-50">
+                <p className="font-semibold text-center text-gray-900">
                   {deleteConfirm.title}
                 </p>
               </div>
-              <p className="text-sm text-red-600 text-center mb-6 font-medium">
+              <p className="mb-6 text-sm font-medium text-center text-red-600">
                 ⚠️ This action cannot be undone
               </p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setDeleteConfirm(null)}
-                  className="flex-1 px-4 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-all"
+                  className="flex-1 px-4 py-3 font-medium text-gray-700 transition-all border-2 border-gray-300 rounded-lg hover:bg-gray-50"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => handleDeleteEvent(deleteConfirm.id)}
-                  className="flex-1 px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 font-medium transition-all shadow-lg"
+                  className="flex-1 px-4 py-3 font-medium text-white transition-all rounded-lg shadow-lg bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800"
                 >
                   Delete Forever
                 </button>
@@ -766,21 +766,7 @@ const Schedules = () => {
         </div>
       )}
 
-      <style>{`
-        @keyframes slide-in {
-          from {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-          to {
-            transform: translateX(0);
-            opacity: 1;
-          }
-        }
-        .animate-slide-in {
-          animation: slide-in 0.3s ease-out;
-        }
-      `}</style>
+  
     </div>
   );
 };

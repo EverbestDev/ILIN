@@ -212,42 +212,42 @@ const Subscribers = () => {
           <h1 className="text-3xl font-bold text-gray-900">
             Newsletter Subscribers
           </h1>
-          <p className="text-gray-600 mt-1">
+          <p className="mt-1 text-gray-600">
             Manage your email subscriber list
           </p>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+        <div className="p-5 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
           <div className="flex items-center justify-between mb-2">
             <Users className="w-5 h-5 text-green-600" />
             <span className="text-xs font-medium text-gray-500">TOTAL</span>
           </div>
           <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
-          <p className="text-xs text-gray-600 mt-1">All Subscribers</p>
+          <p className="mt-1 text-xs text-gray-600">All Subscribers</p>
         </div>
 
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+        <div className="p-5 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
           <div className="flex items-center justify-between mb-2">
             <CheckCircle className="w-5 h-5 text-blue-600" />
             <span className="text-xs font-medium text-gray-500">ACTIVE</span>
           </div>
           <p className="text-2xl font-bold text-gray-900">{stats.active}</p>
-          <p className="text-xs text-gray-600 mt-1">Active Subscribers</p>
+          <p className="mt-1 text-xs text-gray-600">Active Subscribers</p>
         </div>
 
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+        <div className="p-5 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
           <div className="flex items-center justify-between mb-2">
             <TrendingUp className="w-5 h-5 text-purple-600" />
             <span className="text-xs font-medium text-gray-500">THIS WEEK</span>
           </div>
           <p className="text-2xl font-bold text-gray-900">{stats.thisWeek}</p>
-          <p className="text-xs text-gray-600 mt-1">New This Week</p>
+          <p className="mt-1 text-xs text-gray-600">New This Week</p>
         </div>
 
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+        <div className="p-5 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
           <div className="flex items-center justify-between mb-2">
             <Calendar className="w-5 h-5 text-orange-600" />
             <span className="text-xs font-medium text-gray-500">
@@ -255,15 +255,15 @@ const Subscribers = () => {
             </span>
           </div>
           <p className="text-2xl font-bold text-gray-900">{stats.thisMonth}</p>
-          <p className="text-xs text-gray-600 mt-1">New This Month</p>
+          <p className="mt-1 text-xs text-gray-600">New This Month</p>
         </div>
       </div>
 
       {/* Search & Filter Bar */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-        <div className="flex flex-col lg:flex-row gap-4">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+      <div className="p-4 bg-white border border-gray-200 shadow-sm rounded-xl">
+        <div className="flex flex-col gap-4 lg:flex-row">
+          <div className="relative flex-1">
+            <Search className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2" />
             <input
               type="text"
               placeholder="Search by email or name..."
@@ -302,11 +302,11 @@ const Subscribers = () => {
         </div>
 
         {showFilters && (
-          <div className="mt-4 pt-4 border-t border-gray-200 grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 gap-3 pt-4 mt-4 border-t border-gray-200 md:grid-cols-3">
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
+              className="px-3 py-2 text-sm border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
             >
               <option value="all">All Time</option>
               <option value="today">Today</option>
@@ -317,7 +317,7 @@ const Subscribers = () => {
             <select
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
+              className="px-3 py-2 text-sm border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
             >
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>
@@ -326,7 +326,7 @@ const Subscribers = () => {
             {activeFiltersCount > 0 && (
               <button
                 onClick={clearFilters}
-                className="px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-all font-medium"
+                className="px-3 py-2 text-sm font-medium text-red-600 transition-all rounded-lg hover:bg-red-50"
               >
                 Clear Filters
               </button>
@@ -337,30 +337,30 @@ const Subscribers = () => {
 
       {/* Subscribers Grid */}
       {loading && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+        <div className="p-12 text-center bg-white border border-gray-200 shadow-sm rounded-xl">
+          <div className="inline-block w-12 h-12 border-b-2 border-green-600 rounded-full animate-spin"></div>
           <p className="mt-4 text-gray-600">Loading subscribers...</p>
         </div>
       )}
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700">
+        <div className="p-4 text-red-700 border border-red-200 bg-red-50 rounded-xl">
           <p className="font-medium">Error loading subscribers</p>
-          <p className="text-sm mt-1">{error}</p>
+          <p className="mt-1 text-sm">{error}</p>
         </div>
       )}
 
       {!loading && !error && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {currentSubscribers.map((subscriber) => (
               <div
                 key={subscriber._id}
-                className="bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md transition-all group"
+                className="p-5 transition-all bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md group"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-600 to-green-700 rounded-xl flex items-center justify-center text-white font-bold shadow-md">
+                    <div className="flex items-center justify-center w-12 h-12 font-bold text-white shadow-md bg-gradient-to-br from-green-600 to-green-700 rounded-xl">
                       {subscriber.email.charAt(0).toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -374,7 +374,7 @@ const Subscribers = () => {
                   </div>
                 </div>
 
-                <div className="space-y-2 mb-4">
+                <div className="mb-4 space-y-2">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600">Status:</span>
                     <span
@@ -411,21 +411,21 @@ const Subscribers = () => {
                 <div className="flex gap-2 pt-3 border-t border-gray-200">
                   <button
                     onClick={() => handleSendEmail(subscriber.email)}
-                    className="flex-1 px-3 py-2 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 font-medium transition-all flex items-center justify-center gap-2 text-sm"
+                    className="flex items-center justify-center flex-1 gap-2 px-3 py-2 text-sm font-medium text-green-700 transition-all rounded-lg bg-green-50 hover:bg-green-100"
                   >
                     <Send className="w-4 h-4" />
                     Email
                   </button>
                   <button
                     onClick={() => setSelectedSubscriber(subscriber)}
-                    className="flex-1 px-3 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 font-medium transition-all flex items-center justify-center gap-2 text-sm"
+                    className="flex items-center justify-center flex-1 gap-2 px-3 py-2 text-sm font-medium text-blue-700 transition-all rounded-lg bg-blue-50 hover:bg-blue-100"
                   >
                     <Eye className="w-4 h-4" />
                     View
                   </button>
                   <button
                     onClick={() => setDeleteConfirm(subscriber)}
-                    className="px-3 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-all"
+                    className="px-3 py-2 text-red-700 transition-all rounded-lg bg-red-50 hover:bg-red-100"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -434,12 +434,12 @@ const Subscribers = () => {
             ))}
 
             {currentSubscribers.length === 0 && (
-              <div className="col-span-full bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-                <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-600 font-medium">
+              <div className="p-12 text-center bg-white border border-gray-200 shadow-sm col-span-full rounded-xl">
+                <Users className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                <p className="font-medium text-gray-600">
                   No subscribers found
                 </p>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="mt-1 text-sm text-gray-500">
                   Try adjusting your filters or search criteria
                 </p>
               </div>
@@ -448,7 +448,7 @@ const Subscribers = () => {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center justify-between px-6 py-4 bg-white border border-gray-200 shadow-sm rounded-xl">
               <p className="text-sm text-gray-600">
                 Showing <span className="font-medium">{indexOfFirst + 1}</span>{" "}
                 to{" "}
@@ -465,7 +465,7 @@ const Subscribers = () => {
                 <button
                   onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                   disabled={currentPage === 1}
-                  className="px-3 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white transition-all flex items-center gap-1"
+                  className="flex items-center gap-1 px-3 py-2 transition-all border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white"
                 >
                   <ChevronLeft className="w-4 h-4" />
                   Previous
@@ -503,7 +503,7 @@ const Subscribers = () => {
                     setCurrentPage((p) => Math.min(p + 1, totalPages))
                   }
                   disabled={currentPage === totalPages}
-                  className="px-3 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white transition-all flex items-center gap-1"
+                  className="flex items-center gap-1 px-3 py-2 transition-all border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white"
                 >
                   Next
                   <ChevronRight className="w-4 h-4" />
@@ -516,37 +516,37 @@ const Subscribers = () => {
 
       {/* View Details Modal */}
       {selectedSubscriber && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl">
-            <div className="bg-gradient-to-r from-green-600 to-green-700 px-6 py-5 flex items-center justify-between rounded-t-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-lg bg-white shadow-2xl rounded-2xl">
+            <div className="flex items-center justify-between px-6 py-5 bg-gradient-to-r from-green-600 to-green-700 rounded-t-2xl">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-white font-bold">
+                <div className="flex items-center justify-center w-12 h-12 font-bold text-white bg-white/20 rounded-xl">
                   {selectedSubscriber.email.charAt(0).toUpperCase()}
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-white">
                     Subscriber Details
                   </h2>
-                  <p className="text-green-100 text-sm">Complete information</p>
+                  <p className="text-sm text-green-100">Complete information</p>
                 </div>
               </div>
               <button
                 onClick={() => setSelectedSubscriber(null)}
-                className="p-2 hover:bg-white/20 rounded-lg transition-all"
+                className="p-2 transition-all rounded-lg hover:bg-white/20"
               >
                 <X className="w-5 h-5 text-white" />
               </button>
             </div>
 
             <div className="p-6 space-y-4">
-              <div className="bg-gray-50 rounded-xl p-4">
-                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              <div className="p-4 bg-gray-50 rounded-xl">
+                <h3 className="flex items-center gap-2 mb-3 font-semibold text-gray-900">
                   <Mail className="w-5 h-5 text-green-600" />
                   Contact Information
                 </h3>
                 <div className="space-y-2">
                   <div>
-                    <span className="text-sm text-gray-600 block mb-1">
+                    <span className="block mb-1 text-sm text-gray-600">
                       Email Address
                     </span>
                     <span className="font-medium text-gray-900">
@@ -554,7 +554,7 @@ const Subscribers = () => {
                     </span>
                   </div>
                   <div>
-                    <span className="text-sm text-gray-600 block mb-1">
+                    <span className="block mb-1 text-sm text-gray-600">
                       Name
                     </span>
                     <span className="font-medium text-gray-900">
@@ -564,8 +564,8 @@ const Subscribers = () => {
                 </div>
               </div>
 
-              <div className="bg-gray-50 rounded-xl p-4">
-                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              <div className="p-4 bg-gray-50 rounded-xl">
+                <h3 className="flex items-center gap-2 mb-3 font-semibold text-gray-900">
                   <Calendar className="w-5 h-5 text-green-600" />
                   Subscription Details
                 </h3>
@@ -605,7 +605,7 @@ const Subscribers = () => {
               </div>
             </div>
 
-            <div className="bg-gray-50 border-t border-gray-200 px-6 py-4 flex justify-between items-center rounded-b-2xl">
+            <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-2xl">
               <button
                 onClick={() => handleSendEmail(selectedSubscriber.email)}
                 className="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all flex items-center gap-2"
@@ -638,38 +638,38 @@ const Subscribers = () => {
 
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl">
             <div className="p-6">
-              <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-red-500 to-red-600 mx-auto mb-4 shadow-lg">
+              <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full shadow-lg bg-gradient-to-br from-red-500 to-red-600">
                 <Trash2 className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 text-center mb-2">
+              <h3 className="mb-2 text-2xl font-bold text-center text-gray-900">
                 Remove Subscriber?
               </h3>
-              <p className="text-gray-600 text-center mb-2">
+              <p className="mb-2 text-center text-gray-600">
                 You're about to remove this subscriber:
               </p>
-              <div className="bg-gray-50 rounded-lg p-3 mb-6">
+              <div className="p-3 mb-6 rounded-lg bg-gray-50">
                 <p className="text-center">
                   <span className="font-semibold text-gray-900">
                     {deleteConfirm.email}
                   </span>
                 </p>
               </div>
-              <p className="text-sm text-red-600 text-center mb-6 font-medium">
+              <p className="mb-6 text-sm font-medium text-center text-red-600">
                 ⚠️ This action cannot be undone
               </p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setDeleteConfirm(null)}
-                  className="flex-1 px-4 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-all"
+                  className="flex-1 px-4 py-3 font-medium text-gray-700 transition-all border-2 border-gray-300 rounded-lg hover:bg-gray-50"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => handleDelete(deleteConfirm._id)}
-                  className="flex-1 px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 font-medium transition-all shadow-lg"
+                  className="flex-1 px-4 py-3 font-medium text-white transition-all rounded-lg shadow-lg bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800"
                 >
                   Remove Forever
                 </button>
@@ -679,21 +679,7 @@ const Subscribers = () => {
         </div>
       )}
 
-      <style>{`
-        @keyframes slide-in {
-          from {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-          to {
-            transform: translateX(0);
-            opacity: 1;
-          }
-        }
-        .animate-slide-in {
-          animation: slide-in 0.3s ease-out;
-        }
-      `}</style>
+      
     </div>
   );
 };

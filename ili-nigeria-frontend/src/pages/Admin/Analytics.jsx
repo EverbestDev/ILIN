@@ -73,19 +73,19 @@ const Analytics = () => {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
             Analytics Dashboard
           </h1>
-          <p className="text-gray-600 mt-1">
+          <p className="mt-1 text-gray-600">
             Track your business performance and insights
           </p>
         </div>
         <select
           value={timeRange}
           onChange={(e) => setTimeRange(e.target.value)}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+          className="px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
         >
           <option value="7days">Last 7 Days</option>
           <option value="30days">Last 30 Days</option>
@@ -95,10 +95,10 @@ const Analytics = () => {
       </div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
           <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+            <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-xl">
               <DollarSign className="w-6 h-6 text-green-600" />
             </div>
             <span
@@ -119,12 +119,12 @@ const Analytics = () => {
           <h3 className="text-2xl font-bold text-gray-900">
             ${stats.totalRevenue.value.toLocaleString()}
           </h3>
-          <p className="text-sm text-gray-600 mt-1">Total Revenue</p>
+          <p className="mt-1 text-sm text-gray-600">Total Revenue</p>
         </div>
 
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+        <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
           <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+            <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-xl">
               <FileText className="w-6 h-6 text-blue-600" />
             </div>
             <span
@@ -145,12 +145,12 @@ const Analytics = () => {
           <h3 className="text-2xl font-bold text-gray-900">
             {stats.totalQuotes.value}
           </h3>
-          <p className="text-sm text-gray-600 mt-1">Total Quotes</p>
+          <p className="mt-1 text-sm text-gray-600">Total Quotes</p>
         </div>
 
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+        <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
           <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+            <div className="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-xl">
               <Activity className="w-6 h-6 text-purple-600" />
             </div>
             <span
@@ -171,12 +171,12 @@ const Analytics = () => {
           <h3 className="text-2xl font-bold text-gray-900">
             {stats.conversionRate.value}%
           </h3>
-          <p className="text-sm text-gray-600 mt-1">Conversion Rate</p>
+          <p className="mt-1 text-sm text-gray-600">Conversion Rate</p>
         </div>
 
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+        <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
           <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+            <div className="flex items-center justify-center w-12 h-12 bg-orange-100 rounded-xl">
               <BarChart3 className="w-6 h-6 text-orange-600" />
             </div>
             <span
@@ -197,16 +197,16 @@ const Analytics = () => {
           <h3 className="text-2xl font-bold text-gray-900">
             ${stats.avgProjectValue.value}
           </h3>
-          <p className="text-sm text-gray-600 mt-1">Avg Project Value</p>
+          <p className="mt-1 text-sm text-gray-600">Avg Project Value</p>
         </div>
       </div>
 
       {/* Revenue Chart */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+      <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-xl font-bold text-gray-900">Revenue Trend</h2>
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="mt-1 text-sm text-gray-600">
               Monthly revenue performance
             </p>
           </div>
@@ -236,15 +236,15 @@ const Analytics = () => {
       </div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Service Distribution */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+        <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-xl font-bold text-gray-900">
                 Service Distribution
               </h2>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="mt-1 text-sm text-gray-600">
                 Requests by service type
               </p>
             </div>
@@ -290,13 +290,13 @@ const Analytics = () => {
         </div>
 
         {/* Conversion Rate */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+        <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-xl font-bold text-gray-900">
                 Conversion Rate
               </h2>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="mt-1 text-sm text-gray-600">
                 Quotes vs conversions
               </p>
             </div>
@@ -327,13 +327,13 @@ const Analytics = () => {
       </div>
 
       {/* Top Language Pairs */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+      <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-xl font-bold text-gray-900">
               Top Language Pairs
             </h2>
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="mt-1 text-sm text-gray-600">
               Most requested translation directions
             </p>
           </div>
@@ -343,10 +343,10 @@ const Analytics = () => {
           {languagePairs.map((pair, index) => (
             <div
               key={pair.pair}
-              className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              className="flex items-center justify-between p-4 transition-colors rounded-lg bg-gray-50 hover:bg-gray-100"
             >
               <div className="flex items-center gap-4">
-                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center font-bold text-green-700">
+                <div className="flex items-center justify-center w-8 h-8 font-bold text-green-700 bg-green-100 rounded-lg">
                   {index + 1}
                 </div>
                 <div>
@@ -374,10 +374,10 @@ const Analytics = () => {
       </div>
 
       {/* Quick Insights */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="p-6 border border-green-200 bg-gradient-to-br from-green-50 to-green-100 rounded-xl">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
+            <div className="flex items-center justify-center w-10 h-10 bg-green-600 rounded-lg">
               <TrendingUp className="w-5 h-5 text-white" />
             </div>
             <h3 className="font-semibold text-gray-900">Peak Performance</h3>
@@ -388,9 +388,9 @@ const Analytics = () => {
           </p>
         </div>
 
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
+        <div className="p-6 border border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+            <div className="flex items-center justify-center w-10 h-10 bg-blue-600 rounded-lg">
               <Users className="w-5 h-5 text-white" />
             </div>
             <h3 className="font-semibold text-gray-900">Client Growth</h3>
@@ -401,9 +401,9 @@ const Analytics = () => {
           </p>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200">
+        <div className="p-6 border border-purple-200 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
+            <div className="flex items-center justify-center w-10 h-10 bg-purple-600 rounded-lg">
               <Globe className="w-5 h-5 text-white" />
             </div>
             <h3 className="font-semibold text-gray-900">Global Reach</h3>
