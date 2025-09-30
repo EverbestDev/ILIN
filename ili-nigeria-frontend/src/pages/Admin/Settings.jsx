@@ -397,7 +397,7 @@ const Settings = () => {
                 </div>
 
                 <div>
-                  <label className="flex items-center block gap-1 mb-2 text-sm font-medium text-gray-700">
+                  <label className="items-center block gap-1 mb-2 text-sm font-medium text-gray-700 md:flex">
                     <Clock className="w-4 h-4" />
                     Timezone
                   </label>
@@ -419,7 +419,7 @@ const Settings = () => {
                 </div>
 
                 <div>
-                  <label className="flex items-center block gap-1 mb-2 text-sm font-medium text-gray-700">
+                  <label className="items-center block gap-1 mb-2 text-sm font-medium text-gray-700 md:flex">
                     <DollarSign className="w-4 h-4" />
                     Default Currency
                   </label>
@@ -570,8 +570,6 @@ const Settings = () => {
           )}
         </div>
       </div>
-
-     
     </div>
   );
 };
