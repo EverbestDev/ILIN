@@ -1,20 +1,26 @@
 import React, { useState } from "react";
-import { X } from "lucide-react";
+import {
+  X,
+  LayoutDashboard,
+  FileText,
+  Settings,
+  MessageSquare,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-// CORRECTED IMPORTS based on your structure: "../components/Dashboard/"
+// IMPORTANT: Update these paths if your components are organized differently
 import DashboardNavbar from "../components/Dashboard/DashboardNavbar";
 import DashboardSidebar from "../components/Dashboard/DashboardSidebar";
 import DashboardFooter from "../components/Dashboard/DashboardFooter";
 
-// Destructure required icons from the sidebar for use in menu data.
-// NOTE: We assume DashboardSidebar.jsx has been updated to export MessageSquare in requiredIcons.
-const { LayoutDashboard, FileText, Settings, MessageSquare } =
-  DashboardSidebar.requiredIcons; // <-- UPDATED: Added MessageSquare
+// We import all icons directly here for simplicity, as requested.
+// NOTE: Assuming DashboardFooter is also imported/available.
 
 const ClientLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();
 
-  // *** CLIENT-SPECIFIC DATA CONSOLIDATED HERE ***
+  // --- CLIENT-SPECIFIC MOCK DATA ---
   const clientData = {
     // Navbar Props
     brandName: "ILIN",
@@ -31,13 +37,19 @@ const ClientLayout = ({ children }) => {
         time: "30 min ago",
         unread: true,
       },
+      {
+        id: 102,
+        text: "Invoice #2024-05 is due next week.",
+        time: "1 day ago",
+        unread: false,
+      },
     ],
 
-    // Footer Props
+    // Footer Props (Assuming DashboardFooter uses these)
     copyrightName: "Client Portal",
     portalVersion: "Client v1.0",
 
-    // Sidebar Props - Client Menu (Now comprehensive)
+    // Sidebar Menu Items - Passing the imported icons directly
     menuItems: [
       {
         id: "dashboard",
@@ -47,27 +59,24 @@ const ClientLayout = ({ children }) => {
         badge: null,
       },
       {
-        id: "orders",
-        label: "My Orders",
+        id: "projects",
+        label: "My Projects",
         icon: FileText,
         path: "/client/orders",
-        // The badge shows how many orders need action (e.g., Awaiting Payment)
-        badge: "1",
+        badge: "3",
       },
       {
-        id: "messages",
-        label: "Support Inbox", // <-- ADDED: Client Messages
-        icon: MessageSquare, // Icon from DashboardSidebar.requiredIcons
+        id: "support",
+        label: "Support Center",
+        icon: MessageSquare,
         path: "/client/messages",
-        badge: "New", // Badge for unread messages
+        badge: null,
       },
     ],
-
-    // Secondary Items for Settings
     secondaryItems: [
       {
         id: "settings",
-        label: "Account Settings", // <-- UPDATED Label
+        label: "Settings",
         icon: Settings,
         path: "/client/settings",
       },
@@ -75,9 +84,9 @@ const ClientLayout = ({ children }) => {
   };
 
   const handleClientLogout = () => {
-    // Implement client-side logout logic here (e.g., clear token, redirect to /login)
-    console.log("Client logging out...");
-    // navigate('/login');
+    // Perform actual logout logic (clear tokens, etc.)
+    console.log("Client logged out.");
+    navigate("/login");
   };
 
   return (
@@ -85,17 +94,21 @@ const ClientLayout = ({ children }) => {
       {/* Fixed Navbar - Always at top */}
       <div className="fixed top-0 left-0 right-0 z-50">
         <DashboardNavbar
+          // The crucial toggle function passed to the navbar
+          onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
           brandName={clientData.brandName}
           portalTitle={clientData.portalTitle}
           userName={clientData.userName}
+          userEmail={clientData.userEmail}
           userRole={clientData.userRole}
           unreadNotificationCount={clientData.unreadNotificationCount}
           notificationsList={clientData.notificationsList}
+          showNotifications={clientData.showNotifications}
           onLogout={handleClientLogout}
         />
       </div>
 
-      {/* Mobile Sidebar Overlay */}
+      {/* Mobile Sidebar Overlay (FIX: This part handles the click outside on mobile) */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/50 lg:hidden"
@@ -104,30 +117,29 @@ const ClientLayout = ({ children }) => {
       )}
 
       {/* Fixed Sidebar Container - Pass Client Menu Props */}
+      {/* We set top-16 to clear the fixed navbar height */}
       <div className="fixed bottom-0 left-0 z-40 top-16">
         <DashboardSidebar
-          isOpen={sidebarOpen}
-          // *** UPDATED: Pass the comprehensive menu data ***
+          isOpen={sidebarOpen} // Controls the mobile visibility/transition
           menuItems={clientData.menuItems}
           secondaryItems={clientData.secondaryItems}
         />
       </div>
 
       {/* Main Content */}
+      {/* lg:ml-64 creates space for the desktop sidebar */}
       <main className="min-h-screen pt-16 lg:ml-64">
         {children}
-        {/* Footer - Pass Client Props */}
         <DashboardFooter
           copyrightName={clientData.copyrightName}
           portalVersion={clientData.portalVersion}
         />
       </main>
 
-      {/* Mobile Close Button */}
+      {/* Mobile Close Button (Good for UX) */}
       {sidebarOpen && (
         <button
           onClick={() => setSidebarOpen(false)}
-          // Note: Changed color of the close button for visual distinction
           className="fixed z-50 flex items-center justify-center text-white transition-transform rounded-full shadow-lg lg:hidden bottom-6 right-6 w-14 h-14 bg-gradient-to-br from-blue-600 to-blue-700 hover:scale-105"
         >
           <X className="w-6 h-6" />
