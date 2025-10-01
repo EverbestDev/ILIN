@@ -25,8 +25,8 @@ const carouselSlides = [
 const AuthSidebar = ({ activeSlide }) => {
   const slide = carouselSlides[activeSlide];
   return (
-    <div className="relative flex flex-col justify-between hidden min-h-full p-8 overflow-hidden text-white lg:flex lg:w-1/3 xl:w-2/5 bg-gradient-to-br from-green-700 to-green-900">
-      {/* 1. Logo at the top of the side-Modal Bar (Sidebar) */}
+    <div className="relative flex-col justify-between hidden min-h-full p-8 overflow-hidden text-white md:flex lg:flex lg:w-1/3 xl:w-2/5 bg-gradient-to-br from-green-700 to-green-900">
+     
       <div className="flex items-center gap-3">
         <div className="flex items-center justify-center w-10 h-10 rounded-lg shadow-xl bg-white/20">
           <Globe className="w-5 h-5 text-white" />

@@ -140,7 +140,7 @@ const ClientLayout = ({ children }) => {
       {sidebarOpen && (
         <button
           onClick={() => setSidebarOpen(false)}
-          className="fixed z-50 flex items-center justify-center text-white transition-transform rounded-full shadow-lg lg:hidden bottom-6 right-6 w-14 h-14 bg-gradient-to-br from-blue-600 to-blue-700 hover:scale-105"
+          className="fixed z-50 flex items-center justify-center text-white transition-transform rounded-full shadow-lg lg:hidden bottom-6 right-6 w-14 h-14 bg-gradient-to-br from-green-600 to-green-700 hover:scale-105"
         >
           <X className="w-6 h-6" />
         </button>
