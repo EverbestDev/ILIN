@@ -107,7 +107,7 @@ const AdminLayout = ({ children }) => {
   };
 
   const handleAdminLogout = () => {
-    Navigate("/login")
+    Navigate("/login");
     console.log("Admin Logged out successfully!");
   };
 
