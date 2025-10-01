@@ -27,9 +27,7 @@ const DashboardFooter = ({
           {/* Right Section - Copyright (Using Props) */}
           <div className="text-center sm:text-right">
             <p className="flex items-center justify-center gap-1 text-xs text-gray-600 sm:justify-end">
-              © {currentYear} {copyrightName}. Made with{" "}
-              <Heart className="w-3 h-3 text-red-500 fill-current" /> for global
-              communication
+              © {currentYear} {copyrightName}
             </p>
             <p className="mt-1 text-xs text-gray-500">Portal {portalVersion}</p>
           </div>
