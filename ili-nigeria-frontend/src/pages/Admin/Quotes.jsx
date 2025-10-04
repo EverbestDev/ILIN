@@ -34,7 +34,7 @@ export default function AdminQuotes() {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [notification, setNotification] = useState(null);
 
-  // 🔍 Filters
+  // ðŸ” Filters
   const [search, setSearch] = useState("");
   const [filterService, setFilterService] = useState("");
   const [filterUrgency, setFilterUrgency] = useState("");
@@ -43,7 +43,7 @@ export default function AdminQuotes() {
   const [showFilters, setShowFilters] = useState(false);
   const [dateRange, setDateRange] = useState("all");
 
-  // 📄 Pagination
+  // ðŸ“„ Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const quotesPerPage = 10;
 
@@ -53,7 +53,7 @@ export default function AdminQuotes() {
     setTimeout(() => setNotification(null), 3000);
   };
 
-  // ✅ Fetch all quotes
+  // âœ… Fetch all quotes
   useEffect(() => {
     const fetchQuotes = async () => {
       try {
@@ -71,7 +71,7 @@ export default function AdminQuotes() {
     fetchQuotes();
   }, []);
 
-  // ✅ Apply search + filters + sort
+  // âœ… Apply search + filters + sort
   useEffect(() => {
     let results = [...quotes];
 
@@ -128,7 +128,7 @@ export default function AdminQuotes() {
     quotes,
   ]);
 
-  // ✅ Delete a quote
+  // âœ… Delete a quote
   const handleDelete = async (id) => {
     try {
       const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
@@ -141,7 +141,7 @@ export default function AdminQuotes() {
     }
   };
 
-  // ✅ Fetch single quote details
+  // âœ… Fetch single quote details
   const handleView = async (id) => {
     try {
       const res = await fetch(`${API_URL}/${id}`);
@@ -235,7 +235,7 @@ export default function AdminQuotes() {
   const getLanguageBadge = (source, targets) => {
     const targetList = targets?.slice(0, 2).join(", ") || "";
     const more = targets?.length > 2 ? ` +${targets.length - 2}` : "";
-    return `${source} → ${targetList}${more}`;
+    return `${source} â†’ ${targetList}${more}`;
   };
 
   // Calculate stats
@@ -985,7 +985,7 @@ export default function AdminQuotes() {
                 </p>
               </div>
               <p className="mb-6 text-sm font-medium text-center text-red-600">
-                ⚠️ This action cannot be undone
+                âš ï¸ This action cannot be undone
               </p>
               <div className="flex gap-3">
                 <button
