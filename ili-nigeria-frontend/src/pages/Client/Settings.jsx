@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   User,
   Mail,
@@ -10,6 +10,7 @@ import {
   Phone,
   Building,
   Globe,
+  X,
 } from "lucide-react";
 
 // --- START OF CLIENT SETTINGS COMPONENT ---
@@ -44,69 +45,88 @@ const ClientSettings = () => {
     smsAlerts: false,
   });
 
-  const showNotification = (message, type = "success") => {
+  // FIXED: Memoized handlers to prevent re-renders
+  const handleProfileChange = useCallback((field, value) => {
+    setProfile((prev) => ({ ...prev, [field]: value }));
+  }, []);
+
+  const handleSecurityChange = useCallback((field, value) => {
+    setSecurity((prev) => ({ ...prev, [field]: value }));
+  }, []);
+
+  const handlePreferenceChange = useCallback((field, value) => {
+    setPreferences((prev) => ({ ...prev, [field]: value }));
+  }, []);
+
+  const showNotification = useCallback((message, type = "success") => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 5000);
-  };
+  }, []);
 
-  const handleProfileSave = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      // In a real app: call API to update profile
-      console.log("Profile Saved:", profile);
-      showNotification("Profile updated successfully!");
-      setLoading(false);
-    }, 1000);
-  };
+  const handleProfileSave = useCallback(
+    (e) => {
+      e.preventDefault();
+      setLoading(true);
+      setTimeout(() => {
+        console.log("Profile Saved:", profile);
+        showNotification("Profile updated successfully!");
+        setLoading(false);
+      }, 1000);
+    },
+    [profile, showNotification]
+  );
 
-  const handlePasswordChange = (e) => {
-    e.preventDefault();
-    if (security.newPassword !== security.confirmPassword) {
-      showNotification("New password and confirmation do not match.", "error");
-      return;
-    }
-    if (security.newPassword.length < 8) {
-      showNotification(
-        "New password must be at least 8 characters long.",
-        "error"
-      );
-      return;
-    }
+  const handlePasswordChange = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (security.newPassword !== security.confirmPassword) {
+        showNotification(
+          "New password and confirmation do not match.",
+          "error"
+        );
+        return;
+      }
+      if (security.newPassword.length < 8) {
+        showNotification(
+          "New password must be at least 8 characters long.",
+          "error"
+        );
+        return;
+      }
 
-    setLoading(true);
-    // Simulate API call for password change
-    setTimeout(() => {
-      // In a real app: call API to change password
-      console.log(
-        "Password Change attempt with new password:",
-        security.newPassword
-      );
-      setSecurity({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: "",
-      });
-      showNotification(
-        "Password changed successfully. Please log in again if prompted.",
-        "success"
-      );
-      setLoading(false);
-    }, 1000);
-  };
+      setLoading(true);
+      setTimeout(() => {
+        console.log(
+          "Password Change attempt with new password:",
+          security.newPassword
+        );
+        setSecurity({
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
+        showNotification(
+          "Password changed successfully. Please log in again if prompted.",
+          "success"
+        );
+        setLoading(false);
+      }, 1000);
+    },
+    [security, showNotification]
+  );
 
-  const handlePreferenceSave = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      // In a real app: call API to update preferences
-      console.log("Preferences Saved:", preferences);
-      showNotification("Communication preferences updated.", "success");
-      setLoading(false);
-    }, 1000);
-  };
+  const handlePreferenceSave = useCallback(
+    (e) => {
+      e.preventDefault();
+      setLoading(true);
+      setTimeout(() => {
+        console.log("Preferences Saved:", preferences);
+        showNotification("Communication preferences updated.", "success");
+        setLoading(false);
+      }, 1000);
+    },
+    [preferences, showNotification]
+  );
 
   // --- Profile Tab Content ---
   const ProfileTab = () => (
@@ -123,9 +143,7 @@ const ClientSettings = () => {
             type="text"
             id="firstName"
             value={profile.firstName}
-            onChange={(e) =>
-              setProfile({ ...profile, firstName: e.target.value })
-            }
+            onChange={(e) => handleProfileChange("firstName", e.target.value)}
             className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
             required
           />
@@ -141,9 +159,7 @@ const ClientSettings = () => {
             type="text"
             id="lastName"
             value={profile.lastName}
-            onChange={(e) =>
-              setProfile({ ...profile, lastName: e.target.value })
-            }
+            onChange={(e) => handleProfileChange("lastName", e.target.value)}
             className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
             required
           />
@@ -177,7 +193,7 @@ const ClientSettings = () => {
             type="tel"
             id="phone"
             value={profile.phone}
-            onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+            onChange={(e) => handleProfileChange("phone", e.target.value)}
             className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
           />
         </div>
@@ -195,9 +211,7 @@ const ClientSettings = () => {
             type="text"
             id="company"
             value={profile.company}
-            onChange={(e) =>
-              setProfile({ ...profile, company: e.target.value })
-            }
+            onChange={(e) => handleProfileChange("company", e.target.value)}
             className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
           />
         </div>
@@ -212,9 +226,7 @@ const ClientSettings = () => {
             type="text"
             id="country"
             value={profile.country}
-            onChange={(e) =>
-              setProfile({ ...profile, country: e.target.value })
-            }
+            onChange={(e) => handleProfileChange("country", e.target.value)}
             className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
           />
         </div>
@@ -252,7 +264,7 @@ const ClientSettings = () => {
           id="currentPassword"
           value={security.currentPassword}
           onChange={(e) =>
-            setSecurity({ ...security, currentPassword: e.target.value })
+            handleSecurityChange("currentPassword", e.target.value)
           }
           className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500"
           required
@@ -270,9 +282,7 @@ const ClientSettings = () => {
           type="password"
           id="newPassword"
           value={security.newPassword}
-          onChange={(e) =>
-            setSecurity({ ...security, newPassword: e.target.value })
-          }
+          onChange={(e) => handleSecurityChange("newPassword", e.target.value)}
           className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500"
           required
         />
@@ -293,7 +303,7 @@ const ClientSettings = () => {
           id="confirmPassword"
           value={security.confirmPassword}
           onChange={(e) =>
-            setSecurity({ ...security, confirmPassword: e.target.value })
+            handleSecurityChange("confirmPassword", e.target.value)
           }
           className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500"
           required
@@ -352,10 +362,7 @@ const ClientSettings = () => {
                 type="checkbox"
                 checked={preferences[item.key]}
                 onChange={(e) =>
-                  setPreferences({
-                    ...preferences,
-                    [item.key]: e.target.checked,
-                  })
+                  handlePreferenceChange(item.key, e.target.checked)
                 }
                 className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
               />
@@ -401,10 +408,7 @@ const ClientSettings = () => {
                 type="checkbox"
                 checked={preferences[item.key]}
                 onChange={(e) =>
-                  setPreferences({
-                    ...preferences,
-                    [item.key]: e.target.checked,
-                  })
+                  handlePreferenceChange(item.key, e.target.checked)
                 }
                 className={`w-4 h-4 ${item.color
                   .replace("text-", "text-")
@@ -475,7 +479,7 @@ const ClientSettings = () => {
 
       {/* Settings Navigation Tabs */}
       <div className="flex flex-col mt-8 lg:flex-row lg:space-x-8">
-        <nav className="flex flex-shrink-0 pb-6 space-x-4 border-b lg:flex-col lg:space-x-0 lg:space-y-2 lg:w-48 lg:border-b-0">
+        <nav className="flex flex-shrink-0 pb-6 space-x-4 overflow-x-auto border-b lg:flex-col lg:space-x-0 lg:space-y-2 lg:w-48 lg:border-b-0 lg:overflow-x-visible scrollbar-hide">
           {[
             { id: "profile", label: "Profile", icon: User },
             { id: "security", label: "Security", icon: Lock },
@@ -484,7 +488,7 @@ const ClientSettings = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-3 px-4 py-2.5 rounded-lg font-medium transition-colors ${
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-lg font-medium transition-colors whitespace-nowrap ${
                 activeTab === tab.id
                   ? "bg-green-600 text-white shadow-md"
                   : "text-gray-700 hover:bg-gray-50"

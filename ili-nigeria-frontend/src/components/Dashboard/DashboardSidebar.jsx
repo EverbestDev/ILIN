@@ -9,24 +9,17 @@ import {
   Globe,
   BarChart3,
   Settings,
-  MessageSquare, // <--- ADDED: MessageSquare icon for Client messages
+  MessageSquare,
 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-// Note: Ensure you import all necessary icons (like the ones above)
-// or move the icon definitions (like LayoutDashboard) to be passed in the menuItems array.
-// For simplicity, we'll keep the required icons imported here for now.
-
 const DashboardSidebar = ({
   isOpen = true,
-  menuItems = [], // Primary menu items from props
-  secondaryItems = [], // Secondary menu items from props
+  menuItems = [],
+  secondaryItems = [],
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  // NOTE: The original menu items array is REMOVED from here.
-  // The AdminLayout will now pass the Admin-specific menu.
 
   const handleItemClick = (path) => {
     navigate(path);
@@ -37,7 +30,7 @@ const DashboardSidebar = ({
   };
 
   const renderMenuItem = (item) => {
-    const Icon = item.icon; // Icon is now expected to be an imported Lucide component
+    const Icon = item.icon;
     const isActive = isActiveRoute(item.path);
 
     return (
@@ -85,6 +78,11 @@ const DashboardSidebar = ({
         transition-transform duration-300 ease-in-out
         overflow-y-auto
         ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+        ${
+          !isOpen
+            ? "lg:pointer-events-auto pointer-events-none"
+            : "pointer-events-auto"
+        }
       `}
     >
       <div className="flex flex-col h-full">
@@ -100,7 +98,7 @@ const DashboardSidebar = ({
           <div className="space-y-1">{secondaryItems.map(renderMenuItem)}</div>
         </nav>
 
-        {/* Footer - Mission Statement (kept generic for reusability) */}
+        {/* Footer - Mission Statement */}
         <div className="px-3 py-4 border-t border-gray-200">
           <div className="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl">
             <div className="flex items-start gap-3">
@@ -123,7 +121,6 @@ const DashboardSidebar = ({
   );
 };
 
-// Exporting required icons so that the AdminLayout/ClientLayout can pass them in the props
 DashboardSidebar.requiredIcons = {
   LayoutDashboard,
   FileText,
@@ -132,7 +129,7 @@ DashboardSidebar.requiredIcons = {
   Calendar,
   BarChart3,
   Settings,
-  MessageSquare, // <--- ADDED: Export the new icon
+  MessageSquare,
 };
 
 export default DashboardSidebar;

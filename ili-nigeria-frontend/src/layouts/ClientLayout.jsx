@@ -8,21 +8,15 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-// IMPORTANT: Update these paths if your components are organized differently
 import DashboardNavbar from "../components/Dashboard/DashboardNavbar";
 import DashboardSidebar from "../components/Dashboard/DashboardSidebar";
 import DashboardFooter from "../components/Dashboard/DashboardFooter";
-
-// We import all icons directly here for simplicity, as requested.
-// NOTE: Assuming DashboardFooter is also imported/available.
 
 const ClientLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
-  // --- CLIENT-SPECIFIC MOCK DATA ---
   const clientData = {
-    // Navbar Props
     brandName: "ILIN",
     portalTitle: "Client Dashboard",
     userName: "Sarah Chen",
@@ -44,12 +38,8 @@ const ClientLayout = ({ children }) => {
         unread: false,
       },
     ],
-
-    // Footer Props (Assuming DashboardFooter uses these)
     copyrightName: "Client Portal",
     portalVersion: "Client v1.0",
-
-    // Sidebar Menu Items - Passing the imported icons directly
     menuItems: [
       {
         id: "dashboard",
@@ -59,18 +49,18 @@ const ClientLayout = ({ children }) => {
         badge: null,
       },
       {
-        id: "projects",
-        label: "My Projects",
+        id: "quotes",
+        label: "My Quotes",
         icon: FileText,
         path: "/client/orders",
-        badge: "3",
+        badge: null,
       },
       {
-        id: "support",
-        label: "Support Center",
+        id: "messages",
+        label: "Messages",
         icon: MessageSquare,
         path: "/client/messages",
-        badge: null,
+        badge: 3,
       },
     ],
     secondaryItems: [
@@ -84,63 +74,66 @@ const ClientLayout = ({ children }) => {
   };
 
   const handleClientLogout = () => {
-    // Perform actual logout logic (clear tokens, etc.)
-    console.log("Client logged out.");
+    console.log("Client Logout");
     navigate("/login");
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/20 to-gray-100">
-      {/* Fixed Navbar - Always at top */}
+      {/* Fixed Navbar */}
       <div className="fixed top-0 left-0 right-0 z-50">
         <DashboardNavbar
-          // The crucial toggle function passed to the navbar
           onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
           brandName={clientData.brandName}
           portalTitle={clientData.portalTitle}
           userName={clientData.userName}
           userEmail={clientData.userEmail}
           userRole={clientData.userRole}
+          showNotifications={clientData.showNotifications}
           unreadNotificationCount={clientData.unreadNotificationCount}
           notificationsList={clientData.notificationsList}
-          showNotifications={clientData.showNotifications}
           onLogout={handleClientLogout}
         />
       </div>
 
-      {/* Mobile Sidebar Overlay (FIX: This part handles the click outside on mobile) */}
+      {/* Mobile Sidebar Overlay - FIXED: Lower z-index */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          className="fixed inset-0 z-20 bg-black/50 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {/* Fixed Sidebar Container - Pass Client Menu Props */}
-      {/* We set top-16 to clear the fixed navbar height */}
-      <div className="fixed bottom-0 left-0 z-40 top-16">
+      {/* Fixed Sidebar Container - FIXED: z-30 above overlay */}
+      <div
+        className={`fixed bottom-0 left-0 z-30 top-16 ${
+          !sidebarOpen
+            ? "pointer-events-none lg:pointer-events-auto"
+            : "pointer-events-auto"
+        }`}
+      >
         <DashboardSidebar
-          isOpen={sidebarOpen} // Controls the mobile visibility/transition
+          isOpen={sidebarOpen}
           menuItems={clientData.menuItems}
           secondaryItems={clientData.secondaryItems}
         />
       </div>
 
-      {/* Main Content */}
-      {/* lg:ml-64 creates space for the desktop sidebar */}
-      <main className="min-h-screen pt-16 lg:ml-64">
-        {children}
+      {/* Main Content - REMOVED z-index completely */}
+      <main className="lg:ml-64 pt-16 flex flex-col min-h-[calc(100vh-4rem)]">
+        <div className="flex-grow p-4 sm:p-6 lg:p-8">{children}</div>
+
         <DashboardFooter
           copyrightName={clientData.copyrightName}
           portalVersion={clientData.portalVersion}
         />
       </main>
 
-      {/* Mobile Close Button (Good for UX) */}
+      {/* Close button */}
       {sidebarOpen && (
         <button
           onClick={() => setSidebarOpen(false)}
-          className="fixed z-50 flex items-center justify-center text-white transition-transform rounded-full shadow-lg lg:hidden bottom-6 right-6 w-14 h-14 bg-gradient-to-br from-green-600 to-green-700 hover:scale-105"
+          className="fixed z-50 flex items-center justify-center text-white transition-transform rounded-full shadow-lg lg:hidden bottom-6 right-6 w-14 h-14 bg-gradient-to-br from-blue-600 to-blue-700 hover:scale-105"
         >
           <X className="w-6 h-6" />
         </button>

@@ -246,7 +246,7 @@ const Orders = () => {
           {/* Top Bar: Search and Filters */}
           <div className="flex flex-col justify-between gap-4 sm:flex-row">
             {/* Search Bar */}
-            <div className="relative flex-1 max-w-md">
+            <div className="relative flex-1 w-full">
               <input
                 type="text"
                 placeholder="Search by ID or Service..."

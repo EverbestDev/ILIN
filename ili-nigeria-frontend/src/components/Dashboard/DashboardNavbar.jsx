@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Menu,
   User,
@@ -20,16 +20,32 @@ const DashboardNavbar = ({
   unreadNotificationCount = 0,
   notificationsList = [],
   showNotifications = true,
-  // Add an optional prop for custom menu items if needed later
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
-  // Use props for dynamic content
+  // FIXED: Auto-close dropdowns on route change or escape key
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === "Escape") {
+        setDropdownOpen(false);
+        setNotificationsOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, []);
+
+  // FIXED: Force close all dropdowns when component mounts
+  useEffect(() => {
+    setDropdownOpen(false);
+    setNotificationsOpen(false);
+  }, []);
+
   const unreadNotifications = unreadNotificationCount;
   const notifications = notificationsList;
 
-  // Function to close both dropdowns
   const closeAllDropdowns = () => {
     setDropdownOpen(false);
     setNotificationsOpen(false);
@@ -45,6 +61,7 @@ const DashboardNavbar = ({
             <button
               onClick={onMenuToggle}
               className="p-2 transition-colors rounded-lg hover:bg-gray-100"
+              type="button"
             >
               <Menu className="w-6 h-6 text-gray-700" />
             </button>
@@ -55,9 +72,7 @@ const DashboardNavbar = ({
                 <Globe className="w-6 h-6 text-white" />
               </div>
               <div className="hidden md:block">
-                {/* BRAND NAME */}
                 <h1 className="text-xl font-bold text-gray-900">{brandName}</h1>
-                {/* PORTAL TITLE */}
                 <p className="text-xs text-gray-500">{portalTitle}</p>
               </div>
             </div>
@@ -80,6 +95,7 @@ const DashboardNavbar = ({
                     setDropdownOpen(false);
                   }}
                   className="relative p-2 transition-colors rounded-lg hover:bg-gray-100"
+                  type="button"
                 >
                   <Bell className="w-5 h-5 text-gray-700" />
                   {unreadNotifications > 0 && (
@@ -95,6 +111,7 @@ const DashboardNavbar = ({
                     <div
                       className="fixed inset-0 z-10"
                       onClick={() => setNotificationsOpen(false)}
+                      style={{ touchAction: "auto" }}
                     />
                     <div className="absolute right-0 z-20 mt-2 overflow-hidden bg-white border border-gray-200 shadow-lg w-80 max-w-[calc(100vw-2rem)] rounded-xl">
                       <div className="px-4 py-3 border-b border-gray-200 bg-gradient-to-r from-green-50 to-green-100/50">
@@ -138,7 +155,10 @@ const DashboardNavbar = ({
                         )}
                       </div>
                       <div className="px-4 py-2 border-t border-gray-200 bg-gray-50">
-                        <button className="w-full text-sm font-medium text-center text-green-600 hover:text-green-700">
+                        <button
+                          type="button"
+                          className="w-full text-sm font-medium text-center text-green-600 hover:text-green-700"
+                        >
                           View all notifications
                         </button>
                       </div>
@@ -156,8 +176,8 @@ const DashboardNavbar = ({
                   setNotificationsOpen(false);
                 }}
                 className="flex items-center gap-2 px-2 py-2 transition-all border border-gray-200 shadow-sm sm:gap-3 bg-gradient-to-r from-gray-50 to-gray-100 sm:px-3 rounded-xl hover:from-gray-100 hover:to-gray-200"
+                type="button"
               >
-                {/* Profile Initials */}
                 <div className="flex items-center justify-center w-8 h-8 rounded-lg shadow-md bg-gradient-to-br from-green-600 to-green-700">
                   <span className="text-sm font-semibold text-white">
                     {userName
@@ -169,7 +189,6 @@ const DashboardNavbar = ({
                   </span>
                 </div>
                 <div className="hidden text-left sm:block">
-                  {/* USER NAME & ROLE */}
                   <p className="text-sm font-medium text-gray-900">
                     {userName}
                   </p>
@@ -188,9 +207,9 @@ const DashboardNavbar = ({
                   <div
                     className="fixed inset-0 z-10"
                     onClick={() => setDropdownOpen(false)}
+                    style={{ touchAction: "auto" }}
                   />
                   <div className="absolute right-0 z-20 w-64 mt-2 overflow-hidden bg-white border border-gray-200 shadow-lg rounded-xl">
-                    {/* User Info Section - Dynamic Content */}
                     <div className="px-4 py-3 border-b border-gray-200 bg-gradient-to-r from-green-50 to-green-100/50">
                       <div className="flex items-center gap-3">
                         <div className="flex items-center justify-center w-12 h-12 shadow-md bg-gradient-to-br from-green-600 to-green-700 rounded-xl">
@@ -217,11 +236,11 @@ const DashboardNavbar = ({
                       </div>
                     </div>
 
-                    {/* Menu Items */}
                     <div className="py-2">
                       <button
                         onClick={closeAllDropdowns}
                         className="w-full px-4 py-2.5 text-left hover:bg-gray-50 transition-colors flex items-center gap-3 text-gray-700"
+                        type="button"
                       >
                         <div className="flex items-center justify-center w-8 h-8 bg-gray-100 rounded-lg">
                           <User className="w-4 h-4 text-gray-600" />
@@ -237,6 +256,7 @@ const DashboardNavbar = ({
                       <button
                         onClick={closeAllDropdowns}
                         className="w-full px-4 py-2.5 text-left hover:bg-gray-50 transition-colors flex items-center gap-3 text-gray-700"
+                        type="button"
                       >
                         <div className="flex items-center justify-center w-8 h-8 bg-gray-100 rounded-lg">
                           <Settings className="w-4 h-4 text-gray-600" />
@@ -250,7 +270,6 @@ const DashboardNavbar = ({
                       </button>
                     </div>
 
-                    {/* Logout - Calling onLogout prop */}
                     <div className="py-2 border-t border-gray-200">
                       <button
                         onClick={() => {
@@ -258,6 +277,7 @@ const DashboardNavbar = ({
                           closeAllDropdowns();
                         }}
                         className="w-full px-4 py-2.5 text-left hover:bg-red-50 transition-colors flex items-center gap-3 text-red-600"
+                        type="button"
                       >
                         <div className="flex items-center justify-center w-8 h-8 bg-red-100 rounded-lg">
                           <LogOut className="w-4 h-4 text-red-600" />

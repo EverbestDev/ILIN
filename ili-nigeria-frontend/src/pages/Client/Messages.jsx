@@ -343,7 +343,7 @@ const Messages = () => {
           className={`flex-grow w-full transition-all duration-300 ${
             view === "thread" || view === "new"
               ? "block"
-              : "hidden lg:block flex items-center justify-center"
+              : "hidden lg:block md:flex items-center justify-center"
           }`}
         >
           {/* Default/Empty View */}
