@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 
 const Dashboard = () => {
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [loading, setLoading] = useState(true);
 
   const [stats, setStats] = useState({
@@ -32,7 +32,7 @@ const Dashboard = () => {
       try {
         const [quotesRes, subscribersRes, contactsRes] = await Promise.all([
           fetch(`${BASE_URL}/api/quotes`),
-          fetch(`${BASE_URL}/api/subscribe`),
+          fetch(`${BASE_URL}/api/subscribers`),
           fetch(`${BASE_URL}/api/contact`),
         ]);
 
