@@ -17,7 +17,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-const API_URL = "https://ilin-backend.onrender.com/api/subscribers"; // Update with your actual endpoint
+const API_URL = "https://ilin-backend.onrender.com/api/subscribe"; // Update with your actual endpoint
 
 const Subscribers = () => {
   const [subscribers, setSubscribers] = useState([]);
@@ -678,8 +678,6 @@ const Subscribers = () => {
           </div>
         </div>
       )}
-
-      
     </div>
   );
 };

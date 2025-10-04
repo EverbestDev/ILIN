@@ -32,7 +32,7 @@ const Dashboard = () => {
       try {
         const [quotesRes, subscribersRes, contactsRes] = await Promise.all([
           fetch(`${BASE_URL}/api/quotes`),
-          fetch(`${BASE_URL}/api/subscribers`),
+          fetch(`${BASE_URL}/api/subscribe`),
           fetch(`${BASE_URL}/api/contact`),
         ]);
 
