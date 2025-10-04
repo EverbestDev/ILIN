@@ -228,13 +228,14 @@ const ClientDashboard = () => {
 
       {/* 3. Mission Banner */}
       <div className="p-6 text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="items-center justify-between block md:flex">
+          {/* Mobile/MD: Icon and text always stay inline (flex) */}
+          <div className="items-center block gap-4 md:flex">
             <div className="flex items-center justify-center w-12 h-12 bg-white/20 rounded-xl">
               <Globe className="text-white w-7 h-7" />
             </div>
             <div>
-              <h3 className="mb-1 text-xl font-bold">We're Here to Help</h3>
+              <h3 className="my-1 text-xl font-bold">We're Here to Help</h3>
               <p className="text-blue-100">
                 Have a question? Contact our dedicated support team directly.
               </p>
@@ -243,7 +244,8 @@ const ClientDashboard = () => {
           <button
             // <-- ADDED: Navigation to the Messages/Contact page
             onClick={() => navigate("/client/messages")}
-            className="px-4 py-2 font-semibold text-blue-700 transition-colors bg-white rounded-lg hover:bg-gray-100"
+            // Mobile: Full width, top margin (mt-4). MD: auto width (md:w-auto), no margin (md:mt-0).
+            className="w-full px-4 py-3 mt-4 font-semibold text-blue-700 transition-colors bg-white rounded-lg md:w-auto md:mt-0 hover:bg-gray-100"
           >
             Contact Support
           </button>

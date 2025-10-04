@@ -39,66 +39,47 @@ const mockThreads = [
   },
   {
     id: 2,
-    subject: "Issue with Order #1012: Incorrect language pair",
+    subject: "Update on Order #1012: Document Missing",
     status: "Open",
-    lastUpdate: "2025-10-16T15:30:00Z",
+    lastUpdate: "2025-10-18T14:30:00Z",
     isNew: true,
     orderId: "1012",
     messages: [
       {
-        sender: MOCK_CLIENT_EMAIL,
-        text: "Hi, I just submitted Order #1012, but I realized I selected Spanish-to-English instead of German-to-English. Can someone please correct this for me? The document is attached.",
-        date: "2025-10-16T15:30:00Z",
+        sender: MOCK_ADMIN_EMAIL,
+        text: "Hello, we noticed the source document for Order #1012 seems corrupted. Can you please re-upload or send it to us via this thread?",
+        date: "2025-10-18T14:30:00Z",
       },
     ],
   },
   {
     id: 3,
-    subject: "Follow-up on my recent translation project",
+    subject: "Feedback on recent translation delivery",
     status: "Closed",
-    lastUpdate: "2025-10-10T09:15:00Z",
+    lastUpdate: "2025-10-10T09:00:00Z",
     isNew: false,
-    orderId: "998",
+    orderId: null,
     messages: [
       {
         sender: MOCK_CLIENT_EMAIL,
-        text: "Just checking on the status of Order #998. It was due yesterday.",
-        date: "2025-10-09T14:00:00Z",
+        text: "The translation was excellent, thank you!",
+        date: "2025-10-09T17:00:00Z",
       },
       {
         sender: MOCK_ADMIN_EMAIL,
-        text: "Apologies for the delay! The final file was delivered to your email five minutes ago. Please check and confirm receipt. Thank you for your patience.",
-        date: "2025-10-10T09:15:00Z",
+        text: "That's wonderful to hear! We've closed this thread. Please open a new one if you need anything else.",
+        date: "2025-10-10T09:00:00Z",
       },
     ],
   },
 ];
 
-// Utility functions
-const formatDate = (dateString) => {
-  const now = new Date();
+// Helper functions
+const formatLastUpdate = (dateString) => {
   const date = new Date(dateString);
-  const diffInDays = (now - date) / (1000 * 60 * 60 * 24);
-
-  if (diffInDays < 1) {
-    return date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  } else if (diffInDays < 7) {
-    return date.toLocaleDateString("en-US", { weekday: "short" });
-  } else {
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-  }
-};
-
-const formatTime = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleTimeString("en-US", {
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
   });
@@ -107,44 +88,78 @@ const formatTime = (dateString) => {
 const getThreadStatusColor = (status) => {
   switch (status) {
     case "Open":
-      return "text-green-600 bg-green-100 border-green-200";
+      return "text-red-600 bg-red-100 border-red-300";
     case "Replied":
-      return "text-yellow-600 bg-yellow-100 border-yellow-200";
+      return "text-blue-600 bg-blue-100 border-blue-300";
     case "Closed":
-      return "text-gray-600 bg-gray-100 border-gray-200";
+      return "text-gray-600 bg-gray-100 border-gray-300";
     default:
-      return "text-gray-600 bg-gray-100 border-gray-200";
+      return "text-gray-600 bg-gray-100 border-gray-300";
   }
 };
 
 const Messages = () => {
   const [threads, setThreads] = useState(mockThreads);
-  // View states: "list" (default), "thread", "new"
-  const [view, setView] = useState("list");
-  const [selectedThread, setSelectedThread] = useState(null);
-
-  // New Thread State
-  const [newThreadSubject, setNewThreadSubject] = useState("");
-  const [newThreadOrderLink, setNewThreadOrderLink] = useState("");
-  const [newThreadBody, setNewThreadBody] = useState("");
-
-  // Message Sending State
+  const [selectedThreadId, setSelectedThreadId] = useState(null);
   const [messageText, setMessageText] = useState("");
+  const [showNewThreadModal, setShowNewThreadModal] = useState(false);
   const [notification, setNotification] = useState(null);
+
+  // New thread state
+  const [newThreadSubject, setNewThreadSubject] = useState("");
+  const [newThreadBody, setNewThreadBody] = useState("");
+  const [newThreadOrderLink, setNewThreadOrderLink] = useState("");
+
+  const selectedThread = threads.find((t) => t.id === selectedThreadId);
+  const isMobile = window.innerWidth < 1024; // Tailwind's 'lg' breakpoint
+
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => {
+        setNotification(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [notification]);
 
   const showNotification = (message, type = "success") => {
     setNotification({ message, type });
-    setTimeout(() => setNotification(null), 4000);
+  };
+
+  const handleSendMessage = () => {
+    if (!messageText.trim() || !selectedThread) return;
+
+    const newMessage = {
+      sender: MOCK_CLIENT_EMAIL,
+      text: messageText.trim(),
+      date: new Date().toISOString(),
+    };
+
+    setThreads((prevThreads) =>
+      prevThreads.map((thread) =>
+        thread.id === selectedThreadId
+          ? {
+              ...thread,
+              messages: [...thread.messages, newMessage],
+              lastUpdate: new Date().toISOString(),
+              status: "Open", // Client reply makes status 'Open'
+              isNew: false, // User has seen it/replied
+            }
+          : thread
+      )
+    );
+
+    setMessageText("");
+    showNotification("Message sent successfully", "success");
   };
 
   const handleCreateNewThread = () => {
-    if (!newThreadSubject.trim() || !newThreadBody.trim()) {
-      showNotification("Subject and message body cannot be empty.", "error");
-      return;
-    }
+    if (!newThreadSubject.trim() || !newThreadBody.trim()) return;
+
+    const newId = threads.length > 0 ? Math.max(...threads.map(t => t.id)) + 1 : 1;
 
     const newThread = {
-      id: threads.length + 1,
+      id: newId,
       subject: newThreadSubject.trim(),
       status: "Open",
       lastUpdate: new Date().toISOString(),
@@ -159,322 +174,193 @@ const Messages = () => {
       ],
     };
 
-    setThreads([newThread, ...threads.map((t) => ({ ...t, isNew: false }))]);
-    setSelectedThread(newThread);
-    setView("thread");
+    setThreads((prevThreads) => [newThread, ...prevThreads]);
 
-    // Clear form
+    // Reset state and close modal
     setNewThreadSubject("");
-    setNewThreadOrderLink("");
     setNewThreadBody("");
+    setNewThreadOrderLink("");
+    setShowNewThreadModal(false);
+    setSelectedThreadId(newId); // Immediately show the new thread
 
-    showNotification("New thread created and message sent!", "success");
+    showNotification("New thread created successfully!", "success");
   };
 
-  const handleSendMessage = () => {
-    if (!messageText.trim() || !selectedThread) return;
-
-    const newMessage = {
-      sender: MOCK_CLIENT_EMAIL,
-      text: messageText.trim(),
-      date: new Date().toISOString(),
-    };
-
-    const updatedThreads = threads.map((thread) => {
-      if (thread.id === selectedThread.id) {
-        return {
-          ...thread,
-          messages: [...thread.messages, newMessage],
-          lastUpdate: newMessage.date,
-          status: thread.status === "Closed" ? "Open" : thread.status, // Re-open if sending to a closed thread
-          isNew: true,
-        };
-      }
-      return { ...thread, isNew: false };
-    });
-
-    setThreads(updatedThreads);
-    setSelectedThread((prev) => ({
-      ...prev,
-      messages: [...prev.messages, newMessage],
-      lastUpdate: newMessage.date,
-      status: prev.status === "Closed" ? "Open" : prev.status,
-    }));
-    setMessageText("");
-
-    showNotification("Message sent successfully!", "success");
-  };
-
-  const handleSelectThread = (thread) => {
-    setSelectedThread(thread);
-    setView("thread");
-    // Mark as read immediately on selection
-    setThreads((prevThreads) =>
-      prevThreads.map((t) => (t.id === thread.id ? { ...t, isNew: false } : t))
-    );
-    setSelectedThread((prev) => (prev ? { ...prev, isNew: false } : thread));
-  };
-
-  const handleStatusChange = (status) => {
-    if (!selectedThread) return;
-
-    const updatedThreads = threads.map((thread) => {
-      if (thread.id === selectedThread.id) {
-        return {
-          ...thread,
-          status: status,
-        };
-      }
-      return thread;
-    });
-
-    setThreads(updatedThreads);
-    setSelectedThread((prev) => (prev ? { ...prev, status } : null));
-
-    showNotification(`Thread status updated to "${status}"`, "success");
-  };
-
-  // Helper component for the message bubble
-  const MessageBubble = ({ message }) => {
-    const isClient = message.sender === MOCK_CLIENT_EMAIL;
-    const senderName = isClient ? "You" : "Support Team";
-
-    return (
-      <div
-        className={`flex ${isClient ? "justify-end" : "justify-start"} mb-4`}
-      >
-        <div
-          className={`max-w-3/4 p-3 rounded-lg shadow-sm ${
-            isClient
-              ? "bg-green-600 text-white rounded-br-none"
-              : "bg-gray-100 text-gray-800 rounded-tl-none"
-          }`}
-        >
-          <div
-            className={`text-xs font-semibold mb-1 ${
-              isClient ? "text-green-200" : "text-gray-600"
-            }`}
-          >
-            {senderName}
-          </div>
-          <p className="text-sm break-words whitespace-pre-wrap">
-            {message.text}
-          </p>
-          <div className="mt-2 text-xs text-right opacity-70">
-            {formatTime(message.date)}
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // Main Component Return
-  return (
-    <div className="p-4 sm:p-6 lg:p-8">
-      <h1 className="flex items-center gap-3 mb-6 text-3xl font-bold text-gray-900">
-        <MessageSquare className="w-8 h-8 text-green-600" />
-        My Messages
-      </h1>
-
-      <div className="bg-white rounded-xl shadow-lg border border-gray-200 min-h-[70vh] flex">
-        {/* Thread List Sidebar (Left) */}
-        <div
-          className={`flex-shrink-0 w-full lg:w-80 border-r border-gray-200 transition-all duration-300 ${
-            view === "thread" ? "hidden lg:block" : "block"
-          }`}
-        >
-          <div className="flex items-center justify-between p-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-800">
-              Active Threads ({threads.length})
-            </h2>
-            <button
-              onClick={() => setView("new")}
-              className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-white transition-all bg-green-600 rounded-lg shadow-md hover:bg-green-700"
+  const ThreadListItem = ({ thread }) => (
+    <button
+      key={thread.id}
+      onClick={() => {
+        setSelectedThreadId(thread.id);
+        // Mark as old when selected
+        setThreads(prevThreads => prevThreads.map(t => t.id === thread.id ? {...t, isNew: false} : t));
+      }}
+      className={`w-full p-3 text-left border rounded-lg transition-all ${
+        selectedThreadId === thread.id
+          ? "bg-green-50 border-green-300 shadow-md"
+          : "bg-white border-gray-200 hover:bg-gray-50"
+      }`}
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+            <span
+              className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${getThreadStatusColor(
+                thread.status
+              )}`}
             >
-              <Plus className="w-4 h-4" />
+              {thread.status}
+            </span>
+            {thread.isNew && (
+                <span className="text-xs font-bold text-red-600">NEW</span>
+            )}
+        </div>
+        <span className="text-xs text-gray-500">
+          {formatLastUpdate(thread.lastUpdate)}
+        </span>
+      </div>
+      <p className="mt-1 text-sm font-medium text-gray-900 truncate">
+        {thread.subject}
+      </p>
+      <p className="mt-1 text-xs text-gray-500 truncate">
+        {thread.messages[thread.messages.length - 1].text}
+      </p>
+    </button>
+  );
+
+  return (
+    <div className="p-4 bg-white rounded-xl shadow-lg h-full max-h-[calc(100vh-10rem)] overflow-hidden flex min-h-[calc(100vh-10rem)]">
+      {/* Messages Main Container */}
+      <div className="flex w-full">
+        {/* Left Sidebar - Thread List (Hidden on mobile when a thread is selected) */}
+        <div
+          className={`w-full lg:w-80 border-r border-gray-200 bg-white flex-shrink-0 transition-transform duration-300 ease-in-out ${
+            selectedThreadId !== null
+              ? "-translate-x-full lg:translate-x-0"
+              : "translate-x-0"
+          }`}
+        >
+          {/* Header & Filter */}
+          <div className="flex items-center justify-between p-4 border-b border-gray-100">
+            <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900">
+              <MessageSquare className="w-5 h-5 text-green-600" />
+              Client Messages
+            </h2>
+            {/* Filter/Sort button can go here if needed */}
+          </div>
+
+          {/* New Thread Button (Desktop Only) */}
+          <div className="p-4 border-b border-gray-100 **hidden lg:block**"> 
+            <button
+              onClick={() => {
+                setSelectedThreadId(null); // Clear selection
+                setShowNewThreadModal(true); // Open the modal
+              }}
+              className="flex items-center justify-center w-full gap-2 px-4 py-2 font-semibold text-white transition-all bg-green-600 rounded-lg shadow-md hover:bg-green-700"
+            >
+              <Plus className="w-5 h-5" />
               New Thread
             </button>
           </div>
 
-          {threads.length === 0 ? (
-            <div className="p-4 text-center text-gray-500">
-              No active message threads.
-            </div>
-          ) : (
-            <div className="overflow-y-auto h-[calc(70vh-5rem)]">
-              {threads.map((thread) => (
-                <div
-                  key={thread.id}
-                  onClick={() => handleSelectThread(thread)}
-                  className={`p-4 border-b border-gray-100 cursor-pointer transition-colors ${
-                    selectedThread && selectedThread.id === thread.id
-                      ? "bg-green-50"
-                      : "hover:bg-gray-50"
-                  } ${thread.isNew ? "bg-green-50/50 font-medium" : ""}`}
-                >
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-semibold truncate">
-                      {thread.subject}
-                    </p>
-                    <span
-                      className={`text-xs px-2 py-0.5 rounded-full border flex-shrink-0 ${getThreadStatusColor(
-                        thread.status
-                      )}`}
-                    >
-                      {thread.status}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between mt-1 text-xs text-gray-500">
-                    <p className="mr-2 truncate">
-                      {thread.messages[thread.messages.length - 1]?.text}
-                    </p>
-                    <span className="flex-shrink-0">
-                      {formatDate(thread.lastUpdate)}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          {/* Thread List */}
+          <div className="flex-grow p-4 space-y-2 overflow-y-auto max-h-[calc(100vh-20rem)] lg:max-h-[calc(100vh-15rem)]">
+            {threads.length === 0 ? (
+              <p className="py-12 text-sm text-center text-gray-500">
+                No active message threads.
+              </p>
+            ) : (
+              threads.map((thread) => (
+                <ThreadListItem key={thread.id} thread={thread} />
+              ))
+            )}
+          </div>
         </div>
 
-        {/* Message Content / New Thread Form (Right) */}
+        {/* Right Panel - Message View (Hidden on mobile when list is shown) */}
         <div
-          className={`flex-grow w-full transition-all duration-300 ${
-            view === "thread" || view === "new"
-              ? "block"
-              : "hidden lg:block md:flex items-center justify-center"
-          }`}
+          className={`flex-grow bg-white flex flex-col ${
+            selectedThreadId === null ? "hidden lg:flex" : "flex"
+          } transition-all duration-300 ease-in-out`}
         >
-          {/* Default/Empty View */}
-          {view === "list" && (
-            <div className="flex flex-col items-center justify-center h-full p-8 text-center text-gray-500">
-              <Mail className="w-12 h-12 mb-4 text-gray-300" />
-              <p className="mb-2 text-xl font-semibold text-gray-700">
-                Select a thread to view messages
-              </p>
-              <p>Or click "New Thread" to start a new conversation.</p>
-            </div>
-          )}
-
-          {/* New Thread Form (CLEANED) */}
-          {view === "new" && (
-            <div className="flex flex-col h-full p-6">
-              <div className="flex-grow">
-                {/* Header */}
-                <div className="flex items-center justify-between pb-4 mb-6 border-b border-gray-200">
-                  <h2 className="flex items-center gap-3 text-2xl font-semibold text-gray-800">
-                    <Plus className="w-6 h-6 text-green-600" />
-                    Start a New Message Thread
-                  </h2>
-                  <button
-                    onClick={() => {
-                      setView("list");
-                      setSelectedThread(null);
-                    }}
-                    className="text-gray-400 hover:text-gray-600"
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
-                </div>
-                {/* Form Fields - Cleaned and with green focus */}
-                <div className="space-y-4">
-                  <input
-                    type="text"
-                    placeholder="Subject of your new thread..."
-                    value={newThreadSubject}
-                    onChange={(e) => setNewThreadSubject(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-2 focus:border-green-500"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Link to Order ID (Optional, e.g., #1012)"
-                    value={newThreadOrderLink}
-                    onChange={(e) => setNewThreadOrderLink(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-2 focus:border-green-500"
-                  />
-                  <textarea
-                    rows="4"
-                    placeholder="Your message details..."
-                    value={newThreadBody}
-                    onChange={(e) => setNewThreadBody(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:border-2 focus:border-green-500"
-                  />
-                </div>
+          {selectedThreadId === null ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center text-gray-500">
+                <MessageSquare className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                <h3 className="text-xl font-semibold">Select a message</h3>
+                <p className="text-sm">
+                  Choose a thread from the left or create a new one.
+                </p>
               </div>
-              <button
-                onClick={handleCreateNewThread}
-                disabled={!newThreadSubject.trim() || !newThreadBody.trim()}
-                className="flex items-center justify-center w-full gap-2 px-6 py-3 mt-6 font-semibold text-white transition-all bg-green-600 rounded-lg shadow-lg hover:bg-green-700 disabled:opacity-50"
-              >
-                <Send className="w-5 h-5" />
-                Create Thread & Send Message
-              </button>
             </div>
-          )}
-
-          {/* Thread View */}
-          {view === "thread" && selectedThread && (
-            <div className="flex flex-col h-full">
+          ) : (
+            // Message Thread Detail
+            <div className="flex flex-col h-full overflow-hidden">
               {/* Thread Header */}
-              <div className="flex items-center justify-between flex-shrink-0 p-4 border-b border-gray-200">
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => setView("list")}
-                    className="text-gray-500 lg:hidden hover:text-gray-700"
-                  >
-                    <ArrowLeft className="w-6 h-6" />
-                  </button>
-                  <div>
-                    <h2 className="text-lg font-semibold text-gray-800 truncate">
-                      {selectedThread.subject}
-                    </h2>
-                    <div className="flex items-center gap-2 text-sm text-gray-500 mt-0.5">
-                      <span
-                        className={`text-xs px-2 py-0.5 rounded-full border ${getThreadStatusColor(
-                          selectedThread.status
-                        )}`}
-                      >
-                        {selectedThread.status}
-                      </span>
-                      {selectedThread.orderId && (
-                        <span className="flex items-center gap-1 text-green-600">
-                          <FileText className="w-3 h-3" />
-                          Order #{selectedThread.orderId}
-                        </span>
-                      )}
-                    </div>
-                  </div>
+              <div className="flex items-center justify-between flex-shrink-0 p-4 border-b border-gray-100 bg-gray-50">
+                <button
+                  onClick={() => setSelectedThreadId(null)}
+                  className="flex items-center gap-2 text-gray-700 transition-colors hover:text-green-600 lg:hidden"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </button>
+                <div className="flex-1 min-w-0 lg:ml-0">
+                  <h3 className="text-lg font-bold text-gray-900 truncate">
+                    {selectedThread.subject}
+                  </h3>
+                  <p className="text-xs text-gray-500">
+                    Order ID:{" "}
+                    <span className="font-medium text-gray-700">
+                      {selectedThread.orderId || "N/A"}
+                    </span>
+                  </p>
                 </div>
-                {/* Status Dropdown/Actions (Mocked) */}
-                <div className="relative">
-                  <select
-                    value={selectedThread.status}
-                    onChange={(e) => handleStatusChange(e.target.value)}
-                    className={`px-3 py-2 text-sm font-medium border rounded-lg appearance-none cursor-pointer focus:outline-none ${getThreadStatusColor(
-                      selectedThread.status
-                    )}`}
-                  >
-                    <option value="Open">Open</option>
-                    <option value="Replied">Awaiting Reply</option>
-                    <option value="Closed">Closed</option>
-                  </select>
-                </div>
+                <span
+                  className={`text-xs font-semibold px-2 py-0.5 rounded-full border ml-4 ${getThreadStatusColor(
+                    selectedThread.status
+                  )}`}
+                >
+                  {selectedThread.status}
+                </span>
               </div>
 
               {/* Message History */}
-              <div className="flex-grow p-4 overflow-y-auto">
+              <div className="flex-grow p-4 space-y-4 overflow-y-auto">
                 {selectedThread.messages.map((message, index) => (
-                  <MessageBubble key={index} message={message} />
+                  <div
+                    key={index}
+                    className={`flex ${
+                      message.sender === MOCK_CLIENT_EMAIL
+                        ? "justify-end"
+                        : "justify-start"
+                    }`}
+                  >
+                    <div
+                      className={`max-w-xs sm:max-w-md p-3 rounded-lg shadow-sm ${
+                        message.sender === MOCK_CLIENT_EMAIL
+                          ? "bg-green-600 text-white rounded-br-none"
+                          : "bg-gray-100 text-gray-800 rounded-tl-none"
+                      }`}
+                    >
+                      <p className="text-sm">{message.text}</p>
+                      <p
+                        className={`mt-1 text-xs ${
+                          message.sender === MOCK_CLIENT_EMAIL
+                            ? "text-green-200"
+                            : "text-gray-500"
+                        } text-right`}
+                      >
+                        {formatLastUpdate(message.date)}
+                      </p>
+                    </div>
+                  </div>
                 ))}
               </div>
 
-              {/* Message Input Area */}
-              <div className="flex-shrink-0 p-4 border-t border-gray-200">
-                <div className="flex items-center gap-3">
+              {/* Message Input */}
+              <div className="flex-shrink-0 p-4 border-t border-gray-100">
+                <div className="flex items-end gap-3">
                   <textarea
                     rows="1"
-                    placeholder="Type your message..."
+                    placeholder="Type your reply..."
                     value={messageText}
                     onChange={(e) => setMessageText(e.target.value)}
                     onKeyDown={(e) => {
@@ -498,6 +384,68 @@ const Messages = () => {
           )}
         </div>
       </div>
+
+      {/* FIX 2: Floating Action Button (FAB) for Mobile Only */}
+      {selectedThreadId === null && !showNewThreadModal && (
+        <button
+          onClick={() => setShowNewThreadModal(true)}
+          className="fixed bottom-6 right-6 w-14 h-14 bg-green-600 rounded-full shadow-xl flex items-center justify-center text-white transition-all hover:bg-green-700 **lg:hidden z-40**" // <-- Key Fix: High z-index and mobile-only
+        >
+          <Plus className="w-6 h-6" />
+        </button>
+      )}
+
+
+      {/* New Thread Modal */}
+      {showNewThreadModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="w-full max-w-lg p-6 mx-4 bg-white shadow-2xl rounded-xl">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="flex items-center gap-2 text-xl font-bold text-gray-900">
+                <MessageSquare className="w-5 h-5 text-green-600" />
+                Start a New Thread
+              </h3>
+              <button
+                onClick={() => setShowNewThreadModal(false)}
+                className="p-1 text-gray-400 rounded-full hover:bg-gray-100 hover:text-gray-600"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <input
+                type="text"
+                placeholder="Subject (e.g., Question about Invoice #1234)"
+                value={newThreadSubject}
+                onChange={(e) => setNewThreadSubject(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:border-green-500" // CHANGED: blue -> green
+              />
+              <input
+                type="text"
+                placeholder="Link to Order ID (Optional, e.g., #1012)"
+                value={newThreadOrderLink}
+                onChange={(e) => setNewThreadOrderLink(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:border-green-500" // CHANGED: blue -> green
+              />
+              <textarea
+                rows="4"
+                placeholder="Your message details..."
+                value={newThreadBody}
+                onChange={(e) => setNewThreadBody(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:border-green-500" // CHANGED: blue -> green
+              />
+            </div>
+            <button
+              onClick={handleCreateNewThread}
+              disabled={!newThreadSubject.trim() || !newThreadBody.trim()}
+              className="flex items-center justify-center w-full gap-2 px-6 py-3 mt-6 font-semibold text-white transition-all bg-green-600 rounded-lg shadow-lg hover:bg-green-700 disabled:opacity-50"
+            >
+              <Send className="w-5 h-5" />
+              Create Thread
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Notification Toast */}
       {notification && (
