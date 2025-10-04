@@ -14,6 +14,10 @@ import emailRoutes from "./routes/email.js";
 import contactRoutes from "./routes/contact.js";
 import quoteRoutes from "./routes/quote.js";
 import subscriberRoutes from "./routes/subscriber.js";
+import adminRoutes from "./routes/admin.js";
+import dashboardRoutes from "./routes/dashboard.js";
+
+
 
 const app = express();
 
@@ -44,6 +48,10 @@ app.use("/api", emailRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/quotes", quoteRoutes);
 app.use("/api", subscriberRoutes);
+
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/admin", adminRoutes);
+
 
 // Test route
 app.get("/", (req, res) => {
