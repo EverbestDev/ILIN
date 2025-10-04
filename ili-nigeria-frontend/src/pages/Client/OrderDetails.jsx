@@ -383,7 +383,7 @@ const OrderDetails = () => {
             </p>
             <button
               onClick={() => navigate("/client/messages?topic=" + order._id)}
-              className="w-full px-6 py-2.5 font-semibold text-blue-700 transition-colors rounded-lg bg-white hover:bg-blue-100 border border-blue-300"
+              className="w-full px-6 py-2.5 font-semibold text-red-700 transition-colors rounded-lg bg-white hover:bg-blue-100 border border-red-300"
             >
               Message Support
             </button>

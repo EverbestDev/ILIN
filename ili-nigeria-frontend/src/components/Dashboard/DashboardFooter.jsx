@@ -10,7 +10,7 @@ const DashboardFooter = ({
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="mt-8 bg-white border-t border-gray-200">
+    <footer className="bg-white border-t border-gray-200"> 
       <div className="px-4 py-6 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
           {/* Left Section - Brand (Using Props) */}
@@ -39,15 +39,15 @@ const DashboardFooter = ({
             <a href="#" className="transition-colors hover:text-green-600">
               Privacy Policy
             </a>
-            <span className="text-gray-300">•</span>
+            <span className="text-gray-300"> • </span>
             <a href="#" className="transition-colors hover:text-green-600">
               Terms of Service
             </a>
-            <span className="text-gray-300">•</span>
+            <span className="text-gray-300"> • </span>
             <a href="#" className="transition-colors hover:text-green-600">
               Documentation
             </a>
-            <span className="text-gray-300">•</span>
+            <span className="text-gray-300"> • </span>
             <a href="#" className="transition-colors hover:text-green-600">
               Support
             </a>

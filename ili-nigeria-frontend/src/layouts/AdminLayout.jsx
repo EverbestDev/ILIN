@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
-// UPDATED IMPORTS
+import { useNavigate } from "react-router-dom";
 import DashboardNavbar from "../components/Dashboard/DashboardNavbar";
 import DashboardSidebar from "../components/Dashboard/DashboardSidebar";
 import DashboardFooter from "../components/Dashboard/DashboardFooter";
 
-// Destructure required icons from the sidebar for use in menu data
 const {
   LayoutDashboard,
   FileText,
@@ -18,10 +17,9 @@ const {
 
 const AdminLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();
 
-  // *** ADMIN-SPECIFIC DATA CONSOLIDATED HERE ***
   const adminData = {
-    // Navbar Props
     brandName: "ILIN",
     portalTitle: "Admin Portal",
     userName: "John Doe",
@@ -48,25 +46,21 @@ const AdminLayout = ({ children }) => {
         unread: true,
       },
     ],
-    // Footer Props
     copyrightName: "ILIN",
-    portalVersion: "v1.0",
-
-    // Sidebar Props - NOTE: We are using the imported Lucide icons as values
+    portalVersion: "Admin v1.0",
     menuItems: [
       {
         id: "dashboard",
         label: "Dashboard",
         icon: LayoutDashboard,
         path: "/admin/dashboard",
-        badge: null,
       },
       {
         id: "quotes",
         label: "Quote Requests",
         icon: FileText,
         path: "/admin/quotes",
-        badge: "12",
+        badge: 12,
       },
       {
         id: "subscribers",
@@ -80,7 +74,7 @@ const AdminLayout = ({ children }) => {
         label: "Contact Messages",
         icon: Mail,
         path: "/admin/contacts",
-        badge: "5",
+        badge: 5,
       },
       {
         id: "schedules",
@@ -107,13 +101,12 @@ const AdminLayout = ({ children }) => {
   };
 
   const handleAdminLogout = () => {
-    Navigate("/login");
-    console.log("Admin Logged out successfully!");
+    navigate("/login");
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/20 to-gray-100">
-      {/* Fixed Navbar - Pass Props */}
+      {/* Fixed Navbar */}
       <div className="fixed top-0 left-0 right-0 z-50">
         <DashboardNavbar
           onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
@@ -128,16 +121,22 @@ const AdminLayout = ({ children }) => {
         />
       </div>
 
-      {/* Mobile Sidebar Overlay */}
+      {/* Mobile Sidebar Overlay - FIXED: Lower z-index */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          className="fixed inset-0 z-20 bg-black/50 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {/* Fixed Sidebar Container - Pass Props */}
-      <div className="fixed bottom-0 left-0 z-40 top-16">
+      {/* Fixed Sidebar Container - FIXED: z-30 above overlay + pointer-events */}
+      <div
+        className={`fixed bottom-0 left-0 z-30 top-16 ${
+          !sidebarOpen
+            ? "pointer-events-none lg:pointer-events-auto"
+            : "pointer-events-auto"
+        }`}
+      >
         <DashboardSidebar
           isOpen={sidebarOpen}
           menuItems={adminData.menuItems}
@@ -145,10 +144,10 @@ const AdminLayout = ({ children }) => {
         />
       </div>
 
-      {/* Main Content */}
-      <main className="min-h-screen pt-16 lg:ml-64">
-        {children}
-        {/* Footer - Pass Props */}
+      {/* Main Content - REMOVED z-index completely */}
+      <main className="lg:ml-64 pt-16 flex flex-col min-h-[calc(100vh-4rem)]">
+        <div className="flex-grow p-4 sm:p-6 lg:p-8">{children}</div>
+
         <DashboardFooter
           copyrightName={adminData.copyrightName}
           portalVersion={adminData.portalVersion}
@@ -159,8 +158,7 @@ const AdminLayout = ({ children }) => {
       {sidebarOpen && (
         <button
           onClick={() => setSidebarOpen(false)}
-          className="fixed z-50 flex items-center justify-center text-white transition-transform rounded-full shadow-lg lg:hidden bottom-6 right-6 w-14 h-14 bg-gradient-to-br from-green-600 to-green-700 hover:scale-110"
-          aria-label="Close sidebar"
+          className="fixed z-50 flex items-center justify-center text-white transition-transform rounded-full shadow-lg lg:hidden bottom-6 right-6 w-14 h-14 bg-gradient-to-br from-green-600 to-green-700 hover:scale-105"
         >
           <X className="w-6 h-6" />
         </button>
