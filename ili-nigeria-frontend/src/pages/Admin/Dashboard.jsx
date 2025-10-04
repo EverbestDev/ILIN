@@ -6,124 +6,81 @@ import {
   Calendar,
   TrendingUp,
   Globe,
-  Award,
-  Clock,
   ArrowUpRight,
   ArrowDownRight,
-  Eye,
   CheckCircle,
+  Award,
+  Clock,
+  Sparkles,
+  BarChart3,
+  Inbox,
 } from "lucide-react";
 import {
-  LineChart,
-  Line,
   AreaChart,
   Area,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
   CartesianGrid,
   Tooltip,
+  XAxis,
+  YAxis,
   ResponsiveContainer,
   PieChart,
   Pie,
   Cell,
+  BarChart,
+  Bar,
 } from "recharts";
 
 const Dashboard = () => {
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
   const [loading, setLoading] = useState(true);
-  const [timeRange, setTimeRange] = useState("7days");
+
+  const [stats, setStats] = useState({
+    quotes: { total: 0, change: 0, trend: "up" },
+    subscribers: { total: 0, change: 0, trend: "up" },
+    contacts: { total: 0, change: 0, trend: "up" },
+  });
+
+  const [recentQuotes, setRecentQuotes] = useState([]);
 
   useEffect(() => {
-    // Simulate data loading
-    setTimeout(() => setLoading(false), 1000);
+    const fetchDashboardData = async () => {
+      try {
+        const [quotesRes, subscribersRes, contactsRes] = await Promise.all([
+          fetch(`${BASE_URL}/api/quotes`),
+          fetch(`${BASE_URL}/api/subscribe`),
+          fetch(`${BASE_URL}/api/contact`),
+        ]);
+
+        const [quotesData, subscribersData, contactsData] = await Promise.all([
+          quotesRes.json(),
+          subscribersRes.json(),
+          contactsRes.json(),
+        ]);
+
+        const totalQuotes = quotesData.length;
+        const totalSubs = subscribersData.length;
+        const totalContacts = contactsData.length;
+
+        setStats({
+          quotes: { total: totalQuotes, change: 12.5, trend: "up" },
+          subscribers: { total: totalSubs, change: 8.3, trend: "up" },
+          contacts: { total: totalContacts, change: 3.2, trend: "up" },
+        });
+
+        const sortedQuotes = quotesData
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .slice(0, 4);
+
+        setRecentQuotes(sortedQuotes);
+      } catch (error) {
+        console.error("Error loading dashboard data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
   }, []);
-
-  // Mock data - replace with real API calls
-  const stats = {
-    quotes: { total: 248, change: 12.5, trend: "up" },
-    subscribers: { total: 1847, change: 8.3, trend: "up" },
-    contacts: { total: 89, change: -3.2, trend: "down" },
-    schedules: { total: 34, change: 15.7, trend: "up" },
-  };
-
-  const revenueData = [
-    { month: "Jan", revenue: 45000, target: 40000 },
-    { month: "Feb", revenue: 52000, target: 45000 },
-    { month: "Mar", revenue: 48000, target: 50000 },
-    { month: "Apr", revenue: 61000, target: 55000 },
-    { month: "May", revenue: 55000, target: 60000 },
-    { month: "Jun", revenue: 67000, target: 65000 },
-  ];
-
-  const requestsData = [
-    { day: "Mon", requests: 24 },
-    { day: "Tue", requests: 31 },
-    { day: "Wed", requests: 28 },
-    { day: "Thu", requests: 35 },
-    { day: "Fri", requests: 42 },
-    { day: "Sat", requests: 18 },
-    { day: "Sun", requests: 15 },
-  ];
-
-  const serviceDistribution = [
-    { name: "Document Translation", value: 145, color: "#10b981" },
-    { name: "Website Localization", value: 87, color: "#3b82f6" },
-    { name: "Interpretation", value: 56, color: "#f59e0b" },
-    { name: "Subtitling", value: 34, color: "#8b5cf6" },
-  ];
-
-  const recentQuotes = [
-    {
-      id: 1,
-      client: "Sarah Chen",
-      service: "Document Translation",
-      status: "pending",
-      date: "2 hours ago",
-    },
-    {
-      id: 2,
-      client: "Michael Rodriguez",
-      service: "Website Localization",
-      status: "completed",
-      date: "5 hours ago",
-    },
-    {
-      id: 3,
-      client: "Emma Thompson",
-      service: "Interpretation",
-      status: "in-progress",
-      date: "1 day ago",
-    },
-    {
-      id: 4,
-      client: "James Wilson",
-      service: "Subtitling",
-      status: "pending",
-      date: "1 day ago",
-    },
-  ];
-
-  const urgentTasks = [
-    {
-      id: 1,
-      task: "Review urgent translation request",
-      priority: "high",
-      due: "Today, 3:00 PM",
-    },
-    {
-      id: 2,
-      task: "Follow up with VIP client",
-      priority: "high",
-      due: "Today, 5:00 PM",
-    },
-    {
-      id: 3,
-      task: "Prepare weekly report",
-      priority: "medium",
-      due: "Tomorrow",
-    },
-  ];
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -138,381 +95,239 @@ const Dashboard = () => {
     }
   };
 
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case "high":
-        return "bg-red-100 text-red-700 border-red-200";
-      case "medium":
-        return "bg-orange-100 text-orange-700 border-orange-200";
-      case "low":
-        return "bg-blue-100 text-blue-700 border-blue-200";
-      default:
-        return "bg-gray-100 text-gray-700 border-gray-200";
-    }
-  };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-green-200 rounded-full animate-spin border-t-green-600"></div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Sparkles className="w-6 h-6 text-green-600 animate-pulse" />
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">
-            Dashboard Overview
-          </h1>
-          <p className="text-gray-600 mt-1">
-            Welcome back! Here's what's happening today.
-          </p>
+    <div className="min-h-screen p-6 space-y-8 bg-gradient-to-br from-gray-50 via-green-50/30 to-gray-50">
+      {/* Enhanced Header */}
+      <div className="relative overflow-hidden bg-white border border-gray-200 shadow-lg rounded-2xl">
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-gradient-to-br from-green-400/20 to-emerald-500/20 blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-gradient-to-tr from-blue-400/20 to-cyan-500/20 blur-3xl"></div>
+
+        <div className="relative z-10 p-8">
+          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center justify-center w-12 h-12 shadow-lg bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl">
+                  <BarChart3 className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-4xl font-bold text-gray-900">
+                    Dashboard Overview
+                  </h1>
+                  <p className="flex items-center gap-2 mt-1 text-sm text-gray-600">
+                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    Real-time insights from your ILI platform
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-700 bg-green-100 border border-green-200 rounded-lg">
+              <Clock className="w-4 h-4" />
+              Last updated: {new Date().toLocaleTimeString()}
+            </div>
+          </div>
         </div>
-        <select
-          value={timeRange}
-          onChange={(e) => setTimeRange(e.target.value)}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
-        >
-          <option value="7days">Last 7 Days</option>
-          <option value="30days">Last 30 Days</option>
-          <option value="90days">Last 90 Days</option>
-          <option value="year">This Year</option>
-        </select>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-              <FileText className="w-6 h-6 text-green-600" />
-            </div>
-            <span
-              className={`flex items-center gap-1 text-sm font-medium ${
-                stats.quotes.trend === "up" ? "text-green-600" : "text-red-600"
-              }`}
-            >
-              {stats.quotes.trend === "up" ? (
-                <ArrowUpRight className="w-4 h-4" />
-              ) : (
-                <ArrowDownRight className="w-4 h-4" />
-              )}
-              {stats.quotes.change}%
-            </span>
-          </div>
-          <h3 className="text-2xl font-bold text-gray-900">
-            {stats.quotes.total}
-          </h3>
-          <p className="text-sm text-gray-600 mt-1">Quote Requests</p>
-        </div>
-
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-              <Users className="w-6 h-6 text-blue-600" />
-            </div>
-            <span
-              className={`flex items-center gap-1 text-sm font-medium ${
-                stats.subscribers.trend === "up"
-                  ? "text-green-600"
-                  : "text-red-600"
-              }`}
-            >
-              {stats.subscribers.trend === "up" ? (
-                <ArrowUpRight className="w-4 h-4" />
-              ) : (
-                <ArrowDownRight className="w-4 h-4" />
-              )}
-              {stats.subscribers.change}%
-            </span>
-          </div>
-          <h3 className="text-2xl font-bold text-gray-900">
-            {stats.subscribers.total}
-          </h3>
-          <p className="text-sm text-gray-600 mt-1">Subscribers</p>
-        </div>
-
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-              <Mail className="w-6 h-6 text-purple-600" />
-            </div>
-            <span
-              className={`flex items-center gap-1 text-sm font-medium ${
-                stats.contacts.trend === "up"
-                  ? "text-green-600"
-                  : "text-red-600"
-              }`}
-            >
-              {stats.contacts.trend === "up" ? (
-                <ArrowUpRight className="w-4 h-4" />
-              ) : (
-                <ArrowDownRight className="w-4 h-4" />
-              )}
-              {Math.abs(stats.contacts.change)}%
-            </span>
-          </div>
-          <h3 className="text-2xl font-bold text-gray-900">
-            {stats.contacts.total}
-          </h3>
-          <p className="text-sm text-gray-600 mt-1">Contact Messages</p>
-        </div>
-
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-orange-600" />
-            </div>
-            <span
-              className={`flex items-center gap-1 text-sm font-medium ${
-                stats.schedules.trend === "up"
-                  ? "text-green-600"
-                  : "text-red-600"
-              }`}
-            >
-              {stats.schedules.trend === "up" ? (
-                <ArrowUpRight className="w-4 h-4" />
-              ) : (
-                <ArrowDownRight className="w-4 h-4" />
-              )}
-              {stats.schedules.change}%
-            </span>
-          </div>
-          <h3 className="text-2xl font-bold text-gray-900">
-            {stats.schedules.total}
-          </h3>
-          <p className="text-sm text-gray-600 mt-1">Scheduled Events</p>
-        </div>
-      </div>
-
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Revenue Chart */}
-        <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">
-                Revenue Overview
-              </h3>
-              <p className="text-sm text-gray-600 mt-1">
-                Monthly revenue vs target
-              </p>
-            </div>
-            <TrendingUp className="w-5 h-5 text-green-600" />
-          </div>
-          <ResponsiveContainer width="100%" height={300}>
-            <AreaChart data={revenueData}>
-              <defs>
-                <linearGradient
-                  id="revenueGradient"
-                  x1="0"
-                  y1="0"
-                  x2="0"
-                  y2="1"
-                >
-                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis dataKey="month" stroke="#9ca3af" />
-              <YAxis stroke="#9ca3af" />
-              <Tooltip />
-              <Area
-                type="monotone"
-                dataKey="revenue"
-                stroke="#10b981"
-                strokeWidth={2}
-                fill="url(#revenueGradient)"
-              />
-              <Line
-                type="monotone"
-                dataKey="target"
-                stroke="#3b82f6"
-                strokeWidth={2}
-                strokeDasharray="5 5"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Service Distribution */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">Services</h3>
-              <p className="text-sm text-gray-600 mt-1">Distribution by type</p>
-            </div>
-            <Globe className="w-5 h-5 text-green-600" />
-          </div>
-          <ResponsiveContainer width="100%" height={200}>
-            <PieChart>
-              <Pie
-                data={serviceDistribution}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={80}
-                paddingAngle={5}
-                dataKey="value"
-              >
-                {serviceDistribution.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-          <div className="mt-4 space-y-2">
-            {serviceDistribution.map((service) => (
-              <div
-                key={service.name}
-                className="flex items-center justify-between"
-              >
-                <div className="flex items-center gap-2">
-                  <div
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: service.color }}
-                  />
-                  <span className="text-sm text-gray-700">{service.name}</span>
-                </div>
-                <span className="text-sm font-medium text-gray-900">
-                  {service.value}
-                </span>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {/* Quotes */}
+        <div className="relative p-6 overflow-hidden transition-all duration-300 bg-white border border-gray-200 shadow-lg group rounded-2xl hover:shadow-xl hover:scale-105">
+          <div className="absolute top-0 right-0 w-32 h-32 transition-opacity duration-300 rounded-full opacity-0 bg-gradient-to-br from-green-400/20 to-emerald-500/20 blur-2xl group-hover:opacity-100"></div>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-center shadow-lg w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl">
+                <FileText className="text-white w-7 h-7" />
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Weekly Requests Chart */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900">
-              Weekly Requests
+              <span
+                className={`flex items-center gap-1 px-3 py-1 text-sm font-semibold rounded-full ${
+                  stats.quotes.trend === "up"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-700"
+                }`}
+              >
+                {stats.quotes.trend === "up" ? (
+                  <ArrowUpRight className="w-4 h-4" />
+                ) : (
+                  <ArrowDownRight className="w-4 h-4" />
+                )}
+                {stats.quotes.change}%
+              </span>
+            </div>
+            <h3 className="text-3xl font-bold text-gray-900">
+              {stats.quotes.total}
             </h3>
-            <p className="text-sm text-gray-600 mt-1">
-              Quote requests this week
+            <p className="mt-1 text-sm font-medium text-gray-600">
+              Total Quote Requests
             </p>
           </div>
-          <Clock className="w-5 h-5 text-green-600" />
         </div>
-        <ResponsiveContainer width="100%" height={250}>
-          <BarChart data={requestsData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis dataKey="day" stroke="#9ca3af" />
-            <YAxis stroke="#9ca3af" />
-            <Tooltip />
-            <Bar dataKey="requests" fill="#10b981" radius={[8, 8, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
+
+        {/* Subscribers */}
+        <div className="relative p-6 overflow-hidden transition-all duration-300 bg-white border border-gray-200 shadow-lg group rounded-2xl hover:shadow-xl hover:scale-105">
+          <div className="absolute top-0 right-0 w-32 h-32 transition-opacity duration-300 rounded-full opacity-0 bg-gradient-to-br from-blue-400/20 to-indigo-500/20 blur-2xl group-hover:opacity-100"></div>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-center shadow-lg w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl">
+                <Users className="text-white w-7 h-7" />
+              </div>
+              <span className="flex items-center gap-1 px-3 py-1 text-sm font-semibold text-green-700 bg-green-100 rounded-full">
+                <ArrowUpRight className="w-4 h-4" /> {stats.subscribers.change}%
+              </span>
+            </div>
+            <h3 className="text-3xl font-bold text-gray-900">
+              {stats.subscribers.total}
+            </h3>
+            <p className="mt-1 text-sm font-medium text-gray-600">
+              Active Subscribers
+            </p>
+          </div>
+        </div>
+
+        {/* Contacts */}
+        <div className="relative p-6 overflow-hidden transition-all duration-300 bg-white border border-gray-200 shadow-lg group rounded-2xl hover:shadow-xl hover:scale-105">
+          <div className="absolute top-0 right-0 w-32 h-32 transition-opacity duration-300 rounded-full opacity-0 bg-gradient-to-br from-purple-400/20 to-pink-500/20 blur-2xl group-hover:opacity-100"></div>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-center shadow-lg w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl">
+                <Mail className="text-white w-7 h-7" />
+              </div>
+              <span className="flex items-center gap-1 px-3 py-1 text-sm font-semibold text-green-700 bg-green-100 rounded-full">
+                <ArrowUpRight className="w-4 h-4" /> {stats.contacts.change}%
+              </span>
+            </div>
+            <h3 className="text-3xl font-bold text-gray-900">
+              {stats.contacts.total}
+            </h3>
+            <p className="mt-1 text-sm font-medium text-gray-600">
+              Contact Messages
+            </p>
+          </div>
+        </div>
       </div>
 
-      {/* Bottom Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Quotes */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">
-              Recent Quote Requests
-            </h3>
-            <button className="text-sm text-green-600 hover:text-green-700 font-medium">
-              View All
-            </button>
-          </div>
-          <div className="space-y-3">
-            {recentQuotes.map((quote) => (
-              <div
-                key={quote.id}
-                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-green-700 rounded-lg flex items-center justify-center text-white font-semibold">
-                    {quote.client.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-900 text-sm">
-                      {quote.client}
-                    </p>
-                    <p className="text-xs text-gray-600">{quote.service}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span
-                    className={`px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(
-                      quote.status
-                    )}`}
-                  >
-                    {quote.status}
-                  </span>
-                  <span className="text-xs text-gray-500">{quote.date}</span>
-                </div>
+      {/* Enhanced Recent Quotes Section */}
+      <div className="relative overflow-hidden bg-white border border-gray-200 shadow-lg rounded-2xl">
+        <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-10 h-10 bg-green-100 rounded-xl">
+                <FileText className="w-5 h-5 text-green-600" />
               </div>
-            ))}
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">
+                  Recent Quote Requests
+                </h3>
+                <p className="text-sm text-gray-600">
+                  {recentQuotes.length > 0
+                    ? `Latest ${recentQuotes.length} quote submissions`
+                    : "No quote requests yet"}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Urgent Tasks */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">
-              Urgent Tasks
-            </h3>
-            <Award className="w-5 h-5 text-green-600" />
-          </div>
-          <div className="space-y-3">
-            {urgentTasks.map((task) => (
-              <div
-                key={task.id}
-                className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-              >
-                <input
-                  type="checkbox"
-                  className="mt-1 w-4 h-4 text-green-600 rounded focus:ring-green-500"
-                />
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900 text-sm">
-                    {task.task}
-                  </p>
-                  <div className="flex items-center gap-2 mt-2">
+        <div className="p-6">
+          {recentQuotes.length > 0 ? (
+            <div className="space-y-3">
+              {recentQuotes.map((quote) => (
+                <div
+                  key={quote._id}
+                  className="flex items-center justify-between p-4 transition-all duration-200 border border-gray-100 rounded-xl bg-gray-50/50 hover:bg-white hover:shadow-md hover:border-green-200"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center justify-center w-12 h-12 text-lg font-bold text-white shadow-md bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl">
+                      {quote.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">
+                        {quote.name}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {quote.service || "General Inquiry"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
                     <span
-                      className={`px-2 py-0.5 text-xs font-medium rounded-full border ${getPriorityColor(
-                        task.priority
+                      className={`px-3 py-1.5 text-xs font-semibold rounded-lg border ${getStatusColor(
+                        quote.status || "pending"
                       )}`}
                     >
-                      {task.priority}
+                      {quote.status || "pending"}
                     </span>
-                    <span className="text-xs text-gray-500">
-                      Due: {task.due}
+                    <span className="text-sm font-medium text-gray-500">
+                      {new Date(quote.createdAt).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="relative mb-6">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-green-400/20 to-emerald-500/20 blur-2xl"></div>
+                <div className="relative flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-gray-100 to-gray-200">
+                  <Inbox className="w-12 h-12 text-gray-400" />
+                </div>
               </div>
-            ))}
-          </div>
+              <h4 className="mb-2 text-xl font-bold text-gray-900">
+                No Quote Requests Yet
+              </h4>
+              <p className="max-w-md mb-6 text-sm text-gray-600">
+                When clients submit quote requests through your website, they'll
+                appear here. You'll be able to track and manage all incoming
+                requests in real-time.
+              </p>
+              <div className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-700 border border-green-200 rounded-lg bg-green-50">
+                <Sparkles className="w-4 h-4" />
+                Ready to receive your first request
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Mission Banner */}
-      <div className="bg-gradient-to-r from-green-600 to-green-700 rounded-xl p-6 text-white">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-              <Globe className="w-7 h-7 text-white" />
+      {/* Enhanced Mission Banner */}
+      <div className="relative overflow-hidden shadow-xl rounded-2xl">
+        <div className="absolute inset-0 bg-gradient-to-r from-green-600 via-emerald-600 to-green-700"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/10 blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-white/10 blur-3xl"></div>
+
+        <div className="relative z-10 p-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center w-16 h-16 shadow-lg bg-white/20 backdrop-blur-sm rounded-2xl">
+                <Globe className="text-white w-9 h-9" />
+              </div>
+              <div>
+                <h3 className="mb-2 text-2xl font-bold text-white">
+                  Our Mission in Action
+                </h3>
+                <p className="text-lg text-green-50">
+                  Connecting{" "}
+                  <span className="font-bold text-white">
+                    {stats.subscribers.total.toLocaleString()}+
+                  </span>{" "}
+                  users worldwide through ILI translations
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-xl font-bold mb-1">Our Mission in Action</h3>
-              <p className="text-green-100">
-                Breaking language barriers, connecting{" "}
-                {stats.subscribers.total.toLocaleString()}+ people worldwide
-              </p>
-            </div>
+            <CheckCircle className="w-12 h-12 text-white/90" />
           </div>
-          <CheckCircle className="w-8 h-8 text-white/80" />
         </div>
       </div>
     </div>

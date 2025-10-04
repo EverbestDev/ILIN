@@ -3,7 +3,7 @@ import TopScroll from "./components/TopScroll";
 import DefaultLayout from "./layouts/DefaultLayout";
 import AdminLayout from "./layouts/AdminLayout";
 import ClientLayout from "./layouts/ClientLayout";
-import AuthLayout from "./layouts/AuthLayout"; // <-- AuthLayout Import
+import AuthLayout from "./layouts/AuthLayout";
 
 // Default Pages
 import Hero from "./components/Hero";
@@ -22,7 +22,7 @@ import ContactPage from "./pages/Default/ContactPage";
 import LanguagesPage from "./pages/Default/LangauagesPage";
 import ServicesPage from "./pages/Default/ServicesPage";
 import QuotePage from "./pages/Default/QuotePage";
-import Login from "./pages/Default/Login"; // <-- Login Import
+import Login from "./pages/Default/Login";
 
 // Admin Pages
 import Dashboard from "./pages/Admin/Dashboard";
@@ -33,7 +33,7 @@ import Schedules from "./pages/Admin/Schedules";
 import Analytics from "./pages/Admin/Analytics";
 import Settings from "./pages/Admin/Settings";
 
-// Client Pages (Imports assuming they exist in ./pages/Client)
+// Client Pages
 import ClientDashboard from "./pages/Client/Dashboard";
 import ClientOrders from "./pages/Client/Orders";
 import ClientOrderDetails from "./pages/Client/OrderDetails";
@@ -45,7 +45,7 @@ function App() {
     <Router>
       <TopScroll />
       <Routes>
-        {/* Default Client/Public Pages - Use DefaultLayout */}
+        {/*Default Pages */}
         <Route
           path="/"
           element={
@@ -64,7 +64,6 @@ function App() {
             </DefaultLayout>
           }
         />
-
         <Route
           path="/about"
           element={
@@ -73,7 +72,6 @@ function App() {
             </DefaultLayout>
           }
         />
-
         <Route
           path="/services"
           element={
@@ -82,7 +80,6 @@ function App() {
             </DefaultLayout>
           }
         />
-
         <Route
           path="/languages"
           element={
@@ -91,7 +88,6 @@ function App() {
             </DefaultLayout>
           }
         />
-
         <Route
           path="/contact"
           element={
@@ -100,7 +96,6 @@ function App() {
             </DefaultLayout>
           }
         />
-
         <Route
           path="/quote"
           element={
@@ -109,7 +104,6 @@ function App() {
             </DefaultLayout>
           }
         />
-
         <Route
           path="/request-quote"
           element={
@@ -118,7 +112,6 @@ function App() {
             </DefaultLayout>
           }
         />
-
         {/* ======================= AUTHENTICATION PAGE ======================= */}
         <Route
           path="/login"
@@ -128,7 +121,6 @@ function App() {
             </AuthLayout>
           }
         />
-
         {/* ======================= CLIENT DASHBOARD PAGES ======================= */}
         <Route
           path="/client/dashboard"
@@ -138,7 +130,6 @@ function App() {
             </ClientLayout>
           }
         />
-
         <Route
           path="/client/orders"
           element={
@@ -147,7 +138,6 @@ function App() {
             </ClientLayout>
           }
         />
-
         <Route
           path="/client/orders/:orderId"
           element={
@@ -156,7 +146,6 @@ function App() {
             </ClientLayout>
           }
         />
-
         <Route
           path="/client/messages"
           element={
@@ -165,7 +154,6 @@ function App() {
             </ClientLayout>
           }
         />
-
         <Route
           path="/client/settings"
           element={
@@ -174,7 +162,6 @@ function App() {
             </ClientLayout>
           }
         />
-
         {/* ========================= ADMIN PAGES ================================ */}
         <Route
           path="/admin/dashboard"
@@ -184,7 +171,6 @@ function App() {
             </AdminLayout>
           }
         />
-
         <Route
           path="/admin/quotes"
           element={
@@ -193,7 +179,6 @@ function App() {
             </AdminLayout>
           }
         />
-
         <Route
           path="/admin/subscribers"
           element={
@@ -202,7 +187,6 @@ function App() {
             </AdminLayout>
           }
         />
-
         <Route
           path="/admin/contacts"
           element={
@@ -211,7 +195,6 @@ function App() {
             </AdminLayout>
           }
         />
-
         <Route
           path="/admin/schedules"
           element={
