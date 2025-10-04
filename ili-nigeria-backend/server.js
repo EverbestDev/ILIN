@@ -47,7 +47,7 @@ app.use(
 app.use("/api", emailRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/quotes", quoteRoutes);
-app.use("/api", subscriberRoutes);
+app.use("/api/subscribers", subscriberRoutes);
 
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/admin", adminRoutes);
