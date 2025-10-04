@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 
 const Dashboard = () => {
-  const BASE_URL = VITE_API_BASE_URL || "http://localhost:5000";
+  const BASE_URL = "https://ilin-nigeria-backend.onrender.com" || "http://localhost:5000";
   const [loading, setLoading] = useState(true);
 
   const [stats, setStats] = useState({
@@ -27,45 +27,54 @@ const Dashboard = () => {
 
   const [recentQuotes, setRecentQuotes] = useState([]);
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        const [quotesRes, subscribersRes, contactsRes] = await Promise.all([
-          fetch(`${BASE_URL}/api/quotes`),
-          fetch(`${BASE_URL}/api/subscribe`),
-          fetch(`${BASE_URL}/api/contact`),
-        ]);
+// Replace the entire useEffect hook in your Dashboard.jsx with this corrected version.
 
-        const [quotesData, subscribersData, contactsData] = await Promise.all([
-          quotesRes.json(),
-          subscribersRes.json(),
-          contactsRes.json(),
-        ]);
+useEffect(() => {
+  const fetchDashboardData = async () => {
+    try {
+      // 1. Make two API calls to the correct endpoints simultaneously.
+      const [statsRes, quotesRes] = await Promise.all([
+        // Correct endpoint for all dashboard statistics
+        fetch(`${BASE_URL}/api/admin/overview`),
+        // Correct endpoint to get the list of all quotes
+        fetch(`${BASE_URL}/api/quotes`),
+      ]);
 
-        const totalQuotes = quotesData.length;
-        const totalSubs = subscribersData.length;
-        const totalContacts = contactsData.length;
+      // Check if responses are successful
+      if (!statsRes.ok) throw new Error(`Failed to fetch stats: ${statsRes.statusText}`);
+      if (!quotesRes.ok) throw new Error(`Failed to fetch quotes: ${quotesRes.statusText}`);
 
-        setStats({
-          quotes: { total: totalQuotes, change: 12.5, trend: "up" },
-          subscribers: { total: totalSubs, change: 8.3, trend: "up" },
-          contacts: { total: totalContacts, change: 3.2, trend: "up" },
-        });
+      // 2. Parse the JSON from the responses.
+      const [statsData, quotesData] = await Promise.all([
+        statsRes.json(),
+        quotesRes.json(),
+      ]);
 
-        const sortedQuotes = quotesData
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-          .slice(0, 4);
+      // 3. Set the stats state directly from the overview endpoint's response.
+      // The backend now does all the calculation for you.
+      setStats({
+        quotes: statsData.quotes,
+        subscribers: statsData.subscribers,
+        contacts: statsData.contacts,
+      });
 
-        setRecentQuotes(sortedQuotes);
-      } catch (error) {
-        console.error("Error loading dashboard data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      // 4. Sort and slice the full quotes list to get the most recent ones.
+      const sortedQuotes = quotesData
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, 4);
 
-    fetchDashboardData();
-  }, []);
+      setRecentQuotes(sortedQuotes);
+      
+    } catch (error) {
+      console.error("Error loading dashboard data:", error);
+      // You might want to set an error state here to display a message to the user
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchDashboardData();
+}, []); // The dependency array is empty, so this runs once on component mount.
 
   const getStatusColor = (status) => {
     switch (status) {
