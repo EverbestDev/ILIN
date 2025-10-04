@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, memo } from "react";
 import {
   User,
   Mail,
@@ -7,19 +7,339 @@ import {
   Save,
   CheckCircle,
   AlertCircle,
-  Phone,
-  Building,
-  Globe,
   X,
 } from "lucide-react";
 
-// --- START OF CLIENT SETTINGS COMPONENT ---
+// -------------------------------------------------------------------
+// 1. EXTRACTED & MEMOIZED TAB COMPONENTS
+//    These components only re-render if their props change.
+// -------------------------------------------------------------------
+
+const ProfileTab = memo(
+  ({ profile, handleProfileChange, handleProfileSave, loading }) => (
+    <form onSubmit={handleProfileSave} className="space-y-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div>
+          <label
+            htmlFor="firstName"
+            className="block text-sm font-medium text-gray-700"
+          >
+            First Name
+          </label>
+          <input
+            type="text"
+            id="firstName"
+            name="firstName"
+            value={profile.firstName}
+            onChange={handleProfileChange}
+            className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
+            required
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="lastName"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Last Name
+          </label>
+          <input
+            type="text"
+            id="lastName"
+            name="lastName"
+            value={profile.lastName}
+            onChange={handleProfileChange}
+            className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
+            required
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div>
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Email Address
+          </label>
+          <div className="flex items-center p-3 mt-1 text-gray-500 bg-gray-100 border border-gray-300 rounded-lg">
+            <Mail className="w-4 h-4 mr-2" />
+            {profile.email}
+          </div>
+          <p className="mt-1 text-xs text-gray-500">
+            Email cannot be changed directly here. Contact support to update.
+          </p>
+        </div>
+        <div>
+          <label
+            htmlFor="phone"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Phone Number
+          </label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            value={profile.phone}
+            onChange={handleProfileChange}
+            className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div>
+          <label
+            htmlFor="company"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Company / Organization
+          </label>
+          <input
+            type="text"
+            id="company"
+            name="company"
+            value={profile.company}
+            onChange={handleProfileChange}
+            className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="country"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Country/Region
+          </label>
+          <input
+            type="text"
+            id="country"
+            name="country"
+            value={profile.country}
+            onChange={handleProfileChange}
+            className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
+          />
+        </div>
+      </div>
+
+      <div className="pt-5">
+        <button
+          type="submit"
+          disabled={loading}
+          className="flex items-center gap-2 px-6 py-3 font-semibold text-white transition-all rounded-lg shadow-md bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 disabled:opacity-50"
+        >
+          <Save className="w-5 h-5" />
+          {loading ? "Saving..." : "Save Profile"}
+        </button>
+      </div>
+    </form>
+  )
+);
+
+const SecurityTab = memo(
+  ({ security, handleSecurityChange, handlePasswordChange, loading }) => (
+    <form onSubmit={handlePasswordChange} className="max-w-lg space-y-6">
+      <h3 className="pb-3 mb-4 text-lg font-semibold text-gray-900 border-b">
+        Change Password
+      </h3>
+
+      <div>
+        <label
+          htmlFor="currentPassword"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Current Password
+        </label>
+        <input
+          type="password"
+          id="currentPassword"
+          name="currentPassword"
+          value={security.currentPassword}
+          onChange={handleSecurityChange}
+          className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500"
+          required
+        />
+      </div>
+
+      <div>
+        <label
+          htmlFor="newPassword"
+          className="block text-sm font-medium text-gray-700"
+        >
+          New Password
+        </label>
+        <input
+          type="password"
+          id="newPassword"
+          name="newPassword"
+          value={security.newPassword}
+          onChange={handleSecurityChange}
+          className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500"
+          required
+        />
+        <p className="mt-1 text-xs text-gray-500">
+          Must be at least 8 characters.
+        </p>
+      </div>
+
+      <div>
+        <label
+          htmlFor="confirmPassword"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Confirm New Password
+        </label>
+        <input
+          type="password"
+          id="confirmPassword"
+          name="confirmPassword"
+          value={security.confirmPassword}
+          onChange={handleSecurityChange}
+          className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500"
+          required
+        />
+      </div>
+
+      <div className="pt-5">
+        <button
+          type="submit"
+          disabled={loading}
+          className="flex items-center gap-2 px-6 py-3 font-semibold text-white transition-all rounded-lg shadow-md bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:opacity-50"
+        >
+          <Lock className="w-5 h-5" />
+          {loading ? "Updating..." : "Update Password"}
+        </button>
+      </div>
+    </form>
+  )
+);
+
+const PreferencesTab = memo(
+  ({ preferences, handleCheckboxChange, handlePreferenceSave, loading }) => (
+    <form onSubmit={handlePreferenceSave} className="space-y-6">
+      <h3 className="pb-3 mb-4 text-lg font-semibold text-gray-900 border-b">
+        Email Notifications
+      </h3>
+
+      <div className="max-w-xl space-y-4">
+        {[
+          {
+            key: "emailQuoteReady",
+            label: "Quote Ready for Review",
+            description:
+              "Notify me when my requested quote has been prepared and is ready to be paid.",
+          },
+          {
+            key: "emailOrderComplete",
+            label: "Order Completion",
+            description:
+              "Send an email notification when my translation files are ready for download.",
+          },
+          {
+            key: "emailPaymentConfirmation",
+            label: "Payment Confirmation",
+            description:
+              "Receive confirmation after successfully making a payment.",
+          },
+        ].map((item) => (
+          <div
+            key={item.key}
+            className="relative flex items-start p-4 border border-gray-200 rounded-lg bg-gray-50"
+          >
+            <div className="flex items-center h-5">
+              <input
+                id={item.key}
+                name={item.key}
+                type="checkbox"
+                checked={preferences[item.key]}
+                onChange={handleCheckboxChange(item.key)}
+                className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+              />
+            </div>
+            <div className="ml-3 text-sm">
+              <label htmlFor={item.key} className="font-medium text-gray-900">
+                {item.label}
+              </label>
+              <p className="text-gray-500">{item.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <h3 className="pt-6 pb-3 mb-4 text-lg font-semibold text-gray-900 border-b">
+        Other Communication
+      </h3>
+      <div className="max-w-xl space-y-4">
+        {[
+          {
+            key: "emailNewsletter",
+            label: "Newsletter & Promotions",
+            description:
+              "Get updates on new services, discounts, and company news.",
+            color: "text-blue-600",
+          },
+          {
+            key: "smsAlerts",
+            label: "SMS Alerts (Urgent Only)",
+            description:
+              "Receive text messages for urgent status changes (e.g., payment failure). Requires phone number verification.",
+            color: "text-yellow-600",
+          },
+        ].map((item) => (
+          <div
+            key={item.key}
+            className="relative flex items-start p-4 border border-gray-200 rounded-lg bg-gray-50"
+          >
+            <div className="flex items-center h-5">
+              <input
+                id={item.key}
+                name={item.key}
+                type="checkbox"
+                checked={preferences[item.key]}
+                onChange={handleCheckboxChange(item.key)}
+                className={`w-4 h-4 ${item.color
+                  .replace("text-", "text-")
+                  .replace(
+                    "600",
+                    "600"
+                  )} border-gray-300 rounded focus:ring-current`}
+              />
+            </div>
+            <div className="ml-3 text-sm">
+              <label htmlFor={item.key} className={`font-medium ${item.color}`}>
+                {item.label}
+              </label>
+              <p className="text-gray-500">{item.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="pt-5">
+        <button
+          type="submit"
+          disabled={loading}
+          className="flex items-center gap-2 px-6 py-3 font-semibold text-white transition-all rounded-lg shadow-md bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 disabled:opacity-50"
+        >
+          <Save className="w-5 h-5" />
+          {loading ? "Saving..." : "Save Preferences"}
+        </button>
+      </div>
+    </form>
+  )
+);
+
+// -------------------------------------------------------------------
+// 2. MAIN CLIENT SETTINGS COMPONENT
+// -------------------------------------------------------------------
 const ClientSettings = () => {
   const [notification, setNotification] = useState(null);
   const [activeTab, setActiveTab] = useState("profile");
   const [loading, setLoading] = useState(false);
 
-  // 1. Profile state (Client-specific fields)
+  // State objects
   const [profile, setProfile] = useState({
     firstName: "Sarah",
     lastName: "Chen",
@@ -28,15 +348,11 @@ const ClientSettings = () => {
     company: "Acme Global Co.",
     country: "United States",
   });
-
-  // 2. Security state
   const [security, setSecurity] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
-
-  // 3. Notification preferences state
   const [preferences, setPreferences] = useState({
     emailOrderComplete: true,
     emailQuoteReady: true,
@@ -45,23 +361,38 @@ const ClientSettings = () => {
     smsAlerts: false,
   });
 
-  // FIXED: Memoized handlers to prevent re-renders
-  const handleProfileChange = useCallback((field, value) => {
-    setProfile((prev) => ({ ...prev, [field]: value }));
-  }, []);
-
-  const handleSecurityChange = useCallback((field, value) => {
-    setSecurity((prev) => ({ ...prev, [field]: value }));
-  }, []);
-
-  const handlePreferenceChange = useCallback((field, value) => {
-    setPreferences((prev) => ({ ...prev, [field]: value }));
-  }, []);
+  // --- GENERIC HANDLERS ---
 
   const showNotification = useCallback((message, type = "success") => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 5000);
   }, []);
+
+  // Generic handler for all text/tel/password inputs
+  const handleTextChange = useCallback(
+    (setter) => (e) => {
+      const { name, value } = e.target;
+      setter((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    },
+    []
+  );
+
+  // Specialized handler for checkbox inputs (passes event to avoid stale closure)
+  const handleCheckboxChange = useCallback(
+    (field) => (e) => {
+      setPreferences((prev) => ({ ...prev, [field]: e.target.checked }));
+    },
+    []
+  );
+
+  // Memoized setters for use in props (stable functions)
+  const handleProfileChange = handleTextChange(setProfile);
+  const handleSecurityChange = handleTextChange(setSecurity);
+
+  // --- SAVE HANDLERS (Same as before, stable due to useCallback) ---
 
   const handleProfileSave = useCallback(
     (e) => {
@@ -128,319 +459,6 @@ const ClientSettings = () => {
     [preferences, showNotification]
   );
 
-  // --- Profile Tab Content ---
-  const ProfileTab = () => (
-    <form onSubmit={handleProfileSave} className="space-y-6">
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div>
-          <label
-            htmlFor="firstName"
-            className="block text-sm font-medium text-gray-700"
-          >
-            First Name
-          </label>
-          <input
-            type="text"
-            id="firstName"
-            value={profile.firstName}
-            onChange={(e) => handleProfileChange("firstName", e.target.value)}
-            className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
-            required
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="lastName"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Last Name
-          </label>
-          <input
-            type="text"
-            id="lastName"
-            value={profile.lastName}
-            onChange={(e) => handleProfileChange("lastName", e.target.value)}
-            className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
-            required
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Email Address
-          </label>
-          <div className="flex items-center p-3 mt-1 text-gray-500 bg-gray-100 border border-gray-300 rounded-lg">
-            <Mail className="w-4 h-4 mr-2" />
-            {profile.email}
-          </div>
-          <p className="mt-1 text-xs text-gray-500">
-            Email cannot be changed directly here. Contact support to update.
-          </p>
-        </div>
-        <div>
-          <label
-            htmlFor="phone"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Phone Number
-          </label>
-          <input
-            type="tel"
-            id="phone"
-            value={profile.phone}
-            onChange={(e) => handleProfileChange("phone", e.target.value)}
-            className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div>
-          <label
-            htmlFor="company"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Company / Organization
-          </label>
-          <input
-            type="text"
-            id="company"
-            value={profile.company}
-            onChange={(e) => handleProfileChange("company", e.target.value)}
-            className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="country"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Country/Region
-          </label>
-          <input
-            type="text"
-            id="country"
-            value={profile.country}
-            onChange={(e) => handleProfileChange("country", e.target.value)}
-            className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
-          />
-        </div>
-      </div>
-
-      <div className="pt-5">
-        <button
-          type="submit"
-          disabled={loading}
-          className="flex items-center gap-2 px-6 py-3 font-semibold text-white transition-all rounded-lg shadow-md bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 disabled:opacity-50"
-        >
-          <Save className="w-5 h-5" />
-          {loading ? "Saving..." : "Save Profile"}
-        </button>
-      </div>
-    </form>
-  );
-
-  // --- Security Tab Content ---
-  const SecurityTab = () => (
-    <form onSubmit={handlePasswordChange} className="max-w-lg space-y-6">
-      <h3 className="pb-3 mb-4 text-lg font-semibold text-gray-900 border-b">
-        Change Password
-      </h3>
-
-      <div>
-        <label
-          htmlFor="currentPassword"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Current Password
-        </label>
-        <input
-          type="password"
-          id="currentPassword"
-          value={security.currentPassword}
-          onChange={(e) =>
-            handleSecurityChange("currentPassword", e.target.value)
-          }
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500"
-          required
-        />
-      </div>
-
-      <div>
-        <label
-          htmlFor="newPassword"
-          className="block text-sm font-medium text-gray-700"
-        >
-          New Password
-        </label>
-        <input
-          type="password"
-          id="newPassword"
-          value={security.newPassword}
-          onChange={(e) => handleSecurityChange("newPassword", e.target.value)}
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500"
-          required
-        />
-        <p className="mt-1 text-xs text-gray-500">
-          Must be at least 8 characters.
-        </p>
-      </div>
-
-      <div>
-        <label
-          htmlFor="confirmPassword"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Confirm New Password
-        </label>
-        <input
-          type="password"
-          id="confirmPassword"
-          value={security.confirmPassword}
-          onChange={(e) =>
-            handleSecurityChange("confirmPassword", e.target.value)
-          }
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500"
-          required
-        />
-      </div>
-
-      <div className="pt-5">
-        <button
-          type="submit"
-          disabled={loading}
-          className="flex items-center gap-2 px-6 py-3 font-semibold text-white transition-all rounded-lg shadow-md bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:opacity-50"
-        >
-          <Lock className="w-5 h-5" />
-          {loading ? "Updating..." : "Update Password"}
-        </button>
-      </div>
-    </form>
-  );
-
-  // --- Preferences Tab Content ---
-  const PreferencesTab = () => (
-    <form onSubmit={handlePreferenceSave} className="space-y-6">
-      <h3 className="pb-3 mb-4 text-lg font-semibold text-gray-900 border-b">
-        Email Notifications
-      </h3>
-
-      <div className="max-w-xl space-y-4">
-        {[
-          {
-            key: "emailQuoteReady",
-            label: "Quote Ready for Review",
-            description:
-              "Notify me when my requested quote has been prepared and is ready to be paid.",
-          },
-          {
-            key: "emailOrderComplete",
-            label: "Order Completion",
-            description:
-              "Send an email notification when my translation files are ready for download.",
-          },
-          {
-            key: "emailPaymentConfirmation",
-            label: "Payment Confirmation",
-            description:
-              "Receive confirmation after successfully making a payment.",
-          },
-        ].map((item) => (
-          <div
-            key={item.key}
-            className="relative flex items-start p-4 border border-gray-200 rounded-lg bg-gray-50"
-          >
-            <div className="flex items-center h-5">
-              <input
-                id={item.key}
-                name={item.key}
-                type="checkbox"
-                checked={preferences[item.key]}
-                onChange={(e) =>
-                  handlePreferenceChange(item.key, e.target.checked)
-                }
-                className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
-              />
-            </div>
-            <div className="ml-3 text-sm">
-              <label htmlFor={item.key} className="font-medium text-gray-900">
-                {item.label}
-              </label>
-              <p className="text-gray-500">{item.description}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <h3 className="pt-6 pb-3 mb-4 text-lg font-semibold text-gray-900 border-b">
-        Other Communication
-      </h3>
-      <div className="max-w-xl space-y-4">
-        {[
-          {
-            key: "emailNewsletter",
-            label: "Newsletter & Promotions",
-            description:
-              "Get updates on new services, discounts, and company news.",
-            color: "text-blue-600",
-          },
-          {
-            key: "smsAlerts",
-            label: "SMS Alerts (Urgent Only)",
-            description:
-              "Receive text messages for urgent status changes (e.g., payment failure). Requires phone number verification.",
-            color: "text-yellow-600",
-          },
-        ].map((item) => (
-          <div
-            key={item.key}
-            className="relative flex items-start p-4 border border-gray-200 rounded-lg bg-gray-50"
-          >
-            <div className="flex items-center h-5">
-              <input
-                id={item.key}
-                name={item.key}
-                type="checkbox"
-                checked={preferences[item.key]}
-                onChange={(e) =>
-                  handlePreferenceChange(item.key, e.target.checked)
-                }
-                className={`w-4 h-4 ${item.color
-                  .replace("text-", "text-")
-                  .replace(
-                    "600",
-                    "600"
-                  )} border-gray-300 rounded focus:ring-current`}
-              />
-            </div>
-            <div className="ml-3 text-sm">
-              <label htmlFor={item.key} className={`font-medium ${item.color}`}>
-                {item.label}
-              </label>
-              <p className="text-gray-500">{item.description}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="pt-5">
-        <button
-          type="submit"
-          disabled={loading}
-          className="flex items-center gap-2 px-6 py-3 font-semibold text-white transition-all rounded-lg shadow-md bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 disabled:opacity-50"
-        >
-          <Save className="w-5 h-5" />
-          {loading ? "Saving..." : "Save Preferences"}
-        </button>
-      </div>
-    </form>
-  );
-
   return (
     <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
       {/* Header */}
@@ -502,9 +520,30 @@ const ClientSettings = () => {
 
         {/* Settings Content */}
         <div className="flex-1 p-6 mt-6 bg-white border border-gray-200 shadow-lg rounded-xl lg:mt-0">
-          {activeTab === "profile" && <ProfileTab />}
-          {activeTab === "security" && <SecurityTab />}
-          {activeTab === "preferences" && <PreferencesTab />}
+          {activeTab === "profile" && (
+            <ProfileTab
+              profile={profile}
+              handleProfileChange={handleProfileChange}
+              handleProfileSave={handleProfileSave}
+              loading={loading}
+            />
+          )}
+          {activeTab === "security" && (
+            <SecurityTab
+              security={security}
+              handleSecurityChange={handleSecurityChange}
+              handlePasswordChange={handlePasswordChange}
+              loading={loading}
+            />
+          )}
+          {activeTab === "preferences" && (
+            <PreferencesTab
+              preferences={preferences}
+              handleCheckboxChange={handleCheckboxChange}
+              handlePreferenceSave={handlePreferenceSave}
+              loading={loading}
+            />
+          )}
         </div>
       </div>
     </div>
