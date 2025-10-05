@@ -85,3 +85,15 @@ export const subscribe = async (req, res) => {
       .json({ message: "Failed to subscribe", error: error.message });
   }
 };
+
+//
+
+export const getSubscribers = async (req, res) => {
+  try {
+    const subscribers = await Subscriber.find().sort({ createdAt: -1 });
+    res.json(subscribers);
+  } catch (error) {
+    console.error("Failed to fetch subscribers:", error);
+    res.status(500).json({ message: "Failed to fetch subscribers" });
+  }
+};
