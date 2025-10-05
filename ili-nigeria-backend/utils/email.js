@@ -31,11 +31,11 @@ const sendEmail = async (to, subject, html) => {
     };
 
     const data = await tranEmailApi.sendTransacEmail(sendSmtpEmail);
-    console.log("✅ Email sent successfully:", JSON.stringify(data, null, 2));
+    console.log("Email sent successfully:", JSON.stringify(data, null, 2));
     return data;
   } catch (error) {
     console.error(
-      "❌ Error sending email via Brevo API:",
+      "Error sending email via Brevo API:",
       error.message,
       error.response?.body || error
     );
