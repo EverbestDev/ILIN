@@ -25,6 +25,7 @@ const Dashboard = () => {
     subscribers: { total: 0, change: 0, trend: "up" },
     contacts: { total: 0, change: 0, trend: "up" },
   });
+  const [rawTasks, setRawTasks] = useState([]);
   const [rawQuotes, setRawQuotes] = useState([]);
   const [rawSubscribers, setRawSubscribers] = useState([]);
   const [rawContacts, setRawContacts] = useState([]);
@@ -62,7 +63,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const [statsRes, quotesRes, subscribersRes, contactsRes] =
+        const [statsRes, quotesRes, subscribersRes, contactsRes, tasksRes] =
           await Promise.all([
             fetch(`${BASE_URL}/api/admin/overview`).then((res) =>
               res.ok
@@ -84,15 +85,19 @@ const Dashboard = () => {
                 ? res.json()
                 : Promise.reject(new Error("Failed to fetch contacts"))
             ),
+            fetch(`${BASE_URL}/api/tasks`).then((res) =>
+              res.ok
+                ? res.json()
+                : Promise.reject(new Error("Failed to fetch tasks"))
+            ),
           ]);
 
-        // Log raw data for debugging
         console.log("Stats Response:", statsRes);
         console.log("Quotes:", quotesRes.length);
         console.log("Subscribers:", subscribersRes.length);
         console.log("Contacts:", contactsRes.length);
+        console.log("Tasks:", tasksRes.length);
 
-        // Use raw data lengths as fallback for stats
         setStats({
           quotes: statsRes.quotes || {
             total: quotesRes.length,
@@ -100,12 +105,12 @@ const Dashboard = () => {
             trend: "up",
           },
           subscribers: statsRes.subscribers || {
-            total: subscribersRes.length, // Fix: Use rawSubscribers length
+            total: subscribersRes.length,
             change: 0,
             trend: "up",
           },
           contacts: statsRes.contacts || {
-            total: contactsRes.length, // Fix: Use rawContacts length
+            total: contactsRes.length,
             change: 0,
             trend: "up",
           },
@@ -126,6 +131,9 @@ const Dashboard = () => {
             (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
           )
         );
+        setRawTasks(
+          tasksRes.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        );
       } catch (err) {
         console.error("Error loading dashboard data:", err);
         setError("Failed to load some data. Please try again later.");
@@ -138,114 +146,14 @@ const Dashboard = () => {
   }, [BASE_URL]);
 
   // Process data for charts and snippets
-  // useEffect(() => {
-  //   // Log for debugging
-  //   console.log("Raw Quotes:", rawQuotes.length, rawQuotes);
-  //   console.log("Raw Subscribers:", rawSubscribers.length, rawSubscribers);
-  //   console.log("Raw Contacts:", rawContacts.length, rawContacts);
-
-  //   const startDate = getDateRange();
-
-  //   // Filter data (relaxed filtering for contacts)
-  //   const filteredQuotes = rawQuotes.filter(
-  //     (q) => new Date(q.createdAt) >= startDate
-  //   );
-  //   const filteredSubscribers = rawSubscribers.filter(
-  //     (s) => new Date(s.createdAt) >= startDate
-  //   );
-  //   const filteredContacts = rawContacts.filter(
-  //     (c) => new Date(c.createdAt) >= startDate
-  //   );
-
-  //   console.log("Filtered Quotes:", filteredQuotes.length);
-  //   console.log("Filtered Subscribers:", filteredSubscribers.length);
-  //   console.log("Filtered Contacts:", filteredContacts.length);
-
-  //   // Recent snippets (top 4)
-  //   setRecentQuotes(filteredQuotes.slice(0, 4));
-  //   setRecentSubscribers(filteredSubscribers.slice(0, 4));
-  //   setRecentContacts(rawContacts.slice(0, 2));
-
-  //   // Monthly Quotes
-  //   const months = [
-  //     "Jan",
-  //     "Feb",
-  //     "Mar",
-  //     "Apr",
-  //     "May",
-  //     "Jun",
-  //     "Jul",
-  //     "Aug",
-  //     "Sep",
-  //     "Oct",
-  //     "Nov",
-  //     "Dec",
-  //   ];
-  //   const numMonths = timeRange === "year" ? 12 : 6;
-  //   const monthlyData = Array(numMonths)
-  //     .fill()
-  //     .map((_, i) => {
-  //       const date = new Date();
-  //       date.setMonth(date.getMonth() - (numMonths - 1 - i));
-  //       const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
-  //       const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-  //       const count = filteredQuotes.filter(
-  //         (q) =>
-  //           new Date(q.createdAt) >= monthStart &&
-  //           new Date(q.createdAt) <= monthEnd
-  //       ).length;
-  //       return { month: months[date.getMonth()], quotes: count };
-  //     });
-  //   setMonthlyQuotes(monthlyData);
-
-  //   // Service Distribution
-  //   const services = filteredQuotes.reduce((acc, q) => {
-  //     acc[q.service] = (acc[q.service] || 0) + 1;
-  //     return acc;
-  //   }, {});
-  //   const colors = ["#10b981", "#3b82f6", "#f59e0b", "#8b5cf6", "#ef4444"];
-  //   setServiceDistribution(
-  //     Object.entries(services).map(([name, value], i) => ({
-  //       name: name || "General Inquiry",
-  //       value,
-  //       color: colors[i % colors.length],
-  //     }))
-  //   );
-
-  //   // Weekly Quotes (always last 7 days, ignore timeRange)
-  //   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  //   const now = new Date();
-  //   const weeklyData = days.map((day, i) => {
-  //     const dayDate = new Date(
-  //       now.getFullYear(),
-  //       now.getMonth(),
-  //       now.getDate() - now.getDay() + i
-  //     );
-  //     const dayStart = new Date(
-  //       dayDate.getFullYear(),
-  //       dayDate.getMonth(),
-  //       dayDate.getDate()
-  //     );
-  //     const dayEnd = new Date(
-  //       dayDate.getFullYear(),
-  //       dayDate.getMonth(),
-  //       dayDate.getDate() + 1
-  //     );
-  //     const count = rawQuotes.filter(
-  //       (q) =>
-  //         new Date(q.createdAt) >= dayStart && new Date(q.createdAt) < dayEnd
-  //     ).length;
-  //     return { day, requests: count };
-  //   });
-  //   setWeeklyQuotes(weeklyData);
-  //   console.log("Weekly Quotes Data:", weeklyData);
-  // }, [timeRange, rawQuotes, rawSubscribers, rawContacts]);
+ 
 
   useEffect(() => {
     // Log for debugging
     console.log("Raw Quotes:", rawQuotes.length, rawQuotes);
     console.log("Raw Subscribers:", rawSubscribers.length, rawSubscribers);
     console.log("Raw Contacts:", rawContacts.length, rawContacts);
+    console.log("Raw Tasks:", rawTasks.length, rawTasks);
 
     const startDate = getDateRange();
 
@@ -349,7 +257,7 @@ const Dashboard = () => {
       });
     setWeeklyQuotes(weeklyData);
     console.log("Weekly Quotes Data:", weeklyData);
-  }, [timeRange, rawQuotes, rawSubscribers, rawContacts]);
+  }, [timeRange, rawQuotes, rawSubscribers, rawContacts, rawTasks]);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -822,36 +730,129 @@ const Dashboard = () => {
       </div>
 
       {/* Urgent Tasks */}
+      <div className="mb-4">
+        <h4 className="text-sm font-medium text-gray-700">Add New Task</h4>
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            const task = e.target.task.value;
+            const priority = e.target.priority.value;
+            const due = e.target.due.value;
+            try {
+              const res = await fetch(`${BASE_URL}/api/tasks`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ task, priority, due }),
+              });
+              if (res.ok) {
+                const { task: newTask } = await res.json();
+                setRawTasks((prev) => [newTask, ...prev]);
+                e.target.reset();
+              }
+            } catch (error) {
+              console.error("Failed to create task:", error);
+            }
+          }}
+          className="flex gap-2 mt-2"
+        >
+          <input
+            name="task"
+            type="text"
+            placeholder="Task description"
+            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
+            required
+          />
+          <select
+            name="priority"
+            className="px-3 py-2 border border-gray-300 rounded-lg"
+          >
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+          <input
+            name="due"
+            type="datetime-local"
+            className="px-3 py-2 border border-gray-300 rounded-lg"
+            required
+          />
+          <button
+            type="submit"
+            className="px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-700"
+          >
+            Add
+          </button>
+        </form>
+      </div>
+      {/* Urgent Tasks */}
       <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold text-gray-900">Urgent Tasks</h3>
           <Award className="w-5 h-5 text-green-600" />
         </div>
         <div className="space-y-3">
-          {urgentTasks.map((task) => (
-            <div
-              key={task.id}
-              className="flex items-start gap-3 p-3 transition-colors rounded-lg bg-gray-50 hover:bg-gray-100"
-            >
-              <input
-                type="checkbox"
-                className="w-4 h-4 mt-1 text-green-600 rounded focus:ring-green-500"
-              />
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-900">{task.task}</p>
-                <div className="flex items-center gap-2 mt-2">
-                  <span
-                    className={`px-2 py-0.5 text-xs font-medium rounded-full border ${getPriorityColor(
-                      task.priority
-                    )}`}
+          {rawTasks.length ? (
+            rawTasks.map((task) => (
+              <div
+                key={task._id}
+                className="flex items-start gap-3 p-3 transition-colors rounded-lg bg-gray-50 hover:bg-gray-100"
+              >
+                <input
+                  type="checkbox"
+                  checked={task.completed}
+                  onChange={async () => {
+                    try {
+                      const res = await fetch(
+                        `${BASE_URL}/api/tasks/${task._id}`,
+                        {
+                          method: "PUT",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ completed: !task.completed }),
+                        }
+                      );
+                      if (res.ok) {
+                        setRawTasks((prev) =>
+                          prev.map((t) =>
+                            t._id === task._id
+                              ? { ...t, completed: !t.completed }
+                              : t
+                          )
+                        );
+                      }
+                    } catch (error) {
+                      console.error("Failed to update task:", error);
+                    }
+                  }}
+                  className="w-4 h-4 mt-1 text-green-600 rounded focus:ring-green-500"
+                />
+                <div className="flex-1">
+                  <p
+                    className={`text-sm font-medium ${
+                      task.completed
+                        ? "text-gray-500 line-through"
+                        : "text-gray-900"
+                    }`}
                   >
-                    {task.priority}
-                  </span>
-                  <span className="text-xs text-gray-500">Due: {task.due}</span>
+                    {task.task}
+                  </p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <span
+                      className={`px-2 py-0.5 text-xs font-medium rounded-full border ${getPriorityColor(
+                        task.priority
+                      )}`}
+                    >
+                      {task.priority}
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      Due: {task.due}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <div className="text-center text-gray-600">No tasks available</div>
+          )}
         </div>
       </div>
 
