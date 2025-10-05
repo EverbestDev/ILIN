@@ -3,79 +3,242 @@ import {
   FileText,
   Users,
   Mail,
+  TrendingUp,
   Globe,
+  Award,
+  Clock,
   ArrowUpRight,
   ArrowDownRight,
   CheckCircle,
-  Clock,
-  Sparkles,
-  Inbox,
-  Filter,
-  TrendingUp,
-  Award,
 } from "lucide-react";
 
+// Import Chart.js components and register them
+import { Line, Pie, Bar } from "react-chartjs-2";
+
+
 const Dashboard = () => {
+  // BASE_URL definition - keeping your original logic for fallbacks
   const BASE_URL =
-    "https://ilin-backend.onrender.com" || "http://localhost:5000";
+    "https://ilin-backend.onrender.com" ||
+    "http://localhost:5000";
 
   const [loading, setLoading] = useState(true);
-
+  const [error, setError] = useState(null);
+  const [timeRange, setTimeRange] = useState("7days");
   const [stats, setStats] = useState({
     quotes: { total: 0, change: 0, trend: "up" },
     subscribers: { total: 0, change: 0, trend: "up" },
     contacts: { total: 0, change: 0, trend: "up" },
   });
-
+  const [rawQuotes, setRawQuotes] = useState([]);
+  const [rawSubscribers, setRawSubscribers] = useState([]);
+  const [rawContacts, setRawContacts] = useState([]);
   const [recentQuotes, setRecentQuotes] = useState([]);
+  const [recentSubscribers, setRecentSubscribers] = useState([]);
+  const [recentContacts, setRecentContacts] = useState([]);
+  const [monthlyQuotes, setMonthlyQuotes] = useState([]);
+  const [serviceDistribution, setServiceDistribution] = useState([]);
+  const [weeklyQuotes, setWeeklyQuotes] = useState([]);
 
+  // Calculate date range for filtering
+  const getDateRange = () => {
+    const now = new Date();
+    let startDate = new Date();
+    switch (timeRange) {
+      case "7days":
+        startDate.setDate(now.getDate() - 7);
+        break;
+      case "30days":
+        startDate.setDate(now.getDate() - 30);
+        break;
+      case "90days":
+        startDate.setDate(now.getDate() - 90);
+        break;
+      case "year":
+        startDate.setFullYear(now.getFullYear() - 1);
+        break;
+      default:
+        startDate.setDate(now.getDate() - 7);
+    }
+    return startDate;
+  };
+
+  // Fetch data once on mount
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        // 1. Make two API calls to the correct endpoints simultaneously.
-        const [statsRes, quotesRes] = await Promise.all([
-          // Correct endpoint for all dashboard statistics
-          fetch(`${BASE_URL}/api/admin/overview`),
-          // Correct endpoint to get the list of all quotes
-          fetch(`${BASE_URL}/api/quotes`),
-        ]);
+        const [statsRes, quotesRes, subscribersRes, contactsRes] =
+          await Promise.all([
+            fetch(`${BASE_URL}/api/admin/overview`).then(
+              (res) =>
+                res.ok
+                  ? res.json()
+                  : Promise.reject(new Error("Failed to fetch stats")) // Changed to Error object
+            ),
+            fetch(`${BASE_URL}/api/quotes`).then(
+              (res) =>
+                res.ok
+                  ? res.json()
+                  : Promise.reject(new Error("Failed to fetch quotes")) // Changed to Error object
+            ),
+            fetch(`${BASE_URL}/api/subscribe`).then(
+              (res) =>
+                res.ok
+                  ? res.json()
+                  : Promise.reject(new Error("Failed to fetch subscribers")) // Changed to Error object
+            ),
+            fetch(`${BASE_URL}/api/contact`).then(
+              (res) =>
+                res.ok
+                  ? res.json()
+                  : Promise.reject(new Error("Failed to fetch contacts")) // Changed to Error object
+            ),
+          ]);
 
-        // Check if responses are successful
-        if (!statsRes.ok)
-          throw new Error(`Failed to fetch stats: ${statsRes.statusText}`);
-        if (!quotesRes.ok)
-          throw new Error(`Failed to fetch quotes: ${quotesRes.statusText}`);
-
-        // 2. Parse the JSON from the responses.
-        const [statsData, quotesData] = await Promise.all([
-          statsRes.json(),
-          quotesRes.json(),
-        ]);
-
-        // 3. Set the stats state directly from the overview endpoint's response.
-        // The backend now does all the calculation for you.
         setStats({
-          quotes: statsData.quotes,
-          subscribers: statsData.subscribers,
-          contacts: statsData.contacts,
+          quotes: statsRes.quotes || { total: 0, change: 0, trend: "up" },
+          subscribers: statsRes.subscribers || {
+            total: 0,
+            change: 0,
+            trend: "up",
+          }, // Keep as is based on your response
+          contacts: statsRes.contacts || { total: 0, change: 0, trend: "up" },
         });
 
-        // 4. Sort and slice the full quotes list to get the most recent ones.
-        const sortedQuotes = quotesData
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-          .slice(0, 4);
-
-        setRecentQuotes(sortedQuotes);
-      } catch (error) {
-        console.error("Error loading dashboard data:", error);
-        // You might want to set an error state here to display a message to the user
+        setRawQuotes(
+          quotesRes.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          )
+        );
+        setRawSubscribers(
+          subscribersRes.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          )
+        );
+        setRawContacts(
+          contactsRes.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          )
+        );
+      } catch (err) {
+        console.error("Error loading dashboard data:", err);
+        setError("Failed to load some data. Please try again later.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchDashboardData();
-  }, []); // The dependency array is empty, so this runs once on component mount.
+  }, [BASE_URL]); // Added BASE_URL to dependency array for clarity
+
+  // Process data for charts and snippets when timeRange or raw data changes
+  useEffect(() => {
+    // Check if raw data arrays are empty, and if not loading, to prevent errors on initial render
+    if (
+      !rawQuotes.length &&
+      !rawSubscribers.length &&
+      !rawContacts.length &&
+      !loading
+    ) {
+      // If no data, initialize chart data with empty arrays to prevent rendering issues
+      setMonthlyQuotes([]);
+      setServiceDistribution([]);
+      setWeeklyQuotes([]);
+      setRecentQuotes([]);
+      setRecentSubscribers([]);
+      setRecentContacts([]);
+      return;
+    }
+
+    const startDate = getDateRange();
+
+    // Filter data
+    const filteredQuotes = rawQuotes.filter(
+      (q) => new Date(q.createdAt) >= startDate
+    );
+    const filteredSubscribers = rawSubscribers.filter(
+      (s) => new Date(s.createdAt) >= startDate
+    );
+    const filteredContacts = rawContacts.filter(
+      (c) => new Date(c.createdAt) >= startDate
+    );
+
+    // Recent snippets (top 4)
+    setRecentQuotes(filteredQuotes.slice(0, 4));
+    setRecentSubscribers(filteredSubscribers.slice(0, 4));
+    setRecentContacts(filteredContacts.slice(0, 4));
+
+    // Monthly Quotes
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const numMonths = timeRange === "year" ? 12 : 6;
+    const monthlyData = Array(numMonths)
+      .fill()
+      .map((_, i) => {
+        const date = new Date();
+        date.setMonth(date.getMonth() - (numMonths - 1 - i));
+        const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
+        const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+        const count = filteredQuotes.filter(
+          (q) =>
+            new Date(q.createdAt) >= monthStart &&
+            new Date(q.createdAt) <= monthEnd
+        ).length;
+        return { month: months[date.getMonth()], quotes: count };
+      });
+    setMonthlyQuotes(monthlyData);
+
+    // Service Distribution
+    const services = filteredQuotes.reduce((acc, q) => {
+      acc[q.service] = (acc[q.service] || 0) + 1;
+      return acc;
+    }, {});
+    const colors = ["#10b981", "#3b82f6", "#f59e0b", "#8b5cf6", "#ef4444"];
+    setServiceDistribution(
+      Object.entries(services).map(([name, value], i) => ({
+        name: name || "General Inquiry",
+        value,
+        color: colors[i % colors.length],
+      }))
+    );
+
+    // Weekly Quotes
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]; // Changed to start from Sunday
+    const weeklyData = Array(7)
+      .fill()
+      .map((_, i) => {
+        const date = new Date();
+        date.setDate(date.getDate() - date.getDay() + i); // Calculate day of the current week
+        const dayStart = new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate()
+        );
+        const dayEnd = new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate() + 1
+        );
+        const count = filteredQuotes.filter(
+          (q) =>
+            new Date(q.createdAt) >= dayStart && new Date(q.createdAt) < dayEnd
+        ).length;
+        return { day: days[dayStart.getDay()], requests: count }; // Use dayStart.getDay() to match 'days' array
+      });
+    setWeeklyQuotes(weeklyData);
+  }, [timeRange, rawQuotes, rawSubscribers, rawContacts, loading]); // Added 'loading' to dependencies
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -90,6 +253,41 @@ const Dashboard = () => {
     }
   };
 
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case "high":
+        return "bg-red-100 text-red-700 border-red-200";
+      case "medium":
+        return "bg-orange-100 text-orange-700 border-orange-200";
+      case "low":
+        return "bg-blue-100 text-blue-700 border-blue-200";
+      default:
+        return "bg-gray-100 text-gray-700 border-gray-200";
+    }
+  };
+
+  // Static urgent tasks
+  const urgentTasks = [
+    {
+      id: 1,
+      task: "Review urgent translation request",
+      priority: "high",
+      due: "Today, 3:00 PM",
+    },
+    {
+      id: 2,
+      task: "Follow up with VIP client",
+      priority: "high",
+      due: "Today, 5:00 PM",
+    },
+    {
+      id: 3,
+      task: "Prepare weekly report",
+      priority: "medium",
+      due: "Tomorrow",
+    },
+  ];
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -98,31 +296,122 @@ const Dashboard = () => {
     );
   }
 
+  // --- Chart Data & Options (Moved outside JSX for clarity and to fix redlines) ---
+
+  const monthlyQuotesChartData = {
+    labels: monthlyQuotes.map((item) => item.month),
+    datasets: [
+      {
+        label: "Quotes",
+        data: monthlyQuotes.map((item) => item.quotes),
+        borderColor: "#10b981",
+        backgroundColor: "rgba(16, 185, 129, 0.2)",
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: "#10b981",
+        pointBorderColor: "#fff",
+        pointHoverBackgroundColor: "#fff",
+        pointHoverBorderColor: "#10b981",
+      },
+    ],
+  };
+
+  const monthlyQuotesChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: { grid: { display: false }, ticks: { color: "#6b7280" } },
+      y: { grid: { color: "#e5e7eb" }, ticks: { color: "#6b7280" } },
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: { backgroundColor: "#374151" },
+    },
+  };
+
+  const serviceDistributionChartData = {
+    labels: serviceDistribution.map((item) => item.name),
+    datasets: [
+      {
+        data: serviceDistribution.map((item) => item.value),
+        backgroundColor: serviceDistribution.map((item) => item.color),
+        borderColor: "#fff",
+        borderWidth: 2,
+      },
+    ],
+  };
+
+  const serviceDistributionChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: "bottom", labels: { color: "#6b7280" } },
+      tooltip: { backgroundColor: "#374151" },
+    },
+  };
+
+  const weeklyQuotesChartData = {
+    labels: weeklyQuotes.map((item) => item.day),
+    datasets: [
+      {
+        label: "Requests",
+        data: weeklyQuotes.map((item) => item.requests),
+        backgroundColor: "#10b981",
+        borderRadius: 8,
+      },
+    ],
+  };
+
+  const weeklyQuotesChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: { grid: { display: false }, ticks: { color: "#6b7280" } },
+      y: { grid: { color: "#e5e7eb" }, ticks: { color: "#6b7280" } },
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: { backgroundColor: "#374151" },
+    },
+  };
+
+  // --- End Chart Data & Options ---
+
   return (
     <div className="p-6 space-y-6">
+      {error && (
+        <div className="p-4 text-red-700 bg-red-100 rounded-lg">{error}</div>
+      )}
+
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="hidden p-3 shadow-lg bg-gradient-to-br from-green-600 to-green-700 rounded-xl md:flex">
-            <Globe className="w-8 h-8 text-white" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-green-700">
-              Dashboard Overview
-            </h1>
-            <p className="mt-1 text-slate-600">
-              Real-time summary from your ILI backend
-            </p>
-          </div>
+      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Dashboard Overview
+          </h1>
+          <p className="mt-1 text-gray-600">
+            Welcome back! Here's what's happening today.
+          </p>
         </div>
+        <select
+          value={timeRange}
+          onChange={(e) => setTimeRange(e.target.value)}
+          className="px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+        >
+          <option value="7days">Last 7 Days</option>
+          <option value="30days">Last 30 Days</option>
+          <option value="90days">Last 90 Days</option>
+          <option value="year">This Year</option>
+        </select>
       </div>
 
-      {/* Stats Cards - Matching Quotes.jsx style */}
-      <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2 lg:grid-cols-3">
-        {/* Quotes */}
-        <div className="p-5 transition-shadow bg-white border shadow-sm rounded-xl border-slate-200 hover:shadow-md">
-          <div className="flex items-center justify-between mb-2">
-            <FileText className="w-5 h-5 text-green-600" />
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="p-6 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-xl">
+              <FileText className="w-6 h-6 text-green-600" />
+            </div>
             <span
               className={`flex items-center gap-1 text-sm font-medium ${
                 stats.quotes.trend === "up" ? "text-green-600" : "text-red-600"
@@ -133,94 +422,189 @@ const Dashboard = () => {
               ) : (
                 <ArrowDownRight className="w-4 h-4" />
               )}
-              {stats.quotes.change}%
+              {Math.abs(stats.quotes.change)}%
             </span>
           </div>
-          <p className="text-2xl font-bold text-slate-900">
+          <h3 className="text-2xl font-bold text-gray-900">
             {stats.quotes.total}
-          </p>
-          <p className="mt-1 text-xs text-slate-600">Total Quote Requests</p>
+          </h3>
+          <p className="mt-1 text-sm text-gray-600">Quote Requests</p>
         </div>
-
-        {/* Subscribers */}
-        <div className="p-5 transition-shadow bg-white border shadow-sm rounded-xl border-slate-200 hover:shadow-md">
-          <div className="flex items-center justify-between mb-2">
-            <Users className="w-5 h-5 text-blue-600" />
-            <span className="flex items-center gap-1 text-sm font-medium text-green-600">
-              <ArrowUpRight className="w-4 h-4" /> {stats.subscribers.change}%
+        <div className="p-6 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-xl">
+              <Users className="w-6 h-6 text-blue-600" />
+            </div>
+            <span
+              className={`flex items-center gap-1 text-sm font-medium ${
+                stats.subscribers.trend === "up"
+                  ? "text-green-600"
+                  : "text-red-600"
+              }`}
+            >
+              {stats.subscribers.trend === "up" ? (
+                <ArrowUpRight className="w-4 h-4" />
+              ) : (
+                <ArrowDownRight className="w-4 h-4" />
+              )}
+              {Math.abs(stats.subscribers.change)}%
             </span>
           </div>
-          <p className="text-2xl font-bold text-slate-900">
+          <h3 className="text-2xl font-bold text-gray-900">
             {stats.subscribers.total}
-          </p>
-          <p className="mt-1 text-xs text-slate-600">Active Subscribers</p>
+          </h3>
+          <p className="mt-1 text-sm text-gray-600">Subscribers</p>
         </div>
-
-        {/* Contacts */}
-        <div className="p-5 transition-shadow bg-white border shadow-sm rounded-xl border-slate-200 hover:shadow-md">
-          <div className="flex items-center justify-between mb-2">
-            <Mail className="w-5 h-5 text-purple-600" />
-            <span className="flex items-center gap-1 text-sm font-medium text-green-600">
-              <ArrowUpRight className="w-4 h-4" /> {stats.contacts.change}%
+        <div className="p-6 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-xl">
+              <Mail className="w-6 h-6 text-purple-600" />
+            </div>
+            <span
+              className={`flex items-center gap-1 text-sm font-medium ${
+                stats.contacts.trend === "up"
+                  ? "text-green-600"
+                  : "text-red-600"
+              }`}
+            >
+              {stats.contacts.trend === "up" ? (
+                <ArrowUpRight className="w-4 h-4" />
+              ) : (
+                <ArrowDownRight className="w-4 h-4" />
+              )}
+              {Math.abs(stats.contacts.change)}%
             </span>
           </div>
-          <p className="text-2xl font-bold text-slate-900">
+          <h3 className="text-2xl font-bold text-gray-900">
             {stats.contacts.total}
-          </p>
-          <p className="mt-1 text-xs text-slate-600">Contact Messages</p>
+          </h3>
+          <p className="mt-1 text-sm text-gray-600">Contact Messages</p>
         </div>
       </div>
 
-      {/* Recent Quotes Section */}
-      <div className="overflow-hidden bg-white border shadow-sm rounded-xl border-slate-200">
-        <div className="px-6 py-4 border-b bg-gradient-to-r from-slate-50 to-blue-50/50 border-slate-200">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 bg-green-100 rounded-xl">
-                <FileText className="w-5 h-5 text-green-600" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-slate-900">
-                  Recent Quote Requests
-                </h3>
-                <p className="text-sm text-slate-600">
-                  {recentQuotes.length > 0
-                    ? `Latest ${recentQuotes.length} submissions`
-                    : "No requests yet"}
-                </p>
-              </div>
+      {/* Charts Row */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* Monthly Quotes Chart */}
+        <div className="p-6 bg-white border border-gray-200 shadow-sm lg:col-span-2 rounded-xl">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Quote Trends
+              </h3>
+              <p className="mt-1 text-sm text-gray-600">Quotes over time</p>
             </div>
+            <TrendingUp className="w-5 h-5 text-green-600" />
+          </div>
+          <div style={{ height: 300 }}>
+            {/* Chart.js Line Chart */}
+            <Line
+              data={monthlyQuotesChartData}
+              options={monthlyQuotesChartOptions}
+            />
           </div>
         </div>
 
-        <div className="p-6">
-          {recentQuotes.length > 0 ? (
-            <div className="space-y-3">
-              {recentQuotes.map((quote) => (
+        {/* Service Distribution */}
+        <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">Services</h3>
+              <p className="mt-1 text-sm text-gray-600">Distribution by type</p>
+            </div>
+            <Globe className="w-5 h-5 text-green-600" />
+          </div>
+          <div style={{ height: 200 }}>
+            {/* Chart.js Pie Chart */}
+            <Pie
+              data={serviceDistributionChartData}
+              options={serviceDistributionChartOptions}
+            />
+          </div>
+          <div className="mt-4 space-y-2">
+            {serviceDistribution.map((service) => (
+              <div
+                key={service.name}
+                className="flex items-center justify-between"
+              >
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: service.color }}
+                  />
+                  <span className="text-sm text-gray-700">{service.name}</span>
+                </div>
+                <span className="text-sm font-medium text-gray-900">
+                  {service.value}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Weekly Quotes Chart */}
+      <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">
+              Weekly Quotes
+            </h3>
+            <p className="mt-1 text-sm text-gray-600">
+              Quote requests this week
+            </p>
+          </div>
+          <Clock className="w-5 h-5 text-green-600" />
+        </div>
+        <div style={{ height: 250 }}>
+          {/* Chart.js Bar Chart */}
+          <Bar
+            data={weeklyQuotesChartData}
+            options={weeklyQuotesChartOptions}
+          />
+        </div>
+      </div>
+
+      {/* Snippets */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* Recent Quotes */}
+        <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Recent Quote Requests
+            </h3>
+            <button className="text-sm font-medium text-green-600 hover:text-green-700">
+              View All
+            </button>
+          </div>
+          <div className="space-y-3">
+            {recentQuotes.length ? (
+              recentQuotes.map((quote) => (
                 <div
                   key={quote._id}
-                  className="flex items-center justify-between p-4 transition-all duration-200 border border-slate-100 rounded-xl bg-slate-50/50 hover:bg-white hover:shadow-md hover:border-green-200"
+                  className="flex items-center justify-between p-3 transition-colors rounded-lg bg-gray-50 hover:bg-gray-100"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center justify-center w-10 h-10 font-semibold text-white rounded-full bg-gradient-to-br from-green-500 to-green-600">
-                      {quote.name.charAt(0).toUpperCase()}
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-center w-10 h-10 font-semibold text-white rounded-lg bg-gradient-to-br from-green-600 to-green-700">
+                      {quote.name?.charAt(0) || "?"}
                     </div>
                     <div>
-                      <p className="font-medium text-slate-900">{quote.name}</p>
-                      <p className="text-sm text-slate-600">
+                      <p className="text-sm font-medium text-gray-900">
+                        {quote.name || "Unknown"}
+                      </p>
+                      <p className="text-xs text-gray-600">
                         {quote.service || "General Inquiry"}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <span
-                      className={`px-3 py-1 text-xs font-medium rounded-full border ${getStatusColor(
+                      className={`px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(
                         quote.status || "pending"
                       )}`}
                     >
                       {quote.status || "pending"}
                     </span>
-                    <span className="text-sm text-slate-500">
+                    <span className="text-xs text-gray-500">
                       {new Date(quote.createdAt).toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",
@@ -228,27 +612,137 @@ const Dashboard = () => {
                     </span>
                   </div>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-slate-100">
-                <Inbox className="w-8 h-8 text-slate-400" />
+              ))
+            ) : (
+              <div className="text-center text-gray-600">
+                No quotes in this range
               </div>
-              <h4 className="mb-2 text-lg font-semibold text-slate-900">
-                No Quote Requests Yet
-              </h4>
-              <p className="max-w-md mb-4 text-sm text-slate-600">
-                When clients submit quote requests through your website, they'll
-                appear here. You'll be able to track and manage all incoming
-                requests in real-time.
-              </p>
-              <div className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-700 border border-green-200 rounded-lg bg-green-50">
-                <Sparkles className="w-4 h-4" />
-                Ready to receive requests
+            )}
+          </div>
+        </div>
+
+        {/* Recent Subscribers */}
+        <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Recent Subscribers
+            </h3>
+            <button className="text-sm font-medium text-green-600 hover:text-green-700">
+              View All
+            </button>
+          </div>
+          <div className="space-y-3">
+            {recentSubscribers.length ? (
+              recentSubscribers.map((sub) => (
+                <div
+                  key={sub._id}
+                  className="flex items-center justify-between p-3 transition-colors rounded-lg bg-gray-50 hover:bg-gray-100"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-center w-10 h-10 font-semibold text-white rounded-lg bg-gradient-to-br from-blue-600 to-blue-700">
+                      {sub.email?.charAt(0).toUpperCase() || "?"}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">
+                        {sub.email || "Unknown"}
+                      </p>
+                      <p className="text-xs text-gray-600">Subscribed</p>
+                    </div>
+                  </div>
+                  <span className="text-xs text-gray-500">
+                    {new Date(sub.createdAt).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </span>
+                </div>
+              ))
+            ) : (
+              <div className="text-center text-gray-600">
+                No subscribers in this range
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Recent Contacts */}
+        <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Recent Contacts
+            </h3>
+            <button className="text-sm font-medium text-green-600 hover:text-green-700">
+              View All
+            </button>
+          </div>
+          <div className="space-y-3">
+            {recentContacts.length ? (
+              recentContacts.map((contact) => (
+                <div
+                  key={contact._id}
+                  className="flex items-center justify-between p-3 transition-colors rounded-lg bg-gray-50 hover:bg-gray-100"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-center w-10 h-10 font-semibold text-white rounded-lg bg-gradient-to-br from-purple-600 to-purple-700">
+                      {contact.name?.charAt(0) || "?"}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">
+                        {contact.name || "Unknown"}
+                      </p>
+                      <p className="text-xs text-gray-600">
+                        {contact.service || "General Inquiry"}
+                      </p>
+                    </div>
+                  </div>
+                  <span className="text-xs text-gray-500">
+                    {new Date(contact.createdAt).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </span>
+                </div>
+              ))
+            ) : (
+              <div className="text-center text-gray-600">
+                No contacts in this range
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Urgent Tasks */}
+      <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-semibold text-gray-900">Urgent Tasks</h3>
+          <Award className="w-5 h-5 text-green-600" />
+        </div>
+        <div className="space-y-3">
+          {urgentTasks.map((task) => (
+            <div
+              key={task.id}
+              className="flex items-start gap-3 p-3 transition-colors rounded-lg bg-gray-50 hover:bg-gray-100"
+            >
+              <input
+                type="checkbox"
+                className="w-4 h-4 mt-1 text-green-600 rounded focus:ring-green-500"
+              />
+              <div className="flex-1">
+                <p className="text-sm font-medium text-gray-900">{task.task}</p>
+                <div className="flex items-center gap-2 mt-2">
+                  <span
+                    className={`px-2 py-0.5 text-xs font-medium rounded-full border ${getPriorityColor(
+                      task.priority
+                    )}`}
+                  >
+                    {task.priority}
+                  </span>
+                  <span className="text-xs text-gray-500">Due: {task.due}</span>
+                </div>
               </div>
             </div>
-          )}
+          ))}
         </div>
       </div>
 
@@ -262,8 +756,8 @@ const Dashboard = () => {
             <div>
               <h3 className="mb-1 text-xl font-bold">Our Mission in Action</h3>
               <p className="text-green-100">
-                Connecting {stats.subscribers.total.toLocaleString()}+ users
-                worldwide through ILI translations
+                Breaking language barriers, connecting{" "}
+                {stats.subscribers.total.toLocaleString()}+ people worldwide
               </p>
             </div>
           </div>
