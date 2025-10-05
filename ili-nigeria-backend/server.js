@@ -16,6 +16,7 @@ import quoteRoutes from "./routes/quote.js";
 import subscriberRoutes from "./routes/subscriber.js";
 import adminRoutes from "./routes/admin.js";
 import dashboardRoutes from "./routes/dashboard.js";
+import taskRouter from "./routes/task.js";
 
 
 
@@ -51,6 +52,7 @@ app.use("/api/subscribe", subscriberRoutes);
 
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/tasks", taskRouter);
 
 
 // Test route
