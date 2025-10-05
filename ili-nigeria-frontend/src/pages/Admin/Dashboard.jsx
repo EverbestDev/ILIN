@@ -11,13 +11,13 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   CheckCircle,
-  Trash2
+  Trash2,
 } from "lucide-react";
 import { Line, Pie, Bar } from "react-chartjs-2";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  
+
   const BASE_URL =
     "https://ilin-backend.onrender.com" || "http://localhost:5000";
 
@@ -41,7 +41,15 @@ const Dashboard = () => {
   const [serviceDistribution, setServiceDistribution] = useState([]);
   const [weeklyQuotes, setWeeklyQuotes] = useState([]);
 
-  // Calculate date range for filtering
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem("token");
+    const headers = { "Content-Type": "application/json" };
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+    return headers;
+  };
+
   const getDateRange = () => {
     const now = new Date();
     let startDate = new Date();
@@ -64,15 +72,10 @@ const Dashboard = () => {
     return startDate;
   };
 
-  // Fetch data once on mount
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const token = localStorage.getItem("token"); // Get token from localStorage
-        const headers = { "Content-Type": "application/json" };
-        if (token) {
-          headers.Authorization = `Bearer ${token}`;
-        }
+        const headers = getAuthHeaders();
 
         const [statsRes, quotesRes, subscribersRes, contactsRes, tasksRes] =
           await Promise.all([
@@ -102,12 +105,6 @@ const Dashboard = () => {
                 : Promise.reject(new Error("Failed to fetch tasks"))
             ),
           ]);
-
-        console.log("Stats Response:", statsRes);
-        console.log("Quotes:", quotesRes.length);
-        console.log("Subscribers:", subscribersRes.length);
-        console.log("Contacts:", contactsRes.length);
-        console.log("Tasks:", tasksRes.length);
 
         setStats({
           quotes: statsRes.quotes || {
@@ -162,39 +159,16 @@ const Dashboard = () => {
     fetchDashboardData();
   }, [BASE_URL]);
 
-  // Process data for charts and snippets
- 
-
   useEffect(() => {
-    // Log for debugging
-    console.log("Raw Quotes:", rawQuotes.length, rawQuotes);
-    console.log("Raw Subscribers:", rawSubscribers.length, rawSubscribers);
-    console.log("Raw Contacts:", rawContacts.length, rawContacts);
-    console.log("Raw Tasks:", rawTasks.length, rawTasks);
-
     const startDate = getDateRange();
-
-    // Filter data
     const filteredQuotes = rawQuotes.filter(
       (q) => new Date(q.createdAt) >= startDate
     );
-    const filteredSubscribers = rawSubscribers.filter(
-      (s) => new Date(s.createdAt) >= startDate
-    );
-    const filteredContacts = rawContacts.filter(
-      (c) => new Date(c.createdAt) >= startDate
-    );
 
-    console.log("Filtered Quotes:", filteredQuotes.length, filteredQuotes);
-    console.log("Filtered Subscribers:", filteredSubscribers.length);
-    console.log("Filtered Contacts:", filteredContacts.length);
+    setRecentQuotes(rawQuotes.slice(0, 3));
+    setRecentSubscribers(rawSubscribers.slice(0, 3));
+    setRecentContacts(rawContacts.slice(0, 3));
 
-    // Recent snippets (use rawContacts for contacts to show recent ones)
-    setRecentQuotes(filteredQuotes.slice(0, 4));
-    setRecentSubscribers(filteredSubscribers.slice(0, 4));
-    setRecentContacts(rawContacts.slice(0, 2)); // Fix: Use rawContacts to show newest
-
-    // Monthly Quotes
     const months = [
       "Jan",
       "Feb",
@@ -226,7 +200,6 @@ const Dashboard = () => {
       });
     setMonthlyQuotes(monthlyData);
 
-    // Service Distribution
     const services = filteredQuotes.reduce((acc, q) => {
       acc[q.service] = (acc[q.service] || 0) + 1;
       return acc;
@@ -240,7 +213,6 @@ const Dashboard = () => {
       }))
     );
 
-    // Weekly Quotes (last 7 days from today, account for WAT timezone)
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const now = new Date();
     const weeklyData = Array(7)
@@ -261,10 +233,8 @@ const Dashboard = () => {
           dayDate.getMonth(),
           dayDate.getDate() + 1
         );
-        // Adjust for WAT (UTC+1) by shifting dates to local time
         const count = rawQuotes.filter((q) => {
           const quoteDate = new Date(q.createdAt);
-          // Convert UTC to WAT for comparison
           const quoteDateWAT = new Date(
             quoteDate.getTime() + 1 * 60 * 60 * 1000
           );
@@ -273,8 +243,7 @@ const Dashboard = () => {
         return { day: days[dayDate.getDay()], requests: count };
       });
     setWeeklyQuotes(weeklyData);
-    console.log("Weekly Quotes Data:", weeklyData);
-  }, [timeRange, rawQuotes, rawSubscribers, rawContacts, rawTasks]);
+  }, [timeRange, rawQuotes, rawSubscribers, rawContacts]);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -302,27 +271,99 @@ const Dashboard = () => {
     }
   };
 
-  // Static urgent tasks
-  const urgentTasks = [
-    {
-      id: 1,
-      task: "Review urgent translation request",
-      priority: "high",
-      due: "Today, 3:00 PM",
-    },
-    {
-      id: 2,
-      task: "Follow up with VIP client",
-      priority: "high",
-      due: "Today, 5:00 PM",
-    },
-    {
-      id: 3,
-      task: "Prepare weekly report",
-      priority: "medium",
-      due: "Tomorrow",
-    },
-  ];
+  const handleAddTask = async (e) => {
+    e.preventDefault();
+    const task = e.target.task.value;
+    const priority = e.target.priority.value;
+    const due = e.target.due.value;
+    const email = e.target.email.value;
+
+    try {
+      const res = await fetch(`${BASE_URL}/api/tasks`, {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ task, priority, due, email }),
+      });
+
+      if (res.ok) {
+        const { task: newTask } = await res.json();
+        setRawTasks((prev) => [newTask, ...prev]);
+        setStats((prev) => ({
+          ...prev,
+          tasks: {
+            ...prev.tasks,
+            total: prev.tasks.total + 1,
+            pending: prev.tasks.pending + 1,
+          },
+        }));
+        e.target.reset();
+      } else {
+        const errorData = await res.json();
+        setError(errorData.message || "Failed to create task");
+      }
+    } catch (error) {
+      console.error("Failed to create task:", error);
+      setError("Failed to create task. Please try again.");
+    }
+  };
+
+  const handleToggleTask = async (taskId, currentStatus) => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/tasks/${taskId}`, {
+        method: "PUT",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ completed: !currentStatus }),
+      });
+
+      if (res.ok) {
+        setRawTasks((prev) =>
+          prev.map((t) =>
+            t._id === taskId ? { ...t, completed: !t.completed } : t
+          )
+        );
+        setStats((prev) => ({
+          ...prev,
+          tasks: {
+            ...prev.tasks,
+            pending: currentStatus
+              ? prev.tasks.pending + 1
+              : prev.tasks.pending - 1,
+          },
+        }));
+      } else {
+        setError("Failed to update task");
+      }
+    } catch (error) {
+      console.error("Failed to update task:", error);
+      setError("Failed to update task. Please try again.");
+    }
+  };
+
+  const handleDeleteTask = async (taskId, isCompleted) => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/tasks/${taskId}`, {
+        method: "DELETE",
+        headers: getAuthHeaders(),
+      });
+
+      if (res.ok) {
+        setRawTasks((prev) => prev.filter((t) => t._id !== taskId));
+        setStats((prev) => ({
+          ...prev,
+          tasks: {
+            ...prev.tasks,
+            total: prev.tasks.total - 1,
+            pending: isCompleted ? prev.tasks.pending : prev.tasks.pending - 1,
+          },
+        }));
+      } else {
+        setError("Failed to delete task");
+      }
+    } catch (error) {
+      console.error("Failed to delete task:", error);
+      setError("Failed to delete task. Please try again.");
+    }
+  };
 
   if (loading) {
     return (
@@ -332,7 +373,6 @@ const Dashboard = () => {
     );
   }
 
-  // Chart data and options
   const monthlyQuotesChartData = {
     labels: monthlyQuotes.map((item) => item.month),
     datasets: [
@@ -417,10 +457,17 @@ const Dashboard = () => {
   return (
     <div className="p-6 space-y-6">
       {error && (
-        <div className="p-4 text-red-700 bg-red-100 rounded-lg">{error}</div>
+        <div className="p-4 text-red-700 bg-red-100 rounded-lg">
+          {error}
+          <button
+            onClick={() => setError(null)}
+            className="ml-4 text-sm underline"
+          >
+            Dismiss
+          </button>
+        </div>
       )}
 
-      {/* Header */}
       <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
@@ -442,9 +489,7 @@ const Dashboard = () => {
         </select>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {/* Quotes Card */}
         <div className="p-6 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-xl">
@@ -468,7 +513,7 @@ const Dashboard = () => {
           </h3>
           <p className="mt-1 text-sm text-gray-600">Quote Requests</p>
         </div>
-        {/* Subscribers Card */}
+
         <div className="p-6 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-xl">
@@ -494,7 +539,7 @@ const Dashboard = () => {
           </h3>
           <p className="mt-1 text-sm text-gray-600">Subscribers</p>
         </div>
-        {/* Contacts Card */}
+
         <div className="p-6 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-xl">
@@ -520,7 +565,7 @@ const Dashboard = () => {
           </h3>
           <p className="mt-1 text-sm text-gray-600">Contact Messages</p>
         </div>
-        {/* Tasks Card */}
+
         <div className="p-6 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center justify-center w-12 h-12 bg-orange-100 rounded-xl">
@@ -546,9 +591,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Charts Row */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Monthly Quotes Chart */}
         <div className="p-6 bg-white border border-gray-200 shadow-sm lg:col-span-2 rounded-xl">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -567,7 +610,6 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Service Distribution */}
         <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -604,7 +646,6 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Weekly Quotes Chart */}
       <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -625,9 +666,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Snippets */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Recent Quotes */}
         <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-semibold text-gray-900">
@@ -675,14 +714,11 @@ const Dashboard = () => {
                 </div>
               ))
             ) : (
-              <div className="text-center text-gray-600">
-                No quotes in this range
-              </div>
+              <div className="text-center text-gray-600">No recent quotes</div>
             )}
           </div>
         </div>
-
-        {/* Recent Subscribers */}
+        
         <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-semibold text-gray-900">
@@ -699,12 +735,12 @@ const Dashboard = () => {
                   key={sub._id}
                   className="flex items-center justify-between p-3 transition-colors rounded-lg bg-gray-50 hover:bg-gray-100"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center w-10 h-10 font-semibold text-white rounded-lg bg-gradient-to-br from-blue-600 to-blue-700">
+                  <div className="flex items-center flex-1 min-w-0 gap-3">
+                    <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 font-semibold text-white rounded-lg bg-gradient-to-br from-blue-600 to-blue-700">
                       {sub.email?.charAt(0).toUpperCase() || "?"}
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900 truncate">
                         {sub.email || "Unknown"}
                       </p>
                       <p className="text-xs text-gray-600">Subscribed</p>
@@ -720,13 +756,12 @@ const Dashboard = () => {
               ))
             ) : (
               <div className="text-center text-gray-600">
-                No subscribers in this range
+                No recent subscribers
               </div>
             )}
           </div>
         </div>
-
-        {/* Recent Contacts */}
+      
         <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-semibold text-gray-900">
@@ -766,50 +801,28 @@ const Dashboard = () => {
               ))
             ) : (
               <div className="text-center text-gray-600">
-                No contacts in this range
+                No recent contacts
               </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* Urgent Tasks */}
-      <div className="mb-4">
-        <h4 className="text-sm font-medium text-gray-700">Add New Task</h4>
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            const task = e.target.task.value;
-            const priority = e.target.priority.value;
-            const due = e.target.due.value;
-            const email = e.target.email.value;
-            try {
-              const res = await fetch(`${BASE_URL}/api/tasks`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ task, priority, due, email }),
-              });
-              if (res.ok) {
-                const { task: newTask } = await res.json();
-                setRawTasks((prev) => [newTask, ...prev]);
-                e.target.reset();
-              }
-            } catch (error) {
-              console.error("Failed to create task:", error);
-            }
-          }}
-          className="flex gap-2 mt-2"
-        >
+      <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
+        <h4 className="mb-4 text-lg font-semibold text-gray-900">
+          Add New Task
+        </h4>
+        <form onSubmit={handleAddTask} className="flex flex-wrap gap-2">
           <input
             name="task"
             type="text"
             placeholder="Task description"
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
+            className="flex-1 min-w-[200px] px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
             required
           />
           <select
             name="priority"
-            className="px-3 py-2 border border-gray-300 rounded-lg"
+            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
           >
             <option value="high">High</option>
             <option value="medium">Medium</option>
@@ -818,28 +831,27 @@ const Dashboard = () => {
           <input
             name="due"
             type="datetime-local"
-            className="px-3 py-2 border border-gray-300 rounded-lg"
+            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
             required
           />
           <input
             name="email"
             type="email"
             placeholder="Recipient email"
-            className="px-3 py-2 border border-gray-300 rounded-lg"
+            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
           />
           <button
             type="submit"
-            className="px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-700"
+            className="px-4 py-2 text-white transition-colors bg-green-600 rounded-lg hover:bg-green-700"
           >
-            Add
+            Add Task
           </button>
         </form>
       </div>
-      {/* Urgent Tasks */}
-      {/* Urgent Tasks */}
+
       <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-gray-900">Urgent Tasks</h3>
+          <h3 className="text-lg font-semibold text-gray-900">All Tasks</h3>
           <Award className="w-5 h-5 text-green-600" />
         </div>
         <div className="space-y-3">
@@ -852,29 +864,7 @@ const Dashboard = () => {
                 <input
                   type="checkbox"
                   checked={task.completed}
-                  onChange={async () => {
-                    try {
-                      const res = await fetch(
-                        `${BASE_URL}/api/tasks/${task._id}`,
-                        {
-                          method: "PUT",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ completed: !task.completed }),
-                        }
-                      );
-                      if (res.ok) {
-                        setRawTasks((prev) =>
-                          prev.map((t) =>
-                            t._id === task._id
-                              ? { ...t, completed: !t.completed }
-                              : t
-                          )
-                        );
-                      }
-                    } catch (error) {
-                      console.error("Failed to update task:", error);
-                    }
-                  }}
+                  onChange={() => handleToggleTask(task._id, task.completed)}
                   className="w-4 h-4 mt-1 text-green-600 rounded focus:ring-green-500"
                 />
                 <div className="flex-1">
@@ -896,41 +886,38 @@ const Dashboard = () => {
                       {task.priority}
                     </span>
                     <span className="text-xs text-gray-500">
-                      Due: {task.due}
+                      Due:{" "}
+                      {new Date(task.due).toLocaleString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </span>
+                    {task.email && (
+                      <span className="text-xs text-gray-500">
+                        • {task.email}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <button
-                  onClick={async () => {
-                    try {
-                      const res = await fetch(
-                        `${BASE_URL}/api/tasks/${task._id}`,
-                        {
-                          method: "DELETE",
-                        }
-                      );
-                      if (res.ok) {
-                        setRawTasks((prev) =>
-                          prev.filter((t) => t._id !== task._id)
-                        );
-                      }
-                    } catch (error) {
-                      console.error("Failed to delete task:", error);
-                    }
-                  }}
-                  className="text-red-600 hover:text-red-700"
+                  onClick={() => handleDeleteTask(task._id, task.completed)}
+                  className="text-red-600 transition-colors hover:text-red-700"
+                  aria-label="Delete task"
                 >
                   <Trash2 className="w-5 h-5" />
                 </button>
               </div>
             ))
           ) : (
-            <div className="text-center text-gray-600">No tasks available</div>
+            <div className="py-8 text-center text-gray-600">
+              No tasks available. Add your first task above!
+            </div>
           )}
         </div>
       </div>
 
-      {/* Mission Banner */}
       <div className="p-6 text-white bg-gradient-to-r from-green-600 to-green-700 rounded-xl">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
