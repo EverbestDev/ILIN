@@ -5,7 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaFacebookF, FaLinkedinIn } from "react-icons/fa";
 import { Globe, Eye, EyeOff } from "lucide-react";
 
-// Carousel Data (Kept outside the component for performance)
+// Carousel Data
 const carouselSlides = [
   {
     title: "Our Mission",
@@ -26,7 +26,6 @@ const AuthSidebar = ({ activeSlide }) => {
   const slide = carouselSlides[activeSlide];
   return (
     <div className="relative flex-col justify-between hidden min-h-full p-8 overflow-hidden text-white md:flex lg:flex lg:w-1/3 xl:w-2/5 bg-gradient-to-br from-green-700 to-green-900">
-     
       <div className="flex items-center gap-3">
         <div className="flex items-center justify-center w-10 h-10 rounded-lg shadow-xl bg-white/20">
           <Globe className="w-5 h-5 text-white" />
@@ -34,7 +33,6 @@ const AuthSidebar = ({ activeSlide }) => {
         <h1 className="text-xl font-bold">ILIN Portal</h1>
       </div>
 
-      {/* 2. Carousel Content */}
       <div className="max-w-md my-auto text-left">
         <motion.div
           key={activeSlide}
@@ -46,20 +44,16 @@ const AuthSidebar = ({ activeSlide }) => {
           <p className="text-xl font-light text-green-100">{slide.text}</p>
         </motion.div>
 
-        {/* Carousel Indicators */}
         <div className="flex justify-start gap-2 mt-8">
           {carouselSlides.map((_, index) => (
             <div
               key={index}
-              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                activeSlide === index ? "bg-white w-6" : "bg-white/50"
-              }`}
+              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${activeSlide === index ? "bg-white w-6" : "bg-white/50"}`}
             />
           ))}
         </div>
       </div>
 
-      {/* Optional: Mission Statement at the bottom */}
       <p className="text-xs text-white/70">
         Connecting cultures through language excellence.
       </p>
@@ -71,11 +65,10 @@ export default function Login() {
   const [isSignup, setIsSignup] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [loading, setLoading] = useState(false);
-  // State for password visibility
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState("");
 
-  // Form State
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -83,212 +76,148 @@ export default function Login() {
 
   const navigate = useNavigate();
 
-  // Auto-rotate slides
+  // Auto-rotate carousel
   useEffect(() => {
-    const interval = setInterval(() => {
+    const timer = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % carouselSlides.length);
     }, 5000);
-    return () => clearInterval(interval);
+    return () => clearInterval(timer);
   }, []);
 
-  function handleAuth(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
-    if (isSignup && password !== confirmPassword) {
-      alert("Passwords do not match.");
-      setLoading(false);
-      return;
-    }
+    try {
+      let endpoint = "/api/auth/login";
+      let body = { email, password };
 
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      // Logic for navigation (Keep as is)
-      if (email.includes("admin")) {
-        navigate("/admin/dashboard");
-      } else {
-        navigate("/client/dashboard");
+      if (isSignup) {
+        if (password !== confirmPassword) {
+          setError("Passwords do not match");
+          return;
+        }
+        endpoint = "/api/auth/register";
+        body = { name, email, password, role: "client" }; // Default to client for signup
       }
-    }, 1500);
-  }
+
+      const res = await fetch("https://ilin-backend.onrender.com" + endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        if (isSignup) {
+          setError("Account created. Please log in.");
+          setIsSignup(false);
+        } else {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("role", data.role);
+          console.log("JWT Token:", data.token); // Log token for debugging
+          navigate(data.role === "admin" ? "/admin/dashboard" : "/client/dashboard");
+        }
+      } else {
+        setError(data.message);
+      }
+    } catch (error) {
+      setError("Failed to " + (isSignup ? "register" : "login"));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    // min-h-full ensures the dual panel fills the remaining space between header and footer
-    <div className="flex min-h-full">
-      {/* Full-Height Side Panel */}
+    <div className="flex min-h-screen overflow-hidden bg-gray-50">
+      {/* Sidebar */}
       <AuthSidebar activeSlide={activeSlide} />
 
-      {/* Right Side - Login Form (2/3 on desktop) */}
-      <div className="flex flex-col items-center justify-center w-full p-6 sm:p-12 lg:w-2/3 xl:w-3/5 bg-gray-50">
-        {/* Form Container */}
+      {/* Form Section */}
+      <div className="relative flex items-center justify-center w-full p-8 lg:w-2/3 xl:w-3/5">
         <motion.div
-          // Key ensures the form container animates when toggling between sign-in/sign-up
-          key={isSignup ? "signup" : "login"}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="w-full max-w-sm p-8 bg-white border border-gray-100 shadow-2xl sm:max-w-md sm:p-10 rounded-xl"
+          className="w-full max-w-md"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
         >
-          {/* Title and Toggle Buttons */}
-          <div className="flex justify-center mb-8">
-            <button
-              onClick={() => setIsSignup(false)}
-              className={`px-6 py-2 text-xl font-bold border-b-2 transition-colors ${
-                !isSignup
-                  ? "border-green-600 text-green-700"
-                  : "border-transparent text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              Sign In
-            </button>
-            <button
-              onClick={() => setIsSignup(true)}
-              className={`px-6 py-2 text-xl font-bold border-b-2 transition-colors ${
-                isSignup
-                  ? "border-green-600 text-green-700"
-                  : "border-transparent text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              Sign Up
-            </button>
-          </div>
+          <h2 className="mb-6 text-3xl font-bold text-gray-900">
+            {isSignup ? "Create Account" : "Welcome Back"}
+          </h2>
+          {error && <p className="mb-4 text-red-600">{error}</p>}
 
-          <form onSubmit={handleAuth} className="space-y-4">
-            {/* INLINED FORM CONTENT START */}
-
+          <form onSubmit={handleSubmit}>
             {isSignup && (
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block mb-1 text-sm font-medium text-gray-700"
-                >
-                  Full Name
-                </label>
+              <div className="mb-4">
+                <label className="block mb-2 text-sm font-medium text-gray-700">Full Name</label>
                 <input
-                  id="name"
                   type="text"
-                  required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
-                  placeholder="Your Name"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+                  required
                 />
               </div>
             )}
-
-            <div>
-              <label
-                htmlFor="email"
-                className="block mb-1 text-sm font-medium text-gray-700"
-              >
-                Email Address
-              </label>
+            <div className="mb-4">
+              <label className="block mb-2 text-sm font-medium text-gray-700">Email Address</label>
               <input
-                id="email"
                 type="email"
-                required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
-                placeholder="you@example.com"
-              />
-            </div>
-
-            {/* Password Field with Eye Toggle - FIXED POSITIONING */}
-            <div className="relative">
-              <label
-                htmlFor="password"
-                className="block mb-1 text-sm font-medium text-gray-700"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                type={showPassword ? "text" : "password"}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
                 required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 pr-10 transition duration-150 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500" // Added pr-10 for icon padding
-                placeholder="••••••••"
               />
-              {/* Eye Button: inset-y-0 sets top/bottom to 0, which makes it span the full height of the relative container. */}
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 focus:outline-none"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {/* Use a little bit of margin-top for slight vertical adjustment */}
-                {showPassword ? (
-                  <EyeOff className="w-5 h-5 mt-5" />
-                ) : (
-                  <Eye className="w-5 h-5 mt-5" />
-                )}
-              </button>
             </div>
-
-            {/* Confirm Password Field with Eye Toggle (only for Signup) - FIXED POSITIONING */}
-            {isSignup && (
+            <div className="mb-4">
+              <label className="block mb-2 text-sm font-medium text-gray-700">Password</label>
               <div className="relative">
-                <label
-                  htmlFor="confirmPassword"
-                  className="block mb-1 text-sm font-medium text-gray-700"
-                >
-                  Confirm Password
-                </label>
                 <input
-                  id="confirmPassword"
-                  type={showConfirmPassword ? "text" : "password"}
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
                   required
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full px-4 py-3 pr-10 transition duration-150 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500" // Added pr-10 for icon padding
-                  placeholder="••••••••"
                 />
-                {/* Eye Button */}
                 <button
                   type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 focus:outline-none"
-                  aria-label={
-                    showConfirmPassword
-                      ? "Hide confirm password"
-                      : "Show confirm password"
-                  }
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute text-gray-500 transform -translate-y-1/2 top-1/2 right-4"
                 >
-                  {/* Use a little bit of margin-top for slight vertical adjustment */}
-                  {showConfirmPassword ? (
-                    <EyeOff className="w-5 h-5 mt-5" />
-                  ) : (
-                    <Eye className="w-5 h-5 mt-5" />
-                  )}
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
-            )}
-
-            {!isSignup && (
-              <div className="flex items-center justify-between pt-2">
-                <div className="flex items-center">
+            </div>
+            {isSignup && (
+              <div className="mb-6">
+                <label className="block mb-2 text-sm font-medium text-gray-700">Confirm Password</label>
+                <div className="relative">
                   <input
-                    id="remember-me"
-                    name="remember-me"
-                    type="checkbox"
-                    className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+                    required
                   />
-                  <label
-                    htmlFor="remember-me"
-                    className="block ml-2 text-sm text-gray-900"
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute text-gray-500 transform -translate-y-1/2 top-1/2 right-4"
                   >
-                    Remember me
-                  </label>
+                    {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
                 </div>
-                <a
-                  href="#"
-                  className="text-sm font-medium text-green-600 hover:text-green-500"
-                >
-                  Forgot password?
-                </a>
+              </div>
+            )}
+            {!isSignup && (
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center">
+                  <input type="checkbox" className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500" />
+                  <label className="block ml-2 text-sm text-gray-900">Remember me</label>
+                </div>
+                <a href="#" className="text-sm font-medium text-green-600 hover:text-green-500">Forgot password?</a>
               </div>
             )}
 
@@ -305,55 +234,31 @@ export default function Login() {
                 "Sign In"
               )}
             </button>
-            {/* INLINED FORM CONTENT END */}
           </form>
 
-          {/* Divider */}
           <div className="relative mt-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 text-gray-500 bg-white">
-                Or connect with
-              </span>
+              <span className="px-2 text-gray-500 bg-white">Or connect with</span>
             </div>
           </div>
 
-          {/* Social Login Buttons (Google, Facebook, LinkedIn) */}
           <div className="grid grid-cols-3 gap-3 mt-6">
-            <button
-              type="button"
-              onClick={() => console.log("Google Auth")}
-              className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50"
-            >
+            <button type="button" onClick={() => console.log("Google Auth")} className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50">
               <FcGoogle size={20} />
             </button>
-            <button
-              type="button"
-              onClick={() => console.log("Facebook Auth")}
-              className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50"
-            >
+            <button type="button" onClick={() => console.log("Facebook Auth")} className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50">
               <FaFacebookF size={20} className="text-blue-600" />
             </button>
-            <button
-              type="button"
-              onClick={() => console.log("LinkedIn Auth")}
-              className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50"
-            >
+            <button type="button" onClick={() => console.log("LinkedIn Auth")} className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50">
               <FaLinkedinIn size={20} className="text-blue-700" />
             </button>
           </div>
 
           <p className="mt-8 text-xs text-center text-gray-500">
-            By continuing, you agree to our{" "}
-            <a
-              href="#"
-              className="font-medium text-green-600 hover:text-green-500"
-            >
-              Terms of Service
-            </a>
-            .
+            By continuing, you agree to our <a href="#" className="font-medium text-green-600 hover:text-green-500">Terms of Service</a>.
           </p>
         </motion.div>
       </div>

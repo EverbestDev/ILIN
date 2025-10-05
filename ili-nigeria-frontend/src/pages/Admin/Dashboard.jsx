@@ -151,7 +151,7 @@ const Dashboard = () => {
     };
 
     fetchDashboardData();
-  }, [BASE_URL]);
+  }, [BASE_URL, navigate]);
 
   // Process data for charts and snippets
  

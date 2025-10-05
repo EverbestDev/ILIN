@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   X,
   LayoutDashboard,
@@ -15,6 +15,20 @@ import DashboardFooter from "../components/Dashboard/DashboardFooter";
 const ClientLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    if (!token || role !== "client") {
+      navigate("/login");
+    }
+  }, [navigate]);
+
+  const handleClientLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    navigate("/login");
+  };
 
   const clientData = {
     brandName: "ILIN",
@@ -73,15 +87,10 @@ const ClientLayout = ({ children }) => {
     ],
   };
 
-  const handleClientLogout = () => {
-    console.log("Client Logout");
-    navigate("/login");
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/20 to-gray-100">
       {/* Fixed Navbar */}
-      <div className="fixed top-0 left-0 right-0 z-50">
+      <div className="fixed top-0 z-40 w-full">
         <DashboardNavbar
           onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
           brandName={clientData.brandName}
@@ -89,14 +98,14 @@ const ClientLayout = ({ children }) => {
           userName={clientData.userName}
           userEmail={clientData.userEmail}
           userRole={clientData.userRole}
-          showNotifications={clientData.showNotifications}
           unreadNotificationCount={clientData.unreadNotificationCount}
           notificationsList={clientData.notificationsList}
+          showNotifications={clientData.showNotifications}
           onLogout={handleClientLogout}
         />
       </div>
 
-      {/* Mobile Sidebar Overlay - FIXED: Lower z-index */}
+      {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-20 bg-black/50 lg:hidden"
@@ -104,7 +113,7 @@ const ClientLayout = ({ children }) => {
         />
       )}
 
-      {/* Fixed Sidebar Container - FIXED: z-30 above overlay */}
+      {/* Fixed Sidebar Container */}
       <div
         className={`fixed bottom-0 left-0 z-30 top-16 ${
           !sidebarOpen
@@ -119,7 +128,7 @@ const ClientLayout = ({ children }) => {
         />
       </div>
 
-      {/* Main Content - REMOVED z-index completely */}
+      {/* Main Content */}
       <main className="lg:ml-64 pt-16 flex flex-col min-h-[calc(100vh-4rem)]">
         <div className="flex-grow p-4 sm:p-6 lg:p-8">{children}</div>
 
@@ -129,7 +138,7 @@ const ClientLayout = ({ children }) => {
         />
       </main>
 
-      {/* Close button */}
+      {/* Mobile Close Button */}
       {sidebarOpen && (
         <button
           onClick={() => setSidebarOpen(false)}

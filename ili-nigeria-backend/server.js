@@ -17,6 +17,8 @@ import subscriberRoutes from "./routes/subscriber.js";
 import adminRoutes from "./routes/admin.js";
 import dashboardRoutes from "./routes/dashboard.js";
 import taskRouter from "./routes/task.js";
+import authRoutes from "./routes/auth.js";
+import { protect, restrictTo } from "./controllers/authController.js";
 
 //utils
 import { startTaskReminder } from "./utils/taskReminder.js";
@@ -53,9 +55,10 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/quotes", quoteRoutes);
 app.use("/api/subscribe", subscriberRoutes);
 
-app.use("/api/dashboard", dashboardRoutes);
-app.use("/api/admin", adminRoutes);
-app.use("/api/tasks", taskRouter);
+app.use("/api/auth", authRoutes);
+app.use("/api/dashboard", protect, restrictTo("admin"), dashboardRoutes);
+app.use("/api/admin", protect, restrictTo("admin"), adminRoutes);
+app.use("/api/tasks", protect, restrictTo("admin"), taskRouter);
 
 
 // Test route

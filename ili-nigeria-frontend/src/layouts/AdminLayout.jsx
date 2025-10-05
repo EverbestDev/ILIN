@@ -1,23 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DashboardNavbar from "../components/Dashboard/DashboardNavbar";
 import DashboardSidebar from "../components/Dashboard/DashboardSidebar";
 import DashboardFooter from "../components/Dashboard/DashboardFooter";
 
-const {
-  LayoutDashboard,
-  FileText,
-  Users,
-  Mail,
-  Calendar,
-  BarChart3,
-  Settings,
-} = DashboardSidebar.requiredIcons;
-
 const AdminLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    if (!token || role !== "admin") {
+      navigate("/login");
+    }
+  }, [navigate]);
+
+  const handleAdminLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    navigate("/login");
+  };
 
   const adminData = {
     brandName: "ILIN",
@@ -76,21 +80,8 @@ const AdminLayout = ({ children }) => {
         path: "/admin/contacts",
         badge: 5,
       },
-      {
-        id: "schedules",
-        label: "Schedules",
-        icon: Calendar,
-        path: "/admin/schedules",
-        badge: null,
-      },
     ],
     secondaryItems: [
-      {
-        id: "analytics",
-        label: "Analytics",
-        icon: BarChart3,
-        path: "/admin/analytics",
-      },
       {
         id: "settings",
         label: "Settings",
@@ -100,14 +91,10 @@ const AdminLayout = ({ children }) => {
     ],
   };
 
-  const handleAdminLogout = () => {
-    navigate("/login");
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/20 to-gray-100">
       {/* Fixed Navbar */}
-      <div className="fixed top-0 left-0 right-0 z-50">
+      <div className="fixed top-0 z-40 w-full">
         <DashboardNavbar
           onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
           brandName={adminData.brandName}
@@ -121,7 +108,7 @@ const AdminLayout = ({ children }) => {
         />
       </div>
 
-      {/* Mobile Sidebar Overlay - FIXED: Lower z-index */}
+      {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-20 bg-black/50 lg:hidden"
@@ -129,7 +116,7 @@ const AdminLayout = ({ children }) => {
         />
       )}
 
-      {/* Fixed Sidebar Container - FIXED: z-30 above overlay + pointer-events */}
+      {/* Fixed Sidebar Container */}
       <div
         className={`fixed bottom-0 left-0 z-30 top-16 ${
           !sidebarOpen
@@ -144,7 +131,7 @@ const AdminLayout = ({ children }) => {
         />
       </div>
 
-      {/* Main Content - REMOVED z-index completely */}
+      {/* Main Content */}
       <main className="lg:ml-64 pt-16 flex flex-col min-h-[calc(100vh-4rem)]">
         <div className="flex-grow p-4 sm:p-6 lg:p-8">{children}</div>
 
