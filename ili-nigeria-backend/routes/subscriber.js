@@ -1,5 +1,8 @@
 import express from "express";
-import { subscribe } from "../controllers/subscriberController.js";
+import {
+  subscribe,
+  getSubscribers,
+} from "../controllers/subscriberController.js";
 
 const router = express.Router();
 
