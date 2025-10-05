@@ -13,7 +13,7 @@ const carouselSlides = [
   },
   {
     title: "Our Vision",
-    text: "A connected, multilingual world. To be Africa’s leading language services provider, empowering global commerce and understanding.",
+    text: "A connected, multilingual world. To be Africa's leading language services provider, empowering global commerce and understanding.",
   },
   {
     title: "Client Commitment",
@@ -48,7 +48,9 @@ const AuthSidebar = ({ activeSlide }) => {
           {carouselSlides.map((_, index) => (
             <div
               key={index}
-              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${activeSlide === index ? "bg-white w-6" : "bg-white/50"}`}
+              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                activeSlide === index ? "bg-white w-6" : "bg-white/50"
+              }`}
             />
           ))}
         </div>
@@ -96,10 +98,11 @@ export default function Login() {
       if (isSignup) {
         if (password !== confirmPassword) {
           setError("Passwords do not match");
+          setLoading(false);
           return;
         }
         endpoint = "/api/auth/register";
-        body = { name, email, password, role: "client" }; // Default to client for signup
+        body = { name, email, password, role: "client" };
       }
 
       const res = await fetch("https://ilin-backend.onrender.com" + endpoint, {
@@ -114,11 +117,16 @@ export default function Login() {
         if (isSignup) {
           setError("Account created. Please log in.");
           setIsSignup(false);
+          setName("");
+          setPassword("");
+          setConfirmPassword("");
         } else {
           localStorage.setItem("token", data.token);
           localStorage.setItem("role", data.role);
-          console.log("JWT Token:", data.token); // Log token for debugging
-          navigate(data.role === "admin" ? "/admin/dashboard" : "/client/dashboard");
+          console.log("JWT Token:", data.token);
+          navigate(
+            data.role === "admin" ? "/admin/dashboard" : "/client/dashboard"
+          );
         }
       } else {
         setError(data.message);
@@ -136,88 +144,163 @@ export default function Login() {
       <AuthSidebar activeSlide={activeSlide} />
 
       {/* Form Section */}
-      <div className="relative flex items-center justify-center w-full p-8 lg:w-2/3 xl:w-3/5">
+      <div className="flex flex-col items-center justify-center w-full p-6 sm:p-12 lg:w-2/3 xl:w-3/5 bg-gray-50">
         <motion.div
-          className="w-full max-w-md"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
+          key={isSignup ? "signup" : "login"}
+          className="w-full max-w-sm p-8 bg-white border border-gray-100 shadow-2xl sm:max-w-md sm:p-10 rounded-xl"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
         >
-          <h2 className="mb-6 text-3xl font-bold text-gray-900">
-            {isSignup ? "Create Account" : "Welcome Back"}
-          </h2>
-          {error && <p className="mb-4 text-red-600">{error}</p>}
+          {/* Toggle Buttons */}
+          <div className="flex justify-center mb-8">
+            <button
+              type="button"
+              onClick={() => setIsSignup(false)}
+              className={`px-6 py-2 text-xl font-bold border-b-2 transition-colors ${
+                !isSignup
+                  ? "border-green-600 text-green-700"
+                  : "border-transparent text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsSignup(true)}
+              className={`px-6 py-2 text-xl font-bold border-b-2 transition-colors ${
+                isSignup
+                  ? "border-green-600 text-green-700"
+                  : "border-transparent text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              Sign Up
+            </button>
+          </div>
+          {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="space-y-4">
             {isSignup && (
-              <div className="mb-4">
-                <label className="block mb-2 text-sm font-medium text-gray-700">Full Name</label>
+              <div>
+                <label
+                  htmlFor="name"
+                  className="block mb-1 text-sm font-medium text-gray-700"
+                >
+                  Full Name
+                </label>
                 <input
+                  id="name"
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  placeholder="Your Name"
                   required
                 />
               </div>
             )}
-            <div className="mb-4">
-              <label className="block mb-2 text-sm font-medium text-gray-700">Email Address</label>
+            <div>
+              <label
+                htmlFor="email"
+                className="block mb-1 text-sm font-medium text-gray-700"
+              >
+                Email Address
+              </label>
               <input
+                id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                placeholder="you@example.com"
                 required
               />
             </div>
-            <div className="mb-4">
-              <label className="block mb-2 text-sm font-medium text-gray-700">Password</label>
+            <div className="relative">
+              <label
+                htmlFor="password"
+                className="block mb-1 text-sm font-medium text-gray-700"
+              >
+                Password
+              </label>
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 pr-10 transition duration-150 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                placeholder="••••••••"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 focus:outline-none"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <EyeOff className="w-5 h-5 mt-6" />
+                ) : (
+                  <Eye className="w-5 h-5 mt-6" />
+                )}
+              </button>
+            </div>
+            {isSignup && (
               <div className="relative">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block mb-1 text-sm font-medium text-gray-700"
+                >
+                  Confirm Password
+                </label>
                 <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full px-4 py-3 pr-10 transition duration-150 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  placeholder="••••••••"
                   required
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute text-gray-500 transform -translate-y-1/2 top-1/2 right-4"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 focus:outline-none"
+                  aria-label={
+                    showConfirmPassword
+                      ? "Hide confirm password"
+                      : "Show confirm password"
+                  }
                 >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {showConfirmPassword ? (
+                    <EyeOff className="w-5 h-5 mt-6" />
+                  ) : (
+                    <Eye className="w-5 h-5 mt-6" />
+                  )}
                 </button>
-              </div>
-            </div>
-            {isSignup && (
-              <div className="mb-6">
-                <label className="block mb-2 text-sm font-medium text-gray-700">Confirm Password</label>
-                <div className="relative">
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute text-gray-500 transform -translate-y-1/2 top-1/2 right-4"
-                  >
-                    {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                  </button>
-                </div>
               </div>
             )}
             {!isSignup && (
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between pt-2">
                 <div className="flex items-center">
-                  <input type="checkbox" className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500" />
-                  <label className="block ml-2 text-sm text-gray-900">Remember me</label>
+                  <input
+                    id="remember-me"
+                    type="checkbox"
+                    className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                  />
+                  <label
+                    htmlFor="remember-me"
+                    className="block ml-2 text-sm text-gray-900"
+                  >
+                    Remember me
+                  </label>
                 </div>
-                <a href="#" className="text-sm font-medium text-green-600 hover:text-green-500">Forgot password?</a>
+                <a
+                  href="#"
+                  className="text-sm font-medium text-green-600 hover:text-green-500"
+                >
+                  Forgot password?
+                </a>
               </div>
             )}
 
@@ -241,24 +324,45 @@ export default function Login() {
               <div className="w-full border-t border-gray-300"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 text-gray-500 bg-white">Or connect with</span>
+              <span className="px-2 text-gray-500 bg-white">
+                Or connect with
+              </span>
             </div>
           </div>
 
           <div className="grid grid-cols-3 gap-3 mt-6">
-            <button type="button" onClick={() => console.log("Google Auth")} className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50">
+            <button
+              type="button"
+              onClick={() => console.log("Google Auth")}
+              className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
               <FcGoogle size={20} />
             </button>
-            <button type="button" onClick={() => console.log("Facebook Auth")} className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50">
+            <button
+              type="button"
+              onClick={() => console.log("Facebook Auth")}
+              className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
               <FaFacebookF size={20} className="text-blue-600" />
             </button>
-            <button type="button" onClick={() => console.log("LinkedIn Auth")} className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50">
+            <button
+              type="button"
+              onClick={() => console.log("LinkedIn Auth")}
+              className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
               <FaLinkedinIn size={20} className="text-blue-700" />
             </button>
           </div>
 
           <p className="mt-8 text-xs text-center text-gray-500">
-            By continuing, you agree to our <a href="#" className="font-medium text-green-600 hover:text-green-500">Terms of Service</a>.
+            By continuing, you agree to our{" "}
+            <a
+              href="#"
+              className="font-medium text-green-600 hover:text-green-500"
+            >
+              Terms of Service
+            </a>
+            .
           </p>
         </motion.div>
       </div>
