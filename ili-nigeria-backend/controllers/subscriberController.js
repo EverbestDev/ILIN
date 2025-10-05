@@ -91,7 +91,7 @@ export const subscribe = async (req, res) => {
 export const getSubscribers = async (req, res) => {
   try {
     const subscribers = await Subscriber.find().sort({ createdAt: -1 });
-    res.json(subscribers);
+    res.status(200).json(subscribers);
   } catch (error) {
     console.error("Failed to fetch subscribers:", error);
     res.status(500).json({ message: "Failed to fetch subscribers" });
