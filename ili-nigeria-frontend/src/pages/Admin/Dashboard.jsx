@@ -68,9 +68,15 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
+        const token = localStorage.getItem("token"); // Get token from localStorage
+        const headers = { "Content-Type": "application/json" };
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+        }
+
         const [statsRes, quotesRes, subscribersRes, contactsRes, tasksRes] =
           await Promise.all([
-            fetch(`${BASE_URL}/api/admin/overview`).then((res) =>
+            fetch(`${BASE_URL}/api/admin/overview`, { headers }).then((res) =>
               res.ok
                 ? res.json()
                 : Promise.reject(new Error("Failed to fetch stats"))
@@ -90,7 +96,7 @@ const Dashboard = () => {
                 ? res.json()
                 : Promise.reject(new Error("Failed to fetch contacts"))
             ),
-            fetch(`${BASE_URL}/api/tasks`).then((res) =>
+            fetch(`${BASE_URL}/api/tasks`, { headers }).then((res) =>
               res.ok
                 ? res.json()
                 : Promise.reject(new Error("Failed to fetch tasks"))
@@ -154,7 +160,7 @@ const Dashboard = () => {
     };
 
     fetchDashboardData();
-  }, [BASE_URL, navigate]);
+  }, [BASE_URL]);
 
   // Process data for charts and snippets
  
