@@ -10,6 +10,7 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   CheckCircle,
+  Trash2
 } from "lucide-react";
 import { Line, Pie, Bar } from "react-chartjs-2";
 
@@ -24,6 +25,7 @@ const Dashboard = () => {
     quotes: { total: 0, change: 0, trend: "up" },
     subscribers: { total: 0, change: 0, trend: "up" },
     contacts: { total: 0, change: 0, trend: "up" },
+    tasks: { total: 0, pending: 0, change: 0, trend: "up" },
   });
   const [rawTasks, setRawTasks] = useState([]);
   const [rawQuotes, setRawQuotes] = useState([]);
@@ -111,6 +113,12 @@ const Dashboard = () => {
           },
           contacts: statsRes.contacts || {
             total: contactsRes.length,
+            change: 0,
+            trend: "up",
+          },
+          tasks: statsRes.tasks || {
+            total: tasksRes.length,
+            pending: tasksRes.filter((t) => !t.completed).length,
             change: 0,
             trend: "up",
           },
@@ -427,6 +435,7 @@ const Dashboard = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {/* Quotes Card */}
         <div className="p-6 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-xl">
@@ -450,6 +459,7 @@ const Dashboard = () => {
           </h3>
           <p className="mt-1 text-sm text-gray-600">Quote Requests</p>
         </div>
+        {/* Subscribers Card */}
         <div className="p-6 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-xl">
@@ -475,6 +485,7 @@ const Dashboard = () => {
           </h3>
           <p className="mt-1 text-sm text-gray-600">Subscribers</p>
         </div>
+        {/* Contacts Card */}
         <div className="p-6 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-xl">
@@ -499,6 +510,30 @@ const Dashboard = () => {
             {stats.contacts.total}
           </h3>
           <p className="mt-1 text-sm text-gray-600">Contact Messages</p>
+        </div>
+        {/* Tasks Card */}
+        <div className="p-6 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-center w-12 h-12 bg-orange-100 rounded-xl">
+              <Award className="w-6 h-6 text-orange-600" />
+            </div>
+            <span
+              className={`flex items-center gap-1 text-sm font-medium ${
+                stats.tasks.trend === "up" ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {stats.tasks.trend === "up" ? (
+                <ArrowUpRight className="w-4 h-4" />
+              ) : (
+                <ArrowDownRight className="w-4 h-4" />
+              )}
+              {Math.abs(stats.tasks.change)}%
+            </span>
+          </div>
+          <h3 className="text-2xl font-bold text-gray-900">
+            {stats.tasks.pending} / {stats.tasks.total}
+          </h3>
+          <p className="mt-1 text-sm text-gray-600">Pending / Total Tasks</p>
         </div>
       </div>
 
@@ -738,11 +773,12 @@ const Dashboard = () => {
             const task = e.target.task.value;
             const priority = e.target.priority.value;
             const due = e.target.due.value;
+            const email = e.target.email.value;
             try {
               const res = await fetch(`${BASE_URL}/api/tasks`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ task, priority, due }),
+                body: JSON.stringify({ task, priority, due, email }),
               });
               if (res.ok) {
                 const { task: newTask } = await res.json();
@@ -776,6 +812,12 @@ const Dashboard = () => {
             className="px-3 py-2 border border-gray-300 rounded-lg"
             required
           />
+          <input
+            name="email"
+            type="email"
+            placeholder="Recipient email"
+            className="px-3 py-2 border border-gray-300 rounded-lg"
+          />
           <button
             type="submit"
             className="px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-700"
@@ -784,6 +826,7 @@ const Dashboard = () => {
           </button>
         </form>
       </div>
+      {/* Urgent Tasks */}
       {/* Urgent Tasks */}
       <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
         <div className="flex items-center justify-between mb-6">
@@ -848,6 +891,28 @@ const Dashboard = () => {
                     </span>
                   </div>
                 </div>
+                <button
+                  onClick={async () => {
+                    try {
+                      const res = await fetch(
+                        `${BASE_URL}/api/tasks/${task._id}`,
+                        {
+                          method: "DELETE",
+                        }
+                      );
+                      if (res.ok) {
+                        setRawTasks((prev) =>
+                          prev.filter((t) => t._id !== task._id)
+                        );
+                      }
+                    } catch (error) {
+                      console.error("Failed to delete task:", error);
+                    }
+                  }}
+                  className="text-red-600 hover:text-red-700"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </button>
               </div>
             ))
           ) : (

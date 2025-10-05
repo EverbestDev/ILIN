@@ -8,8 +8,9 @@ const taskSchema = new mongoose.Schema({
     enum: ["high", "medium", "low"],
     default: "medium",
   },
-  due: { type: String, required: true }, // Store as string (e.g., "2025-10-06 15:00")
+  due: { type: String, required: true },
   completed: { type: Boolean, default: false },
+  email: { type: String }, // Recipient for reminders
   createdAt: { type: Date, default: Date.now },
 });
 

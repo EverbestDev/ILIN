@@ -18,6 +18,9 @@ import adminRoutes from "./routes/admin.js";
 import dashboardRoutes from "./routes/dashboard.js";
 import taskRouter from "./routes/task.js";
 
+//utils
+import { startTaskReminder } from "./utils/taskReminder.js";
+
 
 
 const app = express();
@@ -62,3 +65,5 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+
