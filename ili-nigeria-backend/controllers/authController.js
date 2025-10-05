@@ -1,6 +1,6 @@
 // src/controllers/authController.js
 import jwt from "jsonwebtoken";
-import User from "../models/User.js"; // Points to src/models/User.js
+import User from "../models/User.js"; // Note: You named it Users.js
 
 export const register = async (req, res) => {
   try {
@@ -37,7 +37,7 @@ export const login = async (req, res) => {
       }
     );
     console.log("User logged in:", email, user.role);
-    res.json({ token, role: user.role });
+    res.status(200).json({ token, role: user.role }); // Ensure token is sent
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ message: "Failed to login" });
