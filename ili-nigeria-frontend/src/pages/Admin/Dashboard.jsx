@@ -18,7 +18,7 @@ import {
 const Dashboard = () => {
   const BASE_URL =
     "https://ilin-backend.onrender.com" || "http://localhost:5000";
-    
+
   const [loading, setLoading] = useState(true);
 
   const [stats, setStats] = useState({

@@ -64,15 +64,10 @@ export const getOverviewStats = async (req, res) => {
         change: Math.abs(contactChange),
         trend: contactChange >= 0 ? "up" : "down",
       },
-      subscribers: {
+      subscribe: {
         total: totalSubscribers,
         change: Math.abs(subscriberChange),
         trend: subscriberChange >= 0 ? "up" : "down",
-      },
-      schedules: {
-        total: 34, // still mock (no collection yet)
-        change: 15.7,
-        trend: "up",
       },
     };
 
