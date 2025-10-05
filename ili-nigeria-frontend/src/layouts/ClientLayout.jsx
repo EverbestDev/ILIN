@@ -7,7 +7,6 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
 import DashboardNavbar from "../components/Dashboard/DashboardNavbar";
 import DashboardSidebar from "../components/Dashboard/DashboardSidebar";
 import DashboardFooter from "../components/Dashboard/DashboardFooter";
@@ -89,7 +88,6 @@ const ClientLayout = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/20 to-gray-100">
-      {/* Fixed Navbar */}
       <div className="fixed top-0 z-40 w-full">
         <DashboardNavbar
           onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
@@ -105,7 +103,6 @@ const ClientLayout = ({ children }) => {
         />
       </div>
 
-      {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-20 bg-black/50 lg:hidden"
@@ -113,7 +110,6 @@ const ClientLayout = ({ children }) => {
         />
       )}
 
-      {/* Fixed Sidebar Container */}
       <div
         className={`fixed bottom-0 left-0 z-30 top-16 ${
           !sidebarOpen
@@ -128,7 +124,6 @@ const ClientLayout = ({ children }) => {
         />
       </div>
 
-      {/* Main Content */}
       <main className="lg:ml-64 pt-16 flex flex-col min-h-[calc(100vh-4rem)]">
         <div className="flex-grow p-4 sm:p-6 lg:p-8">{children}</div>
 
@@ -138,7 +133,6 @@ const ClientLayout = ({ children }) => {
         />
       </main>
 
-      {/* Mobile Close Button */}
       {sidebarOpen && (
         <button
           onClick={() => setSidebarOpen(false)}

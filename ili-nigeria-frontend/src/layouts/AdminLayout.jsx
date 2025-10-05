@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { X } from "lucide-react";
+import {
+  X,
+  LayoutDashboard,
+  FileText,
+  Users,
+  Mail,
+  Settings,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DashboardNavbar from "../components/Dashboard/DashboardNavbar";
 import DashboardSidebar from "../components/Dashboard/DashboardSidebar";
@@ -93,7 +100,6 @@ const AdminLayout = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/20 to-gray-100">
-      {/* Fixed Navbar */}
       <div className="fixed top-0 z-40 w-full">
         <DashboardNavbar
           onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
@@ -108,7 +114,6 @@ const AdminLayout = ({ children }) => {
         />
       </div>
 
-      {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-20 bg-black/50 lg:hidden"
@@ -116,7 +121,6 @@ const AdminLayout = ({ children }) => {
         />
       )}
 
-      {/* Fixed Sidebar Container */}
       <div
         className={`fixed bottom-0 left-0 z-30 top-16 ${
           !sidebarOpen
@@ -131,7 +135,6 @@ const AdminLayout = ({ children }) => {
         />
       </div>
 
-      {/* Main Content */}
       <main className="lg:ml-64 pt-16 flex flex-col min-h-[calc(100vh-4rem)]">
         <div className="flex-grow p-4 sm:p-6 lg:p-8">{children}</div>
 
@@ -141,7 +144,6 @@ const AdminLayout = ({ children }) => {
         />
       </main>
 
-      {/* Mobile Close Button */}
       {sidebarOpen && (
         <button
           onClick={() => setSidebarOpen(false)}

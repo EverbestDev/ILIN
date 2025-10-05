@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FileText,
   Users,
@@ -15,6 +16,8 @@ import {
 import { Line, Pie, Bar } from "react-chartjs-2";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  
   const BASE_URL =
     "https://ilin-backend.onrender.com" || "http://localhost:5000";
 
