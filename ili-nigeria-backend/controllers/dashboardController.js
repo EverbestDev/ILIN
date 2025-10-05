@@ -2,50 +2,38 @@ import Quote from "../models/Quote.js";
 import Subscriber from "../models/Subscriber.js";
 import Contact from "../models/Contact.js";
 
+// src/controllers/dashboardController.js
 export const getAdminOverview = async (req, res) => {
   try {
     const now = new Date();
-    const lastMonth = new Date();
-    lastMonth.setMonth(now.getMonth() - 1);
+    const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+    const prevMonthStart = new Date(now.getFullYear(), now.getMonth() - 2, 1);
+    const prevMonthEnd = new Date(now.getFullYear(), now.getMonth() - 1, 0);
 
     const totalQuotes = await Quote.countDocuments();
-    const totalSubscribers = await Subscriber.countDocuments();
-    const totalContacts = await Contact.countDocuments();
+    const totalSubscribers = await Subscriber.countDocuments();  // This should now be 2
+    const totalContacts = await Contact.countDocuments();  // This should be >0 if 20
 
-    const quotesLastMonth = await Quote.countDocuments({
-      createdAt: { $gte: lastMonth },
-    });
-    const subscribersLastMonth = await Subscriber.countDocuments({
-      createdAt: { $gte: lastMonth },
-    });
-    const contactsLastMonth = await Contact.countDocuments({
-      createdAt: { $gte: lastMonth },
-    });
+    const quotesLastMonth = await Quote.countDocuments({ createdAt: { $gte: lastMonthStart, $lte: lastMonthEnd } });
+    const subscribersLastMonth = await Subscriber.countDocuments({ createdAt: { $gte: lastMonthStart, $lte: lastMonthEnd } });
+    const contactsLastMonth = await Contact.countDocuments({ createdAt: { $gte: lastMonthStart, $lte: lastMonthEnd } });
 
-    const calcChange = (current, prev) =>
-      prev === 0 ? 100 : (((current - prev) / prev) * 100).toFixed(1);
+    const quotesPrevMonth = await Quote.countDocuments({ createdAt: { $gte: prevMonthStart, $lte: prevMonthEnd } });
+    const subscribersPrevMonth = await Subscriber.countDocuments({ createdAt: { $gte: prevMonthStart, $lte: prevMonthEnd } });
+    const contactsPrevMonth = await Contact.countDocuments({ createdAt: { $gte: prevMonthStart, $lte: prevMonthEnd } });
+
+    const calcChange = (current, prev) => prev === 0 ? (current > 0 ? 100 : 0) : parseFloat(((current - prev) / prev * 100).toFixed(1));
 
     res.json({
-      quotes: {
-        total: totalQuotes,
-        change: calcChange(totalQuotes, quotesLastMonth),
-        trend: totalQuotes >= quotesLastMonth ? "up" : "down",
-      },
-      subscribers: {
-        total: totalSubscribers,
-        change: calcChange(totalSubscribers, subscribersLastMonth),
-        trend: totalSubscribers >= subscribersLastMonth ? "up" : "down",
-      },
-      contacts: {
-        total: totalContacts,
-        change: calcChange(totalContacts, contactsLastMonth),
-        trend: totalContacts >= contactsLastMonth ? "up" : "down",
-      },
+      quotes: { total: totalQuotes, change: calcChange(quotesLastMonth, quotesPrevMonth), trend: quotesLastMonth >= quotesPrevMonth ? "up" : "down" },
+      subscribers: { total: totalSubscribers, change: calcChange(subscribersLastMonth, subscribersPrevMonth), trend: subscribersLastMonth >= subscribersPrevMonth ? "up" : "down" },
+      contacts: { total: totalContacts, change: calcChange(contactsLastMonth, contactsPrevMonth), trend: contactsLastMonth >= contactsPrevMonth ? "up" : "down" },
       lastUpdated: now,
     });
   } catch (err) {
-    console.error("Dashboard overview error:", err);
-    res.status(500).json({ message: "Failed to fetch admin overview" });
+    console.error("Overview error:", err);
+    res.status(500).json({ message: "Failed to fetch overview" });
   }
 };
 

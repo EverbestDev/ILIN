@@ -11,16 +11,11 @@ import {
   ArrowDownRight,
   CheckCircle,
 } from "lucide-react";
-
-// Import Chart.js components and register them
 import { Line, Pie, Bar } from "react-chartjs-2";
 
-
 const Dashboard = () => {
-  // BASE_URL definition - keeping your original logic for fallbacks
   const BASE_URL =
-    "https://ilin-backend.onrender.com" ||
-    "http://localhost:5000";
+    "https://ilin-backend.onrender.com" || "http://localhost:5000";
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -69,40 +64,51 @@ const Dashboard = () => {
       try {
         const [statsRes, quotesRes, subscribersRes, contactsRes] =
           await Promise.all([
-            fetch(`${BASE_URL}/api/admin/overview`).then(
-              (res) =>
-                res.ok
-                  ? res.json()
-                  : Promise.reject(new Error("Failed to fetch stats")) // Changed to Error object
+            fetch(`${BASE_URL}/api/admin/overview`).then((res) =>
+              res.ok
+                ? res.json()
+                : Promise.reject(new Error("Failed to fetch stats"))
             ),
-            fetch(`${BASE_URL}/api/quotes`).then(
-              (res) =>
-                res.ok
-                  ? res.json()
-                  : Promise.reject(new Error("Failed to fetch quotes")) // Changed to Error object
+            fetch(`${BASE_URL}/api/quotes`).then((res) =>
+              res.ok
+                ? res.json()
+                : Promise.reject(new Error("Failed to fetch quotes"))
             ),
-            fetch(`${BASE_URL}/api/subscribe`).then(
-              (res) =>
-                res.ok
-                  ? res.json()
-                  : Promise.reject(new Error("Failed to fetch subscribers")) // Changed to Error object
+            fetch(`${BASE_URL}/api/subscribe`).then((res) =>
+              res.ok
+                ? res.json()
+                : Promise.reject(new Error("Failed to fetch subscribers"))
             ),
-            fetch(`${BASE_URL}/api/contact`).then(
-              (res) =>
-                res.ok
-                  ? res.json()
-                  : Promise.reject(new Error("Failed to fetch contacts")) // Changed to Error object
+            fetch(`${BASE_URL}/api/contact`).then((res) =>
+              res.ok
+                ? res.json()
+                : Promise.reject(new Error("Failed to fetch contacts"))
             ),
           ]);
 
+        // Log raw data for debugging
+        console.log("Stats Response:", statsRes);
+        console.log("Quotes:", quotesRes.length);
+        console.log("Subscribers:", subscribersRes.length);
+        console.log("Contacts:", contactsRes.length);
+
+        // Use raw data lengths as fallback for stats
         setStats({
-          quotes: statsRes.quotes || { total: 0, change: 0, trend: "up" },
-          subscribers: statsRes.subscribers || {
-            total: 0,
+          quotes: statsRes.quotes || {
+            total: quotesRes.length,
             change: 0,
             trend: "up",
-          }, // Keep as is based on your response
-          contacts: statsRes.contacts || { total: 0, change: 0, trend: "up" },
+          },
+          subscribers: statsRes.subscribers || {
+            total: subscribersRes.length, // Fix: Use rawSubscribers length
+            change: 0,
+            trend: "up",
+          },
+          contacts: statsRes.contacts || {
+            total: contactsRes.length, // Fix: Use rawContacts length
+            change: 0,
+            trend: "up",
+          },
         });
 
         setRawQuotes(
@@ -129,26 +135,117 @@ const Dashboard = () => {
     };
 
     fetchDashboardData();
-  }, [BASE_URL]); // Added BASE_URL to dependency array for clarity
+  }, [BASE_URL]);
 
-  // Process data for charts and snippets when timeRange or raw data changes
+  // Process data for charts and snippets
+  // useEffect(() => {
+  //   // Log for debugging
+  //   console.log("Raw Quotes:", rawQuotes.length, rawQuotes);
+  //   console.log("Raw Subscribers:", rawSubscribers.length, rawSubscribers);
+  //   console.log("Raw Contacts:", rawContacts.length, rawContacts);
+
+  //   const startDate = getDateRange();
+
+  //   // Filter data (relaxed filtering for contacts)
+  //   const filteredQuotes = rawQuotes.filter(
+  //     (q) => new Date(q.createdAt) >= startDate
+  //   );
+  //   const filteredSubscribers = rawSubscribers.filter(
+  //     (s) => new Date(s.createdAt) >= startDate
+  //   );
+  //   const filteredContacts = rawContacts.filter(
+  //     (c) => new Date(c.createdAt) >= startDate
+  //   );
+
+  //   console.log("Filtered Quotes:", filteredQuotes.length);
+  //   console.log("Filtered Subscribers:", filteredSubscribers.length);
+  //   console.log("Filtered Contacts:", filteredContacts.length);
+
+  //   // Recent snippets (top 4)
+  //   setRecentQuotes(filteredQuotes.slice(0, 4));
+  //   setRecentSubscribers(filteredSubscribers.slice(0, 4));
+  //   setRecentContacts(rawContacts.slice(0, 2));
+
+  //   // Monthly Quotes
+  //   const months = [
+  //     "Jan",
+  //     "Feb",
+  //     "Mar",
+  //     "Apr",
+  //     "May",
+  //     "Jun",
+  //     "Jul",
+  //     "Aug",
+  //     "Sep",
+  //     "Oct",
+  //     "Nov",
+  //     "Dec",
+  //   ];
+  //   const numMonths = timeRange === "year" ? 12 : 6;
+  //   const monthlyData = Array(numMonths)
+  //     .fill()
+  //     .map((_, i) => {
+  //       const date = new Date();
+  //       date.setMonth(date.getMonth() - (numMonths - 1 - i));
+  //       const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
+  //       const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+  //       const count = filteredQuotes.filter(
+  //         (q) =>
+  //           new Date(q.createdAt) >= monthStart &&
+  //           new Date(q.createdAt) <= monthEnd
+  //       ).length;
+  //       return { month: months[date.getMonth()], quotes: count };
+  //     });
+  //   setMonthlyQuotes(monthlyData);
+
+  //   // Service Distribution
+  //   const services = filteredQuotes.reduce((acc, q) => {
+  //     acc[q.service] = (acc[q.service] || 0) + 1;
+  //     return acc;
+  //   }, {});
+  //   const colors = ["#10b981", "#3b82f6", "#f59e0b", "#8b5cf6", "#ef4444"];
+  //   setServiceDistribution(
+  //     Object.entries(services).map(([name, value], i) => ({
+  //       name: name || "General Inquiry",
+  //       value,
+  //       color: colors[i % colors.length],
+  //     }))
+  //   );
+
+  //   // Weekly Quotes (always last 7 days, ignore timeRange)
+  //   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  //   const now = new Date();
+  //   const weeklyData = days.map((day, i) => {
+  //     const dayDate = new Date(
+  //       now.getFullYear(),
+  //       now.getMonth(),
+  //       now.getDate() - now.getDay() + i
+  //     );
+  //     const dayStart = new Date(
+  //       dayDate.getFullYear(),
+  //       dayDate.getMonth(),
+  //       dayDate.getDate()
+  //     );
+  //     const dayEnd = new Date(
+  //       dayDate.getFullYear(),
+  //       dayDate.getMonth(),
+  //       dayDate.getDate() + 1
+  //     );
+  //     const count = rawQuotes.filter(
+  //       (q) =>
+  //         new Date(q.createdAt) >= dayStart && new Date(q.createdAt) < dayEnd
+  //     ).length;
+  //     return { day, requests: count };
+  //   });
+  //   setWeeklyQuotes(weeklyData);
+  //   console.log("Weekly Quotes Data:", weeklyData);
+  // }, [timeRange, rawQuotes, rawSubscribers, rawContacts]);
+
   useEffect(() => {
-    // Check if raw data arrays are empty, and if not loading, to prevent errors on initial render
-    if (
-      !rawQuotes.length &&
-      !rawSubscribers.length &&
-      !rawContacts.length &&
-      !loading
-    ) {
-      // If no data, initialize chart data with empty arrays to prevent rendering issues
-      setMonthlyQuotes([]);
-      setServiceDistribution([]);
-      setWeeklyQuotes([]);
-      setRecentQuotes([]);
-      setRecentSubscribers([]);
-      setRecentContacts([]);
-      return;
-    }
+    // Log for debugging
+    console.log("Raw Quotes:", rawQuotes.length, rawQuotes);
+    console.log("Raw Subscribers:", rawSubscribers.length, rawSubscribers);
+    console.log("Raw Contacts:", rawContacts.length, rawContacts);
 
     const startDate = getDateRange();
 
@@ -163,10 +260,14 @@ const Dashboard = () => {
       (c) => new Date(c.createdAt) >= startDate
     );
 
-    // Recent snippets (top 4)
+    console.log("Filtered Quotes:", filteredQuotes.length, filteredQuotes);
+    console.log("Filtered Subscribers:", filteredSubscribers.length);
+    console.log("Filtered Contacts:", filteredContacts.length);
+
+    // Recent snippets (use rawContacts for contacts to show recent ones)
     setRecentQuotes(filteredQuotes.slice(0, 4));
     setRecentSubscribers(filteredSubscribers.slice(0, 4));
-    setRecentContacts(filteredContacts.slice(0, 4));
+    setRecentContacts(rawContacts.slice(0, 2)); // Fix: Use rawContacts to show newest
 
     // Monthly Quotes
     const months = [
@@ -214,31 +315,41 @@ const Dashboard = () => {
       }))
     );
 
-    // Weekly Quotes
-    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]; // Changed to start from Sunday
+    // Weekly Quotes (last 7 days from today, account for WAT timezone)
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const now = new Date();
     const weeklyData = Array(7)
       .fill()
       .map((_, i) => {
-        const date = new Date();
-        date.setDate(date.getDate() - date.getDay() + i); // Calculate day of the current week
+        const dayDate = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate() - (6 - i)
+        );
         const dayStart = new Date(
-          date.getFullYear(),
-          date.getMonth(),
-          date.getDate()
+          dayDate.getFullYear(),
+          dayDate.getMonth(),
+          dayDate.getDate()
         );
         const dayEnd = new Date(
-          date.getFullYear(),
-          date.getMonth(),
-          date.getDate() + 1
+          dayDate.getFullYear(),
+          dayDate.getMonth(),
+          dayDate.getDate() + 1
         );
-        const count = filteredQuotes.filter(
-          (q) =>
-            new Date(q.createdAt) >= dayStart && new Date(q.createdAt) < dayEnd
-        ).length;
-        return { day: days[dayStart.getDay()], requests: count }; // Use dayStart.getDay() to match 'days' array
+        // Adjust for WAT (UTC+1) by shifting dates to local time
+        const count = rawQuotes.filter((q) => {
+          const quoteDate = new Date(q.createdAt);
+          // Convert UTC to WAT for comparison
+          const quoteDateWAT = new Date(
+            quoteDate.getTime() + 1 * 60 * 60 * 1000
+          );
+          return quoteDateWAT >= dayStart && quoteDateWAT < dayEnd;
+        }).length;
+        return { day: days[dayDate.getDay()], requests: count };
       });
     setWeeklyQuotes(weeklyData);
-  }, [timeRange, rawQuotes, rawSubscribers, rawContacts, loading]); // Added 'loading' to dependencies
+    console.log("Weekly Quotes Data:", weeklyData);
+  }, [timeRange, rawQuotes, rawSubscribers, rawContacts]);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -296,8 +407,7 @@ const Dashboard = () => {
     );
   }
 
-  // --- Chart Data & Options (Moved outside JSX for clarity and to fix redlines) ---
-
+  // Chart data and options
   const monthlyQuotesChartData = {
     labels: monthlyQuotes.map((item) => item.month),
     datasets: [
@@ -367,15 +477,17 @@ const Dashboard = () => {
     maintainAspectRatio: false,
     scales: {
       x: { grid: { display: false }, ticks: { color: "#6b7280" } },
-      y: { grid: { color: "#e5e7eb" }, ticks: { color: "#6b7280" } },
+      y: {
+        grid: { color: "#e5e7eb" },
+        ticks: { color: "#6b7280" },
+        beginAtZero: true,
+      },
     },
     plugins: {
       legend: { display: false },
       tooltip: { backgroundColor: "#374151" },
     },
   };
-
-  // --- End Chart Data & Options ---
 
   return (
     <div className="p-6 space-y-6">
@@ -496,7 +608,6 @@ const Dashboard = () => {
             <TrendingUp className="w-5 h-5 text-green-600" />
           </div>
           <div style={{ height: 300 }}>
-            {/* Chart.js Line Chart */}
             <Line
               data={monthlyQuotesChartData}
               options={monthlyQuotesChartOptions}
@@ -514,7 +625,6 @@ const Dashboard = () => {
             <Globe className="w-5 h-5 text-green-600" />
           </div>
           <div style={{ height: 200 }}>
-            {/* Chart.js Pie Chart */}
             <Pie
               data={serviceDistributionChartData}
               options={serviceDistributionChartOptions}
@@ -556,7 +666,6 @@ const Dashboard = () => {
           <Clock className="w-5 h-5 text-green-600" />
         </div>
         <div style={{ height: 250 }}>
-          {/* Chart.js Bar Chart */}
           <Bar
             data={weeklyQuotesChartData}
             options={weeklyQuotesChartOptions}
