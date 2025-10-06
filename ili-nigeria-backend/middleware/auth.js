@@ -11,18 +11,18 @@ import admin from "firebase-admin";
 import connectDB from "../config/db.js";
 
 // Import routes
-import emailRoutes from "./routes/email.js";
-import contactRoutes from "./routes/contact.js";
-import quoteRoutes from "./routes/quote.js";
-import subscriberRoutes from "./routes/subscriber.js";
-import adminRoutes from "./routes/admin.js";
-import dashboardRoutes from "./routes/dashboard.js";
-import taskRouter from "./routes/task.js";
-import authRoutes from "./routes/auth.js";
-import { protect, restrictTo } from "./middleware/auth.js";
+import emailRoutes from "../routes/email.js";
+import contactRoutes from "../routes/contact.js";
+import quoteRoutes from "../routes/quote.js";
+import subscriberRoutes from "../routes/subscriber.js";
+import adminRoutes from "../routes/admin.js";
+import dashboardRoutes from "../routes/dashboard.js";
+import taskRouter from "../routes/task.js";
+import authRoutes from "../routes/auth.js";
+import { protect, restrictTo } from "../middleware/auth.js";
 
 // Utils
-import { startTaskReminder } from "./utils/taskReminder.js";
+import { startTaskReminder } from "../utils/taskReminder.js";
 
 // Initialize Firebase Admin SDK
 admin.initializeApp({
