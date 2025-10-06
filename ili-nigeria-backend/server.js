@@ -55,9 +55,6 @@ app.use(
   })
 );
 
-// Handle preflight requests explicitly
-app.options("*", cors());
-
 // Register routes
 app.use("/api", emailRoutes);
 app.use("/api/contact", contactRoutes);
