@@ -14,12 +14,11 @@ import {
   Trash2,
 } from "lucide-react";
 import { Line, Pie, Bar } from "react-chartjs-2";
+import { auth } from "../../utility/firebase";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-
-  const BASE_URL =
-    "https://ilin-backend.onrender.com" || "http://localhost:5000";
+  const BASE_URL = "https://ilin-nigeria-backend.onrender.com";
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -41,13 +40,16 @@ const Dashboard = () => {
   const [serviceDistribution, setServiceDistribution] = useState([]);
   const [weeklyQuotes, setWeeklyQuotes] = useState([]);
 
-  const getAuthHeaders = () => {
-    const token = localStorage.getItem("token");
-    const headers = { "Content-Type": "application/json" };
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
+  const getAuthHeaders = async () => {
+    const user = auth.currentUser;
+    if (!user) {
+      throw new Error("User not authenticated");
     }
-    return headers;
+    const idToken = await user.getIdToken();
+    return {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    };
   };
 
   const getDateRange = () => {
@@ -74,35 +76,60 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchDashboardData = async () => {
+      setLoading(true);
+      setError(null);
+
       try {
-        const headers = getAuthHeaders();
+        const user = auth.currentUser;
+        if (!user) {
+          setError("Please sign in to view the dashboard");
+          navigate("/login");
+          return;
+        }
+
+        const headers = await getAuthHeaders();
 
         const [statsRes, quotesRes, subscribersRes, contactsRes, tasksRes] =
           await Promise.all([
-            fetch(`${BASE_URL}/api/admin/overview`, { headers }).then((res) =>
+            fetch(`${BASE_URL}/api/admin/overview`, {
+              headers,
+              credentials: "include",
+            }).then((res) =>
               res.ok
                 ? res.json()
-                : Promise.reject(new Error("Failed to fetch stats"))
+                : Promise.reject(new Error(`Failed to fetch stats: ${res.status}`))
             ),
-            fetch(`${BASE_URL}/api/quotes`).then((res) =>
+            fetch(`${BASE_URL}/api/quotes`, {
+              headers,
+              credentials: "include",
+            }).then((res) =>
               res.ok
                 ? res.json()
-                : Promise.reject(new Error("Failed to fetch quotes"))
+                : Promise.reject(new Error(`Failed to fetch quotes: ${res.status}`))
             ),
-            fetch(`${BASE_URL}/api/subscribe`).then((res) =>
+            fetch(`${BASE_URL}/api/subscribe`, {
+              headers,
+              credentials: "include",
+            }).then((res) =>
               res.ok
                 ? res.json()
-                : Promise.reject(new Error("Failed to fetch subscribers"))
+                : Promise.reject(new Error(`Failed to fetch subscribers: ${res.status}`))
             ),
-            fetch(`${BASE_URL}/api/contact`).then((res) =>
+            fetch(`${BASE_URL}/api/contact`, {
+              headers,
+              credentials: "include",
+            }).then((res) =>
               res.ok
                 ? res.json()
-                : Promise.reject(new Error("Failed to fetch contacts"))
+                : Promise.reject(new Error(`Failed to fetch contacts: ${res.status}`))
             ),
-            fetch(`${BASE_URL}/api/tasks`, { headers }).then((res) =>
+            fetch(`${BASE_URL}/api/tasks`, {
+              headers,
+              credentials: "include",
+            }).then((res) =>
               res.ok
                 ? res.json()
-                : Promise.reject(new Error("Failed to fetch tasks"))
+                : Promise.reject(new Error(`Failed to fetch tasks: ${res.status}`))
             ),
           ]);
 
@@ -150,14 +177,17 @@ const Dashboard = () => {
         );
       } catch (err) {
         console.error("Error loading dashboard data:", err);
-        setError("Failed to load some data. Please try again later.");
+        setError(err.message || "Failed to load dashboard data.");
+        if (err.message.includes("401") || err.message.includes("403")) {
+          navigate("/login");
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchDashboardData();
-  }, [BASE_URL]);
+  }, [navigate]);
 
   useEffect(() => {
     const startDate = getDateRange();
@@ -279,9 +309,11 @@ const Dashboard = () => {
     const email = e.target.email.value;
 
     try {
+      const headers = await getAuthHeaders();
       const res = await fetch(`${BASE_URL}/api/tasks`, {
         method: "POST",
-        headers: getAuthHeaders(),
+        headers,
+        credentials: "include",
         body: JSON.stringify({ task, priority, due, email }),
       });
 
@@ -299,19 +331,24 @@ const Dashboard = () => {
         e.target.reset();
       } else {
         const errorData = await res.json();
-        setError(errorData.message || "Failed to create task");
+        setError(errorData.message || `Failed to create task: ${res.status}`);
       }
     } catch (error) {
       console.error("Failed to create task:", error);
-      setError("Failed to create task. Please try again.");
+      setError(error.message || "Failed to create task. Please try again.");
+      if (error.message.includes("401") || error.message.includes("403")) {
+        navigate("/login");
+      }
     }
   };
 
   const handleToggleTask = async (taskId, currentStatus) => {
     try {
+      const headers = await getAuthHeaders();
       const res = await fetch(`${BASE_URL}/api/tasks/${taskId}`, {
         method: "PUT",
-        headers: getAuthHeaders(),
+        headers,
+        credentials: "include",
         body: JSON.stringify({ completed: !currentStatus }),
       });
 
@@ -331,19 +368,24 @@ const Dashboard = () => {
           },
         }));
       } else {
-        setError("Failed to update task");
+        setError(`Failed to update task: ${res.status}`);
       }
     } catch (error) {
       console.error("Failed to update task:", error);
-      setError("Failed to update task. Please try again.");
+      setError(error.message || "Failed to update task. Please try again.");
+      if (error.message.includes("401") || error.message.includes("403")) {
+        navigate("/login");
+      }
     }
   };
 
   const handleDeleteTask = async (taskId, isCompleted) => {
     try {
+      const headers = await getAuthHeaders();
       const res = await fetch(`${BASE_URL}/api/tasks/${taskId}`, {
         method: "DELETE",
-        headers: getAuthHeaders(),
+        headers,
+        credentials: "include",
       });
 
       if (res.ok) {
@@ -357,11 +399,14 @@ const Dashboard = () => {
           },
         }));
       } else {
-        setError("Failed to delete task");
+        setError(`Failed to delete task: ${res.status}`);
       }
     } catch (error) {
       console.error("Failed to delete task:", error);
-      setError("Failed to delete task. Please try again.");
+      setError(error.message || "Failed to delete task. Please try again.");
+      if (error.message.includes("401") || error.message.includes("403")) {
+        navigate("/login");
+      }
     }
   };
 
