@@ -20,7 +20,9 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [authState, setAuthState] = useState(initialUserState);
   const navigate = useNavigate();
-  const BASE_URL = "https://ilin-nigeria-backend.onrender.com" || "http://localhost:5000";
+
+  // Fixed: This will use the env variable if available, otherwise localhost
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   const fetchUserProfile = async (firebaseUser) => {
     if (!firebaseUser) {
@@ -36,6 +38,7 @@ export const AuthProvider = ({ children }) => {
           Authorization: `Bearer ${idToken}`,
           "Content-Type": "application/json",
         },
+        credentials: "include", // Added this for CORS with credentials
       });
 
       if (!response.ok) {
@@ -58,7 +61,20 @@ export const AuthProvider = ({ children }) => {
       });
     } catch (error) {
       console.error("Error fetching user profile/claims:", error);
-      handleLogout();
+      // Don't logout on profile fetch error - user is still authenticated
+      setAuthState({
+        isLoggedIn: true,
+        isLoading: false,
+        user: firebaseUser,
+        profile: {
+          name:
+            firebaseUser.displayName ||
+            firebaseUser.email?.split("@")[0] ||
+            "User",
+          email: firebaseUser.email,
+          role: "client", // Default role
+        },
+      });
     }
   };
 
@@ -84,6 +100,8 @@ export const AuthProvider = ({ children }) => {
   const handleLogout = async () => {
     try {
       await signOut(auth);
+      setAuthState({ ...initialUserState, isLoading: false });
+      navigate("/login");
     } catch (error) {
       console.error("Error signing out:", error);
     }
