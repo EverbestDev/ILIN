@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-// useNavigate is removed as Auth0's protected routes handle navigation flow
+import { useNavigate } from "react-router-dom";
 import {
   FileText,
   Users,
@@ -15,28 +15,8 @@ import {
 } from "lucide-react";
 import { Line, Pie, Bar } from "react-chartjs-2";
 
-// FIX: Removed explicit import of useAuth0, relying on the environment's global context provision
-// import { useAuth0 } from "@auth0/auth0-react";
-
 const Dashboard = () => {
-  // NEW: Assuming useAuth0() is available in the component's scope
-  // If useAuth0 is not defined, it means the Auth0Provider is missing or the environment is not set up correctly.
-  let getAccessTokenSilently = () => Promise.resolve("");
-  let isAuthenticated = false;
-  let isLoading = true;
-
-  // Use try/catch or conditional check to safely access useAuth0 if the environment provides it globally
-  try {
-    // Attempt to access useAuth0 if it's available globally (common pattern in certain execution environments)
-    // NOTE: In a standard React setup, you must uncomment the import above.
-    // Assuming useAuth0 is accessible because the AdminLayout needs it for protection.
-    ({ getAccessTokenSilently, isAuthenticated, isLoading } = useAuth0());
-  } catch (e) {
-    console.error(
-      "Auth0 context not found. Check if useAuth0 is available.",
-      e
-    );
-  }
+  const navigate = useNavigate();
 
   const BASE_URL =
     "https://ilin-backend.onrender.com" || "http://localhost:5000";
@@ -53,416 +33,891 @@ const Dashboard = () => {
   const [rawTasks, setRawTasks] = useState([]);
   const [rawQuotes, setRawQuotes] = useState([]);
   const [rawSubscribers, setRawSubscribers] = useState([]);
-  const [newTask, setNewTask] = useState("");
+  const [rawContacts, setRawContacts] = useState([]);
+  const [recentQuotes, setRecentQuotes] = useState([]);
+  const [recentSubscribers, setRecentSubscribers] = useState([]);
+  const [recentContacts, setRecentContacts] = useState([]);
+  const [monthlyQuotes, setMonthlyQuotes] = useState([]);
+  const [serviceDistribution, setServiceDistribution] = useState([]);
+  const [weeklyQuotes, setWeeklyQuotes] = useState([]);
 
-  // =====================================================================
-  // AUTHENTICATED FETCH LOGIC
-  // =====================================================================
-
-  const fetchDashboardData = async () => {
-    // If Auth0 is still loading or user isn't authenticated, don't fetch yet
-    if (isLoading || !isAuthenticated) {
-      setLoading(false);
-      return;
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem("token");
+    const headers = { "Content-Type": "application/json" };
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
     }
+    return headers;
+  };
 
-    try {
-      // 1. Get the Access Token silently
-      const token = await getAccessTokenSilently({
-        authorizationParams: {
-          // IMPORTANT: Replace this placeholder with your actual Auth0 API Identifier
-          audience: "https://ilin-backend.onrender.com/",
-        },
-      });
+  const getDateRange = () => {
+    const now = new Date();
+    let startDate = new Date();
+    switch (timeRange) {
+      case "7days":
+        startDate.setDate(now.getDate() - 7);
+        break;
+      case "30days":
+        startDate.setDate(now.getDate() - 30);
+        break;
+      case "90days":
+        startDate.setDate(now.getDate() - 90);
+        break;
+      case "year":
+        startDate.setFullYear(now.getFullYear() - 1);
+        break;
+      default:
+        startDate.setDate(now.getDate() - 7);
+    }
+    return startDate;
+  };
 
-      // 2. Configure the fetch call with the token in the Authorization header
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // <-- Access Token in header
-      };
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const headers = getAuthHeaders();
 
-      const response = await fetch(
-        `${BASE_URL}/api/dashboard?range=${timeRange}`,
-        { headers }
-      );
+        const [statsRes, quotesRes, subscribersRes, contactsRes, tasksRes] =
+          await Promise.all([
+            fetch(`${BASE_URL}/api/admin/overview`, { headers }).then((res) =>
+              res.ok
+                ? res.json()
+                : Promise.reject(new Error("Failed to fetch stats"))
+            ),
+            fetch(`${BASE_URL}/api/quotes`).then((res) =>
+              res.ok
+                ? res.json()
+                : Promise.reject(new Error("Failed to fetch quotes"))
+            ),
+            fetch(`${BASE_URL}/api/subscribe`).then((res) =>
+              res.ok
+                ? res.json()
+                : Promise.reject(new Error("Failed to fetch subscribers"))
+            ),
+            fetch(`${BASE_URL}/api/contact`).then((res) =>
+              res.ok
+                ? res.json()
+                : Promise.reject(new Error("Failed to fetch contacts"))
+            ),
+            fetch(`${BASE_URL}/api/tasks`, { headers }).then((res) =>
+              res.ok
+                ? res.json()
+                : Promise.reject(new Error("Failed to fetch tasks"))
+            ),
+          ]);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        setStats({
+          quotes: statsRes.quotes || {
+            total: quotesRes.length,
+            change: 0,
+            trend: "up",
+          },
+          subscribers: statsRes.subscribers || {
+            total: subscribersRes.length,
+            change: 0,
+            trend: "up",
+          },
+          contacts: statsRes.contacts || {
+            total: contactsRes.length,
+            change: 0,
+            trend: "up",
+          },
+          tasks: statsRes.tasks || {
+            total: tasksRes.length,
+            pending: tasksRes.filter((t) => !t.completed).length,
+            change: 0,
+            trend: "up",
+          },
+        });
+
+        setRawQuotes(
+          quotesRes.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          )
+        );
+        setRawSubscribers(
+          subscribersRes.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          )
+        );
+        setRawContacts(
+          contactsRes.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          )
+        );
+        setRawTasks(
+          tasksRes.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        );
+      } catch (err) {
+        console.error("Error loading dashboard data:", err);
+        setError("Failed to load some data. Please try again later.");
+      } finally {
+        setLoading(false);
       }
+    };
 
-      const data = await response.json();
+    fetchDashboardData();
+  }, [BASE_URL]);
 
-      setStats(data.stats);
-      setRawTasks(data.tasks);
-      setRawQuotes(data.quotes);
-      setRawSubscribers(data.subscribers);
-      setError(null);
-    } catch (err) {
-      console.error("Failed to fetch dashboard data:", err);
-      setError(
-        "Could not load data. Ensure your backend is running, the Auth0 Audience is correct, and you have proper permissions."
-      );
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    const startDate = getDateRange();
+    const filteredQuotes = rawQuotes.filter(
+      (q) => new Date(q.createdAt) >= startDate
+    );
+
+    setRecentQuotes(rawQuotes.slice(0, 3));
+    setRecentSubscribers(rawSubscribers.slice(0, 3));
+    setRecentContacts(rawContacts.slice(0, 3));
+
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const numMonths = timeRange === "year" ? 12 : 6;
+    const monthlyData = Array(numMonths)
+      .fill()
+      .map((_, i) => {
+        const date = new Date();
+        date.setMonth(date.getMonth() - (numMonths - 1 - i));
+        const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
+        const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+        const count = filteredQuotes.filter(
+          (q) =>
+            new Date(q.createdAt) >= monthStart &&
+            new Date(q.createdAt) <= monthEnd
+        ).length;
+        return { month: months[date.getMonth()], quotes: count };
+      });
+    setMonthlyQuotes(monthlyData);
+
+    const services = filteredQuotes.reduce((acc, q) => {
+      acc[q.service] = (acc[q.service] || 0) + 1;
+      return acc;
+    }, {});
+    const colors = ["#10b981", "#3b82f6", "#f59e0b", "#8b5cf6", "#ef4444"];
+    setServiceDistribution(
+      Object.entries(services).map(([name, value], i) => ({
+        name: name || "General Inquiry",
+        value,
+        color: colors[i % colors.length],
+      }))
+    );
+
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const now = new Date();
+    const weeklyData = Array(7)
+      .fill()
+      .map((_, i) => {
+        const dayDate = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate() - (6 - i)
+        );
+        const dayStart = new Date(
+          dayDate.getFullYear(),
+          dayDate.getMonth(),
+          dayDate.getDate()
+        );
+        const dayEnd = new Date(
+          dayDate.getFullYear(),
+          dayDate.getMonth(),
+          dayDate.getDate() + 1
+        );
+        const count = rawQuotes.filter((q) => {
+          const quoteDate = new Date(q.createdAt);
+          const quoteDateWAT = new Date(
+            quoteDate.getTime() + 1 * 60 * 60 * 1000
+          );
+          return quoteDateWAT >= dayStart && quoteDateWAT < dayEnd;
+        }).length;
+        return { day: days[dayDate.getDay()], requests: count };
+      });
+    setWeeklyQuotes(weeklyData);
+  }, [timeRange, rawQuotes, rawSubscribers, rawContacts]);
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "completed":
+        return "bg-green-100 text-green-700 border-green-200";
+      case "in-progress":
+        return "bg-blue-100 text-blue-700 border-blue-200";
+      case "pending":
+        return "bg-orange-100 text-orange-700 border-orange-200";
+      default:
+        return "bg-gray-100 text-gray-700 border-gray-200";
+    }
+  };
+
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case "high":
+        return "bg-red-100 text-red-700 border-red-200";
+      case "medium":
+        return "bg-orange-100 text-orange-700 border-orange-200";
+      case "low":
+        return "bg-blue-100 text-blue-700 border-blue-200";
+      default:
+        return "bg-gray-100 text-gray-700 border-gray-200";
     }
   };
 
   const handleAddTask = async (e) => {
     e.preventDefault();
-    if (!newTask.trim()) return;
-
-    // Auth Check
-    if (isLoading || !isAuthenticated) return;
+    const task = e.target.task.value;
+    const priority = e.target.priority.value;
+    const due = e.target.due.value;
+    const email = e.target.email.value;
 
     try {
-      const token = await getAccessTokenSilently({
-        authorizationParams: {
-          audience: "https://ilin-backend.onrender.com/",
-        },
-      });
-
-      const response = await fetch(`${BASE_URL}/api/tasks`, {
+      const res = await fetch(`${BASE_URL}/api/tasks`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ description: newTask }),
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ task, priority, due, email }),
       });
 
-      if (response.ok) {
-        const addedTask = await response.json();
-        setRawTasks((prev) => [addedTask, ...prev]);
-        setNewTask("");
+      if (res.ok) {
+        const { task: newTask } = await res.json();
+        setRawTasks((prev) => [newTask, ...prev]);
+        setStats((prev) => ({
+          ...prev,
+          tasks: {
+            ...prev.tasks,
+            total: prev.tasks.total + 1,
+            pending: prev.tasks.pending + 1,
+          },
+        }));
+        e.target.reset();
       } else {
-        throw new Error("Failed to add task");
+        const errorData = await res.json();
+        setError(errorData.message || "Failed to create task");
       }
     } catch (error) {
-      console.error("Failed to add task:", error);
+      console.error("Failed to create task:", error);
+      setError("Failed to create task. Please try again.");
     }
   };
 
   const handleToggleTask = async (taskId, currentStatus) => {
-    // Auth Check
-    if (isLoading || !isAuthenticated) return;
-
     try {
-      const token = await getAccessTokenSilently({
-        authorizationParams: {
-          audience: "https://ilin-backend.onrender.com/",
-        },
-      });
-
-      const response = await fetch(`${BASE_URL}/api/tasks/${taskId}`, {
+      const res = await fetch(`${BASE_URL}/api/tasks/${taskId}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ completed: !currentStatus }),
       });
 
-      if (response.ok) {
+      if (res.ok) {
         setRawTasks((prev) =>
-          prev.map((task) =>
-            task._id === taskId ? { ...task, completed: !currentStatus } : task
+          prev.map((t) =>
+            t._id === taskId ? { ...t, completed: !t.completed } : t
           )
         );
+        setStats((prev) => ({
+          ...prev,
+          tasks: {
+            ...prev.tasks,
+            pending: currentStatus
+              ? prev.tasks.pending + 1
+              : prev.tasks.pending - 1,
+          },
+        }));
       } else {
-        throw new Error("Failed to toggle task status");
+        setError("Failed to update task");
       }
     } catch (error) {
-      console.error("Failed to toggle task:", error);
+      console.error("Failed to update task:", error);
+      setError("Failed to update task. Please try again.");
     }
   };
 
-  const handleDeleteTask = async (taskId) => {
-    // Auth Check
-    if (isLoading || !isAuthenticated) return;
-
+  const handleDeleteTask = async (taskId, isCompleted) => {
     try {
-      const token = await getAccessTokenSilently({
-        authorizationParams: {
-          audience: "https://ilin-backend.onrender.com/",
-        },
-      });
-
-      const response = await fetch(`${BASE_URL}/api/tasks/${taskId}`, {
+      const res = await fetch(`${BASE_URL}/api/tasks/${taskId}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: getAuthHeaders(),
       });
 
-      if (response.ok) {
+      if (res.ok) {
         setRawTasks((prev) => prev.filter((t) => t._id !== taskId));
+        setStats((prev) => ({
+          ...prev,
+          tasks: {
+            ...prev.tasks,
+            total: prev.tasks.total - 1,
+            pending: isCompleted ? prev.tasks.pending : prev.tasks.pending - 1,
+          },
+        }));
       } else {
-        throw new Error("Failed to delete task");
+        setError("Failed to delete task");
       }
     } catch (error) {
       console.error("Failed to delete task:", error);
+      setError("Failed to delete task. Please try again.");
     }
   };
 
-  // =====================================================================
-  // EFFECTS & DATA PROCESSING
-  // =====================================================================
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="w-12 h-12 border-b-2 border-green-600 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
-  useEffect(() => {
-    // We now fetch data only when Auth0 confirms the user is authenticated
-    if (isAuthenticated && !isLoading) {
-      fetchDashboardData();
-    }
-  }, [timeRange, isAuthenticated, isLoading]);
-
-  // Data processing for charts (Kept for completeness)
-  const chartData = {
-    // Data processing logic remains the same...
-    labels: rawSubscribers
-      .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
-      .map((s) => new Date(s.createdAt).toLocaleDateString()),
+  const monthlyQuotesChartData = {
+    labels: monthlyQuotes.map((item) => item.month),
     datasets: [
       {
-        label: "Subscribers",
-        data: rawSubscribers.map((s) => 1), // Assuming each entry is 1 subscriber
+        label: "Quotes",
+        data: monthlyQuotes.map((item) => item.quotes),
+        borderColor: "#10b981",
+        backgroundColor: "rgba(16, 185, 129, 0.2)",
         fill: true,
-        backgroundColor: "rgba(10, 132, 255, 0.2)",
-        borderColor: "#0A84FF",
         tension: 0.4,
-        pointRadius: 0,
-        pointHitRadius: 10,
+        pointBackgroundColor: "#10b981",
+        pointBorderColor: "#fff",
+        pointHoverBackgroundColor: "#fff",
+        pointHoverBorderColor: "#10b981",
       },
-      // You can add more datasets (e.g., quotes, contacts) here if raw data is ready
     ],
   };
 
-  const pieData = {
-    labels: ["New Quotes", "Active Clients", "Tasks Pending"],
+  const monthlyQuotesChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: { grid: { display: false }, ticks: { color: "#6b7280" } },
+      y: { grid: { color: "#e5e7eb" }, ticks: { color: "#6b7280" } },
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: { backgroundColor: "#374151" },
+    },
+  };
+
+  const serviceDistributionChartData = {
+    labels: serviceDistribution.map((item) => item.name),
     datasets: [
       {
-        data: [stats.quotes.total, 45, stats.tasks.pending], // Using mock data for clients
-        backgroundColor: ["#0A84FF", "#34C759", "#FF9500"],
-        hoverBackgroundColor: ["#007AFF", "#28A745", "#FF7D00"],
+        data: serviceDistribution.map((item) => item.value),
+        backgroundColor: serviceDistribution.map((item) => item.color),
+        borderColor: "#fff",
+        borderWidth: 2,
       },
     ],
   };
 
-  const barData = {
-    labels: ["Translation", "Localization", "Interpretation", "DTP"],
+  const serviceDistributionChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: "bottom", labels: { color: "#6b7280" } },
+      tooltip: { backgroundColor: "#374151" },
+    },
+  };
+
+  const weeklyQuotesChartData = {
+    labels: weeklyQuotes.map((item) => item.day),
     datasets: [
       {
-        label: "Projects this Month",
-        data: [12, 19, 3, 5],
-        backgroundColor: [
-          "rgba(10, 132, 255, 0.5)",
-          "rgba(52, 199, 89, 0.5)",
-          "rgba(255, 149, 0, 0.5)",
-          "rgba(88, 86, 214, 0.5)",
-        ],
-        borderColor: ["#0A84FF", "#34C759", "#FF9500", "#5856D6"],
-        borderWidth: 1,
+        label: "Requests",
+        data: weeklyQuotes.map((item) => item.requests),
+        backgroundColor: "#10b981",
+        borderRadius: 8,
       },
     ],
   };
 
-  // Component structure remains largely the same
-  if (loading || isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh] text-gray-700">
-        <svg
-          className="w-8 h-8 mr-3 -ml-1 text-green-600 animate-spin"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          ></circle>
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          ></path>
-        </svg>
-        {isLoading ? "Authenticating..." : "Loading Dashboard Data..."}
-      </div>
-    );
-  }
+  const weeklyQuotesChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: { grid: { display: false }, ticks: { color: "#6b7280" } },
+      y: {
+        grid: { color: "#e5e7eb" },
+        ticks: { color: "#6b7280" },
+        beginAtZero: true,
+      },
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: { backgroundColor: "#374151" },
+    },
+  };
 
-  if (error) {
-    return (
-      <div className="p-6 text-red-700 bg-red-100 border border-red-200 rounded-xl">
-        <h2 className="text-xl font-bold">Error Loading Dashboard</h2>
-        <p>{error}</p>
-      </div>
-    );
-  }
-
-  const tasksPending = rawTasks.filter((t) => !t.completed).length;
-
-  // The rest of the rendering logic is unchanged, focusing on presenting the fetched data.
   return (
-    <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+    <div className="p-6 space-y-6">
+      {error && (
+        <div className="p-4 text-red-700 bg-red-100 rounded-lg">
+          {error}
+          <button
+            onClick={() => setError(null)}
+            className="ml-4 text-sm underline"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
 
-      {/* Stats Cards Grid */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {/* Quote Requests Card */}
-        <StatCard
-          icon={FileText}
-          title="Quote Requests"
-          value={stats.quotes.total.toLocaleString()}
-          change={stats.quotes.change}
-          trend={stats.quotes.trend}
-          color="bg-blue-100 text-blue-600"
-        />
-
-        {/* Subscribers Card */}
-        <StatCard
-          icon={Users}
-          title="Total Subscribers"
-          value={stats.subscribers.total.toLocaleString()}
-          change={stats.subscribers.change}
-          trend={stats.subscribers.trend}
-          color="bg-green-100 text-green-600"
-        />
-
-        {/* Contact Messages Card */}
-        <StatCard
-          icon={Mail}
-          title="Contact Messages"
-          value={stats.contacts.total.toLocaleString()}
-          change={stats.contacts.change}
-          trend={stats.contacts.trend}
-          color="bg-yellow-100 text-yellow-600"
-        />
-
-        {/* Pending Tasks Card */}
-        <StatCard
-          icon={Clock}
-          title="Tasks Pending"
-          value={tasksPending.toLocaleString()}
-          change={stats.tasks.change}
-          trend={stats.tasks.trend}
-          color="bg-red-100 text-red-600"
-        />
+      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Dashboard Overview
+          </h1>
+          <p className="mt-1 text-gray-600">
+            Welcome back! Here's what's happening today.
+          </p>
+        </div>
+        <select
+          value={timeRange}
+          onChange={(e) => setTimeRange(e.target.value)}
+          className="px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+        >
+          <option value="7days">Last 7 Days</option>
+          <option value="30days">Last 30 Days</option>
+          <option value="90days">Last 90 Days</option>
+          <option value="year">This Year</option>
+        </select>
       </div>
 
-      {/* Charts and Task/Quote/Subscriber Lists */}
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        {/* Main Chart Card (Subscribers Trend) */}
-        <div className="p-6 bg-white border border-gray-100 shadow-lg lg:col-span-2 rounded-xl">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="p-6 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-gray-800">
-              Subscription & Quote Trends
-            </h2>
-            <select
-              value={timeRange}
-              onChange={(e) => setTimeRange(e.target.value)}
-              className="p-2 text-sm text-gray-700 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-500 focus:border-green-500"
+            <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-xl">
+              <FileText className="w-6 h-6 text-green-600" />
+            </div>
+            <span
+              className={`flex items-center gap-1 text-sm font-medium ${
+                stats.quotes.trend === "up" ? "text-green-600" : "text-red-600"
+              }`}
             >
-              <option value="7days">Last 7 Days</option>
-              <option value="30days">Last 30 Days</option>
-              <option value="90days">Last 90 Days</option>
-            </select>
+              {stats.quotes.trend === "up" ? (
+                <ArrowUpRight className="w-4 h-4" />
+              ) : (
+                <ArrowDownRight className="w-4 h-4" />
+              )}
+              {Math.abs(stats.quotes.change)}%
+            </span>
           </div>
-          <div className="h-80">
+          <h3 className="text-2xl font-bold text-gray-900">
+            {stats.quotes.total}
+          </h3>
+          <p className="mt-1 text-sm text-gray-600">Quote Requests</p>
+        </div>
+
+        <div className="p-6 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-xl">
+              <Users className="w-6 h-6 text-blue-600" />
+            </div>
+            <span
+              className={`flex items-center gap-1 text-sm font-medium ${
+                stats.subscribers.trend === "up"
+                  ? "text-green-600"
+                  : "text-red-600"
+              }`}
+            >
+              {stats.subscribers.trend === "up" ? (
+                <ArrowUpRight className="w-4 h-4" />
+              ) : (
+                <ArrowDownRight className="w-4 h-4" />
+              )}
+              {Math.abs(stats.subscribers.change)}%
+            </span>
+          </div>
+          <h3 className="text-2xl font-bold text-gray-900">
+            {stats.subscribers.total}
+          </h3>
+          <p className="mt-1 text-sm text-gray-600">Subscribers</p>
+        </div>
+
+        <div className="p-6 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-xl">
+              <Mail className="w-6 h-6 text-purple-600" />
+            </div>
+            <span
+              className={`flex items-center gap-1 text-sm font-medium ${
+                stats.contacts.trend === "up"
+                  ? "text-green-600"
+                  : "text-red-600"
+              }`}
+            >
+              {stats.contacts.trend === "up" ? (
+                <ArrowUpRight className="w-4 h-4" />
+              ) : (
+                <ArrowDownRight className="w-4 h-4" />
+              )}
+              {Math.abs(stats.contacts.change)}%
+            </span>
+          </div>
+          <h3 className="text-2xl font-bold text-gray-900">
+            {stats.contacts.total}
+          </h3>
+          <p className="mt-1 text-sm text-gray-600">Contact Messages</p>
+        </div>
+
+        <div className="p-6 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-center w-12 h-12 bg-orange-100 rounded-xl">
+              <Award className="w-6 h-6 text-orange-600" />
+            </div>
+            <span
+              className={`flex items-center gap-1 text-sm font-medium ${
+                stats.tasks.trend === "up" ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {stats.tasks.trend === "up" ? (
+                <ArrowUpRight className="w-4 h-4" />
+              ) : (
+                <ArrowDownRight className="w-4 h-4" />
+              )}
+              {Math.abs(stats.tasks.change)}%
+            </span>
+          </div>
+          <h3 className="text-2xl font-bold text-gray-900">
+            {stats.tasks.pending} / {stats.tasks.total}
+          </h3>
+          <p className="mt-1 text-sm text-gray-600">Pending / Total Tasks</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="p-6 bg-white border border-gray-200 shadow-sm lg:col-span-2 rounded-xl">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Quote Trends
+              </h3>
+              <p className="mt-1 text-sm text-gray-600">Quotes over time</p>
+            </div>
+            <TrendingUp className="w-5 h-5 text-green-600" />
+          </div>
+          <div style={{ height: 300 }}>
             <Line
-              data={chartData}
-              options={{
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: { position: "top" },
-                  title: { display: false },
-                },
-                scales: {
-                  x: { grid: { display: false } },
-                  y: { beginAtZero: true },
-                },
-              }}
+              data={monthlyQuotesChartData}
+              options={monthlyQuotesChartOptions}
             />
           </div>
         </div>
 
-        {/* Task Management Card */}
-        <div className="p-6 bg-white border border-gray-100 shadow-lg rounded-xl">
-          <h2 className="mb-4 text-xl font-semibold text-gray-800">
-            Task Management
-          </h2>
-
-          {/* Add New Task Form */}
-          <form onSubmit={handleAddTask} className="flex gap-2 mb-4">
-            <input
-              type="text"
-              placeholder="Add new task..."
-              value={newTask}
-              onChange={(e) => setNewTask(e.target.value)}
-              className="flex-grow p-2 text-sm border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+        <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">Services</h3>
+              <p className="mt-1 text-sm text-gray-600">Distribution by type</p>
+            </div>
+            <Globe className="w-5 h-5 text-green-600" />
+          </div>
+          <div style={{ height: 200 }}>
+            <Pie
+              data={serviceDistributionChartData}
+              options={serviceDistributionChartOptions}
             />
-            <button
-              type="submit"
-              className="px-4 py-2 text-sm font-semibold text-white transition duration-150 bg-green-600 rounded-lg shadow-md hover:bg-green-700"
-            >
-              Add
-            </button>
-          </form>
+          </div>
+          <div className="mt-4 space-y-2">
+            {serviceDistribution.map((service) => (
+              <div
+                key={service.name}
+                className="flex items-center justify-between"
+              >
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: service.color }}
+                  />
+                  <span className="text-sm text-gray-700">{service.name}</span>
+                </div>
+                <span className="text-sm font-medium text-gray-900">
+                  {service.value}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
 
-          {/* Task List */}
-          <div className="pr-2 space-y-3 overflow-y-auto max-h-96">
-            {rawTasks.length > 0 ? (
-              rawTasks.map((task) => (
+      <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">
+              Weekly Quotes
+            </h3>
+            <p className="mt-1 text-sm text-gray-600">
+              Quote requests this week
+            </p>
+          </div>
+          <Clock className="w-5 h-5 text-green-600" />
+        </div>
+        <div style={{ height: 250 }}>
+          <Bar
+            data={weeklyQuotesChartData}
+            options={weeklyQuotesChartOptions}
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Recent Quote Requests
+            </h3>
+            <button className="text-sm font-medium text-green-600 hover:text-green-700">
+              View All
+            </button>
+          </div>
+          <div className="space-y-3">
+            {recentQuotes.length ? (
+              recentQuotes.map((quote) => (
                 <div
-                  key={task._id}
-                  className={`flex items-center justify-between p-3 border rounded-lg transition duration-150 ${
-                    task.completed
-                      ? "bg-green-50 border-green-200"
-                      : "bg-gray-50 border-gray-200 hover:bg-gray-100"
-                  }`}
+                  key={quote._id}
+                  className="flex items-center justify-between p-3 transition-colors rounded-lg bg-gray-50 hover:bg-gray-100"
                 >
-                  <div className="flex items-center flex-grow gap-3">
-                    <input
-                      type="checkbox"
-                      checked={task.completed}
-                      onChange={() =>
-                        handleToggleTask(task._id, task.completed)
-                      }
-                      className="w-5 h-5 text-green-600 border-gray-300 rounded focus:ring-green-500"
-                    />
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-center w-10 h-10 font-semibold text-white rounded-lg bg-gradient-to-br from-green-600 to-green-700">
+                      {quote.name?.charAt(0) || "?"}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">
+                        {quote.name || "Unknown"}
+                      </p>
+                      <p className="text-xs text-gray-600">
+                        {quote.service || "General Inquiry"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
                     <span
-                      className={`text-sm ${
-                        task.completed
-                          ? "line-through text-gray-500"
-                          : "text-gray-800"
-                      }`}
+                      className={`px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(
+                        quote.status || "pending"
+                      )}`}
                     >
-                      {task.description}
+                      {quote.status || "pending"}
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      {new Date(quote.createdAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                      })}
                     </span>
                   </div>
-                  <button
-                    onClick={() => handleDeleteTask(task._id)}
-                    className="text-red-600 transition-colors hover:text-red-700"
-                    aria-label="Delete task"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
                 </div>
               ))
             ) : (
-              <div className="py-8 text-center text-gray-600">
-                No tasks available. Add your first task above!
+              <div className="text-center text-gray-600">No recent quotes</div>
+            )}
+          </div>
+        </div>
+        
+        <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Recent Subscribers
+            </h3>
+            <button className="text-sm font-medium text-green-600 hover:text-green-700">
+              View All
+            </button>
+          </div>
+          <div className="space-y-3">
+            {recentSubscribers.length ? (
+              recentSubscribers.map((sub) => (
+                <div
+                  key={sub._id}
+                  className="flex items-center justify-between p-3 transition-colors rounded-lg bg-gray-50 hover:bg-gray-100"
+                >
+                  <div className="flex items-center flex-1 min-w-0 gap-3">
+                    <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 font-semibold text-white rounded-lg bg-gradient-to-br from-blue-600 to-blue-700">
+                      {sub.email?.charAt(0).toUpperCase() || "?"}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900 truncate">
+                        {sub.email || "Unknown"}
+                      </p>
+                      <p className="text-xs text-gray-600">Subscribed</p>
+                    </div>
+                  </div>
+                  <span className="text-xs text-gray-500">
+                    {new Date(sub.createdAt).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </span>
+                </div>
+              ))
+            ) : (
+              <div className="text-center text-gray-600">
+                No recent subscribers
+              </div>
+            )}
+          </div>
+        </div>
+      
+        <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Recent Contacts
+            </h3>
+            <button className="text-sm font-medium text-green-600 hover:text-green-700">
+              View All
+            </button>
+          </div>
+          <div className="space-y-3">
+            {recentContacts.length ? (
+              recentContacts.map((contact) => (
+                <div
+                  key={contact._id}
+                  className="flex items-center justify-between p-3 transition-colors rounded-lg bg-gray-50 hover:bg-gray-100"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-center w-10 h-10 font-semibold text-white rounded-lg bg-gradient-to-br from-purple-600 to-purple-700">
+                      {contact.name?.charAt(0) || "?"}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">
+                        {contact.name || "Unknown"}
+                      </p>
+                      <p className="text-xs text-gray-600">
+                        {contact.service || "General Inquiry"}
+                      </p>
+                    </div>
+                  </div>
+                  <span className="text-xs text-gray-500">
+                    {new Date(contact.createdAt).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </span>
+                </div>
+              ))
+            ) : (
+              <div className="text-center text-gray-600">
+                No recent contacts
               </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* Mission Banner */}
+      <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
+        <h4 className="mb-4 text-lg font-semibold text-gray-900">
+          Add New Task
+        </h4>
+        <form onSubmit={handleAddTask} className="flex flex-wrap gap-2">
+          <input
+            name="task"
+            type="text"
+            placeholder="Task description"
+            className="flex-1 min-w-[200px] px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            required
+          />
+          <select
+            name="priority"
+            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+          >
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+          <input
+            name="due"
+            type="datetime-local"
+            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            required
+          />
+          <input
+            name="email"
+            type="email"
+            placeholder="Recipient email"
+            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+          />
+          <button
+            type="submit"
+            className="px-4 py-2 text-white transition-colors bg-green-600 rounded-lg hover:bg-green-700"
+          >
+            Add Task
+          </button>
+        </form>
+      </div>
+
+      <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-semibold text-gray-900">All Tasks</h3>
+          <Award className="w-5 h-5 text-green-600" />
+        </div>
+        <div className="space-y-3">
+          {rawTasks.length ? (
+            rawTasks.map((task) => (
+              <div
+                key={task._id}
+                className="flex items-start gap-3 p-3 transition-colors rounded-lg bg-gray-50 hover:bg-gray-100"
+              >
+                <input
+                  type="checkbox"
+                  checked={task.completed}
+                  onChange={() => handleToggleTask(task._id, task.completed)}
+                  className="w-4 h-4 mt-1 text-green-600 rounded focus:ring-green-500"
+                />
+                <div className="flex-1">
+                  <p
+                    className={`text-sm font-medium ${
+                      task.completed
+                        ? "text-gray-500 line-through"
+                        : "text-gray-900"
+                    }`}
+                  >
+                    {task.task}
+                  </p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <span
+                      className={`px-2 py-0.5 text-xs font-medium rounded-full border ${getPriorityColor(
+                        task.priority
+                      )}`}
+                    >
+                      {task.priority}
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      Due:{" "}
+                      {new Date(task.due).toLocaleString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                    {task.email && (
+                      <span className="text-xs text-gray-500">
+                        • {task.email}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleDeleteTask(task._id, task.completed)}
+                  className="text-red-600 transition-colors hover:text-red-700"
+                  aria-label="Delete task"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </button>
+              </div>
+            ))
+          ) : (
+            <div className="py-8 text-center text-gray-600">
+              No tasks available. Add your first task above!
+            </div>
+          )}
+        </div>
+      </div>
+
       <div className="p-6 text-white bg-gradient-to-r from-green-600 to-green-700 rounded-xl">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -477,160 +932,11 @@ const Dashboard = () => {
               </p>
             </div>
           </div>
-          <CheckCircle className="w-8 h-8 text-white" />
+          <CheckCircle className="w-8 h-8 text-white/80" />
         </div>
-      </div>
-
-      {/* Secondary Charts and Lists */}
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        {/* Pie Chart Card (Client Activity) */}
-        <div className="p-6 bg-white border border-gray-100 shadow-lg rounded-xl lg:col-span-1">
-          <h2 className="mb-4 text-xl font-semibold text-gray-800">
-            Activity Overview
-          </h2>
-          <div className="flex items-center justify-center h-64">
-            <Pie
-              data={pieData}
-              options={{
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: { position: "right" },
-                  title: { display: false },
-                },
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Bar Chart Card (Service Demand) */}
-        <div className="p-6 bg-white border border-gray-100 shadow-lg rounded-xl lg:col-span-2">
-          <h2 className="mb-4 text-xl font-semibold text-gray-800">
-            Service Demand by Type
-          </h2>
-          <div className="h-64">
-            <Bar
-              data={barData}
-              options={{
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: { position: "top" },
-                  title: { display: false },
-                },
-                scales: {
-                  x: { grid: { display: false } },
-                  y: { beginAtZero: true },
-                },
-              }}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Recent Activity Lists (Quotes, Subscribers) */}
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-        {/* Recent Quotes */}
-        <ActivityList
-          title="Recent Quote Requests"
-          data={rawQuotes.slice(0, 5)}
-          icon={FileText}
-          emptyMessage="No recent quote requests."
-          renderItem={(quote) => (
-            <>
-              <p className="font-semibold text-gray-900 truncate">
-                {quote.service} for {quote.targetLanguage}
-              </p>
-              <p className="text-sm text-gray-500">
-                {quote.email} - {new Date(quote.createdAt).toLocaleDateString()}
-              </p>
-            </>
-          )}
-        />
-
-        {/* Recent Subscribers */}
-        <ActivityList
-          title="Recent Subscribers"
-          data={rawSubscribers.slice(0, 5)}
-          icon={Users}
-          emptyMessage="No recent subscribers."
-          renderItem={(sub) => (
-            <>
-              <p className="font-semibold text-gray-900 truncate">
-                {sub.email}
-              </p>
-              <p className="text-sm text-gray-500">
-                Joined: {new Date(sub.createdAt).toLocaleDateString()}
-              </p>
-            </>
-          )}
-        />
       </div>
     </div>
   );
 };
-
-// =====================================================================
-// HELPER COMPONENTS (NO AUTH LOGIC, KEPT AS IS)
-// =====================================================================
-
-const StatCard = ({ icon: Icon, title, value, change, trend, color }) => {
-  const TrendIcon = trend === "up" ? ArrowUpRight : ArrowDownRight;
-  const trendColor = trend === "up" ? "text-green-600" : "text-red-600";
-  const trendBg = trend === "up" ? "bg-green-100" : "bg-red-100";
-
-  return (
-    <div className="p-5 transition-shadow duration-300 bg-white border border-gray-100 shadow-lg rounded-xl hover:shadow-xl">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-500">{title}</p>
-          <p className="mt-1 text-3xl font-bold text-gray-900">{value}</p>
-        </div>
-        <div
-          className={`flex items-center justify-center w-10 h-10 rounded-full ${color}`}
-        >
-          <Icon className="w-5 h-5" />
-        </div>
-      </div>
-      <div className="flex items-center mt-3 text-sm">
-        <span
-          className={`inline-flex items-center gap-1 px-2 py-1 font-medium rounded-full ${trendBg} ${trendColor}`}
-        >
-          <TrendIcon className="w-4 h-4" />
-          {change}%
-        </span>
-        <span className="ml-2 text-gray-500">vs previous period</span>
-      </div>
-    </div>
-  );
-};
-
-const ActivityList = ({
-  title,
-  data,
-  icon: Icon,
-  emptyMessage,
-  renderItem,
-}) => (
-  <div className="p-6 bg-white border border-gray-100 shadow-lg rounded-xl">
-    <h2 className="mb-4 text-xl font-semibold text-gray-800">{title}</h2>
-    <div className="space-y-4">
-      {data.length > 0 ? (
-        data.map((item, index) => (
-          <div key={index} className="flex items-start gap-4">
-            <div
-              className={`flex-shrink-0 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600`}
-            >
-              <Icon className="w-4 h-4" />
-            </div>
-            <div className="flex-grow">{renderItem(item)}</div>
-          </div>
-        ))
-      ) : (
-        <p className="text-gray-500">{emptyMessage}</p>
-      )}
-    </div>
-  </div>
-);
 
 export default Dashboard;

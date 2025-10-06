@@ -1,9 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
-// NEW: Import ProtectedRoute
-import ProtectedRoute from "./components/ProtectedRoute";
-
-// Component and Layout Imports (Ensure all these files exist in your project structure)
 import TopScroll from "./components/TopScroll";
 import DefaultLayout from "./layouts/DefaultLayout";
 import AdminLayout from "./layouts/AdminLayout";
@@ -27,7 +22,7 @@ import ContactPage from "./pages/Default/ContactPage";
 import LanguagesPage from "./pages/Default/LangauagesPage";
 import ServicesPage from "./pages/Default/ServicesPage";
 import QuotePage from "./pages/Default/QuotePage";
-import Login from "./pages/Default/Login"; // Updated Login component
+import Login from "./pages/Default/Login";
 
 // Admin Pages
 import Dashboard from "./pages/Admin/Dashboard";
@@ -50,8 +45,7 @@ function App() {
     <Router>
       <TopScroll />
       <Routes>
-        {/* ======================= DEFAULT PAGES ======================= */}
-        {/* Home Route */}
+        {/*Default Pages */}
         <Route
           path="/"
           element={
@@ -70,7 +64,6 @@ function App() {
             </DefaultLayout>
           }
         />
-        {/* Other Default Routes */}
         <Route
           path="/about"
           element={
@@ -111,8 +104,15 @@ function App() {
             </DefaultLayout>
           }
         />
-
-        {/* ======================= AUTHENTICATION PAGE (Public) ======================= */}
+        <Route
+          path="/request-quote"
+          element={
+            <DefaultLayout>
+              <QuotePage />
+            </DefaultLayout>
+          }
+        />
+        {/* ======================= AUTHENTICATION PAGE ======================= */}
         <Route
           path="/login"
           element={
@@ -121,152 +121,102 @@ function App() {
             </AuthLayout>
           }
         />
-
-        {/* ======================= CLIENT DASHBOARD PAGES (PROTECTED) ======================= */}
+        {/* ======================= CLIENT DASHBOARD PAGES ======================= */}
         <Route
           path="/client/dashboard"
           element={
-            <ProtectedRoute
-              component={() => (
-                <ClientLayout>
-                  <ClientDashboard />
-                </ClientLayout>
-              )}
-            />
+            <ClientLayout>
+              <ClientDashboard />
+            </ClientLayout>
           }
         />
         <Route
           path="/client/orders"
           element={
-            <ProtectedRoute
-              component={() => (
-                <ClientLayout>
-                  <ClientOrders />
-                </ClientLayout>
-              )}
-            />
+            <ClientLayout>
+              <ClientOrders />
+            </ClientLayout>
           }
         />
         <Route
           path="/client/orders/:orderId"
           element={
-            <ProtectedRoute
-              component={() => (
-                <ClientLayout>
-                  <ClientOrderDetails />
-                </ClientLayout>
-              )}
-            />
+            <ClientLayout>
+              <ClientOrderDetails />
+            </ClientLayout>
           }
         />
         <Route
           path="/client/messages"
           element={
-            <ProtectedRoute
-              component={() => (
-                <ClientLayout>
-                  <ClientMessages />
-                </ClientLayout>
-              )}
-            />
+            <ClientLayout>
+              <ClientMessages />
+            </ClientLayout>
           }
         />
         <Route
           path="/client/settings"
           element={
-            <ProtectedRoute
-              component={() => (
-                <ClientLayout>
-                  <ClientSettings />
-                </ClientLayout>
-              )}
-            />
+            <ClientLayout>
+              <ClientSettings />
+            </ClientLayout>
           }
         />
-
-        {/* ========================= ADMIN PAGES (PROTECTED) ================================ */}
+        {/* ========================= ADMIN PAGES ================================ */}
         <Route
           path="/admin/dashboard"
           element={
-            <ProtectedRoute
-              component={() => (
-                <AdminLayout>
-                  <Dashboard />
-                </AdminLayout>
-              )}
-            />
+            <AdminLayout>
+              <Dashboard />
+            </AdminLayout>
           }
         />
         <Route
           path="/admin/quotes"
           element={
-            <ProtectedRoute
-              component={() => (
-                <AdminLayout>
-                  <AdminQuotes />
-                </AdminLayout>
-              )}
-            />
+            <AdminLayout>
+              <AdminQuotes />
+            </AdminLayout>
           }
         />
         <Route
           path="/admin/subscribers"
           element={
-            <ProtectedRoute
-              component={() => (
-                <AdminLayout>
-                  <Subscribers />
-                </AdminLayout>
-              )}
-            />
+            <AdminLayout>
+              <Subscribers />
+            </AdminLayout>
           }
         />
         <Route
           path="/admin/contacts"
           element={
-            <ProtectedRoute
-              component={() => (
-                <AdminLayout>
-                  <Contacts />
-                </AdminLayout>
-              )}
-            />
+            <AdminLayout>
+              <Contacts />
+            </AdminLayout>
           }
         />
         <Route
           path="/admin/schedules"
           element={
-            <ProtectedRoute
-              component={() => (
-                <AdminLayout>
-                  <Schedules />
-                </AdminLayout>
-              )}
-            />
+            <AdminLayout>
+              <Schedules />
+            </AdminLayout>
           }
         />
         <Route
           path="/admin/analytics"
           element={
-            <ProtectedRoute
-              component={() => (
-                <AdminLayout>
-                  <Analytics />
-                </AdminLayout>
-              )}
-            />
+            <AdminLayout>
+              <Analytics />
+            </AdminLayout>
           }
         />
         <Route
           path="/admin/settings"
           element={
-            <ProtectedRoute
-              component={() => (
-                <AdminLayout>
-                  <Settings />
-                </AdminLayout>
-              )}
-            />
+            <AdminLayout>
+              <Settings />
+            </AdminLayout>
           }
         />
       </Routes>
