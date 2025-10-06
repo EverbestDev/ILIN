@@ -85,7 +85,7 @@ app.use(
           "'self'",
           "https://*.googleapis.com",
           "https://*.firebaseio.com",
-          "https://ilin-nigeria-backend.onrender.com",
+          "https://ilin-backend.onrender.com",
         ],
         frameSrc: ["'self'", "https://*.firebaseapp.com"],
         scriptSrc: ["'self'", "https://*.googleapis.com"],
