@@ -19,7 +19,7 @@ import adminRoutes from "./routes/admin.js";
 import dashboardRoutes from "./routes/dashboard.js";
 import taskRouter from "./routes/task.js";
 import authRoutes from "./routes/auth.js";
-import { protect, restrictTo } from "./middleware/auth.js"; // Fixed import
+import { protect, restrictTo } from "./middleware/auth.js";
 
 // Utils
 import { startTaskReminder } from "./utils/taskReminder.js";
@@ -46,16 +46,17 @@ app.use(morgan("dev"));
 // CORS setup
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://ilin-nigeria.vercel.app",
-      "https://ilin-nigeria.vercel.app/",
-    ],
+    origin: ["http://localhost:5173", "https://ilin-nigeria.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   })
 );
+
+// Handle preflight requests explicitly
+app.options("*", cors());
 
 // Register routes
 app.use("/api", emailRoutes);
