@@ -15,7 +15,7 @@ import {
   sendPasswordResetEmail,
   auth,
 } from "../../utility/firebase";
-
+//carousel
 const carouselSlides = [
   {
     title: "Our Mission",
