@@ -121,21 +121,28 @@ export default function Login() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${idToken}`,
           },
-          body: JSON.stringify({ name: name || user.displayName || email.split("@")[0], role: "client" }),
+          body: JSON.stringify({
+            name: name || user.displayName || email.split("@")[0],
+            role: "client",
+          }),
           credentials: "include",
         }
       );
 
       if (!profileResponse.ok) {
         const data = await profileResponse.json();
-        throw new Error(data.message || `HTTP error! Status: ${profileResponse.status}`);
+        throw new Error(
+          data.message || `HTTP error! Status: ${profileResponse.status}`
+        );
       }
 
       const profileData = await profileResponse.json();
       const { role, email: userEmail } = profileData.user;
-
+      await user.getIdToken(true); // Force refresh token to get new claims
       setLoading(false);
-      navigate(role === "admin" ? "/admin/dashboard" : `/client/dashboard/${userEmail}`);
+      navigate(
+        role === "admin" ? "/admin/dashboard" : `/client/dashboard/${userEmail}`
+      );
     } catch (error) {
       setLoading(false);
       let errorMessage = "Failed to sign in. Please try again.";
