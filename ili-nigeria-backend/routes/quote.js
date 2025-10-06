@@ -1,5 +1,6 @@
 import express from "express";
 import multer from "multer";
+import { protect, restrictTo } from "../middleware/auth.js";
 import {
   submitQuote,
   getAllQuotes,
@@ -9,12 +10,10 @@ import {
 
 const router = express.Router();
 
-// memory storage + limits
 const storage = multer.memoryStorage();
-
 const upload = multer({
   storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB per file
+  limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const allowedTypes = [
       "application/pdf",
@@ -31,7 +30,6 @@ const upload = multer({
   },
 });
 
-// Error-handling wrapper
 const uploadMiddleware = (req, res, next) => {
   upload.array("documents", 5)(req, res, (err) => {
     if (err instanceof multer.MulterError) {
@@ -46,12 +44,9 @@ const uploadMiddleware = (req, res, next) => {
   });
 };
 
-// Client-facing: Submit quote
 router.post("/", uploadMiddleware, submitQuote);
-
-// Admin-facing
-router.get("/", getAllQuotes);
-router.get("/:id", getQuoteById);
-router.delete("/:id", deleteQuote);
+router.get("/", protect, restrictTo("admin"), getAllQuotes);
+router.get("/:id", protect, restrictTo("admin"), getQuoteById);
+router.delete("/:id", protect, restrictTo("admin"), deleteQuote);
 
 export default router;

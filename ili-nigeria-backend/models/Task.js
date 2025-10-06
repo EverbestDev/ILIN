@@ -10,7 +10,7 @@ const taskSchema = new mongoose.Schema({
   },
   due: { type: String, required: true },
   completed: { type: Boolean, default: false },
-  email: { type: String }, // Recipient for reminders
+  email: { type: String, required: true }, // Recipient for reminders
   createdAt: { type: Date, default: Date.now },
 });
 

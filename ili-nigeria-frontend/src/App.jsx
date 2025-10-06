@@ -1,9 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
 import TopScroll from "./components/TopScroll";
 import DefaultLayout from "./layouts/DefaultLayout";
 import AdminLayout from "./layouts/AdminLayout";
 import ClientLayout from "./layouts/ClientLayout";
 import AuthLayout from "./layouts/AuthLayout";
+import { useState, useEffect } from "react";
 
 // Default Pages
 import Hero from "./components/Hero";
@@ -40,186 +42,220 @@ import ClientOrderDetails from "./pages/Client/OrderDetails";
 import ClientMessages from "./pages/Client/Messages";
 import ClientSettings from "./pages/Client/Settings";
 
+function ErrorBoundary({ children }) {
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    const handleError = (error, errorInfo) => {
+      console.error("Error caught by boundary:", error, errorInfo);
+      setHasError(true);
+    };
+    window.addEventListener("error", handleError);
+    return () => window.removeEventListener("error", handleError);
+  }, []);
+
+  if (hasError) {
+    return (
+      <div className="p-4 text-center">
+        <h1 className="text-2xl font-bold text-red-600">
+          Something went wrong.
+        </h1>
+        <p>Please refresh the page or try again later.</p>
+      </div>
+    );
+  }
+
+  return children;
+}
+
 function App() {
   return (
     <Router>
-      <TopScroll />
-      <Routes>
-        {/*Default Pages */}
-        <Route
-          path="/"
-          element={
-            <DefaultLayout>
-              <Hero />
-              <About />
-              <LanguagesSupport />
-              <IndustryExpertise />
-              <WhyChooseILI />
-              <ProcessWalkthrough />
-              <PricingPackages />
-              <SuccessStories />
-              <MeetOurTeam />
-              <TechnologyTools />
-              <ContactGetStarted />
-            </DefaultLayout>
-          }
-        />
-        <Route
-          path="/about"
-          element={
-            <DefaultLayout>
-              <AboutPage />
-            </DefaultLayout>
-          }
-        />
-        <Route
-          path="/services"
-          element={
-            <DefaultLayout>
-              <ServicesPage />
-            </DefaultLayout>
-          }
-        />
-        <Route
-          path="/languages"
-          element={
-            <DefaultLayout>
-              <LanguagesPage />
-            </DefaultLayout>
-          }
-        />
-        <Route
-          path="/contact"
-          element={
-            <DefaultLayout>
-              <ContactPage />
-            </DefaultLayout>
-          }
-        />
-        <Route
-          path="/quote"
-          element={
-            <DefaultLayout>
-              <QuotePage />
-            </DefaultLayout>
-          }
-        />
-        <Route
-          path="/request-quote"
-          element={
-            <DefaultLayout>
-              <QuotePage />
-            </DefaultLayout>
-          }
-        />
-        {/* ======================= AUTHENTICATION PAGE ======================= */}
-        <Route
-          path="/login"
-          element={
-            <AuthLayout>
-              <Login />
-            </AuthLayout>
-          }
-        />
-        {/* ======================= CLIENT DASHBOARD PAGES ======================= */}
-        <Route
-          path="/client/dashboard"
-          element={
-            <ClientLayout>
-              <ClientDashboard />
-            </ClientLayout>
-          }
-        />
-        <Route
-          path="/client/orders"
-          element={
-            <ClientLayout>
-              <ClientOrders />
-            </ClientLayout>
-          }
-        />
-        <Route
-          path="/client/orders/:orderId"
-          element={
-            <ClientLayout>
-              <ClientOrderDetails />
-            </ClientLayout>
-          }
-        />
-        <Route
-          path="/client/messages"
-          element={
-            <ClientLayout>
-              <ClientMessages />
-            </ClientLayout>
-          }
-        />
-        <Route
-          path="/client/settings"
-          element={
-            <ClientLayout>
-              <ClientSettings />
-            </ClientLayout>
-          }
-        />
-        {/* ========================= ADMIN PAGES ================================ */}
-        <Route
-          path="/admin/dashboard"
-          element={
-            <AdminLayout>
-              <Dashboard />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/quotes"
-          element={
-            <AdminLayout>
-              <AdminQuotes />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/subscribers"
-          element={
-            <AdminLayout>
-              <Subscribers />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/contacts"
-          element={
-            <AdminLayout>
-              <Contacts />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/schedules"
-          element={
-            <AdminLayout>
-              <Schedules />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/analytics"
-          element={
-            <AdminLayout>
-              <Analytics />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/settings"
-          element={
-            <AdminLayout>
-              <Settings />
-            </AdminLayout>
-          }
-        />
-      </Routes>
+      <AuthProvider>
+        <ErrorBoundary>
+          <TopScroll />
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <DefaultLayout>
+                  <Hero />
+                  <About />
+                  <LanguagesSupport />
+                  <IndustryExpertise />
+                  <WhyChooseILI />
+                  <ProcessWalkthrough />
+                  <PricingPackages />
+                  <SuccessStories />
+                  <MeetOurTeam />
+                  <TechnologyTools />
+                  <ContactGetStarted />
+                </DefaultLayout>
+              }
+            />
+            <Route
+              path="/about"
+              element={
+                <DefaultLayout>
+                  <AboutPage />
+                </DefaultLayout>
+              }
+            />
+            <Route
+              path="/services"
+              element={
+                <DefaultLayout>
+                  <ServicesPage />
+                </DefaultLayout>
+              }
+            />
+            <Route
+              path="/languages"
+              element={
+                <DefaultLayout>
+                  <LanguagesPage />
+                </DefaultLayout>
+              }
+            />
+            <Route
+              path="/contact"
+              element={
+                <DefaultLayout>
+                  <ContactPage />
+                </DefaultLayout>
+              }
+            />
+            <Route
+              path="/quote"
+              element={
+                <DefaultLayout>
+                  <QuotePage />
+                </DefaultLayout>
+              }
+            />
+            <Route
+              path="/request-quote"
+              element={
+                <DefaultLayout>
+                  <QuotePage />
+                </DefaultLayout>
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <AuthLayout>
+                  <Login />
+                </AuthLayout>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <AuthLayout>
+                  <Login />
+                </AuthLayout>
+              }
+            />
+            <Route
+              path="/client/dashboard"
+              element={
+                <ClientLayout>
+                  <ClientDashboard />
+                </ClientLayout>
+              }
+            />
+            <Route
+              path="/client/orders"
+              element={
+                <ClientLayout>
+                  <ClientOrders />
+                </ClientLayout>
+              }
+            />
+            <Route
+              path="/client/orders/:orderId"
+              element={
+                <ClientLayout>
+                  <ClientOrderDetails />
+                </ClientLayout>
+              }
+            />
+            <Route
+              path="/client/messages"
+              element={
+                <ClientLayout>
+                  <ClientMessages />
+                </ClientLayout>
+              }
+            />
+            <Route
+              path="/client/settings"
+              element={
+                <ClientLayout>
+                  <ClientSettings />
+                </ClientLayout>
+              }
+            />
+            <Route
+              path="/admin/dashboard"
+              element={
+                <AdminLayout>
+                  <Dashboard />
+                </AdminLayout>
+              }
+            />
+            <Route
+              path="/admin/quotes"
+              element={
+                <AdminLayout>
+                  <AdminQuotes />
+                </AdminLayout>
+              }
+            />
+            <Route
+              path="/admin/subscribers"
+              element={
+                <AdminLayout>
+                  <Subscribers />
+                </AdminLayout>
+              }
+            />
+            <Route
+              path="/admin/contacts"
+              element={
+                <AdminLayout>
+                  <Contacts />
+                </AdminLayout>
+              }
+            />
+            <Route
+              path="/admin/schedules"
+              element={
+                <AdminLayout>
+                  <Schedules />
+                </AdminLayout>
+              }
+            />
+            <Route
+              path="/admin/analytics"
+              element={
+                <AdminLayout>
+                  <Analytics />
+                </AdminLayout>
+              }
+            />
+            <Route
+              path="/admin/settings"
+              element={
+                <AdminLayout>
+                  <Settings />
+                </AdminLayout>
+              }
+            />
+          </Routes>
+        </ErrorBoundary>
+      </AuthProvider>
     </Router>
   );
 }
