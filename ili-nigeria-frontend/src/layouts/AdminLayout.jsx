@@ -1,3 +1,10 @@
+// Updated AdminLayout.jsx
+// Changes:
+// - Removed localStorage checks.
+// - Use useAuth from context to check isLoggedIn, isLoading, and profile.role.
+// - If not admin or not logged in, redirect to /login after loading.
+// - Use handleLogout from context for logout.
+// - Import useAuth from the correct path (adjust if AuthContext is moved).
 import React, { useEffect, useState } from "react";
 import {
   X,
@@ -11,30 +18,34 @@ import { useNavigate } from "react-router-dom";
 import DashboardNavbar from "../components/Dashboard/DashboardNavbar";
 import DashboardSidebar from "../components/Dashboard/DashboardSidebar";
 import DashboardFooter from "../components/Dashboard/DashboardFooter";
+import { useAuth } from "../context/AuthContext"; // Adjust path based on structure
 
 const AdminLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
+  const { isLoggedIn, profile, isLoading, handleLogout } = useAuth();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role");
-    if (!token || role !== "admin") {
-      navigate("/login");
+    if (!isLoading) {
+      if (!isLoggedIn || profile.role !== "admin") {
+        navigate("/login");
+      }
     }
-  }, [navigate]);
+  }, [isLoading, isLoggedIn, profile, navigate]);
 
-  const handleAdminLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    navigate("/login");
-  };
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        Loading...
+      </div>
+    ); // Optional loading state
+  }
 
   const adminData = {
     brandName: "ILIN",
     portalTitle: "Admin Portal",
-    userName: "John Doe",
-    userEmail: "admin@ilin.com",
+    userName: profile.name || "John Doe", // Use from context
+    userEmail: profile.email || "admin@ilin.com",
     userRole: "Super Admin",
     unreadNotificationCount: 3,
     notificationsList: [
@@ -110,7 +121,7 @@ const AdminLayout = ({ children }) => {
           userRole={adminData.userRole}
           unreadNotificationCount={adminData.unreadNotificationCount}
           notificationsList={adminData.notificationsList}
-          onLogout={handleAdminLogout}
+          onLogout={handleLogout} // Use context logout
         />
       </div>
 

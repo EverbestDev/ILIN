@@ -1,3 +1,7 @@
+// Updated ClientLayout.jsx
+// Changes:
+// - Similar to AdminLayout: Remove localStorage, use useAuth for checks and logout.
+// - Redirect if not client or not logged in.
 import React, { useEffect, useState } from "react";
 import {
   X,
@@ -10,30 +14,34 @@ import { useNavigate } from "react-router-dom";
 import DashboardNavbar from "../components/Dashboard/DashboardNavbar";
 import DashboardSidebar from "../components/Dashboard/DashboardSidebar";
 import DashboardFooter from "../components/Dashboard/DashboardFooter";
+import { useAuth } from "../context/AuthContext"; // Adjust path
 
 const ClientLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
+  const { isLoggedIn, profile, isLoading, handleLogout } = useAuth();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role");
-    if (!token || role !== "client") {
-      navigate("/login");
+    if (!isLoading) {
+      if (!isLoggedIn || profile.role !== "client") {
+        navigate("/login");
+      }
     }
-  }, [navigate]);
+  }, [isLoading, isLoggedIn, profile, navigate]);
 
-  const handleClientLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    navigate("/login");
-  };
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        Loading...
+      </div>
+    );
+  }
 
   const clientData = {
     brandName: "ILIN",
     portalTitle: "Client Dashboard",
-    userName: "Sarah Chen",
-    userEmail: "sarah@client.com",
+    userName: profile.name || "Sarah Chen",
+    userEmail: profile.email || "sarah@client.com",
     userRole: "Customer",
     showNotifications: true,
     unreadNotificationCount: 1,
@@ -99,7 +107,7 @@ const ClientLayout = ({ children }) => {
           unreadNotificationCount={clientData.unreadNotificationCount}
           notificationsList={clientData.notificationsList}
           showNotifications={clientData.showNotifications}
-          onLogout={handleClientLogout}
+          onLogout={handleLogout}
         />
       </div>
 

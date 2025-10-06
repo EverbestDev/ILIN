@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
+import admin from "firebase-admin";
 
 import connectDB from "./config/db.js";
 
@@ -18,12 +19,19 @@ import adminRoutes from "./routes/admin.js";
 import dashboardRoutes from "./routes/dashboard.js";
 import taskRouter from "./routes/task.js";
 import authRoutes from "./routes/auth.js";
-import { protect, restrictTo } from "./controllers/authController.js";
+import { protect, restrictTo } from "./middleware/auth.js"; // Fixed import
 
-//utils
+// Utils
 import { startTaskReminder } from "./utils/taskReminder.js";
 
-
+// Initialize Firebase Admin SDK
+admin.initializeApp({
+  credential: admin.credential.cert({
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+  }),
+});
 
 const app = express();
 
@@ -54,12 +62,10 @@ app.use("/api", emailRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/quotes", quoteRoutes);
 app.use("/api/subscribe", subscriberRoutes);
-
 app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", protect, restrictTo("admin"), dashboardRoutes);
 app.use("/api/admin", protect, restrictTo("admin"), adminRoutes);
 app.use("/api/tasks", protect, restrictTo("admin"), taskRouter);
-
 
 // Test route
 app.get("/", (req, res) => {
@@ -68,5 +74,3 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-

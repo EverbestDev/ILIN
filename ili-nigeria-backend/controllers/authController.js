@@ -1,68 +1,60 @@
-// src/controllers/authController.js
-import jwt from "jsonwebtoken";
-import User from "../models/User.js"; // Note: You named it Users.js
+import admin from "firebase-admin";
+import User from "../models/User.js";
 
-export const register = async (req, res) => {
+export const getProfile = async (req, res) => {
   try {
-    const { email, password, role } = req.body;
-    if (!email || !password)
-      return res.status(400).json({ message: "Email and password required" });
-    const existingUser = await User.findOne({ email });
-    if (existingUser)
-      return res.status(400).json({ message: "Email already exists" });
-    const user = new User({ email, password, role: role || "client" });
-    await user.save();
-    console.log("User registered:", email, role);
-    res.json({ message: "User registered successfully" });
-  } catch (error) {
-    console.error("Register error:", error);
-    res.status(500).json({ message: "Failed to register" });
-  }
-};
-
-export const login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    if (!email || !password)
-      return res.status(400).json({ message: "Email and password required" });
-    const user = await User.findOne({ email });
-    if (!user || !(await user.comparePassword(password))) {
-      return res.status(401).json({ message: "Invalid credentials" });
+    const user = req.user; // From protect middleware (Firebase verified)
+    const dbUser = await User.findOne({ firebaseUid: user.uid });
+    if (!dbUser) {
+      return res.status(404).json({ message: "User not found in database" });
     }
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "1d",
-      }
-    );
-    console.log("User logged in:", email, user.role);
-    res.status(200).json({ token, role: user.role }); // Ensure token is sent
+    res.json({
+      user: {
+        name: dbUser.name,
+        email: dbUser.email,
+        role: dbUser.role,
+      },
+    });
   } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({ message: "Failed to login" });
+    console.error("Get profile error:", error);
+    res.status(500).json({ message: "Failed to fetch profile" });
   }
 };
 
-export const protect = async (req, res, next) => {
+export const setClaimsAndGetProfile = async (req, res) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) return res.status(401).json({ message: "No token provided" });
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById(decoded.id).select("-password");
-    if (!req.user) return res.status(401).json({ message: "User not found" });
-    next();
+    const { name, role } = req.body;
+    const firebaseUser = req.user; // From protect middleware
+
+    let user = await User.findOne({ firebaseUid: firebaseUser.uid });
+    if (!user) {
+      user = new User({
+        firebaseUid: firebaseUser.uid,
+        email: firebaseUser.email,
+        name: name || firebaseUser.displayName || "Guest",
+        role: role || "client",
+      });
+      await user.save();
+      console.log("New user created:", user.email, user.role);
+    } else if (name) {
+      user.name = name;
+      await user.save();
+    }
+
+    // Set custom claims in Firebase
+    await admin
+      .auth()
+      .setCustomUserClaims(firebaseUser.uid, { role: user.role });
+
+    res.json({
+      user: {
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
   } catch (error) {
-    console.error("Protect middleware error:", error);
-    res.status(401).json({ message: "Invalid token" });
+    console.error("Set claims error:", error);
+    res.status(500).json({ message: "Failed to set claims or fetch profile" });
   }
 };
-
-export const restrictTo =
-  (...roles) =>
-  (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ message: "Access denied" });
-    }
-    next();
-  };

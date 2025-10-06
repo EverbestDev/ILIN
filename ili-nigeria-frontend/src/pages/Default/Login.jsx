@@ -1,11 +1,21 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FcGoogle } from "react-icons/fc";
-import { FaFacebookF, FaLinkedinIn } from "react-icons/fa";
+import { FaFacebookF, FaTwitter } from "react-icons/fa";
 import { Globe, Eye, EyeOff } from "lucide-react";
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  googleProvider,
+  setPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence,
+  sendPasswordResetEmail,
+  auth,
+} from "../../utility/firebase";
 
-// Carousel Data
 const carouselSlides = [
   {
     title: "Our Mission",
@@ -21,7 +31,6 @@ const carouselSlides = [
   },
 ];
 
-// Auth Sidebar Component
 const AuthSidebar = ({ activeSlide }) => {
   const slide = carouselSlides[activeSlide];
   return (
@@ -32,7 +41,6 @@ const AuthSidebar = ({ activeSlide }) => {
         </div>
         <h1 className="text-xl font-bold">ILIN Portal</h1>
       </div>
-
       <div className="max-w-md my-auto text-left">
         <motion.div
           key={activeSlide}
@@ -43,7 +51,6 @@ const AuthSidebar = ({ activeSlide }) => {
           <h2 className="mb-4 text-3xl font-bold">{slide.title}</h2>
           <p className="text-xl font-light text-green-100">{slide.text}</p>
         </motion.div>
-
         <div className="flex justify-start gap-2 mt-8">
           {carouselSlides.map((_, index) => (
             <div
@@ -55,7 +62,6 @@ const AuthSidebar = ({ activeSlide }) => {
           ))}
         </div>
       </div>
-
       <p className="text-xs text-white/70">
         Connecting cultures through language excellence.
       </p>
@@ -67,18 +73,22 @@ export default function Login() {
   const [isSignup, setIsSignup] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(""); // For password reset success
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [error, setError] = useState("");
-
+  const [showComingSoon, setShowComingSoon] = useState(false);
+  const [showResetPassword, setShowResetPassword] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [resetEmail, setResetEmail] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   const navigate = useNavigate();
+  const BASE_URL = "https://ilin-nigeria-backend.onrender.com";
 
-  // Auto-rotate carousel
   useEffect(() => {
     const timer = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % carouselSlides.length);
@@ -86,64 +96,218 @@ export default function Login() {
     return () => clearInterval(timer);
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const handleSignIn = async (provider) => {
     setError("");
+    setSuccess("");
+    setLoading(true);
 
     try {
-      let endpoint = "/api/auth/login";
-      let body = { email, password };
+      // Set persistence based on "Remember Me" checkbox
+      await setPersistence(
+        auth,
+        rememberMe ? browserLocalPersistence : browserSessionPersistence
+      );
 
-      if (isSignup) {
-        if (password !== confirmPassword) {
-          setError("Passwords do not match");
-          setLoading(false);
-          return;
+      const userCredential = provider
+        ? await signInWithPopup(auth, provider)
+        : await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      const idToken = await user.getIdToken();
+
+      const profileResponse = await fetch(
+        `${BASE_URL}/api/auth/set-claims-and-get-profile`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${idToken}`,
+          },
         }
-        endpoint = "/api/auth/register";
-        body = { name, email, password, role: "client" };
+      );
+
+      if (!profileResponse.ok) {
+        const data = await profileResponse.json();
+        throw new Error(data.message || "Failed to fetch user role.");
       }
 
-      const res = await fetch("https://ilin-backend.onrender.com" + endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+      const profileData = await profileResponse.json();
+      const { role } = profileData.user;
 
-      const data = await res.json();
+      setLoading(false);
+      navigate(role === "admin" ? "/admin/dashboard" : "/client/dashboard");
+    } catch (error) {
+      setLoading(false);
+      let errorMessage = "An unknown error occurred during login.";
 
-      if (res.ok) {
-        if (isSignup) {
-          setError("Account created. Please log in.");
-          setIsSignup(false);
-          setName("");
-          setPassword("");
-          setConfirmPassword("");
-        } else {
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("role", data.role);
-          console.log("JWT Token:", data.token);
-          navigate(
-            data.role === "admin" ? "/admin/dashboard" : "/client/dashboard"
-          );
+      if (error.code && error.code.startsWith("auth/")) {
+        switch (error.code) {
+          case "auth/invalid-credential":
+          case "auth/wrong-password":
+          case "auth/user-not-found":
+            errorMessage = "Invalid email or password.";
+            break;
+          case "auth/too-many-requests":
+            errorMessage =
+              "Account temporarily locked due to too many failed attempts. Try again later.";
+            break;
+          case "auth/invalid-email":
+            errorMessage = "The email address is not valid.";
+            break;
+          case "auth/popup-closed-by-user":
+            errorMessage = "Login cancelled. Please try again.";
+            break;
+          case "auth/popup-blocked":
+            errorMessage =
+              "Popup blocked by browser. Please allow popups and try again.";
+            break;
+          case "auth/account-exists-with-different-credential":
+            errorMessage =
+              "An account already exists with a different sign-in method. Please use the original method or contact support.";
+            break;
+          default:
+            errorMessage = error.message || "Login failed.";
+            break;
         }
       } else {
-        setError(data.message);
+        errorMessage =
+          error.message ||
+          "Login failed. Please check your network or ensure the backend is running.";
       }
+
+      console.error("Login Error:", error);
+      setError(errorMessage);
+    }
+  };
+
+  const handleSignUp = async () => {
+    setError("");
+    setSuccess("");
+    setLoading(true);
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // Set persistence for sign-up (default to local for new accounts)
+      await setPersistence(auth, browserLocalPersistence);
+
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      const idToken = await user.getIdToken();
+
+      const profileResponse = await fetch(
+        `${BASE_URL}/api/auth/set-claims-and-get-profile`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${idToken}`,
+          },
+          body: JSON.stringify({ name, role: "client" }),
+        }
+      );
+
+      if (!profileResponse.ok) {
+        const data = await profileResponse.json();
+        throw new Error(data.message || "Failed to create user profile.");
+      }
+
+      const profileData = await profileResponse.json();
+      const { role } = profileData.user;
+
+      setLoading(false);
+      setIsSignup(false);
+      setName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      setSuccess("Account created. Please sign in.");
     } catch (error) {
-      setError("Failed to " + (isSignup ? "register" : "login"));
+      setLoading(false);
+      let errorMessage = "An unknown error occurred during registration.";
+
+      if (error.code && error.code.startsWith("auth/")) {
+        switch (error.code) {
+          case "auth/email-already-in-use":
+            errorMessage = "This email is already registered.";
+            break;
+          case "auth/invalid-email":
+            errorMessage = "The email address is not valid.";
+            break;
+          case "auth/weak-password":
+            errorMessage = "Password is too weak. Use at least 6 characters.";
+            break;
+          default:
+            errorMessage = error.message || "Registration failed.";
+            break;
+        }
+      } else {
+        errorMessage =
+          error.message ||
+          "Registration failed. Please check your network or ensure the backend is running.";
+      }
+
+      console.error("Registration Error:", error);
+      setError(errorMessage);
+    }
+  };
+
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    setLoading(true);
+
+    try {
+      await sendPasswordResetEmail(auth, resetEmail);
+      setSuccess("Password reset email sent. Check your inbox.");
+      setResetEmail("");
+      setShowResetPassword(false);
+    } catch (error) {
+      let errorMessage = "Failed to send password reset email.";
+      if (error.code && error.code.startsWith("auth/")) {
+        switch (error.code) {
+          case "auth/invalid-email":
+            errorMessage = "The email address is not valid.";
+            break;
+          case "auth/user-not-found":
+            errorMessage = "No user found with this email.";
+            break;
+          default:
+            errorMessage = error.message || "Password reset failed.";
+            break;
+        }
+      }
+      console.error("Password Reset Error:", error);
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (isSignup) {
+      await handleSignUp();
+    } else {
+      await handleSignIn(null);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    await handleSignIn(googleProvider);
+  };
+
   return (
     <div className="flex min-h-screen overflow-hidden bg-gray-50">
-      {/* Sidebar */}
       <AuthSidebar activeSlide={activeSlide} />
-
-      {/* Form Section */}
       <div className="flex flex-col items-center justify-center w-full p-6 sm:p-12 lg:w-2/3 xl:w-3/5 bg-gray-50">
         <motion.div
           key={isSignup ? "signup" : "login"}
@@ -152,7 +316,6 @@ export default function Login() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          {/* Toggle Buttons */}
           <div className="flex justify-center mb-8">
             <button
               type="button"
@@ -177,8 +340,16 @@ export default function Login() {
               Sign Up
             </button>
           </div>
-          {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
-
+          {error && (
+            <p className="mb-4 text-sm text-red-600" role="alert">
+              {error}
+            </p>
+          )}
+          {success && (
+            <p className="mb-4 text-sm text-green-600" role="alert">
+              {success}
+            </p>
+          )}
           <form onSubmit={handleSubmit} className="space-y-4">
             {isSignup && (
               <div>
@@ -196,6 +367,7 @@ export default function Login() {
                   className="w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   placeholder="Your Name"
                   required
+                  disabled={loading}
                 />
               </div>
             )}
@@ -214,6 +386,7 @@ export default function Login() {
                 className="w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                 placeholder="you@example.com"
                 required
+                disabled={loading}
               />
             </div>
             <div className="relative">
@@ -231,6 +404,7 @@ export default function Login() {
                 className="w-full px-4 py-3 pr-10 transition duration-150 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                 placeholder="••••••••"
                 required
+                disabled={loading}
               />
               <button
                 type="button"
@@ -261,6 +435,7 @@ export default function Login() {
                   className="w-full px-4 py-3 pr-10 transition duration-150 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   placeholder="••••••••"
                   required
+                  disabled={loading}
                 />
                 <button
                   type="button"
@@ -286,7 +461,10 @@ export default function Login() {
                   <input
                     id="remember-me"
                     type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
                     className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                    disabled={loading}
                   />
                   <label
                     htmlFor="remember-me"
@@ -295,15 +473,15 @@ export default function Login() {
                     Remember me
                   </label>
                 </div>
-                <a
-                  href="#"
+                <button
+                  type="button"
+                  onClick={() => setShowResetPassword(true)}
                   className="text-sm font-medium text-green-600 hover:text-green-500"
                 >
                   Forgot password?
-                </a>
+                </button>
               </div>
             )}
-
             <button
               type="submit"
               disabled={loading}
@@ -318,42 +496,113 @@ export default function Login() {
               )}
             </button>
           </form>
-
           <div className="relative mt-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
+              <div className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-sm">
               <span className="px-2 text-gray-500 bg-white">
-                Or connect with
+                Or continue with
               </span>
             </div>
           </div>
-
           <div className="grid grid-cols-3 gap-3 mt-6">
             <button
               type="button"
-              onClick={() => console.log("Google Auth")}
-              className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50"
+              onClick={handleGoogleSignIn}
+              disabled={loading}
+              className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
             >
               <FcGoogle size={20} />
             </button>
             <button
               type="button"
-              onClick={() => console.log("Facebook Auth")}
-              className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50"
+              onClick={() => setShowComingSoon(true)}
+              disabled={loading}
+              className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
             >
               <FaFacebookF size={20} className="text-blue-600" />
             </button>
             <button
               type="button"
-              onClick={() => console.log("LinkedIn Auth")}
-              className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50"
+              onClick={() => setShowComingSoon(true)}
+              disabled={loading}
+              className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
             >
-              <FaLinkedinIn size={20} className="text-blue-700" />
+              <FaTwitter size={20} className="text-blue-400" />
             </button>
           </div>
-
+          {showComingSoon && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+              <div className="w-full max-w-sm p-6 bg-white rounded-lg shadow-xl">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Coming Soon
+                </h3>
+                <p className="mt-2 text-sm text-gray-600">
+                  This authentication method is not yet available. Please use
+                  Google or email/password to sign in.
+                </p>
+                <button
+                  onClick={() => setShowComingSoon(false)}
+                  className="w-full px-4 py-2 mt-4 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          )}
+          {showResetPassword && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+              <div className="w-full max-w-sm p-6 bg-white rounded-lg shadow-xl">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Reset Password
+                </h3>
+                <p className="mt-2 text-sm text-gray-600">
+                  Enter your email to receive a password reset link.
+                </p>
+                <form onSubmit={handleResetPassword} className="mt-4 space-y-4">
+                  <div>
+                    <label
+                      htmlFor="resetEmail"
+                      className="block mb-1 text-sm font-medium text-gray-700"
+                    >
+                      Email Address
+                    </label>
+                    <input
+                      id="resetEmail"
+                      type="email"
+                      value={resetEmail}
+                      onChange={(e) => setResetEmail(e.target.value)}
+                      className="w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      placeholder="you@example.com"
+                      required
+                      disabled={loading}
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="flex-1 px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50"
+                    >
+                      {loading ? (
+                        <div className="w-5 h-5 mx-auto border-b-2 border-white rounded-full animate-spin"></div>
+                      ) : (
+                        "Send Reset Link"
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowResetPassword(false)}
+                      className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
           <p className="mt-8 text-xs text-center text-gray-500">
             By continuing, you agree to our{" "}
             <a
@@ -361,6 +610,13 @@ export default function Login() {
               className="font-medium text-green-600 hover:text-green-500"
             >
               Terms of Service
+            </a>
+            {" and "}
+            <a
+              href="#"
+              className="font-medium text-green-600 hover:text-green-500"
+            >
+              Privacy Policy
             </a>
             .
           </p>
