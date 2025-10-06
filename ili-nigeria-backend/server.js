@@ -41,10 +41,43 @@ connectDB();
 // Middlewares
 app.use(express.json());
 
-// Configure helmet to allow Firebase OAuth popups
+// CORS setup - MUST come before helmet and other middleware
+const corsOptions = {
+  origin: ["http://localhost:5173", "https://ilin-nigeria.vercel.app"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"],
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  exposedHeaders: ["Content-Range", "X-Content-Range"],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  maxAge: 86400, // Cache preflight response for 24 hours
+};
+
+app.use(cors(corsOptions));
+
+// Explicit OPTIONS handler for all routes
+app.use((req, res, next) => {
+  if (req.method === "OPTIONS") {
+    res.header("Access-Control-Allow-Origin", req.headers.origin);
+    res.header(
+      "Access-Control-Allow-Methods",
+      "GET,POST,PUT,DELETE,OPTIONS,PATCH,HEAD"
+    );
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Content-Type,Authorization,X-Requested-With"
+    );
+    res.header("Access-Control-Allow-Credentials", "true");
+    return res.sendStatus(204);
+  }
+  next();
+});
+
+// Configure helmet AFTER CORS
 app.use(
   helmet({
     crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+    crossOriginResourcePolicy: { policy: "cross-origin" },
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
@@ -62,21 +95,6 @@ app.use(
 );
 
 app.use(morgan("dev"));
-
-// CORS setup
-app.use(
-  cors({
-    origin: ["http://localhost:5173", "https://ilin-nigeria.vercel.app"],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"],
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-    maxAge: 86400, // Cache preflight response for 24 hours
-  })
-);
-
-app.options("*", cors());
 
 // Register routes
 app.use("/api", emailRoutes);
