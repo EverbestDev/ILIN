@@ -87,7 +87,7 @@ export default function Login() {
   const [rememberMe, setRememberMe] = useState(false);
 
   const navigate = useNavigate();
-  const BASE_URL = "https://ilin-nigeria-backend.onrender.com";
+  const BASE_URL = "https://ilin-backend.onrender.com" || import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   useEffect(() => {
     const timer = setInterval(() => {

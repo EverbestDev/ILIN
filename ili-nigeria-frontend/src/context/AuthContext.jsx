@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   // Fixed: This will use the env variable if available, otherwise localhost
-  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000" || "https://ilin-backend.onrender.com";
 
   const fetchUserProfile = async (firebaseUser) => {
     if (!firebaseUser) {
