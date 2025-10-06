@@ -8,7 +8,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import admin from "firebase-admin";
 
-import connectDB from "./config/db.js";
+import connectDB from "../config/db.js";
 
 // Import routes
 import emailRoutes from "./routes/email.js";
