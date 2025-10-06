@@ -23,7 +23,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 
-const API_URL = "https://ilin-backend.onrender.com/api/quotes";
+const API_URL = "https://ilin-backend.onrender.com/api/quotes" || import.meta.env.VITE_API_URL + "/api/quotes" || "http://localhost:5000/api/quotes";
 
 export default function AdminQuotes() {
   const [quotes, setQuotes] = useState([]);
