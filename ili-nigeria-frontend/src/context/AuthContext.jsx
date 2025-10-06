@@ -20,8 +20,6 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [authState, setAuthState] = useState(initialUserState);
   const navigate = useNavigate();
-
-  // Fixed: This will use the env variable if available, otherwise localhost
   const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000" || "https://ilin-backend.onrender.com";
 
   const fetchUserProfile = async (firebaseUser) => {
@@ -38,8 +36,26 @@ export const AuthProvider = ({ children }) => {
           Authorization: `Bearer ${idToken}`,
           "Content-Type": "application/json",
         },
-        credentials: "include", // Added this for CORS with credentials
+        credentials: "include",
       });
+
+      // If 404, user doesn't exist in DB yet - use Firebase data as fallback
+      if (response.status === 404) {
+        setAuthState({
+          isLoggedIn: true,
+          isLoading: false,
+          user: firebaseUser,
+          profile: {
+            name:
+              firebaseUser.displayName ||
+              firebaseUser.email?.split("@")[0] ||
+              "User",
+            email: firebaseUser.email,
+            role: "client",
+          },
+        });
+        return;
+      }
 
       if (!response.ok) {
         const data = await response.json();
@@ -53,15 +69,11 @@ export const AuthProvider = ({ children }) => {
         isLoggedIn: true,
         isLoading: false,
         user: firebaseUser,
-        profile: {
-          name: name,
-          email: email,
-          role: role,
-        },
+        profile: { name, email, role },
       });
     } catch (error) {
       console.error("Error fetching user profile/claims:", error);
-      // Don't logout on profile fetch error - user is still authenticated
+      // Fallback to Firebase user data on any error
       setAuthState({
         isLoggedIn: true,
         isLoading: false,
@@ -72,7 +84,7 @@ export const AuthProvider = ({ children }) => {
             firebaseUser.email?.split("@")[0] ||
             "User",
           email: firebaseUser.email,
-          role: "client", // Default role
+          role: "client",
         },
       });
     }
