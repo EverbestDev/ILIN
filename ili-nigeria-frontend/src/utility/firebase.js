@@ -30,6 +30,7 @@ export const googleProvider = new GoogleAuthProvider();
 export {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
   signOut,
   onAuthStateChanged,
   signInWithPopup,
