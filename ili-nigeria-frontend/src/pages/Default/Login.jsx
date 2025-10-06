@@ -8,7 +8,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signInWithPopup,
-  googleProvider,
+  GoogleAuthProvider,
   setPersistence,
   browserLocalPersistence,
   browserSessionPersistence,
@@ -74,7 +74,7 @@ export default function Login() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(""); // For password reset success
+  const [success, setSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showComingSoon, setShowComingSoon] = useState(false);
@@ -102,7 +102,6 @@ export default function Login() {
     setLoading(true);
 
     try {
-      // Set persistence based on "Remember Me" checkbox
       await setPersistence(
         auth,
         rememberMe ? browserLocalPersistence : browserSessionPersistence
@@ -122,22 +121,24 @@ export default function Login() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${idToken}`,
           },
+          body: JSON.stringify({ name: name || user.displayName || email.split("@")[0], role: "client" }),
+          credentials: "include",
         }
       );
 
       if (!profileResponse.ok) {
         const data = await profileResponse.json();
-        throw new Error(data.message || "Failed to fetch user role.");
+        throw new Error(data.message || `HTTP error! Status: ${profileResponse.status}`);
       }
 
       const profileData = await profileResponse.json();
-      const { role } = profileData.user;
+      const { role, email: userEmail } = profileData.user;
 
       setLoading(false);
-      navigate(role === "admin" ? "/admin/dashboard" : "/client/dashboard");
+      navigate(role === "admin" ? "/admin/dashboard" : `/client/dashboard/${userEmail}`);
     } catch (error) {
       setLoading(false);
-      let errorMessage = "An unknown error occurred during login.";
+      let errorMessage = "Failed to sign in. Please try again.";
 
       if (error.code && error.code.startsWith("auth/")) {
         switch (error.code) {
@@ -147,34 +148,29 @@ export default function Login() {
             errorMessage = "Invalid email or password.";
             break;
           case "auth/too-many-requests":
-            errorMessage =
-              "Account temporarily locked due to too many failed attempts. Try again later.";
+            errorMessage = "Too many attempts. Try again later.";
             break;
           case "auth/invalid-email":
-            errorMessage = "The email address is not valid.";
+            errorMessage = "Invalid email address.";
             break;
           case "auth/popup-closed-by-user":
-            errorMessage = "Login cancelled. Please try again.";
+            errorMessage = "Sign-in cancelled.";
             break;
           case "auth/popup-blocked":
-            errorMessage =
-              "Popup blocked by browser. Please allow popups and try again.";
+            errorMessage = "Popup blocked. Please allow popups.";
             break;
           case "auth/account-exists-with-different-credential":
-            errorMessage =
-              "An account already exists with a different sign-in method. Please use the original method or contact support.";
+            errorMessage = "Account exists with a different sign-in method.";
             break;
           default:
-            errorMessage = error.message || "Login failed.";
+            errorMessage = error.message || "Sign-in failed.";
             break;
         }
       } else {
-        errorMessage =
-          error.message ||
-          "Login failed. Please check your network or ensure the backend is running.";
+        errorMessage = error.message || "Network error. Check backend connection.";
       }
 
-      console.error("Login Error:", error);
+      console.error("Sign-In Error:", error);
       setError(errorMessage);
     }
   };
@@ -191,14 +187,9 @@ export default function Login() {
     }
 
     try {
-      // Set persistence for sign-up (default to local for new accounts)
       await setPersistence(auth, browserLocalPersistence);
 
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       const idToken = await user.getIdToken();
 
@@ -211,16 +202,17 @@ export default function Login() {
             Authorization: `Bearer ${idToken}`,
           },
           body: JSON.stringify({ name, role: "client" }),
+          credentials: "include",
         }
       );
 
       if (!profileResponse.ok) {
         const data = await profileResponse.json();
-        throw new Error(data.message || "Failed to create user profile.");
+        throw new Error(data.message || `HTTP error! Status: ${profileResponse.status}`);
       }
 
       const profileData = await profileResponse.json();
-      const { role } = profileData.user;
+      const { role, email: userEmail } = profileData.user;
 
       setLoading(false);
       setIsSignup(false);
@@ -229,9 +221,10 @@ export default function Login() {
       setPassword("");
       setConfirmPassword("");
       setSuccess("Account created. Please sign in.");
+      navigate(role === "admin" ? "/admin/dashboard" : `/client/dashboard/${userEmail}`);
     } catch (error) {
       setLoading(false);
-      let errorMessage = "An unknown error occurred during registration.";
+      let errorMessage = "Failed to register. Please try again.";
 
       if (error.code && error.code.startsWith("auth/")) {
         switch (error.code) {
@@ -239,7 +232,7 @@ export default function Login() {
             errorMessage = "This email is already registered.";
             break;
           case "auth/invalid-email":
-            errorMessage = "The email address is not valid.";
+            errorMessage = "Invalid email address.";
             break;
           case "auth/weak-password":
             errorMessage = "Password is too weak. Use at least 6 characters.";
@@ -249,9 +242,7 @@ export default function Login() {
             break;
         }
       } else {
-        errorMessage =
-          error.message ||
-          "Registration failed. Please check your network or ensure the backend is running.";
+        errorMessage = error.message || "Network error. Check backend connection.";
       }
 
       console.error("Registration Error:", error);
@@ -275,7 +266,7 @@ export default function Login() {
       if (error.code && error.code.startsWith("auth/")) {
         switch (error.code) {
           case "auth/invalid-email":
-            errorMessage = "The email address is not valid.";
+            errorMessage = "Invalid email address.";
             break;
           case "auth/user-not-found":
             errorMessage = "No user found with this email.";
@@ -302,7 +293,8 @@ export default function Login() {
   };
 
   const handleGoogleSignIn = async () => {
-    await handleSignIn(googleProvider);
+    const provider = new GoogleAuthProvider();
+    await handleSignIn(provider);
   };
 
   return (

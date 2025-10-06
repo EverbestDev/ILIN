@@ -18,7 +18,7 @@ export const protect = async (req, res, next) => {
 export const restrictTo =
   (...roles) =>
   (req, res, next) => {
-    const userRole = req.user.role; // From custom claims
+    const userRole = req.user.role;
     if (!roles.includes(userRole)) {
       return res.status(403).json({ message: "Access denied" });
     }
