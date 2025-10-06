@@ -40,7 +40,27 @@ connectDB();
 
 // Middlewares
 app.use(express.json());
-app.use(helmet());
+
+// Configure helmet to allow Firebase OAuth popups
+app.use(
+  helmet({
+    crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        connectSrc: [
+          "'self'",
+          "https://*.googleapis.com",
+          "https://*.firebaseio.com",
+          "https://ilin-nigeria-backend.onrender.com",
+        ],
+        frameSrc: ["'self'", "https://*.firebaseapp.com"],
+        scriptSrc: ["'self'", "https://*.googleapis.com"],
+      },
+    },
+  })
+);
+
 app.use(morgan("dev"));
 
 // CORS setup
@@ -52,6 +72,7 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
     preflightContinue: false,
     optionsSuccessStatus: 204,
+    maxAge: 86400, // Cache preflight response for 24 hours
   })
 );
 
