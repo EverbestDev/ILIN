@@ -52,6 +52,7 @@ const Dashboard = () => {
     };
   };
 
+
   const getDateRange = () => {
     const now = new Date();
     let startDate = new Date();
@@ -91,7 +92,7 @@ const Dashboard = () => {
 
         const [statsRes, quotesRes, subscribersRes, contactsRes, tasksRes] =
           await Promise.all([
-            fetch(`${BASE_URL}/api/admin/overview`, {
+            fetch(`${BASE_URL}/api/dashboard/admin`, {
               headers,
               credentials: "include",
             }).then((res) =>

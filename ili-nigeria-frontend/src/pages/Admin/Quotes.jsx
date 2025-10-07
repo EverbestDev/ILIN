@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Search,
   Download,
@@ -22,10 +23,14 @@ import {
   Send,
   ExternalLink,
 } from "lucide-react";
+import { auth } from "../../utility/firebase";
 
-const API_URL = "https://ilin-backend.onrender.com/api/quotes" || import.meta.env.VITE_API_URL + "/api/quotes" || "http://localhost:5000/api/quotes";
+const API_URL =
+  import.meta.env.VITE_API_URL + "/api/quotes" ||
+  "http://localhost:5000/api/quotes";
 
 export default function AdminQuotes() {
+  const navigate = useNavigate();
   const [quotes, setQuotes] = useState([]);
   const [filteredQuotes, setFilteredQuotes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,7 +39,7 @@ export default function AdminQuotes() {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [notification, setNotification] = useState(null);
 
-  // ðŸ” Filters
+  // Filters
   const [search, setSearch] = useState("");
   const [filterService, setFilterService] = useState("");
   const [filterUrgency, setFilterUrgency] = useState("");
@@ -43,9 +48,22 @@ export default function AdminQuotes() {
   const [showFilters, setShowFilters] = useState(false);
   const [dateRange, setDateRange] = useState("all");
 
-  // ðŸ“„ Pagination
+  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const quotesPerPage = 10;
+
+  // Get Firebase auth headers
+  const getAuthHeaders = async () => {
+    const user = auth.currentUser;
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+    const idToken = await user.getIdToken(true); // Force refresh
+    return {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    };
+  };
 
   // Show notification
   const showNotification = (message, type = "success") => {
@@ -53,25 +71,39 @@ export default function AdminQuotes() {
     setTimeout(() => setNotification(null), 3000);
   };
 
-  // âœ… Fetch all quotes
+  // Check authentication
+  useEffect(() => {
+    if (!auth.currentUser) {
+      navigate("/login");
+    }
+  }, [navigate]);
+
+  // Fetch all quotes
   useEffect(() => {
     const fetchQuotes = async () => {
       try {
-        const res = await fetch(API_URL);
-        if (!res.ok) throw new Error("Failed to fetch quotes");
+        const headers = await getAuthHeaders();
+        const res = await fetch(API_URL, {
+          headers,
+          credentials: "include",
+        });
+        if (!res.ok) throw new Error(`Failed to fetch quotes: ${res.status}`);
         const data = await res.json();
         setQuotes(data);
         setFilteredQuotes(data);
       } catch (err) {
+        console.error("Fetch quotes error:", err);
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-    fetchQuotes();
+    if (auth.currentUser) {
+      fetchQuotes();
+    }
   }, []);
 
-  // âœ… Apply search + filters + sort
+  // Apply search + filters + sort
   useEffect(() => {
     let results = [...quotes];
 
@@ -128,32 +160,43 @@ export default function AdminQuotes() {
     quotes,
   ]);
 
-  // âœ… Delete a quote
+  // Delete a quote
   const handleDelete = async (id) => {
     try {
-      const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Failed to delete");
+      const headers = await getAuthHeaders();
+      const res = await fetch(`${API_URL}/${id}`, {
+        method: "DELETE",
+        headers,
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error(`Failed to delete: ${res.status}`);
       setQuotes((prev) => prev.filter((q) => q._id !== id));
       setDeleteConfirm(null);
       showNotification("Quote deleted successfully", "success");
     } catch (err) {
-      showNotification("Error deleting quote: " + err.message, "error");
+      console.error("Delete quote error:", err);
+      showNotification(`Error deleting quote: ${err.message}`, "error");
     }
   };
 
-  // âœ… Fetch single quote details
+  // Fetch single quote details
   const handleView = async (id) => {
     try {
-      const res = await fetch(`${API_URL}/${id}`);
-      if (!res.ok) throw new Error("Failed to fetch details");
+      const headers = await getAuthHeaders();
+      const res = await fetch(`${API_URL}/${id}`, {
+        headers,
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error(`Failed to fetch details: ${res.status}`);
       const data = await res.json();
       setSelectedQuote(data);
     } catch (err) {
-      showNotification("Error fetching details: " + err.message, "error");
+      console.error("Fetch quote details error:", err);
+      showNotification(`Error fetching details: ${err.message}`, "error");
     }
   };
 
-  //  Export to CSV
+  // Export to CSV
   const handleExportCSV = () => {
     const headers = [
       "Client Name",
@@ -235,7 +278,7 @@ export default function AdminQuotes() {
   const getLanguageBadge = (source, targets) => {
     const targetList = targets?.slice(0, 2).join(", ") || "";
     const more = targets?.length > 2 ? ` +${targets.length - 2}` : "";
-    return `${source} â†’ ${targetList}${more}`;
+    return `${source} → ${targetList}${more}`;
   };
 
   // Calculate stats
@@ -286,7 +329,7 @@ export default function AdminQuotes() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-3">
           <div className="hidden p-3 shadow-lg bg-gradient-to-br from-green-600 to-green-700 rounded-xl md:flex">
-            <Globe className="hidden w-8 h-8 text-white md:flex" />
+            <Globe className="w-8 h-8 text-white" />
           </div>
           <div>
             <h1 className="text-3xl font-bold text-green-700">
@@ -985,7 +1028,7 @@ export default function AdminQuotes() {
                 </p>
               </div>
               <p className="mb-6 text-sm font-medium text-center text-red-600">
-                âš ï¸ This action cannot be undone
+                ⚠️ This action cannot be undone
               </p>
               <div className="flex gap-3">
                 <button
