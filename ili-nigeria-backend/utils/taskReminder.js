@@ -16,6 +16,7 @@ export const startTaskReminder = () => {
           due: { $lte: tomorrow.toISOString().split("T")[0] + " 23:59" },
           email: { $exists: true },
         });
+        console.log(`Reminder job running at: ${new Date().toISOString()} (WAT: ${new Date().toLocaleString('en-NG', {timeZone: 'Africa/Lagos'})})`);
         for (const task of tasks) {
           await sendEmail(
             task.email,
