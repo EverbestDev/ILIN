@@ -14,7 +14,7 @@ export const protect = async (req, res, next) => {
     const decodedToken = await admin.auth().verifyIdToken(token);
     req.user = decodedToken;
 
-    // Fetch custom claims
+    // Ensure custom claims are fetched
     const userRecord = await admin.auth().getUser(decodedToken.uid);
     req.user.role = userRecord.customClaims?.role || "client";
 

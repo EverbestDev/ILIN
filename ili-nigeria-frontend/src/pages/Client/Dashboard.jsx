@@ -128,7 +128,7 @@ const ClientDashboard = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard
+        <clientStats
           title="Total Orders"
           value={clientStats.totalOrders.total}
           change={clientStats.totalOrders.change}
@@ -136,7 +136,7 @@ const ClientDashboard = () => {
           icon={FileText}
           color="bg-green-100 border-green-200"
         />
-        <StatCard
+        <clientStats
           title="In Progress"
           value={clientStats.inProgress.total}
           change={clientStats.inProgress.change}
@@ -144,7 +144,7 @@ const ClientDashboard = () => {
           icon={Clock}
           color="bg-yellow-100 border-yellow-200"
         />
-        <StatCard
+        <clientStats
           title="Completed"
           value={clientStats.completed.total}
           change={clientStats.completed.change}
@@ -152,7 +152,7 @@ const ClientDashboard = () => {
           icon={CheckCircle}
           color="bg-blue-100 border-blue-200"
         />
-        <StatCard
+        <clientStats
           title="Total Spent"
           value={clientStats.totalSpent.total}
           change={clientStats.totalSpent.change}
