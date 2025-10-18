@@ -14,6 +14,10 @@ export const protect = async (req, res, next) => {
     const decodedToken = await admin.auth().verifyIdToken(token);
     req.user = decodedToken;
 
+    // Fetch custom claims
+    const userRecord = await admin.auth().getUser(decodedToken.uid);
+    req.user.role = userRecord.customClaims?.role || "client";
+
     next();
   } catch (error) {
     console.error("Firebase auth middleware error:", error);
@@ -28,7 +32,8 @@ export const restrictTo =
       return next();
     }
 
-    if (roles.includes("admin") && !req.user.admin) {
+    const userRole = req.user.role || "client";
+    if (!roles.includes(userRole)) {
       return res.status(403).json({ message: "Access denied" });
     }
     next();

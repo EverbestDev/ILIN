@@ -20,16 +20,9 @@ import dashboardRoutes from "./routes/dashboard.js";
 import taskRouter from "./routes/task.js";
 import authRoutes from "./routes/auth.js";
 import settingsRoutes from "./routes/settings.js";
-
-import messageRoutes from "./routes/message.js"; // Add this
+import messageRoutes from "./routes/message.js";
 
 import { protect, restrictTo } from "./middleware/auth.js";
-// ... other imports
-
-// Register routes
-// Add this
-
-// Utils
 import { startTaskReminder } from "./utils/taskReminder.js";
 
 // Initialize Firebase Admin SDK
@@ -49,26 +42,31 @@ connectDB();
 // Middlewares
 app.use(express.json());
 
-// CORS setup - MUST come before helmet and other middleware
+// CORS setup
 const corsOptions = {
-  origin: ["http://localhost:5173", "https://ilin-nigeria.vercel.app"],
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "https://ilin-nigeria.vercel.app",
+  ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"],
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   exposedHeaders: ["Content-Range", "X-Content-Range"],
   preflightContinue: false,
   optionsSuccessStatus: 204,
-  maxAge: 86400, // Cache preflight response for 24 hours
+  maxAge: 86400,
 };
 
 app.use(cors(corsOptions));
 
-// Explicit OPTIONS handler for all routes
+// Explicit OPTIONS handler
 app.use((req, res, next) => {
   if (req.method === "OPTIONS") {
     const origin = req.headers.origin;
     const allowedOrigins = [
       "http://localhost:5173",
+      "http://localhost:5174",
       "https://ilin-nigeria.vercel.app",
     ];
 
@@ -121,7 +119,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", protect, restrictTo("admin"), dashboardRoutes);
 app.use("/api/admin", protect, restrictTo("admin"), adminRoutes);
 app.use("/api/tasks", protect, restrictTo("admin"), taskRouter);
-app.use("/api/contact", contactRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/settings", settingsRoutes);
 
