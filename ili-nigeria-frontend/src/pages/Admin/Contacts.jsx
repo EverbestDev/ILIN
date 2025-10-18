@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Search,
   Download,
@@ -15,13 +16,20 @@ import {
   AlertCircle,
   Clock,
   User,
-  Phone,
   MessageSquare,
+  ArrowLeft,
 } from "lucide-react";
 
-const API_URL = "https://ilin-backend.onrender.com/api/contacts"; // Update with your actual endpoint
+// Mock auth for demo - replace with your actual firebase auth
+const auth = {
+  currentUser: { getIdToken: async () => "mock-token" },
+};
 
-const Contacts = () => {
+const API_URL = "https://ilin-backend.onrender.com/api/contact";
+const MESSAGE_API_URL = "https://ilin-backend.onrender.com/api/messages";
+
+export default function AdminContacts() {
+  const navigate = useNavigate();
   const [contacts, setContacts] = useState([]);
   const [filteredContacts, setFilteredContacts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,17 +37,23 @@ const Contacts = () => {
   const [selectedContact, setSelectedContact] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [notification, setNotification] = useState(null);
-
-  // Filters
   const [search, setSearch] = useState("");
-  const [filterStatus, setFilterStatus] = useState("");
-  const [dateRange, setDateRange] = useState("all");
   const [sortOrder, setSortOrder] = useState("newest");
+  const [sourceFilter, setSourceFilter] = useState("all");
   const [showFilters, setShowFilters] = useState(false);
-
-  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
+  const [replyText, setReplyText] = useState("");
   const contactsPerPage = 10;
+
+  const getAuthHeaders = async () => {
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not authenticated");
+    const idToken = await user.getIdToken();
+    return {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    };
+  };
 
   const showNotification = (message, type = "success") => {
     setNotification({ message, type });
@@ -47,46 +61,35 @@ const Contacts = () => {
   };
 
   useEffect(() => {
+    if (!auth.currentUser) {
+      navigate("/login");
+    }
+  }, [navigate]);
+
+  useEffect(() => {
     const fetchContacts = async () => {
       try {
-        // Mock data - replace with actual API call
-        const mockData = Array.from({ length: 35 }, (_, i) => ({
-          _id: `contact-${i + 1}`,
-          name: `Contact Person ${i + 1}`,
-          email: `contact${i + 1}@example.com`,
-          phone: `+1 (555) ${String(i + 100).padStart(3, "0")}-${String(
-            i * 10
-          ).padStart(4, "0")}`,
-          subject: [
-            "Quote Request",
-            "General Inquiry",
-            "Partnership",
-            "Support",
-            "Feedback",
-          ][Math.floor(Math.random() * 5)],
-          message: `This is a sample contact message from person ${
-            i + 1
-          }. It contains their inquiry or request for information about translation services.`,
-          status: ["new", "read", "replied"][Math.floor(Math.random() * 3)],
-          createdAt: new Date(
-            Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
-          ).toISOString(),
-        }));
-
-        setContacts(mockData);
-        setFilteredContacts(mockData);
+        const headers = await getAuthHeaders();
+        const res = await fetch(API_URL, {
+          headers,
+          credentials: "include",
+        });
+        if (!res.ok) throw new Error(`Failed to fetch contacts: ${res.status}`);
+        const data = await res.json();
+        setContacts(data);
+        setFilteredContacts(data);
       } catch (err) {
+        console.error("Fetch contacts error:", err);
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-    fetchContacts();
+    if (auth.currentUser) fetchContacts();
   }, []);
 
   useEffect(() => {
     let results = [...contacts];
-
     if (search.trim()) {
       results = results.filter(
         (c) =>
@@ -95,70 +98,81 @@ const Contacts = () => {
           c.subject?.toLowerCase().includes(search.toLowerCase())
       );
     }
-
-    if (filterStatus) {
-      results = results.filter((c) => c.status === filterStatus);
+    if (sourceFilter !== "all") {
+      results = results.filter((c) => c.source === sourceFilter);
     }
-
-    if (dateRange !== "all") {
-      const now = new Date();
-      results = results.filter((c) => {
-        const contactDate = new Date(c.createdAt);
-        const diffDays = Math.floor(
-          (now - contactDate) / (1000 * 60 * 60 * 24)
-        );
-
-        if (dateRange === "today") return diffDays === 0;
-        if (dateRange === "week") return diffDays <= 7;
-        if (dateRange === "month") return diffDays <= 30;
-        return true;
-      });
-    }
-
-    results.sort((a, b) => {
-      if (sortOrder === "newest")
-        return new Date(b.createdAt) - new Date(a.createdAt);
-      else return new Date(a.createdAt) - new Date(b.createdAt);
-    });
-
+    results.sort((a, b) =>
+      sortOrder === "newest"
+        ? new Date(b.createdAt) - new Date(a.createdAt)
+        : new Date(a.createdAt) - new Date(b.createdAt)
+    );
     setFilteredContacts(results);
     setCurrentPage(1);
-  }, [search, filterStatus, dateRange, sortOrder, contacts]);
+  }, [search, sortOrder, sourceFilter, contacts]);
 
   const handleDelete = async (id) => {
     try {
+      const headers = await getAuthHeaders();
+      const res = await fetch(`${API_URL}/${id}`, {
+        method: "DELETE",
+        headers,
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error(`Failed to delete: ${res.status}`);
       setContacts((prev) => prev.filter((c) => c._id !== id));
       setDeleteConfirm(null);
-      showNotification("Contact message deleted successfully", "success");
+      showNotification("Contact deleted successfully", "success");
     } catch (err) {
-      showNotification("Error deleting message: " + err.message, "error");
+      console.error("Delete contact error:", err);
+      showNotification(`Error deleting contact: ${err.message}`, "error");
     }
   };
 
-  const handleMarkAsRead = async (id) => {
-    setContacts((prev) =>
-      prev.map((c) => (c._id === id ? { ...c, status: "read" } : c))
-    );
-    showNotification("Marked as read", "success");
+  const handleReply = async (threadId) => {
+    if (!replyText.trim()) {
+      showNotification("Reply cannot be empty", "error");
+      return;
+    }
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch(`${MESSAGE_API_URL}/${threadId}/reply`, {
+        method: "POST",
+        headers,
+        credentials: "include",
+        body: JSON.stringify({ message: replyText }),
+      });
+      if (!res.ok) throw new Error(`Failed to send reply: ${res.status}`);
+      const data = await res.json();
+      setContacts((prev) => [
+        data.data,
+        ...prev.filter((c) => c._id !== data.data._id),
+      ]);
+      setReplyText("");
+      setSelectedContact((prev) => ({
+        ...prev,
+        threadMessages: [...(prev.threadMessages || []), data.data],
+      }));
+      showNotification("Reply sent successfully", "success");
+    } catch (err) {
+      console.error("Reply error:", err);
+      showNotification(`Error sending reply: ${err.message}`, "error");
+    }
   };
 
   const handleExportCSV = () => {
-    const headers = ["Name", "Email", "Phone", "Subject", "Status", "Date"];
+    const headers = ["Source", "Name", "Email", "Subject", "Submitted On"];
     const rows = filteredContacts.map((c) => [
-      c.name,
-      c.email,
-      c.phone,
+      c.source,
+      c.name || "N/A",
+      c.email || "N/A",
       c.subject,
-      c.status,
       new Date(c.createdAt).toLocaleDateString(),
     ]);
-
-    let csvContent =
+    const csvContent =
       "data:text/csv;charset=utf-8," +
       [headers, ...rows]
         .map((row) => row.map((cell) => `"${cell}"`).join(","))
         .join("\n");
-
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
@@ -172,28 +186,10 @@ const Contacts = () => {
     showNotification("CSV exported successfully", "success");
   };
 
-  const handleSendEmail = (email, subject) => {
-    window.location.href = `mailto:${email}?subject=Re: ${subject}`;
-  };
-
   const clearFilters = () => {
     setSearch("");
-    setFilterStatus("");
-    setDateRange("all");
+    setSourceFilter("all");
     setSortOrder("newest");
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "new":
-        return "bg-blue-100 text-blue-700 border-blue-200";
-      case "read":
-        return "bg-gray-100 text-gray-700 border-gray-200";
-      case "replied":
-        return "bg-green-100 text-green-700 border-green-200";
-      default:
-        return "bg-gray-100 text-gray-700 border-gray-200";
-    }
   };
 
   const indexOfLast = currentPage * contactsPerPage;
@@ -203,14 +199,18 @@ const Contacts = () => {
 
   const stats = {
     total: contacts.length,
-    new: contacts.filter((c) => c.status === "new").length,
-    read: contacts.filter((c) => c.status === "read").length,
-    replied: contacts.filter((c) => c.status === "replied").length,
+    public: contacts.filter((c) => c.source === "public").length,
+    client: contacts.filter((c) => c.source === "client").length,
+    lastWeek: contacts.filter((c) => {
+      const diffDays = Math.floor(
+        (new Date() - new Date(c.createdAt)) / (1000 * 60 * 60 * 24)
+      );
+      return diffDays <= 7;
+    }).length,
   };
 
   const activeFiltersCount = [
-    filterStatus,
-    dateRange !== "all" ? dateRange : null,
+    sourceFilter !== "all" ? sourceFilter : null,
   ].filter(Boolean).length;
 
   return (
@@ -239,7 +239,7 @@ const Contacts = () => {
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Contact Messages</h1>
         <p className="text-gray-600 mt-1">
-          View and respond to customer inquiries
+          Manage and respond to customer inquiries
         </p>
       </div>
 
@@ -256,29 +256,29 @@ const Contacts = () => {
 
         <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between mb-2">
-            <Clock className="w-5 h-5 text-blue-600" />
-            <span className="text-xs font-medium text-gray-500">NEW</span>
+            <User className="w-5 h-5 text-blue-600" />
+            <span className="text-xs font-medium text-gray-500">PUBLIC</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{stats.new}</p>
-          <p className="text-xs text-gray-600 mt-1">Unread Messages</p>
+          <p className="text-2xl font-bold text-gray-900">{stats.public}</p>
+          <p className="text-xs text-gray-600 mt-1">Public Contacts</p>
         </div>
 
         <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between mb-2">
-            <Eye className="w-5 h-5 text-purple-600" />
-            <span className="text-xs font-medium text-gray-500">READ</span>
+            <MessageSquare className="w-5 h-5 text-purple-600" />
+            <span className="text-xs font-medium text-gray-500">CLIENT</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{stats.read}</p>
-          <p className="text-xs text-gray-600 mt-1">Read Messages</p>
+          <p className="text-2xl font-bold text-gray-900">{stats.client}</p>
+          <p className="text-xs text-gray-600 mt-1">Client Messages</p>
         </div>
 
         <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between mb-2">
-            <CheckCircle className="w-5 h-5 text-green-600" />
-            <span className="text-xs font-medium text-gray-500">REPLIED</span>
+            <Clock className="w-5 h-5 text-orange-600" />
+            <span className="text-xs font-medium text-gray-500">RECENT</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{stats.replied}</p>
-          <p className="text-xs text-gray-600 mt-1">Responded To</p>
+          <p className="text-2xl font-bold text-gray-900">{stats.lastWeek}</p>
+          <p className="text-xs text-gray-600 mt-1">Last 7 Days</p>
         </div>
       </div>
 
@@ -327,25 +327,13 @@ const Contacts = () => {
         {showFilters && (
           <div className="mt-4 pt-4 border-t border-gray-200 grid grid-cols-1 md:grid-cols-4 gap-3">
             <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
+              value={sourceFilter}
+              onChange={(e) => setSourceFilter(e.target.value)}
               className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
             >
-              <option value="">All Status</option>
-              <option value="new">New</option>
-              <option value="read">Read</option>
-              <option value="replied">Replied</option>
-            </select>
-
-            <select
-              value={dateRange}
-              onChange={(e) => setDateRange(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
-            >
-              <option value="all">All Time</option>
-              <option value="today">Today</option>
-              <option value="week">This Week</option>
-              <option value="month">This Month</option>
+              <option value="all">All Sources</option>
+              <option value="public">Public Contacts</option>
+              <option value="client">Client Messages</option>
             </select>
 
             <select
@@ -398,7 +386,7 @@ const Contacts = () => {
                       Subject
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Status
+                      Source
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Date
@@ -412,24 +400,23 @@ const Contacts = () => {
                   {currentContacts.map((contact) => (
                     <tr
                       key={contact._id}
-                      className={`hover:bg-green-50/30 transition-colors ${
-                        contact.status === "new" ? "bg-blue-50/20" : ""
-                      }`}
+                      className="hover:bg-green-50/30 transition-colors"
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-green-700 rounded-lg flex items-center justify-center text-white font-semibold">
-                            {contact.name.charAt(0).toUpperCase()}
+                            {(
+                              contact.name?.charAt(0) ||
+                              contact.email?.charAt(0) ||
+                              "?"
+                            ).toUpperCase()}
                           </div>
                           <div>
                             <p className="font-medium text-gray-900">
-                              {contact.name}
+                              {contact.name || "N/A"}
                             </p>
                             <p className="text-sm text-gray-600">
-                              {contact.email}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              {contact.phone}
+                              {contact.email || "N/A"}
                             </p>
                           </div>
                         </div>
@@ -444,11 +431,13 @@ const Contacts = () => {
                       </td>
                       <td className="px-6 py-4">
                         <span
-                          className={`inline-flex px-3 py-1 text-xs font-medium rounded-full border ${getStatusColor(
-                            contact.status
-                          )}`}
+                          className={`inline-flex px-3 py-1 text-xs font-medium rounded-full border ${
+                            contact.source === "public"
+                              ? "bg-blue-100 text-blue-700 border-blue-200"
+                              : "bg-purple-100 text-purple-700 border-purple-200"
+                          }`}
                         >
-                          {contact.status}
+                          {contact.source === "public" ? "Public" : "Client"}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-600">
@@ -463,31 +452,66 @@ const Contacts = () => {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex gap-2 justify-center">
-                          {contact.status === "new" && (
-                            <button
-                              onClick={() => handleMarkAsRead(contact._id)}
-                              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
-                              title="Mark as Read"
-                            >
-                              <Eye className="w-4 h-4" />
-                            </button>
-                          )}
                           <button
-                            onClick={() =>
-                              handleSendEmail(contact.email, contact.subject)
-                            }
-                            className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-all"
-                            title="Reply"
-                          >
-                            <Send className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => setSelectedContact(contact)}
+                            onClick={() => {
+                              if (contact.source === "client") {
+                                const threadMessages = contacts
+                                  .filter(
+                                    (c) => c.threadId === contact.threadId
+                                  )
+                                  .sort(
+                                    (a, b) =>
+                                      new Date(a.createdAt) -
+                                      new Date(b.createdAt)
+                                  );
+                                setSelectedContact({
+                                  ...contact,
+                                  threadMessages,
+                                });
+                              } else {
+                                setSelectedContact(contact);
+                              }
+                            }}
                             className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-all"
                             title="View Details"
                           >
                             <Eye className="w-4 h-4" />
                           </button>
+                          {contact.source === "client" && contact.threadId && (
+                            <button
+                              onClick={() => {
+                                const threadMessages = contacts
+                                  .filter(
+                                    (c) => c.threadId === contact.threadId
+                                  )
+                                  .sort(
+                                    (a, b) =>
+                                      new Date(a.createdAt) -
+                                      new Date(b.createdAt)
+                                  );
+                                setSelectedContact({
+                                  ...contact,
+                                  threadMessages,
+                                  replyMode: true,
+                                });
+                              }}
+                              className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-all"
+                              title="Reply"
+                            >
+                              <Send className="w-4 h-4" />
+                            </button>
+                          )}
+                          {contact.source === "public" && (
+                            <button
+                              onClick={() =>
+                                (window.location.href = `mailto:${contact.email}?subject=Re: ${contact.subject}`)
+                              }
+                              className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-all"
+                              title="Email Reply"
+                            >
+                              <Mail className="w-4 h-4" />
+                            </button>
+                          )}
                           <button
                             onClick={() => setDeleteConfirm(contact)}
                             className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all"
@@ -590,19 +614,30 @@ const Contacts = () => {
             <div className="sticky top-0 bg-gradient-to-r from-green-600 to-green-700 px-6 py-5 flex items-center justify-between rounded-t-2xl">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-white font-bold">
-                  {selectedContact.name.charAt(0).toUpperCase()}
+                  {(
+                    selectedContact.name?.charAt(0) ||
+                    selectedContact.email?.charAt(0) ||
+                    "?"
+                  ).toUpperCase()}
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-white">
-                    Contact Message
+                    {selectedContact.source === "public"
+                      ? "Contact Message"
+                      : "Message Thread"}
                   </h2>
                   <p className="text-green-100 text-sm">
-                    Full details and conversation
+                    {selectedContact.source === "public"
+                      ? "Public contact form submission"
+                      : "Client messaging conversation"}
                   </p>
                 </div>
               </div>
               <button
-                onClick={() => setSelectedContact(null)}
+                onClick={() => {
+                  setSelectedContact(null);
+                  setReplyText("");
+                }}
                 className="p-2 hover:bg-white/20 rounded-lg transition-all"
               >
                 <X className="w-5 h-5 text-white" />
@@ -610,81 +645,149 @@ const Contacts = () => {
             </div>
 
             <div className="p-6 space-y-6">
-              {/* Contact Info */}
-              <div className="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl p-5 border border-gray-200">
-                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <User className="w-5 h-5 text-green-600" />
-                  Contact Information
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <span className="text-sm text-gray-600 block mb-1">
-                      Full Name
-                    </span>
-                    <span className="font-medium text-gray-900">
-                      {selectedContact.name}
-                    </span>
+              {selectedContact.source === "public" ? (
+                <>
+                  {/* Contact Info */}
+                  <div className="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl p-5 border border-gray-200">
+                    <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      <User className="w-5 h-5 text-green-600" />
+                      Contact Information
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <span className="text-sm text-gray-600 block mb-1">
+                          Full Name
+                        </span>
+                        <span className="font-medium text-gray-900">
+                          {selectedContact.name}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-600 block mb-1">
+                          Email Address
+                        </span>
+                        <a
+                          href={`mailto:${selectedContact.email}`}
+                          className="font-medium text-green-600 hover:underline"
+                        >
+                          {selectedContact.email}
+                        </a>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-sm text-gray-600 block mb-1">
-                      Email Address
-                    </span>
-                    <a
-                      href={`mailto:${selectedContact.email}`}
-                      className="font-medium text-green-600 hover:underline"
-                    >
-                      {selectedContact.email}
-                    </a>
-                  </div>
-                  <div>
-                    <span className="text-sm text-gray-600 block mb-1">
-                      Phone Number
-                    </span>
-                    <a
-                      href={`tel:${selectedContact.phone}`}
-                      className="font-medium text-green-600 hover:underline"
-                    >
-                      {selectedContact.phone}
-                    </a>
-                  </div>
-                  <div>
-                    <span className="text-sm text-gray-600 block mb-1">
-                      Status
-                    </span>
-                    <span
-                      className={`inline-flex px-3 py-1 text-xs font-medium rounded-full border ${getStatusColor(
-                        selectedContact.status
-                      )}`}
-                    >
-                      {selectedContact.status}
-                    </span>
-                  </div>
-                </div>
-              </div>
 
-              {/* Subject */}
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-xl p-5 border border-blue-200">
-                <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                  <MessageSquare className="w-5 h-5 text-blue-600" />
-                  Subject
-                </h3>
-                <p className="text-gray-900 font-medium">
-                  {selectedContact.subject}
-                </p>
-              </div>
+                  {/* Subject */}
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-xl p-5 border border-blue-200">
+                    <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                      <MessageSquare className="w-5 h-5 text-blue-600" />
+                      Subject
+                    </h3>
+                    <p className="text-gray-900 font-medium">
+                      {selectedContact.subject}
+                    </p>
+                  </div>
 
-              {/* Message */}
-              <div className="bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-xl p-5 border border-purple-200">
-                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <Mail className="w-5 h-5 text-purple-600" />
-                  Message
-                </h3>
-                <div className="bg-white rounded-lg p-4 border border-purple-200">
-                  <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                    {selectedContact.message}
-                  </p>
-                </div>
-              </div>
+                  {/* Message */}
+                  <div className="bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-xl p-5 border border-purple-200">
+                    <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                      <Mail className="w-5 h-5 text-purple-600" />
+                      Message
+                    </h3>
+                    <div className="bg-white rounded-lg p-4 border border-purple-200">
+                      <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                        {selectedContact.message}
+                      </p>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Thread Messages */}
+                  <div className="space-y-4">
+                    <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                      <MessageSquare className="w-5 h-5 text-green-600" />
+                      Conversation Thread
+                    </h3>
+                    {selectedContact.threadMessages?.map((msg, idx) => (
+                      <div
+                        key={msg._id}
+                        className={`p-4 rounded-xl ${
+                          msg.sender === "client"
+                            ? "bg-gradient-to-br from-blue-50 to-blue-100/50 border border-blue-200 ml-8"
+                            : "bg-gradient-to-br from-green-50 to-green-100/50 border border-green-200 mr-8"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <div
+                              className={`w-8 h-8 rounded-lg flex items-center justify-center text-white font-semibold ${
+                                msg.sender === "client"
+                                  ? "bg-blue-600"
+                                  : "bg-green-600"
+                              }`}
+                            >
+                              {msg.sender === "client" ? "C" : "A"}
+                            </div>
+                            <span className="text-sm font-medium text-gray-900">
+                              {msg.sender === "client" ? "Client" : "Admin"}
+                            </span>
+                          </div>
+                          <span className="text-xs text-gray-500">
+                            {new Date(msg.createdAt).toLocaleString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </span>
+                        </div>
+                        <p className="text-gray-700 leading-relaxed">
+                          {msg.message}
+                        </p>
+                      </div>
+                    ))}
+
+                    {/* Reply Box */}
+                    {selectedContact.replyMode && (
+                      <div className="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl p-5 border border-gray-200">
+                        <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                          <Send className="w-5 h-5 text-green-600" />
+                          Send Reply
+                        </h4>
+                        <textarea
+                          placeholder="Type your reply message here..."
+                          value={replyText}
+                          onChange={(e) => setReplyText(e.target.value)}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none resize-none"
+                          rows="4"
+                        />
+                        <div className="mt-3 flex gap-3">
+                          <button
+                            onClick={() =>
+                              handleReply(selectedContact.threadId)
+                            }
+                            className="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all flex items-center gap-2"
+                          >
+                            <Send className="w-4 h-4" />
+                            Send Reply
+                          </button>
+                          <button
+                            onClick={() =>
+                              setSelectedContact({
+                                ...selectedContact,
+                                replyMode: false,
+                              })
+                            }
+                            className="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-all"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
 
               {/* Date */}
               <div className="bg-gradient-to-br from-orange-50 to-orange-100/50 rounded-xl p-5 border border-orange-200">
@@ -709,32 +812,36 @@ const Contacts = () => {
             </div>
 
             <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-4 flex justify-between items-center rounded-b-2xl">
-              <button
-                onClick={() =>
-                  handleSendEmail(
-                    selectedContact.email,
-                    selectedContact.subject
-                  )
-                }
-                className="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all flex items-center gap-2"
-              >
-                <Send className="w-4 h-4" />
-                Reply to Message
-              </button>
-              <div className="flex gap-3">
-                {selectedContact.status === "new" && (
-                  <button
-                    onClick={() => {
-                      handleMarkAsRead(selectedContact._id);
-                      setSelectedContact(null);
-                    }}
-                    className="px-5 py-2.5 border border-blue-300 text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 font-medium transition-all"
-                  >
-                    Mark as Read
-                  </button>
-                )}
+              {selectedContact.source === "public" ? (
                 <button
-                  onClick={() => setSelectedContact(null)}
+                  onClick={() =>
+                    (window.location.href = `mailto:${selectedContact.email}?subject=Re: ${selectedContact.subject}`)
+                  }
+                  className="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all flex items-center gap-2"
+                >
+                  <Mail className="w-4 h-4" />
+                  Reply via Email
+                </button>
+              ) : (
+                <button
+                  onClick={() =>
+                    setSelectedContact({
+                      ...selectedContact,
+                      replyMode: !selectedContact.replyMode,
+                    })
+                  }
+                  className="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all flex items-center gap-2"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  {selectedContact.replyMode ? "Hide Reply" : "Reply to Thread"}
+                </button>
+              )}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setSelectedContact(null);
+                    setReplyText("");
+                  }}
                   className="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-white font-medium transition-all"
                 >
                   Close
@@ -743,6 +850,7 @@ const Contacts = () => {
                   onClick={() => {
                     setDeleteConfirm(selectedContact);
                     setSelectedContact(null);
+                    setReplyText("");
                   }}
                   className="px-5 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-all flex items-center gap-2"
                 >
@@ -772,11 +880,11 @@ const Contacts = () => {
               <div className="bg-gray-50 rounded-lg p-3 mb-6">
                 <p className="text-center">
                   <span className="font-semibold text-gray-900 text-lg">
-                    {deleteConfirm.name}
+                    {deleteConfirm.name || "Client"}
                   </span>
                   <br />
                   <span className="text-sm text-gray-600">
-                    {deleteConfirm.email}
+                    {deleteConfirm.email || "N/A"}
                   </span>
                 </p>
               </div>
@@ -801,24 +909,6 @@ const Contacts = () => {
           </div>
         </div>
       )}
-
-      <style>{`
-        @keyframes slide-in {
-          from {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-          to {
-            transform: translateX(0);
-            opacity: 1;
-          }
-        }
-        .animate-slide-in {
-          animation: slide-in 0.3s ease-out;
-        }
-      `}</style>
     </div>
   );
-};
-
-export default Contacts;
+}

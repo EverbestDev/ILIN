@@ -610,7 +610,7 @@ export default function AdminSubscribers() {
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">Status:</span>
-                    <span className="px-3 py-1 text-xs font-medium text-green-700 bg-green-100 border border-green-200 rounded-full">
+                    <span className="px-3 py-1 text-xs font-medium text-green-700 border border-green-200 rounded-full bg-green-100">
                       Active
                     </span>
                   </div>
