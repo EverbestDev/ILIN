@@ -19,14 +19,16 @@ import {
   MessageSquare,
   ArrowLeft,
 } from "lucide-react";
+import { auth } from "../../utility/firebase";
 
-// Mock auth for demo - replace with your actual firebase auth
-const auth = {
-  currentUser: { getIdToken: async () => "mock-token" },
-};
-
-const API_URL = "https://ilin-backend.onrender.com/api/contact";
-const MESSAGE_API_URL = "https://ilin-backend.onrender.com/api/messages";
+const API_URL =
+  "https://ilin-backend.onrender.com/api/contact" ||
+  import.meta.env.VITE_API_URL + "/api/contact" ||
+  "http://localhost:5000/api/contact";
+const MESSAGE_API_URL =
+  "https://ilin-backend.onrender.com/api/messages" ||
+  import.meta.env.VITE_API_URL + "/api/messages" ||
+  "http://localhost:5000/api/messages";
 
 export default function AdminContacts() {
   const navigate = useNavigate();
@@ -76,8 +78,13 @@ export default function AdminContacts() {
         });
         if (!res.ok) throw new Error(`Failed to fetch contacts: ${res.status}`);
         const data = await res.json();
-        setContacts(data);
-        setFilteredContacts(data);
+        // Normalize source: treat undefined/null source as "public"
+        const normalizedData = data.map((contact) => ({
+          ...contact,
+          source: contact.source || "public",
+        }));
+        setContacts(normalizedData);
+        setFilteredContacts(normalizedData);
       } catch (err) {
         console.error("Fetch contacts error:", err);
         setError(err.message);
@@ -128,6 +135,44 @@ export default function AdminContacts() {
     }
   };
 
+  const handleStartThread = async (contact) => {
+    if (!replyText.trim()) {
+      showNotification("Message cannot be empty", "error");
+      return;
+    }
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch(MESSAGE_API_URL, {
+        method: "POST",
+        headers,
+        credentials: "include",
+        body: JSON.stringify({
+          subject: `Re: ${contact.subject}`,
+          message: replyText,
+          userId: contact.email, // Use email as userId for public contacts
+        }),
+      });
+      if (!res.ok) throw new Error(`Failed to start thread: ${res.status}`);
+      const data = await res.json();
+      setContacts((prev) => [
+        { ...data.data, source: "client" },
+        ...prev.filter((c) => c._id !== data.data._id),
+      ]);
+      setSelectedContact({
+        ...contact,
+        threadId: data.data.threadId,
+        threadMessages: [data.data],
+        source: "client",
+        replyMode: true,
+      });
+      setReplyText("");
+      showNotification("Thread started successfully", "success");
+    } catch (err) {
+      console.error("Start thread error:", err);
+      showNotification(`Error starting thread: ${err.message}`, "error");
+    }
+  };
+
   const handleReply = async (threadId) => {
     if (!replyText.trim()) {
       showNotification("Reply cannot be empty", "error");
@@ -144,14 +189,14 @@ export default function AdminContacts() {
       if (!res.ok) throw new Error(`Failed to send reply: ${res.status}`);
       const data = await res.json();
       setContacts((prev) => [
-        data.data,
+        { ...data.data, source: "client" },
         ...prev.filter((c) => c._id !== data.data._id),
       ]);
-      setReplyText("");
       setSelectedContact((prev) => ({
         ...prev,
         threadMessages: [...(prev.threadMessages || []), data.data],
       }));
+      setReplyText("");
       showNotification("Reply sent successfully", "success");
     } catch (err) {
       console.error("Reply error:", err);
@@ -210,7 +255,9 @@ export default function AdminContacts() {
   };
 
   const activeFiltersCount = [
+    search.trim(),
     sourceFilter !== "all" ? sourceFilter : null,
+    sortOrder !== "newest" ? sortOrder : null,
   ].filter(Boolean).length;
 
   return (
@@ -238,55 +285,55 @@ export default function AdminContacts() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Contact Messages</h1>
-        <p className="text-gray-600 mt-1">
+        <p className="mt-1 text-gray-600">
           Manage and respond to customer inquiries
         </p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+        <div className="p-5 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
           <div className="flex items-center justify-between mb-2">
             <Mail className="w-5 h-5 text-green-600" />
             <span className="text-xs font-medium text-gray-500">TOTAL</span>
           </div>
           <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
-          <p className="text-xs text-gray-600 mt-1">All Messages</p>
+          <p className="mt-1 text-xs text-gray-600">All Messages</p>
         </div>
 
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+        <div className="p-5 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
           <div className="flex items-center justify-between mb-2">
             <User className="w-5 h-5 text-blue-600" />
             <span className="text-xs font-medium text-gray-500">PUBLIC</span>
           </div>
           <p className="text-2xl font-bold text-gray-900">{stats.public}</p>
-          <p className="text-xs text-gray-600 mt-1">Public Contacts</p>
+          <p className="mt-1 text-xs text-gray-600">Public Contacts</p>
         </div>
 
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+        <div className="p-5 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
           <div className="flex items-center justify-between mb-2">
             <MessageSquare className="w-5 h-5 text-purple-600" />
             <span className="text-xs font-medium text-gray-500">CLIENT</span>
           </div>
           <p className="text-2xl font-bold text-gray-900">{stats.client}</p>
-          <p className="text-xs text-gray-600 mt-1">Client Messages</p>
+          <p className="mt-1 text-xs text-gray-600">Client Messages</p>
         </div>
 
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+        <div className="p-5 transition-shadow bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md">
           <div className="flex items-center justify-between mb-2">
             <Clock className="w-5 h-5 text-orange-600" />
             <span className="text-xs font-medium text-gray-500">RECENT</span>
           </div>
           <p className="text-2xl font-bold text-gray-900">{stats.lastWeek}</p>
-          <p className="text-xs text-gray-600 mt-1">Last 7 Days</p>
+          <p className="mt-1 text-xs text-gray-600">Last 7 Days</p>
         </div>
       </div>
 
       {/* Search & Filter Bar */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-        <div className="flex flex-col lg:flex-row gap-4">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+      <div className="p-4 bg-white border border-gray-200 shadow-sm rounded-xl">
+        <div className="flex flex-col gap-4 lg:flex-row">
+          <div className="relative flex-1">
+            <Search className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2" />
             <input
               type="text"
               placeholder="Search by name, email, or subject..."
@@ -325,11 +372,11 @@ export default function AdminContacts() {
         </div>
 
         {showFilters && (
-          <div className="mt-4 pt-4 border-t border-gray-200 grid grid-cols-1 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 gap-3 pt-4 mt-4 border-t border-gray-200 md:grid-cols-4">
             <select
               value={sourceFilter}
               onChange={(e) => setSourceFilter(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
+              className="px-3 py-2 text-sm border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
             >
               <option value="all">All Sources</option>
               <option value="public">Public Contacts</option>
@@ -339,7 +386,7 @@ export default function AdminContacts() {
             <select
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
+              className="px-3 py-2 text-sm border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
             >
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>
@@ -348,7 +395,7 @@ export default function AdminContacts() {
             {activeFiltersCount > 0 && (
               <button
                 onClick={clearFilters}
-                className="px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-all font-medium"
+                className="px-3 py-2 text-sm font-medium text-red-600 transition-all rounded-lg hover:bg-red-50"
               >
                 Clear Filters
               </button>
@@ -359,39 +406,39 @@ export default function AdminContacts() {
 
       {/* Messages Table */}
       {loading && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+        <div className="p-12 text-center bg-white border border-gray-200 shadow-sm rounded-xl">
+          <div className="inline-block w-12 h-12 border-b-2 border-green-600 rounded-full animate-spin"></div>
           <p className="mt-4 text-gray-600">Loading messages...</p>
         </div>
       )}
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700">
+        <div className="p-4 text-red-700 border border-red-200 bg-red-50 rounded-xl">
           <p className="font-medium">Error loading messages</p>
-          <p className="text-sm mt-1">{error}</p>
+          <p className="mt-1 text-sm">{error}</p>
         </div>
       )}
 
       {!loading && !error && (
         <>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="overflow-hidden bg-white border border-gray-200 shadow-sm rounded-xl">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gradient-to-r from-gray-50 to-green-50/50 border-b border-gray-200">
+                <thead className="border-b border-gray-200 bg-gradient-to-r from-gray-50 to-green-50/50">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
                       Contact
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
                       Subject
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
                       Source
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
                       Date
                     </th>
-                    <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-xs font-semibold tracking-wider text-center text-gray-600 uppercase">
                       Actions
                     </th>
                   </tr>
@@ -400,11 +447,11 @@ export default function AdminContacts() {
                   {currentContacts.map((contact) => (
                     <tr
                       key={contact._id}
-                      className="hover:bg-green-50/30 transition-colors"
+                      className="transition-colors hover:bg-green-50/30"
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-green-700 rounded-lg flex items-center justify-center text-white font-semibold">
+                          <div className="flex items-center justify-center w-10 h-10 font-semibold text-white rounded-lg bg-gradient-to-br from-green-600 to-green-700">
                             {(
                               contact.name?.charAt(0) ||
                               contact.email?.charAt(0) ||
@@ -451,7 +498,7 @@ export default function AdminContacts() {
                         )}
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex gap-2 justify-center">
+                        <div className="flex justify-center gap-2">
                           <button
                             onClick={() => {
                               if (contact.source === "client") {
@@ -472,14 +519,14 @@ export default function AdminContacts() {
                                 setSelectedContact(contact);
                               }
                             }}
-                            className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-all"
+                            className="p-2 text-purple-600 transition-all rounded-lg hover:bg-purple-50"
                             title="View Details"
                           >
                             <Eye className="w-4 h-4" />
                           </button>
-                          {contact.source === "client" && contact.threadId && (
-                            <button
-                              onClick={() => {
+                          <button
+                            onClick={() => {
+                              if (contact.source === "client") {
                                 const threadMessages = contacts
                                   .filter(
                                     (c) => c.threadId === contact.threadId
@@ -494,27 +541,30 @@ export default function AdminContacts() {
                                   threadMessages,
                                   replyMode: true,
                                 });
-                              }}
-                              className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-all"
-                              title="Reply"
-                            >
-                              <Send className="w-4 h-4" />
-                            </button>
-                          )}
-                          {contact.source === "public" && (
-                            <button
-                              onClick={() =>
-                                (window.location.href = `mailto:${contact.email}?subject=Re: ${contact.subject}`)
+                              } else {
+                                setSelectedContact({
+                                  ...contact,
+                                  replyMode: true,
+                                });
                               }
-                              className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-all"
-                              title="Email Reply"
-                            >
-                              <Mail className="w-4 h-4" />
-                            </button>
-                          )}
+                            }}
+                            className="p-2 text-green-600 transition-all rounded-lg hover:bg-green-50"
+                            title="Start Thread"
+                          >
+                            <MessageSquare className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => {
+                              window.location.href = `mailto:${contact.email}?subject=Re: ${contact.subject}`;
+                            }}
+                            className="p-2 text-blue-600 transition-all rounded-lg hover:bg-blue-50"
+                            title="Email Reply"
+                          >
+                            <Mail className="w-4 h-4" />
+                          </button>
                           <button
                             onClick={() => setDeleteConfirm(contact)}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                            className="p-2 text-red-600 transition-all rounded-lg hover:bg-red-50"
                             title="Delete"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -526,11 +576,11 @@ export default function AdminContacts() {
                   {currentContacts.length === 0 && (
                     <tr>
                       <td colSpan="5" className="px-6 py-12 text-center">
-                        <Mail className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                        <p className="text-gray-600 font-medium">
+                        <Mail className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                        <p className="font-medium text-gray-600">
                           No contact messages found
                         </p>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="mt-1 text-sm text-gray-500">
                           Try adjusting your filters or search criteria
                         </p>
                       </td>
@@ -542,7 +592,7 @@ export default function AdminContacts() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
+              <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50">
                 <p className="text-sm text-gray-600">
                   Showing{" "}
                   <span className="font-medium">{indexOfFirst + 1}</span> to{" "}
@@ -557,7 +607,7 @@ export default function AdminContacts() {
                   <button
                     onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                     disabled={currentPage === 1}
-                    className="px-3 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white transition-all flex items-center gap-1"
+                    className="flex items-center gap-1 px-3 py-2 transition-all border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white"
                   >
                     <ChevronLeft className="w-4 h-4" />
                     Previous
@@ -595,7 +645,7 @@ export default function AdminContacts() {
                       setCurrentPage((p) => Math.min(p + 1, totalPages))
                     }
                     disabled={currentPage === totalPages}
-                    className="px-3 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white transition-all flex items-center gap-1"
+                    className="flex items-center gap-1 px-3 py-2 transition-all border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white"
                   >
                     Next
                     <ChevronRight className="w-4 h-4" />
@@ -609,11 +659,11 @@ export default function AdminContacts() {
 
       {/* View Details Modal */}
       {selectedContact && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-gradient-to-r from-green-600 to-green-700 px-6 py-5 flex items-center justify-between rounded-t-2xl">
+            <div className="sticky top-0 flex items-center justify-between px-6 py-5 bg-gradient-to-r from-green-600 to-green-700 rounded-t-2xl">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-white font-bold">
+                <div className="flex items-center justify-center w-12 h-12 font-bold text-white bg-white/20 rounded-xl">
                   {(
                     selectedContact.name?.charAt(0) ||
                     selectedContact.email?.charAt(0) ||
@@ -622,12 +672,14 @@ export default function AdminContacts() {
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-white">
-                    {selectedContact.source === "public"
+                    {selectedContact.source === "public" &&
+                    !selectedContact.threadId
                       ? "Contact Message"
                       : "Message Thread"}
                   </h2>
-                  <p className="text-green-100 text-sm">
-                    {selectedContact.source === "public"
+                  <p className="text-sm text-green-100">
+                    {selectedContact.source === "public" &&
+                    !selectedContact.threadId
                       ? "Public contact form submission"
                       : "Client messaging conversation"}
                   </p>
@@ -638,24 +690,25 @@ export default function AdminContacts() {
                   setSelectedContact(null);
                   setReplyText("");
                 }}
-                className="p-2 hover:bg-white/20 rounded-lg transition-all"
+                className="p-2 transition-all rounded-lg hover:bg-white/20"
               >
                 <X className="w-5 h-5 text-white" />
               </button>
             </div>
 
             <div className="p-6 space-y-6">
-              {selectedContact.source === "public" ? (
+              {selectedContact.source === "public" &&
+              !selectedContact.threadId ? (
                 <>
                   {/* Contact Info */}
-                  <div className="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl p-5 border border-gray-200">
-                    <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <div className="p-5 border border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl">
+                    <h3 className="flex items-center gap-2 mb-4 font-semibold text-gray-900">
                       <User className="w-5 h-5 text-green-600" />
                       Contact Information
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                       <div>
-                        <span className="text-sm text-gray-600 block mb-1">
+                        <span className="block mb-1 text-sm text-gray-600">
                           Full Name
                         </span>
                         <span className="font-medium text-gray-900">
@@ -663,7 +716,7 @@ export default function AdminContacts() {
                         </span>
                       </div>
                       <div>
-                        <span className="text-sm text-gray-600 block mb-1">
+                        <span className="block mb-1 text-sm text-gray-600">
                           Email Address
                         </span>
                         <a
@@ -677,38 +730,75 @@ export default function AdminContacts() {
                   </div>
 
                   {/* Subject */}
-                  <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-xl p-5 border border-blue-200">
-                    <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                  <div className="p-5 border border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-xl">
+                    <h3 className="flex items-center gap-2 mb-2 font-semibold text-gray-900">
                       <MessageSquare className="w-5 h-5 text-blue-600" />
                       Subject
                     </h3>
-                    <p className="text-gray-900 font-medium">
+                    <p className="font-medium text-gray-900">
                       {selectedContact.subject}
                     </p>
                   </div>
 
                   {/* Message */}
-                  <div className="bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-xl p-5 border border-purple-200">
-                    <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <div className="p-5 border border-purple-200 bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-xl">
+                    <h3 className="flex items-center gap-2 mb-3 font-semibold text-gray-900">
                       <Mail className="w-5 h-5 text-purple-600" />
                       Message
                     </h3>
-                    <div className="bg-white rounded-lg p-4 border border-purple-200">
-                      <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                    <div className="p-4 bg-white border border-purple-200 rounded-lg">
+                      <p className="leading-relaxed text-gray-700 whitespace-pre-wrap">
                         {selectedContact.message}
                       </p>
                     </div>
                   </div>
+
+                  {/* Start Thread */}
+                  {selectedContact.replyMode && (
+                    <div className="p-5 border border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl">
+                      <h4 className="flex items-center gap-2 mb-3 font-semibold text-gray-900">
+                        <Send className="w-5 h-5 text-green-600" />
+                        Start Message Thread
+                      </h4>
+                      <textarea
+                        placeholder="Type your message to start a thread..."
+                        value={replyText}
+                        onChange={(e) => setReplyText(e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none resize-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        rows="4"
+                      />
+                      <div className="flex gap-3 mt-3">
+                        <button
+                          onClick={() => handleStartThread(selectedContact)}
+                          className="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all flex items-center gap-2"
+                        >
+                          <Send className="w-4 h-4" />
+                          Start Thread
+                        </button>
+                        <button
+                          onClick={() =>
+                            setSelectedContact({
+                              ...selectedContact,
+                              replyMode: false,
+                            })
+                          }
+                          className="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-all"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </>
               ) : (
                 <>
                   {/* Thread Messages */}
                   <div className="space-y-4">
-                    <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                    <h3 className="flex items-center gap-2 font-semibold text-gray-900">
                       <MessageSquare className="w-5 h-5 text-green-600" />
                       Conversation Thread
                     </h3>
-                    {selectedContact.threadMessages?.map((msg, idx) => (
+                    {selectedContact.threadMessages?.map((msg) => (
                       <div
                         key={msg._id}
                         className={`p-4 rounded-xl ${
@@ -741,7 +831,7 @@ export default function AdminContacts() {
                             })}
                           </span>
                         </div>
-                        <p className="text-gray-700 leading-relaxed">
+                        <p className="leading-relaxed text-gray-700">
                           {msg.message}
                         </p>
                       </div>
@@ -749,8 +839,8 @@ export default function AdminContacts() {
 
                     {/* Reply Box */}
                     {selectedContact.replyMode && (
-                      <div className="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl p-5 border border-gray-200">
-                        <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                      <div className="p-5 border border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl">
+                        <h4 className="flex items-center gap-2 mb-3 font-semibold text-gray-900">
                           <Send className="w-5 h-5 text-green-600" />
                           Send Reply
                         </h4>
@@ -758,10 +848,10 @@ export default function AdminContacts() {
                           placeholder="Type your reply message here..."
                           value={replyText}
                           onChange={(e) => setReplyText(e.target.value)}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none resize-none"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none resize-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                           rows="4"
                         />
-                        <div className="mt-3 flex gap-3">
+                        <div className="flex gap-3 mt-3">
                           <button
                             onClick={() =>
                               handleReply(selectedContact.threadId)
@@ -790,8 +880,8 @@ export default function AdminContacts() {
               )}
 
               {/* Date */}
-              <div className="bg-gradient-to-br from-orange-50 to-orange-100/50 rounded-xl p-5 border border-orange-200">
-                <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+              <div className="p-5 border border-orange-200 bg-gradient-to-br from-orange-50 to-orange-100/50 rounded-xl">
+                <h3 className="flex items-center gap-2 mb-2 font-semibold text-gray-900">
                   <Calendar className="w-5 h-5 text-orange-600" />
                   Received On
                 </h3>
@@ -811,16 +901,22 @@ export default function AdminContacts() {
               </div>
             </div>
 
-            <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-4 flex justify-between items-center rounded-b-2xl">
-              {selectedContact.source === "public" ? (
+            <div className="sticky bottom-0 flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-2xl">
+              {selectedContact.source === "public" &&
+              !selectedContact.threadId ? (
                 <button
                   onClick={() =>
-                    (window.location.href = `mailto:${selectedContact.email}?subject=Re: ${selectedContact.subject}`)
+                    setSelectedContact({
+                      ...selectedContact,
+                      replyMode: !selectedContact.replyMode,
+                    })
                   }
                   className="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all flex items-center gap-2"
                 >
-                  <Mail className="w-4 h-4" />
-                  Reply via Email
+                  <MessageSquare className="w-4 h-4" />
+                  {selectedContact.replyMode
+                    ? "Hide Thread"
+                    : "Start Message Thread"}
                 </button>
               ) : (
                 <button
@@ -865,21 +961,21 @@ export default function AdminContacts() {
 
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl">
             <div className="p-6">
-              <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-red-500 to-red-600 mx-auto mb-4 shadow-lg">
+              <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full shadow-lg bg-gradient-to-br from-red-500 to-red-600">
                 <Trash2 className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 text-center mb-2">
+              <h3 className="mb-2 text-2xl font-bold text-center text-gray-900">
                 Delete Contact Message?
               </h3>
-              <p className="text-gray-600 text-center mb-2">
+              <p className="mb-2 text-center text-gray-600">
                 You're about to delete the message from:
               </p>
-              <div className="bg-gray-50 rounded-lg p-3 mb-6">
+              <div className="p-3 mb-6 rounded-lg bg-gray-50">
                 <p className="text-center">
-                  <span className="font-semibold text-gray-900 text-lg">
+                  <span className="text-lg font-semibold text-gray-900">
                     {deleteConfirm.name || "Client"}
                   </span>
                   <br />
@@ -888,19 +984,19 @@ export default function AdminContacts() {
                   </span>
                 </p>
               </div>
-              <p className="text-sm text-red-600 text-center mb-6 font-medium">
+              <p className="mb-6 text-sm font-medium text-center text-red-600">
                 ⚠️ This action cannot be undone
               </p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setDeleteConfirm(null)}
-                  className="flex-1 px-4 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-all"
+                  className="flex-1 px-4 py-3 font-medium text-gray-700 transition-all border-2 border-gray-300 rounded-lg hover:bg-gray-50"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => handleDelete(deleteConfirm._id)}
-                  className="flex-1 px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 font-medium transition-all shadow-lg"
+                  className="flex-1 px-4 py-3 font-medium text-white transition-all rounded-lg shadow-lg bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800"
                 >
                   Delete Forever
                 </button>

@@ -1,469 +1,473 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
-  Mail,
   Send,
-  MessageSquare,
+  Eye,
   X,
-  Plus,
-  ArrowLeft,
-  FileText,
-  User,
+  Filter,
+  Mail,
+  ChevronLeft,
+  ChevronRight,
   AlertCircle,
+  MessageSquare,
 } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { auth } from "../../utility/firebase";
 
-// Mock Data - Replace with your actual API calls
-const MOCK_CLIENT_EMAIL = "sarah@client.com";
-const MOCK_ADMIN_EMAIL = "Admin";
+const MESSAGE_API_URL =
+  "https://ilin-backend.onrender.com/api/messages" ||
+  import.meta.env.VITE_API_URL + "/api/messages" ||
+  "http://localhost:5000/api/messages";
+const CONTACT_API_URL =
+  "https://ilin-backend.onrender.com/api/contact/client" ||
+  import.meta.env.VITE_API_URL + "/api/contact/client" ||
+  "http://localhost:5000/api/contact/client";
 
-const mockThreads = [
-  {
-    id: 1,
-    subject: "Inquiry about certified translation cost",
-    status: "Replied",
-    lastUpdate: "2025-10-15T10:00:00Z",
-    isNew: false,
-    orderId: null,
-    messages: [
-      {
-        sender: MOCK_CLIENT_EMAIL,
-        text: "I need to translate a diploma for USCIS. Do you offer certified translation, and what is the typical cost difference?",
-        date: "2025-10-14T15:00:00Z",
-      },
-      {
-        sender: MOCK_ADMIN_EMAIL,
-        text: "Yes, we offer certified translations! The fee typically adds 15% to the base price and includes notarization. I recommend submitting a quote request with your document for an exact price. Let us know if you have any documents ready!",
-        date: "2025-10-15T10:00:00Z",
-      },
-    ],
-  },
-  {
-    id: 2,
-    subject: "Update on Order #1012: Document Missing",
-    status: "Open",
-    lastUpdate: "2025-10-18T14:30:00Z",
-    isNew: true,
-    orderId: "1012",
-    messages: [
-      {
-        sender: MOCK_ADMIN_EMAIL,
-        text: "Hello, we noticed the source document for Order #1012 seems corrupted. Can you please re-upload or send it to us via this thread?",
-        date: "2025-10-18T14:30:00Z",
-      },
-    ],
-  },
-  {
-    id: 3,
-    subject: "Feedback on recent translation delivery",
-    status: "Closed",
-    lastUpdate: "2025-10-10T09:00:00Z",
-    isNew: false,
-    orderId: null,
-    messages: [
-      {
-        sender: MOCK_CLIENT_EMAIL,
-        text: "The translation was excellent, thank you!",
-        date: "2025-10-09T17:00:00Z",
-      },
-      {
-        sender: MOCK_ADMIN_EMAIL,
-        text: "That's wonderful to hear! We've closed this thread. Please open a new one if you need anything else.",
-        date: "2025-10-10T09:00:00Z",
-      },
-    ],
-  },
-];
-
-// Helper functions
-const formatLastUpdate = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
-
-const getThreadStatusColor = (status) => {
-  switch (status) {
-    case "Open":
-      return "text-red-600 bg-red-100 border-red-300";
-    case "Replied":
-      return "text-blue-600 bg-blue-100 border-blue-300";
-    case "Closed":
-      return "text-gray-600 bg-gray-100 border-gray-300";
-    default:
-      return "text-gray-600 bg-gray-100 border-gray-300";
-  }
-};
-
-const Messages = () => {
-  const [threads, setThreads] = useState(mockThreads);
-  const [selectedThreadId, setSelectedThreadId] = useState(null);
-  const [messageText, setMessageText] = useState("");
-  const [showNewThreadModal, setShowNewThreadModal] = useState(false);
+export default function ClientMessages() {
+  const navigate = useNavigate();
+  const [messages, setMessages] = useState([]);
+  const [filteredMessages, setFilteredMessages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedThread, setSelectedThread] = useState(null);
+  const [newMessage, setNewMessage] = useState({ subject: "", message: "" });
+  const [replyMessage, setReplyMessage] = useState("");
   const [notification, setNotification] = useState(null);
+  const [search, setSearch] = useState("");
+  const [sortOrder, setSortOrder] = useState("newest");
+  const [sourceFilter, setSourceFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const messagesPerPage = 10;
 
-  // New thread state
-  const [newThreadSubject, setNewThreadSubject] = useState("");
-  const [newThreadBody, setNewThreadBody] = useState("");
-  const [newThreadOrderLink, setNewThreadOrderLink] = useState("");
-
-  const selectedThread = threads.find((t) => t.id === selectedThreadId);
-  const isMobile = window.innerWidth < 1024; // Tailwind's 'lg' breakpoint
-
-  useEffect(() => {
-    if (notification) {
-      const timer = setTimeout(() => {
-        setNotification(null);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [notification]);
+  const getAuthHeaders = async () => {
+    const user = auth.currentUser;
+    console.log("Current user:", user ? user.uid : "No user");
+    if (!user) throw new Error("User not authenticated");
+    const idToken = await user.getIdToken();
+    console.log("ID Token:", idToken);
+    const idTokenResult = await user.getIdTokenResult();
+    console.log("Token claims:", idTokenResult.claims);
+    return {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    };
+  };
 
   const showNotification = (message, type = "success") => {
     setNotification({ message, type });
+    setTimeout(() => setNotification(null), 3000);
   };
 
-  const handleSendMessage = () => {
-    if (!messageText.trim() || !selectedThread) return;
+  useEffect(() => {
+    if (!auth.currentUser) {
+      console.log("No user logged in, redirecting to login");
+      navigate("/login");
+    }
+  }, [navigate]);
 
-    const newMessage = {
-      sender: MOCK_CLIENT_EMAIL,
-      text: messageText.trim(),
-      date: new Date().toISOString(),
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const headers = await getAuthHeaders();
+        const [messagesRes, contactsRes] = await Promise.all([
+          fetch(MESSAGE_API_URL, { headers, credentials: "include" }),
+          fetch(CONTACT_API_URL, { headers, credentials: "include" }),
+        ]);
+        if (!messagesRes.ok)
+          throw new Error(`Failed to fetch messages: ${messagesRes.status}`);
+        if (!contactsRes.ok)
+          throw new Error(`Failed to fetch contacts: ${contactsRes.status}`);
+        const messagesData = await messagesRes.json();
+        const contactsData = await contactsRes.json();
+        const combined = [
+          ...messagesData,
+          ...contactsData.map((c) => ({
+            ...c,
+            threadId: c._id, // Treat each contact as a single-message thread
+            userId: auth.currentUser.uid,
+            sender: "client",
+            isRead: true, // Public contacts are read by default
+          })),
+        ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setMessages(combined);
+        setFilteredMessages(combined);
+      } catch (err) {
+        console.error("Fetch messages error:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
     };
+    if (auth.currentUser) fetchMessages();
+  }, []);
 
-    setThreads((prevThreads) =>
-      prevThreads.map((thread) =>
-        thread.id === selectedThreadId
-          ? {
-              ...thread,
-              messages: [...thread.messages, newMessage],
-              lastUpdate: new Date().toISOString(),
-              status: "Open", // Client reply makes status 'Open'
-              isNew: false, // User has seen it/replied
-            }
-          : thread
-      )
+  useEffect(() => {
+    let results = [...messages];
+    if (search.trim()) {
+      results = results.filter((m) =>
+        m.subject?.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    if (sourceFilter !== "all") {
+      results = results.filter((m) => m.source === sourceFilter);
+    }
+    results.sort((a, b) =>
+      sortOrder === "newest"
+        ? new Date(b.createdAt) - new Date(a.createdAt)
+        : new Date(a.createdAt) - new Date(b.createdAt)
     );
+    setFilteredMessages(results);
+    setCurrentPage(1);
+  }, [search, sortOrder, sourceFilter, messages]);
 
-    setMessageText("");
-    showNotification("Message sent successfully", "success");
+  const handleSendMessage = async () => {
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch(MESSAGE_API_URL, {
+        method: "POST",
+        headers,
+        credentials: "include",
+        body: JSON.stringify(newMessage),
+      });
+      if (!res.ok) throw new Error(`Failed to send message: ${res.status}`);
+      const data = await res.json();
+      setMessages((prev) => [data.data, ...prev]);
+      setNewMessage({ subject: "", message: "" });
+      showNotification("Message sent successfully", "success");
+    } catch (err) {
+      console.error("Send message error:", err);
+      showNotification(`Error sending message: ${err.message}`, "error");
+    }
   };
 
-  const handleCreateNewThread = () => {
-    if (!newThreadSubject.trim() || !newThreadBody.trim()) return;
-
-    const newId = threads.length > 0 ? Math.max(...threads.map(t => t.id)) + 1 : 1;
-
-    const newThread = {
-      id: newId,
-      subject: newThreadSubject.trim(),
-      status: "Open",
-      lastUpdate: new Date().toISOString(),
-      isNew: true,
-      orderId: newThreadOrderLink.trim() || null,
-      messages: [
-        {
-          sender: MOCK_CLIENT_EMAIL,
-          text: newThreadBody.trim(),
-          date: new Date().toISOString(),
-        },
-      ],
-    };
-
-    setThreads((prevThreads) => [newThread, ...prevThreads]);
-
-    // Reset state and close modal
-    setNewThreadSubject("");
-    setNewThreadBody("");
-    setNewThreadOrderLink("");
-    setShowNewThreadModal(false);
-    setSelectedThreadId(newId); // Immediately show the new thread
-
-    showNotification("New thread created successfully!", "success");
+  const handleReply = async (threadId) => {
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch(`${MESSAGE_API_URL}/${threadId}/reply`, {
+        method: "POST",
+        headers,
+        credentials: "include",
+        body: JSON.stringify({ message: replyMessage }),
+      });
+      if (!res.ok) throw new Error(`Failed to send reply: ${res.status}`);
+      const data = await res.json();
+      setMessages((prev) => [data.data, ...prev]);
+      setReplyMessage("");
+      setSelectedThread(null);
+      showNotification("Reply sent successfully", "success");
+    } catch (err) {
+      console.error("Reply error:", err);
+      showNotification(`Error sending reply: ${err.message}`, "error");
+    }
   };
 
-  const ThreadListItem = ({ thread }) => (
-    <button
-      key={thread.id}
-      onClick={() => {
-        setSelectedThreadId(thread.id);
-        // Mark as old when selected
-        setThreads(prevThreads => prevThreads.map(t => t.id === thread.id ? {...t, isNew: false} : t));
-      }}
-      className={`w-full p-3 text-left border rounded-lg transition-all ${
-        selectedThreadId === thread.id
-          ? "bg-green-50 border-green-300 shadow-md"
-          : "bg-white border-gray-200 hover:bg-gray-50"
-      }`}
-    >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-            <span
-              className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${getThreadStatusColor(
-                thread.status
-              )}`}
-            >
-              {thread.status}
-            </span>
-            {thread.isNew && (
-                <span className="text-xs font-bold text-red-600">NEW</span>
-            )}
-        </div>
-        <span className="text-xs text-gray-500">
-          {formatLastUpdate(thread.lastUpdate)}
-        </span>
-      </div>
-      <p className="mt-1 text-sm font-medium text-gray-900 truncate">
-        {thread.subject}
-      </p>
-      <p className="mt-1 text-xs text-gray-500 truncate">
-        {thread.messages[thread.messages.length - 1].text}
-      </p>
-    </button>
-  );
+  const handleMarkReadUnread = async (id, isRead) => {
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch(`${MESSAGE_API_URL}/${id}`, {
+        method: "PATCH",
+        headers,
+        credentials: "include",
+        body: JSON.stringify({ isRead }),
+      });
+      if (!res.ok) throw new Error(`Failed to update message: ${res.status}`);
+      setMessages((prev) =>
+        prev.map((m) => (m._id === id ? { ...m, isRead } : m))
+      );
+      showNotification(
+        `Message marked as ${isRead ? "read" : "unread"}`,
+        "success"
+      );
+    } catch (err) {
+      console.error("Mark read/unread error:", err);
+      showNotification(`Error updating message: ${err.message}`, "error");
+    }
+  };
+
+  const indexOfLast = currentPage * messagesPerPage;
+  const indexOfFirst = indexOfLast - messagesPerPage;
+  const threads = [];
+  const threadMap = new Map();
+  filteredMessages.forEach((msg) => {
+    if (!threadMap.has(msg.threadId)) {
+      threadMap.set(msg.threadId, []);
+    }
+    threadMap.get(msg.threadId).push(msg);
+  });
+  threadMap.forEach((msgs) => {
+    threads.push({
+      threadId: msgs[0].threadId,
+      subject: msgs[0].subject,
+      latestMessage: msgs[msgs.length - 1],
+      isRead: msgs.every((m) => m.isRead),
+      source: msgs[0].source,
+    });
+  });
+  const currentThreads = threads.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(threads.length / messagesPerPage);
 
   return (
-    <div className="p-4 bg-white rounded-xl shadow-lg h-full max-h-[calc(100vh-10rem)] overflow-hidden flex min-h-[calc(100vh-10rem)]">
-      {/* Messages Main Container */}
-      <div className="flex w-full">
-        {/* Left Sidebar - Thread List (Hidden on mobile when a thread is selected) */}
-        <div
-          className={`w-full lg:w-80 border-r border-gray-200 bg-white flex-shrink-0 transition-transform duration-300 ease-in-out ${
-            selectedThreadId !== null
-              ? "-translate-x-full lg:translate-x-0"
-              : "translate-x-0"
-          }`}
-        >
-          {/* Header & Filter */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-100">
-            <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900">
-              <MessageSquare className="w-5 h-5 text-green-600" />
-              Client Messages
-            </h2>
-            {/* Filter/Sort button can go here if needed */}
-          </div>
-
-          {/* New Thread Button (Desktop Only) */}
-          <div className="p-4 border-b border-gray-100 **hidden lg:block**"> 
-            <button
-              onClick={() => {
-                setSelectedThreadId(null); // Clear selection
-                setShowNewThreadModal(true); // Open the modal
-              }}
-              className="flex items-center justify-center w-full gap-2 px-4 py-2 font-semibold text-white transition-all bg-green-600 rounded-lg shadow-md hover:bg-green-700"
-            >
-              <Plus className="w-5 h-5" />
-              New Thread
-            </button>
-          </div>
-
-          {/* Thread List */}
-          <div className="flex-grow p-4 space-y-2 overflow-y-auto max-h-[calc(100vh-20rem)] lg:max-h-[calc(100vh-15rem)]">
-            {threads.length === 0 ? (
-              <p className="py-12 text-sm text-center text-gray-500">
-                No active message threads.
-              </p>
-            ) : (
-              threads.map((thread) => (
-                <ThreadListItem key={thread.id} thread={thread} />
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Right Panel - Message View (Hidden on mobile when list is shown) */}
-        <div
-          className={`flex-grow bg-white flex flex-col ${
-            selectedThreadId === null ? "hidden lg:flex" : "flex"
-          } transition-all duration-300 ease-in-out`}
-        >
-          {selectedThreadId === null ? (
-            <div className="flex items-center justify-center h-full">
-              <div className="text-center text-gray-500">
-                <MessageSquare className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                <h3 className="text-xl font-semibold">Select a message</h3>
-                <p className="text-sm">
-                  Choose a thread from the left or create a new one.
-                </p>
-              </div>
-            </div>
-          ) : (
-            // Message Thread Detail
-            <div className="flex flex-col h-full overflow-hidden">
-              {/* Thread Header */}
-              <div className="flex items-center justify-between flex-shrink-0 p-4 border-b border-gray-100 bg-gray-50">
-                <button
-                  onClick={() => setSelectedThreadId(null)}
-                  className="flex items-center gap-2 text-gray-700 transition-colors hover:text-green-600 lg:hidden"
-                >
-                  <ArrowLeft className="w-5 h-5" />
-                </button>
-                <div className="flex-1 min-w-0 lg:ml-0">
-                  <h3 className="text-lg font-bold text-gray-900 truncate">
-                    {selectedThread.subject}
-                  </h3>
-                  <p className="text-xs text-gray-500">
-                    Order ID:{" "}
-                    <span className="font-medium text-gray-700">
-                      {selectedThread.orderId || "N/A"}
-                    </span>
-                  </p>
-                </div>
-                <span
-                  className={`text-xs font-semibold px-2 py-0.5 rounded-full border ml-4 ${getThreadStatusColor(
-                    selectedThread.status
-                  )}`}
-                >
-                  {selectedThread.status}
-                </span>
-              </div>
-
-              {/* Message History */}
-              <div className="flex-grow p-4 space-y-4 overflow-y-auto">
-                {selectedThread.messages.map((message, index) => (
-                  <div
-                    key={index}
-                    className={`flex ${
-                      message.sender === MOCK_CLIENT_EMAIL
-                        ? "justify-end"
-                        : "justify-start"
-                    }`}
-                  >
-                    <div
-                      className={`max-w-xs sm:max-w-md p-3 rounded-lg shadow-sm ${
-                        message.sender === MOCK_CLIENT_EMAIL
-                          ? "bg-green-600 text-white rounded-br-none"
-                          : "bg-gray-100 text-gray-800 rounded-tl-none"
-                      }`}
-                    >
-                      <p className="text-sm">{message.text}</p>
-                      <p
-                        className={`mt-1 text-xs ${
-                          message.sender === MOCK_CLIENT_EMAIL
-                            ? "text-green-200"
-                            : "text-gray-500"
-                        } text-right`}
-                      >
-                        {formatLastUpdate(message.date)}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Message Input */}
-              <div className="flex-shrink-0 p-4 border-t border-gray-100">
-                <div className="flex items-end gap-3">
-                  <textarea
-                    rows="1"
-                    placeholder="Type your reply..."
-                    value={messageText}
-                    onChange={(e) => setMessageText(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSendMessage();
-                      }
-                    }}
-                    className="flex-grow p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:border-2 focus:border-green-500"
-                  />
-                  <button
-                    onClick={handleSendMessage}
-                    disabled={!messageText.trim()}
-                    className="flex-shrink-0 p-3 text-white transition-colors bg-green-600 rounded-full shadow-lg hover:bg-green-700 disabled:opacity-50"
-                  >
-                    <Send className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* FIX 2: Floating Action Button (FAB) for Mobile Only */}
-      {selectedThreadId === null && !showNewThreadModal && (
-        <button
-          onClick={() => setShowNewThreadModal(true)}
-          className="fixed bottom-6 right-6 w-14 h-14 bg-green-600 rounded-full shadow-xl flex items-center justify-center text-white transition-all hover:bg-green-700 **lg:hidden z-40**" // <-- Key Fix: High z-index and mobile-only
-        >
-          <Plus className="w-6 h-6" />
-        </button>
-      )}
-
-
-      {/* New Thread Modal */}
-      {showNewThreadModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-full max-w-lg p-6 mx-4 bg-white shadow-2xl rounded-xl">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="flex items-center gap-2 text-xl font-bold text-gray-900">
-                <MessageSquare className="w-5 h-5 text-green-600" />
-                Start a New Thread
-              </h3>
-              <button
-                onClick={() => setShowNewThreadModal(false)}
-                className="p-1 text-gray-400 rounded-full hover:bg-gray-100 hover:text-gray-600"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="space-y-4">
-              <input
-                type="text"
-                placeholder="Subject (e.g., Question about Invoice #1234)"
-                value={newThreadSubject}
-                onChange={(e) => setNewThreadSubject(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:border-green-500" // CHANGED: blue -> green
-              />
-              <input
-                type="text"
-                placeholder="Link to Order ID (Optional, e.g., #1012)"
-                value={newThreadOrderLink}
-                onChange={(e) => setNewThreadOrderLink(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:border-green-500" // CHANGED: blue -> green
-              />
-              <textarea
-                rows="4"
-                placeholder="Your message details..."
-                value={newThreadBody}
-                onChange={(e) => setNewThreadBody(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:border-green-500" // CHANGED: blue -> green
-              />
-            </div>
-            <button
-              onClick={handleCreateNewThread}
-              disabled={!newThreadSubject.trim() || !newThreadBody.trim()}
-              className="flex items-center justify-center w-full gap-2 px-6 py-3 mt-6 font-semibold text-white transition-all bg-green-600 rounded-lg shadow-lg hover:bg-green-700 disabled:opacity-50"
-            >
-              <Send className="w-5 h-5" />
-              Create Thread
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Notification Toast */}
+    <div className="min-h-screen bg-gray-100">
       {notification && (
         <div
-          className={`fixed bottom-6 right-6 p-4 rounded-lg shadow-xl text-white flex items-center gap-3 transition-opacity duration-300 z-50 ${
-            notification.type === "success" ? "bg-green-600" : "bg-red-600"
+          className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${
+            notification.type === "success"
+              ? "bg-green-500 text-white"
+              : "bg-red-500 text-white"
           }`}
         >
-          {notification.type === "success" ? (
-            <Mail className="w-5 h-5" />
-          ) : (
-            <AlertCircle className="w-5 h-5" />
-          )}
-          <p className="text-sm font-medium">{notification.message}</p>
+          {notification.message}
         </div>
       )}
+
+      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-6">Messages</h1>
+
+        <div className="bg-white p-4 rounded-lg shadow-sm mb-6 border border-gray-200">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            New Message
+          </h2>
+          <div className="grid grid-cols-1 gap-4">
+            <input
+              type="text"
+              placeholder="Subject"
+              value={newMessage.subject}
+              onChange={(e) =>
+                setNewMessage({ ...newMessage, subject: e.target.value })
+              }
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+            />
+            <textarea
+              placeholder="Message"
+              value={newMessage.message}
+              onChange={(e) =>
+                setNewMessage({ ...newMessage, message: e.target.value })
+              }
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+              rows="4"
+            />
+            <button
+              onClick={handleSendMessage}
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2"
+            >
+              <Send className="w-4 h-4" />
+              Send Message
+            </button>
+          </div>
+        </div>
+
+        <div className="bg-white p-4 rounded-lg shadow-sm mb-6 border border-gray-200">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-gray-900">
+              Filter Messages
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <input
+              type="text"
+              placeholder="Search by subject..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+            />
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+            >
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+            <select
+              value={sourceFilter}
+              onChange={(e) => setSourceFilter(e.target.value)}
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+            >
+              <option value="all">All Sources</option>
+              <option value="public">Public Contacts</option>
+              <option value="client">Client Messages</option>
+            </select>
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="text-center py-10">
+            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-green-500 border-t-transparent"></div>
+            <p className="mt-2 text-gray-600">Loading messages...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-10 text-red-600">
+            <AlertCircle className="w-12 h-12 mx-auto mb-2" />
+            <p>{error}</p>
+          </div>
+        ) : currentThreads.length === 0 ? (
+          <div className="text-center py-10">
+            <MessageSquare className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+            <p className="text-gray-600">No messages found</p>
+          </div>
+        ) : (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Source
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Subject
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Latest Message
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Date
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {currentThreads.map((thread) => (
+                    <tr key={thread.threadId} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {thread.source === "public" ? "Public" : "Client"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {thread.subject}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {thread.latestMessage.message.substring(0, 50)}...
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {new Date(
+                          thread.latestMessage.createdAt
+                        ).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button
+                          onClick={() => setSelectedThread(thread.threadId)}
+                          className="text-blue-600 hover:text-blue-800 mr-4"
+                        >
+                          <Eye className="w-5 h-5" />
+                        </button>
+                        {thread.source === "client" && (
+                          <button
+                            onClick={() =>
+                              handleMarkReadUnread(
+                                thread.latestMessage._id,
+                                !thread.isRead
+                              )
+                            }
+                            className={
+                              thread.isRead
+                                ? "text-gray-600 hover:text-gray-800"
+                                : "text-green-600 hover:text-green-800"
+                            }
+                          >
+                            <MessageSquare className="w-5 h-5" />
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200">
+              <p className="text-sm text-gray-600">
+                Showing {indexOfFirst + 1} to{" "}
+                {Math.min(indexOfLast, threads.length)} of {threads.length}{" "}
+                threads
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(prev - 1, 1))
+                  }
+                  disabled={currentPage === 1}
+                  className="px-3 py-1 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-100 disabled:opacity-50"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  }
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-100 disabled:opacity-50"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {selectedThread && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div className="w-full max-w-3xl bg-white rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
+              <div className="sticky top-0 flex items-center justify-between p-6 bg-white border-b border-gray-200">
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Message Thread
+                </h2>
+                <button
+                  onClick={() => setSelectedThread(null)}
+                  className="text-gray-600 hover:text-gray-800"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              <div className="p-6 space-y-6">
+                {messages
+                  .filter((m) => m.threadId === selectedThread)
+                  .map((msg) => (
+                    <div
+                      key={msg._id}
+                      className={`p-4 rounded-lg ${
+                        msg.source === "public"
+                          ? "bg-gray-50"
+                          : msg.sender === "client"
+                          ? "bg-blue-50"
+                          : "bg-green-50"
+                      }`}
+                    >
+                      <p className="text-sm text-gray-600">
+                        {msg.source === "public"
+                          ? "Public"
+                          : msg.sender === "client"
+                          ? "You"
+                          : "Admin"}{" "}
+                        - {new Date(msg.createdAt).toLocaleString()}
+                      </p>
+                      <p className="font-medium text-gray-900">{msg.message}</p>
+                    </div>
+                  ))}
+                {messages.find(
+                  (m) => m.threadId === selectedThread && m.source === "client"
+                ) && (
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <textarea
+                      placeholder="Type your reply..."
+                      value={replyMessage}
+                      onChange={(e) => setReplyMessage(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      rows="4"
+                    />
+                    <button
+                      onClick={() => handleReply(selectedThread)}
+                      className="mt-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2"
+                    >
+                      <Send className="w-4 h-4" />
+                      Send Reply
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
-};
-
-export default Messages;
+}

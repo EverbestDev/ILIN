@@ -28,8 +28,7 @@ export const restrictTo =
       return next();
     }
 
-    const userRole = req.user.role;
-    if (!roles.includes(userRole)) {
+    if (roles.includes("admin") && !req.user.admin) {
       return res.status(403).json({ message: "Access denied" });
     }
     next();

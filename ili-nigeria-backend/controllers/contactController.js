@@ -1,4 +1,5 @@
 import Contact from "../models/Contact.js";
+import Message from "../models/Message.js"
 import sendEmail from "../utils/email.js";
 
 // Helper functions for formatting
@@ -114,5 +115,51 @@ export const getContacts = async (req, res) => {
   } catch (error) {
     console.error("Failed to fetch contacts:", error);
     res.status(500).json({ message: "Failed to fetch contacts" });
+  }
+};
+
+export const getAllContacts = async (req, res) => {
+  try {
+    const contacts = await Contact.find().sort({ createdAt: -1 });
+    const messages = await Message.find().sort({ createdAt: -1 });
+    const combined = [
+      ...contacts.map((c) => ({ ...c.toObject(), source: "public" })),
+      ...messages.map((m) => ({ ...m.toObject(), source: "client" })),
+    ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    res.json(combined);
+  } catch (error) {
+    console.error("Fetch contacts error:", error);
+    res.status(500).json({ message: "Failed to fetch contacts" });
+  }
+};
+
+export const deleteContact = async (req, res) => {
+  try {
+    const id = req.params.id;
+    let deleted;
+    deleted = await Contact.findByIdAndDelete(id);
+    if (!deleted) {
+      deleted = await Message.findByIdAndDelete(id);
+      if (!deleted) {
+        return res
+          .status(404)
+          .json({ message: "Contact or message not found" });
+      }
+    }
+    res.json({ message: "Contact deleted successfully" });
+  } catch (error) {
+    console.error("Delete contact error:", error);
+    res.status(500).json({ message: "Failed to delete contact" });
+  }
+};
+
+export const getClientContacts = async (req, res) => {
+  try {
+    const email = req.user.email;
+    const contacts = await Contact.find({ email }).sort({ createdAt: -1 });
+    res.json(contacts.map((c) => ({ ...c.toObject(), source: "public" })));
+  } catch (error) {
+    console.error("Fetch client contacts error:", error);
+    res.status(500).json({ message: "Failed to fetch client contacts" });
   }
 };

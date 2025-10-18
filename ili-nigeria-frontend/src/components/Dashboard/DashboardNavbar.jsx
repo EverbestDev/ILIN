@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { auth } from "../../utility/firebase";
 import {
   Menu,
   User,
@@ -13,8 +14,6 @@ const DashboardNavbar = ({
   onMenuToggle,
   brandName = "ILIN",
   portalTitle = "Portal",
-  userName,
-  userEmail,
   userRole,
   onLogout,
   unreadNotificationCount = 0,
@@ -23,28 +22,20 @@ const DashboardNavbar = ({
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [user, setUser] = useState({ name: "User", email: "user@example.com", photoURL: null });
 
-  // FIXED: Auto-close dropdowns on route change or escape key
   useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === "Escape") {
-        setDropdownOpen(false);
-        setNotificationsOpen(false);
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+      if (currentUser) {
+        setUser({
+          name: currentUser.displayName || "User",
+          email: currentUser.email,
+          photoURL: currentUser.photoURL,
+        });
       }
-    };
-
-    document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
+    });
+    return unsubscribe;
   }, []);
-
-  // FIXED: Force close all dropdowns when component mounts
-  useEffect(() => {
-    setDropdownOpen(false);
-    setNotificationsOpen(false);
-  }, []);
-
-  const unreadNotifications = unreadNotificationCount;
-  const notifications = notificationsList;
 
   const closeAllDropdowns = () => {
     setDropdownOpen(false);
@@ -66,7 +57,7 @@ const DashboardNavbar = ({
               <Menu className="w-6 h-6 text-gray-700" />
             </button>
 
-            {/* Logo & Brand - Dynamic Content */}
+            {/* Logo & Brand */}
             <div className="flex items-center gap-3">
               <div className="items-center justify-center hidden w-10 h-10 shadow-md bg-gradient-to-br from-green-600 to-green-700 rounded-xl md:flex">
                 <Globe className="w-6 h-6 text-white" />
@@ -83,10 +74,10 @@ const DashboardNavbar = ({
             {/* Welcome Text */}
             <div className="hidden mr-2 text-right lg:block">
               <p className="text-sm font-medium text-gray-700">Welcome back,</p>
-              <p className="text-xs text-gray-500">{userName}</p>
+              <p className="text-xs text-gray-500">{user.name}</p>
             </div>
 
-            {/* Notifications - Conditional Rendering */}
+            {/* Notifications */}
             {showNotifications && (
               <div className="relative">
                 <button
@@ -98,9 +89,9 @@ const DashboardNavbar = ({
                   type="button"
                 >
                   <Bell className="w-5 h-5 text-gray-700" />
-                  {unreadNotifications > 0 && (
+                  {unreadNotificationCount > 0 && (
                     <span className="absolute flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full -top-1 -right-1">
-                      {unreadNotifications}
+                      {unreadNotificationCount}
                     </span>
                   )}
                 </button>
@@ -109,126 +100,91 @@ const DashboardNavbar = ({
                 {notificationsOpen && (
                   <>
                     <div
-                      className="fixed inset-0 z-10"
-                      onClick={() => setNotificationsOpen(false)}
-                      style={{ touchAction: "auto" }}
+                      className="fixed inset-0 z-10 invisible lg:hidden"
+                      onClick={closeAllDropdowns}
                     />
-                    <div className="absolute right-0 z-20 mt-2 overflow-hidden bg-white border border-gray-200 shadow-lg w-80 max-w-[calc(100vw-2rem)] rounded-xl">
-                      <div className="px-4 py-3 border-b border-gray-200 bg-gradient-to-r from-green-50 to-green-100/50">
-                        <div className="flex items-center justify-between">
-                          <h3 className="font-semibold text-gray-900">
-                            Notifications
-                          </h3>
-                          <span className="px-2 py-1 text-xs font-medium text-white bg-green-600 rounded-full">
-                            {unreadNotifications} new
-                          </span>
-                        </div>
+                    <div className="absolute right-0 z-20 w-80 mt-2 overflow-hidden origin-top-right bg-white border border-gray-200 shadow-lg rounded-xl">
+                      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+                        <h3 className="font-medium text-gray-900">Notifications</h3>
+                        <span className="text-xs text-gray-500">
+                          {unreadNotificationCount} unread
+                        </span>
                       </div>
-                      <div className="overflow-y-auto max-h-96">
-                        {notifications.length > 0 ? (
-                          notifications.map((notif) => (
-                            <div
-                              key={notif.id}
-                              className={`px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-100 ${
-                                notif.unread ? "bg-green-50/30" : ""
-                              }`}
-                            >
-                              <div className="flex items-start gap-3">
-                                {notif.unread && (
-                                  <div className="w-2 h-2 bg-green-600 rounded-full mt-1.5 flex-shrink-0" />
-                                )}
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-sm font-medium text-gray-900">
-                                    {notif.text}
-                                  </p>
-                                  <p className="mt-1 text-xs text-gray-500">
-                                    {notif.time}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          ))
-                        ) : (
-                          <p className="p-4 text-sm text-center text-gray-500">
-                            No new notifications.
-                          </p>
-                        )}
+
+                      <div className="py-2 max-h-96 overflow-y-auto">
+                        {notificationsList.map((notification) => (
+                          <div
+                            key={notification.id}
+                            className={`px-4 py-3 border-b border-gray-50 last:border-b-0 ${
+                              notification.unread ? "bg-blue-50" : "bg-white"
+                            }`}
+                          >
+                            <p className="text-sm text-gray-900">
+                              {notification.text}
+                            </p>
+                            <p className="text-xs text-gray-500 mt-1">
+                              {notification.time}
+                            </p>
+                          </div>
+                        ))}
                       </div>
-                      <div className="px-4 py-2 border-t border-gray-200 bg-gray-50">
-                        <button
-                          type="button"
-                          className="w-full text-sm font-medium text-center text-green-600 hover:text-green-700"
-                        >
-                          View all notifications
-                        </button>
-                      </div>
+
+                      <button
+                        className="w-full px-4 py-3 text-sm font-medium text-green-600 hover:bg-gray-50"
+                        onClick={closeAllDropdowns}
+                      >
+                        View all notifications
+                      </button>
                     </div>
                   </>
                 )}
               </div>
             )}
 
-            {/* Profile Dropdown */}
+            {/* Profile */}
             <div className="relative">
               <button
                 onClick={() => {
                   setDropdownOpen(!dropdownOpen);
                   setNotificationsOpen(false);
                 }}
-                className="flex items-center gap-2 px-2 py-2 transition-all border border-gray-200 shadow-sm sm:gap-3 bg-gradient-to-r from-gray-50 to-gray-100 sm:px-3 rounded-xl hover:from-gray-100 hover:to-gray-200"
+                className="flex items-center gap-3 p-2 transition-colors rounded-lg hover:bg-gray-100"
                 type="button"
               >
-                <div className="flex items-center justify-center w-8 h-8 rounded-lg shadow-md bg-gradient-to-br from-green-600 to-green-700">
-                  <span className="text-sm font-semibold text-white">
-                    {userName
-                      ? userName
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")
-                      : "U"}
-                  </span>
+                <div className="flex items-center justify-center w-8 h-8 overflow-hidden font-medium text-white rounded-full bg-gradient-to-br from-green-600 to-green-700">
+                  {user.photoURL ? (
+                    <img src={user.photoURL} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    user.name.split(" ").map((n) => n[0]).join("").slice(0, 2)
+                  )}
                 </div>
-                <div className="hidden text-left sm:block">
-                  <p className="text-sm font-medium text-gray-900">
-                    {userName}
-                  </p>
+                <div className="hidden text-left lg:block">
+                  <p className="text-sm font-medium text-gray-900">{user.name}</p>
                   <p className="text-xs text-gray-500">{userRole}</p>
                 </div>
-                <ChevronDown
-                  className={`h-4 w-4 text-gray-500 transition-transform hidden sm:block ${
-                    dropdownOpen ? "rotate-180" : ""
-                  }`}
-                />
+                <ChevronDown className="hidden w-4 h-4 text-gray-600 lg:block" />
               </button>
 
-              {/* Dropdown Menu */}
+              {/* Profile Dropdown */}
               {dropdownOpen && (
                 <>
                   <div
-                    className="fixed inset-0 z-10"
-                    onClick={() => setDropdownOpen(false)}
-                    style={{ touchAction: "auto" }}
+                    className="fixed inset-0 z-10 invisible lg:hidden"
+                    onClick={closeAllDropdowns}
                   />
-                  <div className="absolute right-0 z-20 w-64 mt-2 overflow-hidden bg-white border border-gray-200 shadow-lg rounded-xl">
-                    <div className="px-4 py-3 border-b border-gray-200 bg-gradient-to-r from-green-50 to-green-100/50">
+                  <div className="absolute right-0 z-20 w-64 mt-2 overflow-hidden origin-top-right bg-white border border-gray-200 shadow-lg rounded-xl">
+                    <div className="px-4 py-3 border-b border-gray-200">
                       <div className="flex items-center gap-3">
-                        <div className="flex items-center justify-center w-12 h-12 shadow-md bg-gradient-to-br from-green-600 to-green-700 rounded-xl">
-                          <span className="text-lg font-bold text-white">
-                            {userName
-                              ? userName
-                                  .split(" ")
-                                  .map((n) => n[0])
-                                  .join("")
-                              : "U"}
-                          </span>
+                        <div className="flex items-center justify-center w-8 h-8 overflow-hidden font-medium text-white rounded-full bg-gradient-to-br from-green-600 to-green-700">
+                          {user.photoURL ? (
+                            <img src={user.photoURL} alt="Profile" className="w-full h-full object-cover" />
+                          ) : (
+                            user.name.split(" ").map((n) => n[0]).join("").slice(0, 2)
+                          )}
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-gray-900 truncate">
-                            {userName}
-                          </p>
-                          <p className="text-xs text-gray-600 truncate">
-                            {userEmail}
-                          </p>
+                        <div>
+                          <p className="font-medium text-gray-900">{user.name}</p>
+                          <p className="text-xs text-gray-500">{user.email}</p>
                           <span className="inline-block mt-1 px-2 py-0.5 bg-green-600 text-white text-xs rounded-full font-medium">
                             {userRole}
                           </span>
@@ -295,9 +251,9 @@ const DashboardNavbar = ({
               )}
             </div>
           </div>
+       </div>
         </div>
-      </div>
-    </header>
+      </header>
   );
 };
 

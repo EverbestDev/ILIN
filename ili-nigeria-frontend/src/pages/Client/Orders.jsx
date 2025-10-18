@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 const API_URL = "https://ilin-backend.onrender.com/api/quotes/client";
 
 // --- START OF ORDERS COMPONENT ---
-const Orders = () => {
+const ClientOrders = () => {
   const navigate = useNavigate();
   const [quotes, setQuotes] = useState([]);
   const [filteredQuotes, setFilteredQuotes] = useState([]);
@@ -505,4 +505,4 @@ const Orders = () => {
   );
 };
 
-export default Orders;
+export default ClientOrders;

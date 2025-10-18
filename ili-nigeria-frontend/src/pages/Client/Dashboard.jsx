@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // <-- ADDED: useNavigate
+import { useNavigate } from "react-router-dom";
 import {
   FileText,
   DollarSign,
   Clock,
   ArrowUpRight,
-  ArrowDownRight, // <-- ADDED: for StatCard component
+  ArrowDownRight,
   TrendingUp,
   Mail,
   CheckCircle,
@@ -14,50 +14,58 @@ import {
   ExternalLink,
 } from "lucide-react";
 
-// Helper component for the stats cards (reused from Admin design)
-const StatCard = ({ title, value, change, trend, icon: Icon, color }) => {
-  const isUp = trend === "up";
-  const trendColor = isUp ? "text-green-600" : "text-red-600";
-  const TrendIcon = isUp ? ArrowUpRight : ArrowDownRight;
-
-  return (
-    <div className={`p-5 bg-white rounded-xl shadow-sm border ${color}-200`}>
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium text-gray-500">{title}</h3>
-        <Icon className={`w-5 h-5 ${trendColor}`} />
-      </div>
-      <p className="mt-1 text-3xl font-bold text-gray-900">{value}</p>
-      {change !== undefined && (
-        <div className="flex items-center gap-1 mt-1">
-          <TrendIcon className={`w-4 h-4 ${trendColor}`} />
-          <span className={`text-xs font-medium ${trendColor}`}>{change}%</span>
-          <span className="text-xs text-gray-500">vs last month</span>
-        </div>
-      )}
-    </div>
-  );
-};
-
-// --- START OF CLIENT DASHBOARD COMPONENT ---
 const ClientDashboard = () => {
   const [loading, setLoading] = useState(true);
-  const userName = "Sarah Chen"; // Mock Client Data
+  const [adminSettings, setAdminSettings] = useState({
+    currency: "NGN",
+  });
+  const userName = "Sarah Chen";
 
-  // <-- ADDED: Initialize useNavigate
   const navigate = useNavigate();
 
+  const getAuthHeaders = async () => {
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not authenticated");
+    const idToken = await user.getIdToken();
+    return {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    };
+  };
+
   useEffect(() => {
-    // Simulate data loading from API
-    setTimeout(() => setLoading(false), 800);
-    // In a real app: fetchClientStats(), fetchRecentActivity()
+    const fetchAdminSettings = async () => {
+      try {
+        const headers = await getAuthHeaders();
+        const res = await fetch(
+          "https://ilin-backend.onrender.com/api/settings/admin",
+          {
+            headers,
+            credentials: "include",
+          }
+        );
+        if (!res.ok)
+          throw new Error(`Failed to fetch admin settings: ${res.status}`);
+        const data = await res.json();
+        setAdminSettings(data);
+      } catch (err) {
+        console.error("Fetch admin settings error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAdminSettings();
   }, []);
 
-  // Mock data - replace with real API calls for the logged-in user
   const clientStats = {
     totalOrders: { total: 12, change: 15.0, trend: "up" },
     inProgress: { total: 3, change: -5.0, trend: "down" },
     completed: { total: 9, change: 25.0, trend: "up" },
-    totalSpent: { total: "$1,850", change: 8.5, trend: "up" },
+    totalSpent: {
+      total: `${adminSettings.currency} 1,850`,
+      change: 8.5,
+      trend: "up",
+    },
   };
 
   const recentActivity = [
@@ -97,30 +105,28 @@ const ClientDashboard = () => {
       color: "text-purple-600",
       path: "/client/messages",
     },
+    {
+      id: 1,
+      type: "New Quote",
+      description: "Quote #1012 submitted successfully.",
+      time: "1 week ago",
+      icon: FileText,
+      color: "text-indigo-600",
+      path: "/client/orders/1012",
+    },
   ];
 
-  if (loading) {
-    return (
-      <div className="px-4 py-8 mx-auto space-y-8 max-w-7xl sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900">Client Dashboard</h1>
-        <div className="text-center text-gray-500">Loading client data...</div>
-      </div>
-    );
-  }
-
   return (
-    <div className="px-4 py-8 mx-auto space-y-8 max-w-7xl sm:px-6 lg:px-8">
-      {/* Header and Greeting */}
-      <header className="pb-4 border-b border-gray-200">
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div>
         <h1 className="text-3xl font-bold text-gray-900">
-          Welcome back, {userName}!
+          Welcome, {userName}
         </h1>
-        <p className="mt-1 text-gray-600">
-          Manage your translation projects and account settings here.
-        </p>
-      </header>
+        <p className="mt-1 text-gray-600">Here's an overview of your account</p>
+      </div>
 
-      {/* 1. Client Status Cards */}
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Total Orders"
@@ -128,108 +134,101 @@ const ClientDashboard = () => {
           change={clientStats.totalOrders.change}
           trend={clientStats.totalOrders.trend}
           icon={FileText}
-          color="border-green"
+          color="bg-green-100 border-green-200"
         />
         <StatCard
-          title="Orders In-Progress"
+          title="In Progress"
           value={clientStats.inProgress.total}
           change={clientStats.inProgress.change}
           trend={clientStats.inProgress.trend}
           icon={Clock}
-          color="border-yellow"
+          color="bg-yellow-100 border-yellow-200"
         />
         <StatCard
-          title="Orders Completed"
+          title="Completed"
           value={clientStats.completed.total}
           change={clientStats.completed.change}
           trend={clientStats.completed.trend}
           icon={CheckCircle}
-          color="border-blue"
+          color="bg-blue-100 border-blue-200"
         />
         <StatCard
-          title="Total Spending"
+          title="Total Spent"
           value={clientStats.totalSpent.total}
           change={clientStats.totalSpent.change}
           trend={clientStats.totalSpent.trend}
           icon={DollarSign}
-          color="border-purple"
+          color="bg-purple-100 border-purple-200"
         />
       </div>
 
-      {/* 2. Main Content: Recent Activity and Quick Action */}
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        {/* Recent Activity Feed (2/3 width) */}
+      {/* Recent Activity */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
-            <h2 className="mb-4 text-xl font-semibold text-gray-900">
+            <h2 className="mb-4 text-xl font-bold text-gray-900">
               Recent Activity
             </h2>
             <div className="space-y-4">
-              {recentActivity.map((activity) => (
-                <div
-                  key={activity.id}
-                  // <-- ADDED: onClick for navigation
-                  onClick={() => navigate(activity.path)}
-                  className="flex items-start gap-4 p-3 transition-colors duration-200 border-b border-gray-100 rounded-lg cursor-pointer last:border-b-0 hover:bg-gray-50"
-                >
+              {recentActivity.map((activity) => {
+                const Icon = activity.icon;
+                return (
                   <div
-                    className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${activity.color} bg-opacity-10`}
+                    key={activity.id}
+                    className="flex items-center justify-between p-4 transition-colors border border-gray-100 rounded-xl hover:bg-gray-50"
                   >
-                    <activity.icon className={`w-5 h-5 ${activity.color}`} />
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200">
+                        <Icon className={`w-5 h-5 ${activity.color}`} />
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          {activity.type}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          {activity.description}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm text-gray-500">{activity.time}</p>
+                      <button
+                        onClick={() => navigate(activity.path)}
+                        className="text-green-600 hover:text-green-700"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">
-                      {activity.type}
-                    </p>
-                    <p className="mt-1 text-sm text-gray-600">
-                      {activity.description}
-                    </p>
-                  </div>
-                  <time className="flex-shrink-0 text-xs text-gray-400">
-                    {activity.time}
-                  </time>
-                </div>
-              ))}
-            </div>
-            <div className="pt-4 text-right">
-              <button
-                // <-- ADDED: Navigation to Orders list
-                onClick={() => navigate("/client/orders")}
-                className="flex items-center gap-1 ml-auto text-sm font-medium text-green-600 hover:text-green-700"
-              >
-                View All Orders <ExternalLink className="w-4 h-4" />
-              </button>
+                );
+              })}
             </div>
           </div>
         </div>
 
-        {/* Quick Action Card (1/3 width) */}
-        <div className="lg:col-span-1">
-          <div className="flex flex-col justify-between h-full p-6 shadow-lg bg-gradient-to-br from-green-600 to-green-700 rounded-xl">
-            <div>
-              <PlusCircle className="w-8 h-8 mb-4 text-white" />
-              <h3 className="mb-2 text-xl font-bold text-white">
-                Need a New Translation?
-              </h3>
-              <p className="text-sm text-green-100">
-                Start a new project or request a free quote in seconds.
-              </p>
-            </div>
-            <button
-              // <-- ADDED: Navigation to the Quote Submission page
-              onClick={() => navigate("/request-quote")} // Assuming this is outside the dashboard layout
-              className="flex items-center justify-center w-full gap-2 px-6 py-3 mt-6 text-lg font-bold text-green-700 transition-colors bg-white shadow-md rounded-xl hover:bg-gray-100"
-            >
-              Request Quote
-            </button>
+        {/* Quick Action Card */}
+        <div className="flex flex-col justify-between p-6 shadow-lg bg-gradient-to-br from-green-600 to-green-700 rounded-xl">
+          <div>
+            <PlusCircle className="w-8 h-8 mb-4 text-white" />
+            <h3 className="mb-2 text-xl font-bold text-white">
+              Need a New Translation?
+            </h3>
+            <p className="text-sm text-green-100">
+              Start a new project or request a free quote in seconds.
+            </p>
           </div>
+          <button
+            onClick={() => navigate("/request-quote")}
+            className="flex items-center justify-center w-full gap-2 px-6 py-3 mt-6 text-lg font-bold text-green-700 transition-colors bg-white shadow-md rounded-xl hover:bg-gray-100"
+          >
+            Request Quote
+          </button>
         </div>
       </div>
 
-      {/* 3. Mission Banner */}
+      {/* Mission Banner */}
       <div className="p-6 text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl">
         <div className="items-center justify-between block md:flex">
-          {/* Mobile/MD: Icon and text always stay inline (flex) */}
           <div className="items-center block gap-4 md:flex">
             <div className="flex items-center justify-center w-12 h-12 bg-white/20 rounded-xl">
               <Globe className="text-white w-7 h-7" />
@@ -242,9 +241,7 @@ const ClientDashboard = () => {
             </div>
           </div>
           <button
-            // <-- ADDED: Navigation to the Messages/Contact page
             onClick={() => navigate("/client/messages")}
-            // Mobile: Full width, top margin (mt-4). MD: auto width (md:w-auto), no margin (md:mt-0).
             className="w-full px-4 py-3 mt-4 font-semibold text-blue-700 transition-colors bg-white rounded-lg md:w-auto md:mt-0 hover:bg-gray-100"
           >
             Contact Support

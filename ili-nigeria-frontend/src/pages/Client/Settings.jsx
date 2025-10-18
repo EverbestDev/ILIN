@@ -1,4 +1,4 @@
-import React, { useState, useCallback, memo } from "react";
+import React, { useState, useEffect } from "react";
 import {
   User,
   Mail,
@@ -7,542 +7,422 @@ import {
   Save,
   CheckCircle,
   AlertCircle,
-  X,
 } from "lucide-react";
+import { auth } from "../../utility/firebase";
 
-// -------------------------------------------------------------------
-// 1. EXTRACTED & MEMOIZED TAB COMPONENTS
-//    These components only re-render if their props change.
-// -------------------------------------------------------------------
+const API_URL =
+  "https://ilin-backend.onrender.com/api/settings/user" ||
+  import.meta.env.VITE_API_URL + "/api/settings/user" ||
+  "http://localhost:5000/api/settings/user";
 
-const ProfileTab = memo(
-  ({ profile, handleProfileChange, handleProfileSave, loading }) => (
-    <form onSubmit={handleProfileSave} className="space-y-6">
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div>
-          <label
-            htmlFor="firstName"
-            className="block text-sm font-medium text-gray-700"
-          >
-            First Name
-          </label>
-          <input
-            type="text"
-            id="firstName"
-            name="firstName"
-            value={profile.firstName}
-            onChange={handleProfileChange}
-            className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
-            required
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="lastName"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Last Name
-          </label>
-          <input
-            type="text"
-            id="lastName"
-            name="lastName"
-            value={profile.lastName}
-            onChange={handleProfileChange}
-            className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
-            required
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Email Address
-          </label>
-          <div className="flex items-center p-3 mt-1 text-gray-500 bg-gray-100 border border-gray-300 rounded-lg">
-            <Mail className="w-4 h-4 mr-2" />
-            {profile.email}
-          </div>
-          <p className="mt-1 text-xs text-gray-500">
-            Email cannot be changed directly here. Contact support to update.
-          </p>
-        </div>
-        <div>
-          <label
-            htmlFor="phone"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Phone Number
-          </label>
-          <input
-            type="tel"
-            id="phone"
-            name="phone"
-            value={profile.phone}
-            onChange={handleProfileChange}
-            className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div>
-          <label
-            htmlFor="company"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Company / Organization
-          </label>
-          <input
-            type="text"
-            id="company"
-            name="company"
-            value={profile.company}
-            onChange={handleProfileChange}
-            className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="country"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Country/Region
-          </label>
-          <input
-            type="text"
-            id="country"
-            name="country"
-            value={profile.country}
-            onChange={handleProfileChange}
-            className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
-          />
-        </div>
-      </div>
-
-      <div className="pt-5">
-        <button
-          type="submit"
-          disabled={loading}
-          className="flex items-center gap-2 px-6 py-3 font-semibold text-white transition-all rounded-lg shadow-md bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 disabled:opacity-50"
-        >
-          <Save className="w-5 h-5" />
-          {loading ? "Saving..." : "Save Profile"}
-        </button>
-      </div>
-    </form>
-  )
-);
-
-const SecurityTab = memo(
-  ({ security, handleSecurityChange, handlePasswordChange, loading }) => (
-    <form onSubmit={handlePasswordChange} className="max-w-lg space-y-6">
-      <h3 className="pb-3 mb-4 text-lg font-semibold text-gray-900 border-b">
-        Change Password
-      </h3>
-
-      <div>
-        <label
-          htmlFor="currentPassword"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Current Password
-        </label>
-        <input
-          type="password"
-          id="currentPassword"
-          name="currentPassword"
-          value={security.currentPassword}
-          onChange={handleSecurityChange}
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500"
-          required
-        />
-      </div>
-
-      <div>
-        <label
-          htmlFor="newPassword"
-          className="block text-sm font-medium text-gray-700"
-        >
-          New Password
-        </label>
-        <input
-          type="password"
-          id="newPassword"
-          name="newPassword"
-          value={security.newPassword}
-          onChange={handleSecurityChange}
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500"
-          required
-        />
-        <p className="mt-1 text-xs text-gray-500">
-          Must be at least 8 characters.
-        </p>
-      </div>
-
-      <div>
-        <label
-          htmlFor="confirmPassword"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Confirm New Password
-        </label>
-        <input
-          type="password"
-          id="confirmPassword"
-          name="confirmPassword"
-          value={security.confirmPassword}
-          onChange={handleSecurityChange}
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500"
-          required
-        />
-      </div>
-
-      <div className="pt-5">
-        <button
-          type="submit"
-          disabled={loading}
-          className="flex items-center gap-2 px-6 py-3 font-semibold text-white transition-all rounded-lg shadow-md bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:opacity-50"
-        >
-          <Lock className="w-5 h-5" />
-          {loading ? "Updating..." : "Update Password"}
-        </button>
-      </div>
-    </form>
-  )
-);
-
-const PreferencesTab = memo(
-  ({ preferences, handleCheckboxChange, handlePreferenceSave, loading }) => (
-    <form onSubmit={handlePreferenceSave} className="space-y-6">
-      <h3 className="pb-3 mb-4 text-lg font-semibold text-gray-900 border-b">
-        Email Notifications
-      </h3>
-
-      <div className="max-w-xl space-y-4">
-        {[
-          {
-            key: "emailQuoteReady",
-            label: "Quote Ready for Review",
-            description:
-              "Notify me when my requested quote has been prepared and is ready to be paid.",
-          },
-          {
-            key: "emailOrderComplete",
-            label: "Order Completion",
-            description:
-              "Send an email notification when my translation files are ready for download.",
-          },
-          {
-            key: "emailPaymentConfirmation",
-            label: "Payment Confirmation",
-            description:
-              "Receive confirmation after successfully making a payment.",
-          },
-        ].map((item) => (
-          <div
-            key={item.key}
-            className="relative flex items-start p-4 border border-gray-200 rounded-lg bg-gray-50"
-          >
-            <div className="flex items-center h-5">
-              <input
-                id={item.key}
-                name={item.key}
-                type="checkbox"
-                checked={preferences[item.key]}
-                onChange={handleCheckboxChange(item.key)}
-                className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
-              />
-            </div>
-            <div className="ml-3 text-sm">
-              <label htmlFor={item.key} className="font-medium text-gray-900">
-                {item.label}
-              </label>
-              <p className="text-gray-500">{item.description}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <h3 className="pt-6 pb-3 mb-4 text-lg font-semibold text-gray-900 border-b">
-        Other Communication
-      </h3>
-      <div className="max-w-xl space-y-4">
-        {[
-          {
-            key: "emailNewsletter",
-            label: "Newsletter & Promotions",
-            description:
-              "Get updates on new services, discounts, and company news.",
-            color: "text-blue-600",
-          },
-          {
-            key: "smsAlerts",
-            label: "SMS Alerts (Urgent Only)",
-            description:
-              "Receive text messages for urgent status changes (e.g., payment failure). Requires phone number verification.",
-            color: "text-yellow-600",
-          },
-        ].map((item) => (
-          <div
-            key={item.key}
-            className="relative flex items-start p-4 border border-gray-200 rounded-lg bg-gray-50"
-          >
-            <div className="flex items-center h-5">
-              <input
-                id={item.key}
-                name={item.key}
-                type="checkbox"
-                checked={preferences[item.key]}
-                onChange={handleCheckboxChange(item.key)}
-                className={`w-4 h-4 ${item.color
-                  .replace("text-", "text-")
-                  .replace(
-                    "600",
-                    "600"
-                  )} border-gray-300 rounded focus:ring-current`}
-              />
-            </div>
-            <div className="ml-3 text-sm">
-              <label htmlFor={item.key} className={`font-medium ${item.color}`}>
-                {item.label}
-              </label>
-              <p className="text-gray-500">{item.description}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="pt-5">
-        <button
-          type="submit"
-          disabled={loading}
-          className="flex items-center gap-2 px-6 py-3 font-semibold text-white transition-all rounded-lg shadow-md bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 disabled:opacity-50"
-        >
-          <Save className="w-5 h-5" />
-          {loading ? "Saving..." : "Save Preferences"}
-        </button>
-      </div>
-    </form>
-  )
-);
-
-// -------------------------------------------------------------------
-// 2. MAIN CLIENT SETTINGS COMPONENT
-// -------------------------------------------------------------------
 const ClientSettings = () => {
   const [notification, setNotification] = useState(null);
   const [activeTab, setActiveTab] = useState("profile");
-  const [loading, setLoading] = useState(false);
 
-  // State objects
+  // Profile state
   const [profile, setProfile] = useState({
-    firstName: "Sarah",
-    lastName: "Chen",
+    name: "Sarah Chen",
     email: "sarah@client.com",
     phone: "+1 (555) 987-6543",
-    company: "Acme Global Co.",
-    country: "United States",
   });
+
+  // Notification preferences state
+  const [preferences, setPreferences] = useState({
+    emailUpdates: true,
+    emailNotifications: true,
+    pushNotifications: false,
+    smsAlerts: false,
+  });
+
+  // Security state
   const [security, setSecurity] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
-  const [preferences, setPreferences] = useState({
-    emailOrderComplete: true,
-    emailQuoteReady: true,
-    emailPaymentConfirmation: true,
-    emailNewsletter: false,
-    smsAlerts: false,
-  });
 
-  // --- GENERIC HANDLERS ---
+  const getAuthHeaders = async () => {
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not authenticated");
+    const idToken = await user.getIdToken();
+    return {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    };
+  };
 
-  const showNotification = useCallback((message, type = "success") => {
+  const showNotification = (message, type = "success") => {
     setNotification({ message, type });
-    setTimeout(() => setNotification(null), 5000);
+    setTimeout(() => setNotification(null), 3000);
+  };
+
+  useEffect(() => {
+    const fetchUserSettings = async () => {
+      try {
+        const headers = await getAuthHeaders();
+        const res = await fetch(API_URL, {
+          headers,
+          credentials: "include",
+        });
+        if (!res.ok) throw new Error(`Failed to fetch settings: ${res.status}`);
+        const data = await res.json();
+        setProfile({
+          name: data.name || "",
+          email: auth.currentUser.email,
+          phone: data.phone || "",
+        });
+      } catch (err) {
+        console.error("Fetch user settings error:", err);
+        showNotification("Failed to load settings", "error");
+      }
+    };
+    fetchUserSettings();
   }, []);
 
-  // Generic handler for all text/tel/password inputs
-  const handleTextChange = useCallback(
-    (setter) => (e) => {
-      const { name, value } = e.target;
-      setter((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    },
-    []
-  );
+  const handleSaveProfile = async () => {
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers,
+        credentials: "include",
+        body: JSON.stringify({ name: profile.name, phone: profile.phone }),
+      });
+      if (!res.ok) throw new Error(`Failed to update profile: ${res.status}`);
+      await auth.currentUser.updateProfile({ displayName: profile.name });
+      showNotification("Profile updated successfully", "success");
+    } catch (err) {
+      console.error("Update profile error:", err);
+      showNotification("Failed to update profile", "error");
+    }
+  };
 
-  // Specialized handler for checkbox inputs (passes event to avoid stale closure)
-  const handleCheckboxChange = useCallback(
-    (field) => (e) => {
-      setPreferences((prev) => ({ ...prev, [field]: e.target.checked }));
-    },
-    []
-  );
+  const handlePasswordChange = async () => {
+    if (security.newPassword !== security.confirmPassword) {
+      showNotification("Passwords do not match", "error");
+      return;
+    }
+    try {
+      const user = auth.currentUser;
+      const credential = auth.EmailAuthProvider.credential(
+        user.email,
+        security.currentPassword
+      );
+      await user.reauthenticateWithCredential(credential);
+      await user.updatePassword(security.newPassword);
+      showNotification("Password updated successfully", "success");
+      setSecurity({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+    } catch (err) {
+      console.error("Password change error:", err);
+      showNotification("Failed to update password", "error");
+    }
+  };
 
-  // Memoized setters for use in props (stable functions)
-  const handleProfileChange = handleTextChange(setProfile);
-  const handleSecurityChange = handleTextChange(setSecurity);
+  const handlePreferenceSave = () => {
+    showNotification("Preferences saved successfully", "success");
+  };
 
-  // --- SAVE HANDLERS (Same as before, stable due to useCallback) ---
-
-  const handleProfileSave = useCallback(
-    (e) => {
-      e.preventDefault();
-      setLoading(true);
-      setTimeout(() => {
-        console.log("Profile Saved:", profile);
-        showNotification("Profile updated successfully!");
-        setLoading(false);
-      }, 1000);
-    },
-    [profile, showNotification]
-  );
-
-  const handlePasswordChange = useCallback(
-    (e) => {
-      e.preventDefault();
-      if (security.newPassword !== security.confirmPassword) {
-        showNotification(
-          "New password and confirmation do not match.",
-          "error"
-        );
-        return;
-      }
-      if (security.newPassword.length < 8) {
-        showNotification(
-          "New password must be at least 8 characters long.",
-          "error"
-        );
-        return;
-      }
-
-      setLoading(true);
-      setTimeout(() => {
-        console.log(
-          "Password Change attempt with new password:",
-          security.newPassword
-        );
-        setSecurity({
-          currentPassword: "",
-          newPassword: "",
-          confirmPassword: "",
-        });
-        showNotification(
-          "Password changed successfully. Please log in again if prompted.",
-          "success"
-        );
-        setLoading(false);
-      }, 1000);
-    },
-    [security, showNotification]
-  );
-
-  const handlePreferenceSave = useCallback(
-    (e) => {
-      e.preventDefault();
-      setLoading(true);
-      setTimeout(() => {
-        console.log("Preferences Saved:", preferences);
-        showNotification("Communication preferences updated.", "success");
-        setLoading(false);
-      }, 1000);
-    },
-    [preferences, showNotification]
-  );
+  const tabs = [
+    { id: "profile", label: "Profile", icon: User },
+    { id: "preferences", label: "Preferences", icon: Bell },
+    { id: "security", label: "Security", icon: Lock },
+  ];
 
   return (
-    <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
-      {/* Header */}
-      <header className="pb-6 border-b border-gray-200">
-        <h1 className="text-3xl font-bold text-gray-900">Account Settings</h1>
-        <p className="mt-1 text-gray-600">
-          Manage your personal details, security, and communication preferences.
-        </p>
-      </header>
-
-      {/* Notification Banner */}
+    <div className="p-6 space-y-6">
+      {/* Notification Toast */}
       {notification && (
         <div
-          className={`mt-4 p-4 rounded-lg flex items-center justify-between ${
+          className={`fixed top-6 right-6 z-50 px-6 py-4 rounded-xl shadow-lg border animate-slide-in ${
             notification.type === "success"
-              ? "bg-green-100 border-green-200 text-green-700"
-              : "bg-red-100 border-red-200 text-red-700"
+              ? "bg-green-50 border-green-200 text-green-800"
+              : "bg-red-50 border-red-200 text-red-800"
           }`}
         >
-          <p className="flex items-center gap-2 font-medium">
+          <div className="flex items-center gap-3">
             {notification.type === "success" ? (
               <CheckCircle className="w-5 h-5" />
             ) : (
               <AlertCircle className="w-5 h-5" />
             )}
-            {notification.message}
-          </p>
-          <button
-            onClick={() => setNotification(null)}
-            className="text-current hover:opacity-80"
-          >
-            <X className="w-5 h-5" />
-          </button>
+            <p className="font-medium">{notification.message}</p>
+          </div>
         </div>
       )}
 
-      {/* Settings Navigation Tabs */}
-      <div className="flex flex-col mt-8 lg:flex-row lg:space-x-8">
-        <nav className="flex flex-shrink-0 pb-6 space-x-4 overflow-x-auto border-b lg:flex-col lg:space-x-0 lg:space-y-2 lg:w-48 lg:border-b-0 lg:overflow-x-visible scrollbar-hide">
-          {[
-            { id: "profile", label: "Profile", icon: User },
-            { id: "security", label: "Security", icon: Lock },
-            { id: "preferences", label: "Preferences", icon: Bell },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-3 px-4 py-2.5 rounded-lg font-medium transition-colors whitespace-nowrap ${
-                activeTab === tab.id
-                  ? "bg-green-600 text-white shadow-md"
-                  : "text-gray-700 hover:bg-gray-50"
-              }`}
-            >
-              <tab.icon className="w-5 h-5" />
-              {tab.label}
-            </button>
-          ))}
-        </nav>
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
+        <p className="mt-1 text-gray-600">
+          Manage your personal details, preferences, and security
+        </p>
+      </div>
 
-        {/* Settings Content */}
-        <div className="flex-1 p-6 mt-6 bg-white border border-gray-200 shadow-lg rounded-xl lg:mt-0">
+      {/* Tabs */}
+      <div className="bg-white border border-gray-200 shadow-sm rounded-xl">
+        <div className="px-6 border-b border-gray-200">
+          <nav className="flex gap-8 -mb-px">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-2 py-4 border-b-2 font-medium text-sm transition-colors ${
+                    activeTab === tab.id
+                      ? "border-green-600 text-green-600"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        <div className="p-6">
+          {/* Profile Tab */}
           {activeTab === "profile" && (
-            <ProfileTab
-              profile={profile}
-              handleProfileChange={handleProfileChange}
-              handleProfileSave={handleProfileSave}
-              loading={loading}
-            />
+            <div className="space-y-6">
+              <h2 className="text-xl font-bold text-gray-900">Profile</h2>
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="block mb-2 text-sm font-medium text-gray-700"
+                  >
+                    Full Name
+                  </label>
+                  <input
+                    id="name"
+                    type="text"
+                    value={profile.name}
+                    onChange={(e) =>
+                      setProfile({ ...profile, name: e.target.value })
+                    }
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block mb-2 text-sm font-medium text-gray-700"
+                  >
+                    Email Address
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    value={profile.email}
+                    disabled
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div>
+                  <label
+                    htmlFor="phone"
+                    className="block mb-2 text-sm font-medium text-gray-700"
+                  >
+                    Phone Number
+                  </label>
+                  <input
+                    id="phone"
+                    type="tel"
+                    value={profile.phone}
+                    onChange={(e) =>
+                      setProfile({ ...profile, phone: e.target.value })
+                    }
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                  />
+                </div>
+              </div>
+              <button
+                onClick={handleSaveProfile}
+                className="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all"
+              >
+                Save Profile Changes
+              </button>
+            </div>
           )}
-          {activeTab === "security" && (
-            <SecurityTab
-              security={security}
-              handleSecurityChange={handleSecurityChange}
-              handlePasswordChange={handlePasswordChange}
-              loading={loading}
-            />
-          )}
+
+          {/* Preferences Tab */}
           {activeTab === "preferences" && (
-            <PreferencesTab
-              preferences={preferences}
-              handleCheckboxChange={handleCheckboxChange}
-              handlePreferenceSave={handlePreferenceSave}
-              loading={loading}
-            />
+            <div className="space-y-6">
+              <h2 className="text-xl font-bold text-gray-900">Preferences</h2>
+              <p className="text-gray-600">
+                Customize your notification settings
+              </p>
+              <div className="space-y-4">
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={preferences.emailUpdates}
+                    onChange={(e) =>
+                      setPreferences({
+                        ...preferences,
+                        emailUpdates: e.target.checked,
+                      })
+                    }
+                    className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                  />
+                  <div>
+                    <p className="font-medium text-gray-900">Email Updates</p>
+                    <p className="text-sm text-gray-500">
+                      Receive order status updates via email
+                    </p>
+                  </div>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={preferences.emailNotifications}
+                    onChange={(e) =>
+                      setPreferences({
+                        ...preferences,
+                        emailNotifications: e.target.checked,
+                      })
+                    }
+                    className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                  />
+                  <div>
+                    <p className="font-medium text-gray-900">
+                      Email Notifications
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Get notified about new messages
+                    </p>
+                  </div>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={preferences.pushNotifications}
+                    onChange={(e) =>
+                      setPreferences({
+                        ...preferences,
+                        pushNotifications: e.target.checked,
+                      })
+                    }
+                    className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                  />
+                  <div>
+                    <p className="font-medium text-gray-900">
+                      Push Notifications
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Browser push notifications for important updates
+                    </p>
+                  </div>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={preferences.smsAlerts}
+                    onChange={(e) =>
+                      setPreferences({
+                        ...preferences,
+                        smsAlerts: e.target.checked,
+                      })
+                    }
+                    className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                  />
+                  <div>
+                    <p className="font-medium text-gray-900">SMS Alerts</p>
+                    <p className="text-sm text-gray-500">
+                      Text messages for urgent notifications
+                    </p>
+                  </div>
+                </label>
+              </div>
+              <button
+                onClick={handlePreferenceSave}
+                className="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all"
+              >
+                Save Preferences
+              </button>
+            </div>
+          )}
+
+          {/* Security Tab */}
+          {activeTab === "security" && (
+            <div className="space-y-8">
+              <h2 className="text-xl font-bold text-gray-900">Security</h2>
+
+              {/* Change Password */}
+              <div className="p-6 border border-gray-200 bg-gray-50 rounded-xl">
+                <h3 className="flex items-center gap-2 mb-4 font-semibold text-gray-900">
+                  <Lock className="w-5 h-5 text-green-600" />
+                  Change Password
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block mb-2 text-sm font-medium text-gray-700">
+                      Current Password
+                    </label>
+                    <input
+                      type="password"
+                      value={security.currentPassword}
+                      onChange={(e) =>
+                        setSecurity({
+                          ...security,
+                          currentPassword: e.target.value,
+                        })
+                      }
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-2 text-sm font-medium text-gray-700">
+                      New Password
+                    </label>
+                    <input
+                      type="password"
+                      value={security.newPassword}
+                      onChange={(e) =>
+                        setSecurity({
+                          ...security,
+                          newPassword: e.target.value,
+                        })
+                      }
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-2 text-sm font-medium text-gray-700">
+                      Confirm New Password
+                    </label>
+                    <input
+                      type="password"
+                      value={security.confirmPassword}
+                      onChange={(e) =>
+                        setSecurity({
+                          ...security,
+                          confirmPassword: e.target.value,
+                        })
+                      }
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+                  <button
+                    onClick={handlePasswordChange}
+                    className="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all"
+                  >
+                    Update Password
+                  </button>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </div>

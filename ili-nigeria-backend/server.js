@@ -19,7 +19,15 @@ import adminRoutes from "./routes/admin.js";
 import dashboardRoutes from "./routes/dashboard.js";
 import taskRouter from "./routes/task.js";
 import authRoutes from "./routes/auth.js";
+import settingsRoutes from "./routes/settings.js";
+
+import messageRoutes from "./routes/message.js"; // Add this
+
 import { protect, restrictTo } from "./middleware/auth.js";
+// ... other imports
+
+// Register routes
+// Add this
 
 // Utils
 import { startTaskReminder } from "./utils/taskReminder.js";
@@ -113,6 +121,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", protect, restrictTo("admin"), dashboardRoutes);
 app.use("/api/admin", protect, restrictTo("admin"), adminRoutes);
 app.use("/api/tasks", protect, restrictTo("admin"), taskRouter);
+app.use("/api/contact", contactRoutes);
+app.use("/api/messages", messageRoutes);
+app.use("/api/settings", settingsRoutes);
 
 // Test route
 app.get("/", (req, res) => {
