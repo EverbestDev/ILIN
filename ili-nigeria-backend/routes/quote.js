@@ -6,7 +6,9 @@ import {
   getAllQuotes,
   getQuoteById,
   deleteQuote,
-  getClientQuotes
+  getClientQuotes,
+  updateQuoteStatus,
+  sendMessage,
 } from "../controllers/quoteController.js";
 
 const router = express.Router();
@@ -47,8 +49,10 @@ const uploadMiddleware = (req, res, next) => {
 
 router.post("/", uploadMiddleware, submitQuote);
 router.get("/", protect, restrictTo("admin"), getAllQuotes);
+router.get("/client", protect, getClientQuotes);
 router.get("/:id", protect, getQuoteById);
 router.delete("/:id", protect, restrictTo("admin"), deleteQuote);
-router.get("/client", protect, getClientQuotes);
+router.patch("/:id/status", protect, updateQuoteStatus);
+router.post("/:id/messages", protect, sendMessage); // New: Send message for a quote
 
 export default router;

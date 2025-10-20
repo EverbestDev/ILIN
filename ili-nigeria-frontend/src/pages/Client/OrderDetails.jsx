@@ -221,7 +221,7 @@ const OrderDetails = () => {
       </div>
 
       <button
-        onClick={() => navigate("/client/messages")}
+        onClick={() => navigate(`/client/messages/${order._id}`)}
         className="fixed p-4 text-white bg-green-600 rounded-full shadow-lg bottom-6 right-6 hover:bg-green-700"
       >
         <MessageSquare className="w-6 h-6" />

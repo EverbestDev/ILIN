@@ -24,9 +24,9 @@ const QUOTES_API_URL =
   import.meta.env.VITE_API_URL + "/api/quotes" ||
   "http://localhost:5000/api/quotes";
 const SETTINGS_API_URL =
-  "https://ilin-backend.onrender.com/api/settings/admin" ||
-  import.meta.env.VITE_API_URL + "/api/settings/admin" ||
-  "http://localhost:5000/api/settings/admin";
+  "https://ilin-backend.onrender.com/api/settings/user" ||
+  import.meta.env.VITE_API_URL + "/api/settings/user" ||
+  "http://localhost:5000/api/settings/user";
 
 const ClientDashboard = () => {
   const [loading, setLoading] = useState(true);

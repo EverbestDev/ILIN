@@ -13,7 +13,7 @@ export const getAllQuotes = async (req, res) => {
   }
 };
 
-// NEW: Get quotes for client (filter by userId)
+// Get quotes for client (filter by userId)
 export const getClientQuotes = async (req, res) => {
   try {
     const quotes = await Quote.find({ userId: req.user.uid }).sort({
@@ -56,17 +56,14 @@ export const deleteQuote = async (req, res) => {
     if (quote.documents && quote.documents.length > 0) {
       for (const doc of quote.documents) {
         try {
-          // Extract public_id from the Cloudinary URL
           const publicId = doc.url
             .split("/")
             .slice(-2)
             .join("/")
             .replace(/\.[^/.]+$/, "");
-
           await cloudinary.v2.uploader.destroy(publicId, {
             resource_type: "raw",
           });
-
           console.log(`Deleted from Cloudinary: ${publicId}`);
         } catch (err) {
           console.error(`Failed to delete ${doc.url} from Cloudinary`, err);
@@ -76,7 +73,6 @@ export const deleteQuote = async (req, res) => {
 
     // Delete the quote record from DB
     await Quote.findByIdAndDelete(req.params.id);
-
     res.json({ message: "Quote and files deleted successfully" });
   } catch (error) {
     console.error("Failed to delete quote:", error);
@@ -101,7 +97,6 @@ export const submitQuote = async (req, res) => {
               file.originalname,
               file.mimetype
             );
-
             console.log(`Uploaded: ${uploaded.secure_url}`);
             return {
               name: file.originalname,
@@ -140,46 +135,21 @@ export const submitQuote = async (req, res) => {
     const newQuote = await Quote.create({
       ...formData,
       documents: files,
+      userId: req.user?.uid || null, // Save userId if authenticated
+      status: "submitted",
+      paymentStatus: "pending",
+      price: 0, // Will be updated by admin later
     });
 
     console.log("Quote saved to DB:", newQuote._id);
 
-    // Cloudinary config
-    cloudinary.v2.config({
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET,
-    });
-
-    // Helper to upload a file buffer to Cloudinary
-    const uploadToCloudinary = (fileBuffer, filename, mimetype) => {
-      return new Promise((resolve, reject) => {
-        const stream = cloudinary.v2.uploader.upload_stream(
-          {
-            folder: "ILI_Nigeria/quotes",
-            resource_type: "auto",
-            public_id: filename, // keep filename for clarity
-          },
-          (err, result) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(result);
-            }
-          }
-        );
-
-        stream.end(fileBuffer);
-      });
-    };
-
-    // ---- Email to admin ----
+    // Email to admin
     try {
       if (!process.env.ADMIN_EMAIL) {
         throw new Error("ADMIN_EMAIL environment variable is not set");
       }
       await sendEmail(
-        [process.env.ADMIN_EMAIL, "olawooreusamahabidemi@gmail.com"], // multiple recipients
+        [process.env.ADMIN_EMAIL, "olawooreusamahabidemi@gmail.com"],
         `New Quote Request from ${formData.name}`,
         `
           <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9fafb; padding: 20px;">
@@ -230,7 +200,7 @@ export const submitQuote = async (req, res) => {
       console.error("Failed to send admin email:", err);
     }
 
-    // ---- Email to client ----
+    // Email to client
     try {
       await sendEmail(
         formData.email,
@@ -293,7 +263,146 @@ export const submitQuote = async (req, res) => {
   }
 };
 
+// Update quote status (Admin/Client)
+export const updateQuoteStatus = async (req, res) => {
+  try {
+    const { status, paymentStatus } = req.body;
+    const quote = await Quote.findById(req.params.id);
+    if (!quote) {
+      return res.status(404).json({ message: "Quote not found" });
+    }
+
+    // Check access: admin can update all, client can only update own quotes
+    if (req.user.role !== "admin" && quote.userId !== req.user.uid) {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    // Restrict client actions
+    if (req.user.role !== "admin") {
+      if (!["awaiting payment", "cancelled"].includes(status)) {
+        return res
+          .status(403)
+          .json({
+            message:
+              "Clients can only set status to 'awaiting payment' or 'cancelled'",
+          });
+      }
+    }
+
+    // Update fields
+    if (status) quote.status = status;
+    if (paymentStatus) quote.paymentStatus = paymentStatus;
+
+    await quote.save();
+
+    // Send email notification to admin
+    try {
+      if (!process.env.ADMIN_EMAIL) {
+        throw new Error("ADMIN_EMAIL environment variable is not set");
+      }
+      await sendEmail(
+        [process.env.ADMIN_EMAIL, "olawooreusamahabidemi@gmail.com"],
+        `Quote #${quote._id} Status Updated`,
+        `
+          <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9fafb; padding: 20px;">
+            <div style="text-align: center; padding-bottom: 20px;">
+              <h1 style="color: #2f855a;">ILI Nigeria</h1>
+              <p style="color: #718096;">Quote Status Update</p>
+            </div>
+            <div style="background-color: #fff; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0;">
+              <h3 style="color: #2f855a;">Quote #${quote._id}</h3>
+              <p><strong>Client:</strong> ${quote.name} (${quote.email})</p>
+              <p><strong>New Status:</strong> ${quote.status}</p>
+              <p><strong>Payment Status:</strong> ${quote.paymentStatus}</p>
+              <p><strong>Service:</strong> ${quote.service}</p>
+              <p><strong>Languages:</strong> ${quote.sourceLanguage} → ${
+          quote.targetLanguages?.join(", ") || "N/A"
+        }</p>
+            </div>
+            <div style="text-align: center; color: #718096; font-size: 12px; margin-top: 20px;">
+              ILI Nigeria | hello@ili-nigeria.com | +234 803 123 4567
+            </div>
+          </div>
+        `
+      );
+      console.log("Admin notification email sent");
+    } catch (err) {
+      console.error("Failed to send admin notification email:", err);
+    }
+
+    res.json({ message: "Quote status updated successfully", quote });
+  } catch (error) {
+    console.error("Failed to update quote status:", error);
+    res
+      .status(500)
+      .json({ message: "Failed to update quote status", error: error.message });
+  }
+};
+
+// Send message (Admin/Client)
+export const sendMessage = async (req, res) => {
+  try {
+    const { content } = req.body;
+    const quote = await Quote.findById(req.params.id);
+    if (!quote) {
+      return res.status(404).json({ message: "Quote not found" });
+    }
+
+    // Check access
+    if (req.user.role !== "admin" && quote.userId !== req.user.uid) {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    quote.messages.push({
+      sender: req.user.role === "admin" ? "admin" : "client",
+      content,
+      timestamp: new Date(),
+    });
+
+    await quote.save();
+
+    // Notify other party
+    try {
+      const recipient =
+        req.user.role === "admin" ? quote.email : process.env.ADMIN_EMAIL;
+      await sendEmail(
+        recipient,
+        `New Message for Quote #${quote._id}`,
+        `
+          <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9fafb; padding: 20px;">
+            <div style="text-align: center; padding-bottom: 20px;">
+              <h1 style="color: #2f855a;">ILI Nigeria</h1>
+              <p style="color: #718096;">New Message Received</p>
+            </div>
+            <div style="background-color: #fff; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0;">
+              <h3 style="color: #2f855a;">Quote #${quote._id}</h3>
+              <p><strong>From:</strong> ${
+                req.user.role === "admin" ? "Admin" : quote.name
+              }</p>
+              <p><strong>Message:</strong> ${content}</p>
+              <p><strong>Service:</strong> ${quote.service}</p>
+              <p><strong>Languages:</strong> ${quote.sourceLanguage} → ${
+          quote.targetLanguages?.join(", ") || "N/A"
+        }</p>
+            </div>
+            <div style="text-align: center; color: #718096; font-size: 12px; margin-top: 20px;">
+              ILI Nigeria | hello@ili-nigeria.com | +234 803 123 4567
+            </div>
+          </div>
+        `
+      );
+      console.log("Message notification email sent");
+    } catch (err) {
+      console.error("Failed to send message notification email:", err);
+    }
+
+    res.json({ message: "Message sent successfully", quote });
+  } catch (error) {
+    console.error("Failed to send message:", error);
+    res
+      .status(500)
+      .json({ message: "Failed to send message", error: error.message });
+  }
+};
+
 console.log("ADMIN_EMAIL:", process.env.ADMIN_EMAIL || "Not set");
-
-
-
