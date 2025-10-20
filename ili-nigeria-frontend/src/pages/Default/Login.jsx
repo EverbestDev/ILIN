@@ -141,7 +141,7 @@ export default function Login() {
       await user.getIdToken(true); // Force refresh token to get new claims
       setLoading(false);
       navigate(
-        role === "admin" ? "/admin/dashboard" : `/client/dashboard/${userEmail}`
+        role === "admin" ? "/admin/dashboard" : `/client/dashboard`
       );
     } catch (error) {
       setLoading(false);
