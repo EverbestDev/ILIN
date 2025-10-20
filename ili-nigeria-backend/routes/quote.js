@@ -6,6 +6,7 @@ import {
   getAllQuotes,
   getQuoteById,
   deleteQuote,
+  getClientQuotes
 } from "../controllers/quoteController.js";
 
 const router = express.Router();
@@ -46,7 +47,8 @@ const uploadMiddleware = (req, res, next) => {
 
 router.post("/", uploadMiddleware, submitQuote);
 router.get("/", protect, restrictTo("admin"), getAllQuotes);
-router.get("/:id", protect, restrictTo("admin"), getQuoteById);
+router.get("/:id", protect, getQuoteById);
 router.delete("/:id", protect, restrictTo("admin"), deleteQuote);
+router.get("/client", protect, getClientQuotes);
 
 export default router;

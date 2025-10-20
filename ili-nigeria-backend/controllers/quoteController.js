@@ -12,12 +12,30 @@ export const getAllQuotes = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch quotes" });
   }
 };
-// Get single quote by ID (Admin)
+
+// NEW: Get quotes for client (filter by userId)
+export const getClientQuotes = async (req, res) => {
+  try {
+    const quotes = await Quote.find({ userId: req.user.uid }).sort({
+      createdAt: -1,
+    });
+    res.json(quotes);
+  } catch (error) {
+    console.error("Failed to fetch client quotes:", error);
+    res.status(500).json({ message: "Failed to fetch client quotes" });
+  }
+};
+
+// Get single quote by ID (Admin/Client)
 export const getQuoteById = async (req, res) => {
   try {
     const quote = await Quote.findById(req.params.id);
     if (!quote) {
       return res.status(404).json({ message: "Quote not found" });
+    }
+    // Check access: admin can see all, client only own quotes
+    if (req.user.role !== "admin" && quote.userId !== req.user.uid) {
+      return res.status(403).json({ message: "Access denied" });
     }
     res.json(quote);
   } catch (error) {
@@ -27,7 +45,6 @@ export const getQuoteById = async (req, res) => {
 };
 
 // Delete quote by ID (Admin)
-
 export const deleteQuote = async (req, res) => {
   try {
     const quote = await Quote.findById(req.params.id);
@@ -44,10 +61,10 @@ export const deleteQuote = async (req, res) => {
             .split("/")
             .slice(-2)
             .join("/")
-            .replace(/\.[^/.]+$/, ""); 
+            .replace(/\.[^/.]+$/, "");
 
           await cloudinary.v2.uploader.destroy(publicId, {
-            resource_type: "raw", 
+            resource_type: "raw",
           });
 
           console.log(`Deleted from Cloudinary: ${publicId}`);
@@ -67,35 +84,7 @@ export const deleteQuote = async (req, res) => {
   }
 };
 
-// Cloudinary config
-cloudinary.v2.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-// Helper to upload a file buffer to Cloudinary
-const uploadToCloudinary = (fileBuffer, filename, mimetype) => {
-  return new Promise((resolve, reject) => {
-    const stream = cloudinary.v2.uploader.upload_stream(
-      {
-        folder: "ILI_Nigeria/quotes",
-        resource_type: "auto",
-        public_id: filename, // keep filename for clarity
-      },
-      (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result);
-        }
-      }
-    );
-
-    stream.end(fileBuffer);
-  });
-};
-
+// Submit quote (Public/Client)
 export const submitQuote = async (req, res) => {
   try {
     console.log("Incoming body:", req.body);
@@ -154,6 +143,35 @@ export const submitQuote = async (req, res) => {
     });
 
     console.log("Quote saved to DB:", newQuote._id);
+
+    // Cloudinary config
+    cloudinary.v2.config({
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    });
+
+    // Helper to upload a file buffer to Cloudinary
+    const uploadToCloudinary = (fileBuffer, filename, mimetype) => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.v2.uploader.upload_stream(
+          {
+            folder: "ILI_Nigeria/quotes",
+            resource_type: "auto",
+            public_id: filename, // keep filename for clarity
+          },
+          (err, result) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+
+        stream.end(fileBuffer);
+      });
+    };
 
     // ---- Email to admin ----
     try {
@@ -276,3 +294,6 @@ export const submitQuote = async (req, res) => {
 };
 
 console.log("ADMIN_EMAIL:", process.env.ADMIN_EMAIL || "Not set");
+
+
+
