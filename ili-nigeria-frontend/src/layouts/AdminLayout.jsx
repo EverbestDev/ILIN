@@ -28,14 +28,6 @@ const AdminLayout = ({ children }) => {
     }
   }, [isLoading, isLoggedIn, profile, navigate]);
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        Loading...
-      </div>
-    );
-  }
-
   const adminData = {
     brandName: "ILIN",
     portalTitle: "Admin Portal",
@@ -154,8 +146,18 @@ const AdminLayout = ({ children }) => {
       </div>
 
       <main className="lg:ml-64 pt-16 flex flex-col min-h-[calc(100vh-4rem)]">
-        <div className="flex-grow p-4 sm:p-6 lg:p-8">{children}</div>
-
+        <div className="flex-grow p-4 sm:p-6 lg:p-8">
+          {isLoading ? (
+            <div className="flex items-center justify-center min-h-[50vh]">
+              <div className="text-center">
+                <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                <p className="text-gray-600">Loading...</p>
+              </div>
+            </div>
+          ) : (
+            children
+          )}
+        </div>
         <DashboardFooter
           copyrightName={adminData.copyrightName}
           portalVersion={adminData.portalVersion}

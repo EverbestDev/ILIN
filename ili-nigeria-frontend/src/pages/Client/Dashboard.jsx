@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { auth } from "../../utility/firebase";
 import { useNavigate } from "react-router-dom";
 import {
   FileText,
@@ -38,7 +39,7 @@ const ClientDashboard = () => {
       try {
         const headers = await getAuthHeaders();
         const res = await fetch(
-          "https://ilin-backend.onrender.com/api/settings/admin",
+          "https://ilin-backend.onrender.com/api/settings/user",
           {
             headers,
             credentials: "include",
@@ -120,7 +121,7 @@ const ClientDashboard = () => {
     <div className="p-6 space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-gray-900">
           Welcome, {userName}
         </h1>
         <p className="mt-1 text-gray-600">Here's an overview of your account</p>

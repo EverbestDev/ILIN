@@ -1,7 +1,3 @@
-// Updated ClientLayout.jsx
-// Changes:
-// - Similar to AdminLayout: Remove localStorage, use useAuth for checks and logout.
-// - Redirect if not client or not logged in.
 import React, { useEffect, useState } from "react";
 import {
   X,
@@ -14,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import DashboardNavbar from "../components/Dashboard/DashboardNavbar";
 import DashboardSidebar from "../components/Dashboard/DashboardSidebar";
 import DashboardFooter from "../components/Dashboard/DashboardFooter";
-import { useAuth } from "../context/AuthContext"; // Adjust path
+import { useAuth } from "../context/AuthContext";
 
 const ClientLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -28,14 +24,6 @@ const ClientLayout = ({ children }) => {
       }
     }
   }, [isLoading, isLoggedIn, profile, navigate]);
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        Loading...
-      </div>
-    );
-  }
 
   const clientData = {
     brandName: "ILIN",
@@ -95,7 +83,7 @@ const ClientLayout = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/20 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/20 to-gray-50">
       <div className="fixed top-0 z-40 w-full">
         <DashboardNavbar
           onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
@@ -133,8 +121,18 @@ const ClientLayout = ({ children }) => {
       </div>
 
       <main className="lg:ml-64 pt-16 flex flex-col min-h-[calc(100vh-4rem)]">
-        <div className="flex-grow p-4 sm:p-6 lg:p-8">{children}</div>
-
+        <div className="flex-grow p-4 sm:p-6 lg:p-8">
+          {isLoading ? (
+            <div className="flex items-center justify-center min-h-[50vh]">
+              <div className="text-center">
+                <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                <p className="text-gray-600">Loading...</p>
+              </div>
+            </div>
+          ) : (
+            children
+          )}
+        </div>
         <DashboardFooter
           copyrightName={clientData.copyrightName}
           portalVersion={clientData.portalVersion}

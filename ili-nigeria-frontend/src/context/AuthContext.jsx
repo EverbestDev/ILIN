@@ -20,7 +20,8 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [authState, setAuthState] = useState(initialUserState);
   const navigate = useNavigate();
-  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000" || "https://ilin-backend.onrender.com";
+  const BASE_URL =
+    import.meta.env.VITE_API_URL || "https://ilin-backend.onrender.com";
 
   const fetchUserProfile = async (firebaseUser) => {
     if (!firebaseUser) {
@@ -29,6 +30,8 @@ export const AuthProvider = ({ children }) => {
     }
 
     try {
+      const idTokenResult = await firebaseUser.getIdTokenResult();
+      const role = idTokenResult.claims.role || "client";
       const idToken = await firebaseUser.getIdToken();
       const response = await fetch(`${BASE_URL}/api/auth/profile`, {
         method: "GET",
@@ -39,41 +42,32 @@ export const AuthProvider = ({ children }) => {
         credentials: "include",
       });
 
-      // If 404, user doesn't exist in DB yet - use Firebase data as fallback
-      if (response.status === 404) {
-        setAuthState({
-          isLoggedIn: true,
-          isLoading: false,
-          user: firebaseUser,
-          profile: {
-            name:
-              firebaseUser.displayName ||
-              firebaseUser.email?.split("@")[0] ||
-              "User",
-            email: firebaseUser.email,
-            role: "client",
-          },
-        });
-        return;
-      }
+      let profileData = {
+        name:
+          firebaseUser.displayName ||
+          firebaseUser.email?.split("@")[0] ||
+          "User",
+        email: firebaseUser.email,
+        role,
+      };
 
-      if (!response.ok) {
+      if (response.ok) {
         const data = await response.json();
-        throw new Error(data.message || "Failed to fetch user profile.");
+        profileData = {
+          name: data.user.name || profileData.name,
+          email: data.user.email || profileData.email,
+          role: data.user.role || role,
+        };
       }
-
-      const data = await response.json();
-      const { role, name, email } = data.user;
 
       setAuthState({
         isLoggedIn: true,
         isLoading: false,
         user: firebaseUser,
-        profile: { name, email, role },
+        profile: profileData,
       });
     } catch (error) {
       console.error("Error fetching user profile/claims:", error);
-      // Fallback to Firebase user data on any error
       setAuthState({
         isLoggedIn: true,
         isLoading: false,
@@ -84,7 +78,7 @@ export const AuthProvider = ({ children }) => {
             firebaseUser.email?.split("@")[0] ||
             "User",
           email: firebaseUser.email,
-          role: "client",
+          role: (await firebaseUser.getIdTokenResult()).claims.role || "client",
         },
       });
     }
