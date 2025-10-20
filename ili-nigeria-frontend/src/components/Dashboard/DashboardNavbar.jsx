@@ -68,7 +68,7 @@ const DashboardNavbar = ({
             <div className="flex items-center gap-4">
               {/* Menu Toggle Button */}
               <button
-                onClick={onMenuToggle}
+                onClick={closeAllDropdowns && onMenuToggle}
                 className="p-2 transition-colors rounded-lg hover:bg-gray-100"
                 type="button"
               >
