@@ -157,13 +157,13 @@ const ClientDashboard = () => {
   const handleSubmitQuote = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-  
+
     try {
       const auth = getAuth();
       const currentUser = auth.currentUser;
       let token = null;
-  
-      // ✅ Get real Firebase ID token if logged in
+
+      // ✅ Ensure logged in
       if (currentUser) {
         token = await currentUser.getIdToken();
       } else {
@@ -171,56 +171,67 @@ const ClientDashboard = () => {
         setSubmitting(false);
         return;
       }
-  
-      // ✅ Build formData safely
+
+      // ✅ Prepare form data
       const formData = new FormData();
-  
-      formData.append("name", quoteFormData.name || currentUser.displayName || "Unknown");
+
+      formData.append(
+        "name",
+        quoteFormData.name || currentUser.displayName || "Unknown"
+      );
       formData.append("email", quoteFormData.email || currentUser.email || "");
       formData.append("phone", quoteFormData.phone || "");
       formData.append("company", quoteFormData.company || "");
-      formData.append("service", quoteFormData.service?.toLowerCase() || "translation");
-      formData.append("sourceLanguage", quoteFormData.sourceLanguage || "english");
+      formData.append(
+        "service",
+        quoteFormData.service?.toLowerCase() || "translation"
+      );
+      formData.append(
+        "sourceLanguage",
+        quoteFormData.sourceLanguage || "english"
+      );
       formData.append("urgency", quoteFormData.urgency || "standard");
-  
+
       if (quoteFormData.targetLanguages?.length > 0) {
         quoteFormData.targetLanguages.forEach((lang) =>
           formData.append("targetLanguages[]", lang)
         );
       }
-  
+
       formData.append("certification", quoteFormData.certification);
       formData.append("glossary", quoteFormData.glossary);
       formData.append("wordCount", quoteFormData.wordCount || "");
       formData.append("pageCount", quoteFormData.pageCount || "");
       formData.append("industry", quoteFormData.industry || "");
-      formData.append("specialInstructions", quoteFormData.specialInstructions || "");
-  
+      formData.append(
+        "specialInstructions",
+        quoteFormData.specialInstructions || ""
+      );
+
       if (quoteFormData.documents?.length > 0) {
-        quoteFormData.documents.forEach((file) => formData.append("documents", file));
+        quoteFormData.documents.forEach((file) =>
+          formData.append("documents", file)
+        );
       }
-  
-      console.log("📦 Sending quote form data:", Object.fromEntries(formData));
-  
-      // ✅ Send to the protected /user route
-      const response = await fetch("https://ilin-backend.onrender.com/api/quotes/user", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`, // send real Firebase token
-        },
-        body: formData,
-      });
-  
+
+      // ✅ Submit to protected route
+      const response = await fetch(
+        "https://ilin-backend.onrender.com/api/quotes/user",
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+        }
+      );
+
       const result = await response.json();
-  
+
       if (!response.ok) {
-        console.error("❌ Server response:", result);
         throw new Error(result.message || "Failed to submit quote");
       }
-  
+
       showNotification("Quote submitted successfully!", "success");
-      console.log("✅ Quote saved:", result);
-  
+
       // ✅ Reset form after success
       setQuoteFormData({
         service: "",
@@ -239,15 +250,15 @@ const ClientDashboard = () => {
         industry: "",
         glossary: false,
       });
-  
+
       setShowQuoteModal(false);
     } catch (error) {
-      console.error("Submit quote error:", error);
       showNotification(error.message || "An error occurred", "error");
     } finally {
       setSubmitting(false);
     }
   };
+  
   
   
 
