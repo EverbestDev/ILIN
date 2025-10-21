@@ -49,7 +49,6 @@ const ClientDashboard = () => {
   const [notification, setNotification] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
-
   const navigate = useNavigate();
   const user = auth.currentUser;
   const userName = user ? user.displayName || user.email.split("@")[0] : "User";
@@ -153,7 +152,7 @@ const ClientDashboard = () => {
   }, [orders, adminSettings]);
 
   // Inside Client Dashboard component
-  
+
   const handleSubmitQuote = async (e) => {
     e.preventDefault();
     setSubmitting(true);
@@ -258,9 +257,6 @@ const ClientDashboard = () => {
       setSubmitting(false);
     }
   };
-  
-  
-  
 
   const handleQuoteInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -332,7 +328,7 @@ const ClientDashboard = () => {
         <h1 className="text-3xl font-bold text-gray-900">
           Welcome, {userName}
         </h1>
-        
+
         <p className="mt-1 text-gray-600">Here's an overview of your account</p>
       </div>
 
