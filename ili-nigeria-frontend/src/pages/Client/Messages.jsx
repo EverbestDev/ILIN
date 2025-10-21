@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 
 import { useNavigate } from "react-router-dom";
@@ -20,9 +20,9 @@ const MESSAGE_API_URL =
   import.meta.env.VITE_API_URL + "/api/messages" ||
   "http://localhost:5000/api/messages";
 const CONTACT_API_URL =
-  "https://ilin-backend.onrender.com/api/contact/user" ||
-  import.meta.env.VITE_API_URL + "/api/contact/user" ||
-  "http://localhost:5000/api/contact/user";
+  "https://ilin-backend.onrender.com/api/contact" ||
+  import.meta.env.VITE_API_URL + "/api/contact" ||
+  "http://localhost:5000/api/contact";
 
 export default function ClientMessages() {
   const navigate = useNavigate();
@@ -38,7 +38,6 @@ export default function ClientMessages() {
   const [sortOrder, setSortOrder] = useState("newest");
   const [sourceFilter, setSourceFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-
 
   const socketRef = useRef(null);
 
@@ -66,7 +65,6 @@ export default function ClientMessages() {
       socketRef.current.disconnect();
     };
   }, []);
-
 
   const messagesPerPage = 10;
 
@@ -103,7 +101,6 @@ export default function ClientMessages() {
       console.log("Joined room:", auth.currentUser.uid);
     }
   }, [auth.currentUser]);
-  
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -141,7 +138,6 @@ export default function ClientMessages() {
     if (auth.currentUser) fetchMessages();
   }, []);
 
-
   //websocket
   useEffect(() => {
     socket.on("newReply", (data) => {
@@ -164,7 +160,6 @@ export default function ClientMessages() {
       socket.disconnect();
     };
   }, []);
-  
 
   useEffect(() => {
     let results = [...messages];
