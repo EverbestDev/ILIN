@@ -56,5 +56,5 @@ router.delete("/:id", protect, restrictTo("admin"), deleteQuote);
 router.patch("/:id/status", protect, updateQuoteStatus);
 // NEW: Message route for client/admin communication
 router.post("/:id/messages", protect, sendMessage);
-
+router.post("/user", protect, uploadMiddleware, submitQuote);
 export default router;

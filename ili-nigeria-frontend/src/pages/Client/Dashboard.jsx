@@ -172,7 +172,7 @@ const ClientDashboard = () => {
         }
       });
 
-      const res = await fetch(`${QUOTES_API_URL}/user`, {
+      const res = await fetch(`${QUOTES_API_URL}`, {
         method: "POST",
         headers: { Authorization: headers.Authorization },
         body: formData,
