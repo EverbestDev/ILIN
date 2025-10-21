@@ -214,7 +214,7 @@ const ClientDashboard = () => {
       console.log("📦 Sending quote form data:", Object.fromEntries(formData));
 
       const response = await fetch(
-        "https://ilin-backend.onrender.com/api/quotes",
+        "https://ilin-backend.onrender.com/api/quotes/user",
         {
           method: "POST",
           headers: {
@@ -223,6 +223,7 @@ const ClientDashboard = () => {
           body: formData,
         }
       );
+      
 
       const result = await response.json();
 

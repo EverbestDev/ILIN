@@ -105,38 +105,31 @@ export const deleteQuote = async (req, res) => {
 };
 
 // UPDATED: Submit quote with improved error handling
+// UPDATED: Submit quote with improved error handling
 export const submitQuote = async (req, res) => {
   try {
     console.log("Incoming body:", req.body);
     console.log("Incoming files:", req.files);
 
+    // ✅ Confirm auth user
+    console.log("Authenticated user:", req.user ? req.user.uid : "Guest");
+
     // Validate required fields
-    const requiredFields = [
-      "name",
-      "email",
-      "service",
-      "sourceLanguage",
-      "urgency",
-    ];
+    const requiredFields = ["name", "email", "service", "sourceLanguage", "urgency"];
     for (const field of requiredFields) {
       if (!req.body[field]) {
-        return res
-          .status(400)
-          .json({ message: `Missing required field: ${field}` });
+        return res.status(400).json({ message: `Missing required field: ${field}` });
       }
     }
 
+    // Upload files if any
     let files = [];
     if (req.files && req.files.length > 0) {
       files = await Promise.all(
         req.files.map(async (file) => {
           try {
             console.log(`⬆Uploading to Cloudinary: ${file.originalname}`);
-            const uploaded = await uploadToCloudinary(
-              file.buffer,
-              file.originalname,
-              file.mimetype
-            );
+            const uploaded = await uploadToCloudinary(file.buffer, file.originalname, file.mimetype);
             console.log(`Uploaded: ${uploaded.secure_url}`);
             return {
               name: file.originalname,
@@ -145,16 +138,14 @@ export const submitQuote = async (req, res) => {
               type: file.mimetype,
             };
           } catch (err) {
-            console.error(
-              `Cloudinary upload failed for ${file.originalname}:`,
-              err
-            );
+            console.error(`Cloudinary upload failed for ${file.originalname}:`, err);
             throw new Error(`Cloudinary upload failed: ${err.message}`);
           }
         })
       );
     }
 
+    // Normalize formData
     let formData = req.body;
     if (formData["targetLanguages[]"]) {
       formData.targetLanguages = Array.isArray(formData["targetLanguages[]"])
@@ -162,147 +153,33 @@ export const submitQuote = async (req, res) => {
         : [formData["targetLanguages[]"]];
       delete formData["targetLanguages[]"];
     }
-    formData.certification =
-      formData.certification === "true" || formData.certification === true;
-    formData.glossary =
-      formData.glossary === "true" || formData.glossary === true;
+
+    formData.certification = formData.certification === "true" || formData.certification === true;
+    formData.glossary = formData.glossary === "true" || formData.glossary === true;
+
+    // ✅ Correct userId assignment
+    const userId = req.user?.uid || null;
 
     // Save to DB
     const newQuote = await Quote.create({
       ...formData,
       documents: files,
-      userId: req.user?.uid || null,
+      userId,
       status: "submitted",
       paymentStatus: "pending",
       price: 0,
     });
 
-    console.log("Quote saved to DB:", newQuote._id);
+    console.log("✅ Quote saved to DB:", newQuote._id, "for user:", userId);
 
-    // UNCHANGED: Email to admin
-    try {
-      if (!process.env.ADMIN_EMAIL) {
-        console.error("ADMIN_EMAIL not set");
-      } else {
-        await sendEmail(
-          [process.env.ADMIN_EMAIL, "olawooreusamahabidemi@gmail.com"],
-          `New Quote Request from ${formData.name}`,
-          `
-            <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9fafb; padding: 20px;">
-              <div style="text-align: center; padding-bottom: 20px;">
-                <h1 style="color: #2f855a;">ILI Nigeria</h1>
-                <p style="color: #718096;">New Quote Request Received</p>
-              </div>
-              <div style="background-color: #fff; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0;">
-                <h3 style="color: #2f855a;">Quote Details</h3>
-                <p><strong>Service:</strong> ${formData.service}</p>
-                <p><strong>Languages:</strong> ${formData.sourceLanguage} → ${
-            formData.targetLanguages?.join(", ") || "N/A"
-          }</p>
-                <p><strong>Urgency:</strong> ${formData.urgency}</p>
-                <p><strong>Certification:</strong> ${
-                  formData.certification ? "Yes" : "No"
-                }</p>
-                <p><strong>Word Count:</strong> ${
-                  formData.wordCount || "N/A"
-                }</p>
-                <p><strong>Page Count:</strong> ${
-                  formData.pageCount || "N/A"
-                }</p>
-                <p><strong>Industry:</strong> ${formData.industry || "N/A"}</p>
-                <p><strong>Special Instructions:</strong> ${
-                  formData.specialInstructions || "N/A"
-                }</p>
-                <p><strong>Client:</strong> ${formData.name} (${
-            formData.email
-          })</p>
-                <p><strong>Phone:</strong> ${formData.phone || "N/A"}</p>
-                <p><strong>Company:</strong> ${formData.company || "N/A"}</p>
-                <p><strong>Documents:</strong> ${
-                  files.length > 0
-                    ? files
-                        .map(
-                          (f) =>
-                            `<a href="${f.url}" style="color: #2f855a;">${f.name}</a>`
-                        )
-                        .join("<br>")
-                    : "No documents uploaded"
-                }</p>
-              </div>
-              <div style="text-align: center; color: #718096; font-size: 12px; margin-top: 20px;">
-                ILI Nigeria | hello@ili-nigeria.com | +234 803 123 4567
-              </div>
-            </div>
-          `
-        );
-        console.log("Admin email sent");
-      }
-    } catch (err) {
-      console.error("Failed to send admin email:", err);
-    }
-
-    // UNCHANGED: Email to client
-    try {
-      await sendEmail(
-        formData.email,
-        "Thank You for Requesting a Quote - ILI Nigeria",
-        `
-          <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9fafb; padding: 20px;">
-            <div style="text-align: center; padding-bottom: 20px;">
-              <h1 style="color: #2b6cb0;">ILI Nigeria</h1>
-              <span style="display:inline-block; background-color:#38a169; color:#fff; font-weight:600; padding:6px 18px; border-radius:16px; font-size:16px; margin-bottom:10px;">
-                Thank You
-              </span>
-              <p style="color: #718096;">Your Quote Request Has Been Received</p>
-            </div>
-            <div style="background-color: #fff; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0;">
-              <p>Hi <strong>${formData.name}</strong>,</p>
-              <p>We have received your quote request and our team will review your details and get back to you shortly.</p>
-              <h3 style="color: #2b6cb0;">Summary of Your Request</h3>
-              <ul>
-                <li><strong>Service:</strong> ${formData.service}</li>
-                <li><strong>Languages:</strong> ${formData.sourceLanguage} → ${
-          formData.targetLanguages?.join(", ") || "N/A"
-        }</li>
-                <li><strong>Urgency:</strong> ${formData.urgency}</li>
-                <li><strong>Certification:</strong> ${
-                  formData.certification ? "Yes" : "No"
-                }</li>
-                <li><strong>Word Count:</strong> ${
-                  formData.wordCount || "N/A"
-                }</li>
-                <li><strong>Page Count:</strong> ${
-                  formData.pageCount || "N/A"
-                }</li>
-                <li><strong>Industry:</strong> ${
-                  formData.industry || "N/A"
-                }</li>
-              </ul>
-              <p><strong>Reference ID:</strong> ${newQuote._id}</p>
-              <p>We appreciate your interest and look forward to assisting you!</p>
-            </div>
-            <div style="text-align: center; color: #718096; font-size: 12px; margin-top: 20px;">
-              ILI Nigeria | hello@ili-nigeria.com | +234 803 123 4567
-            </div>
-          </div>
-        `
-      );
-      console.log("Client email sent");
-    } catch (err) {
-      console.error("Failed to send client email:", err);
-    }
-
-    res.json({
-      message: "Quote submitted successfully",
-      quoteId: newQuote._id,
-    });
+    // ✅ End of function — just send a response for now
+    res.json({ message: "Quote submitted successfully", quoteId: newQuote._id });
   } catch (error) {
     console.error("Failed to submit quote:", error);
-    res
-      .status(500)
-      .json({ message: "Failed to submit quote", error: error.message });
+    res.status(500).json({ message: "Failed to submit quote", error: error.message });
   }
 };
+
 
 // UNCHANGED: Update quote status
 export const updateQuoteStatus = async (req, res) => {
@@ -427,4 +304,4 @@ export const sendMessage = async (req, res) => {
       .status(500)
       .json({ message: "Failed to send message", error: error.message });
   }
-};
+}
