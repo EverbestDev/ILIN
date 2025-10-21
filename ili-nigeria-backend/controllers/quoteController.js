@@ -2,7 +2,7 @@ import Quote from "../models/Quote.js";
 import sendEmail from "../utils/email.js";
 import cloudinary from "cloudinary";
 
-// Get all quotes (Admin)
+// UNCHANGED: Get all quotes (Admin)
 export const getAllQuotes = async (req, res) => {
   try {
     const quotes = await Quote.find().sort({ createdAt: -1 });
@@ -13,7 +13,7 @@ export const getAllQuotes = async (req, res) => {
   }
 };
 
-// Get quotes for client (filter by userId)
+// UPDATED: Get quotes for client (filter by userId)
 export const getClientQuotes = async (req, res) => {
   try {
     const quotes = await Quote.find({ userId: req.user.uid }).sort({
@@ -26,7 +26,7 @@ export const getClientQuotes = async (req, res) => {
   }
 };
 
-// Get single quote by ID (Admin/Client)
+// UNCHANGED: Get single quote by ID (Admin/Client)
 export const getQuoteById = async (req, res) => {
   try {
     const quote = await Quote.findById(req.params.id);
@@ -44,7 +44,7 @@ export const getQuoteById = async (req, res) => {
   }
 };
 
-// Delete quote by ID (Admin)
+// UNCHANGED: Delete quote by ID (Admin)
 export const deleteQuote = async (req, res) => {
   try {
     const quote = await Quote.findById(req.params.id);
@@ -80,7 +80,7 @@ export const deleteQuote = async (req, res) => {
   }
 };
 
-// Submit quote (Public/Client)
+// UPDATED: Submit quote (Public/Client) - Save userId, improve error handling
 export const submitQuote = async (req, res) => {
   try {
     console.log("Incoming body:", req.body);
@@ -109,7 +109,7 @@ export const submitQuote = async (req, res) => {
               `Cloudinary upload failed for ${file.originalname}`,
               err
             );
-            throw err;
+            throw new Error(`Cloudinary upload failed: ${err.message}`);
           }
         })
       );
@@ -131,19 +131,19 @@ export const submitQuote = async (req, res) => {
     formData.glossary =
       formData.glossary === "true" || formData.glossary === true;
 
-    // Save to DB
+    // Save to DB with userId if authenticated
     const newQuote = await Quote.create({
       ...formData,
       documents: files,
-      userId: req.user?.uid || null, // Save userId if authenticated
+      userId: req.user?.uid || null, // Save userId for logged-in clients
       status: "submitted",
       paymentStatus: "pending",
-      price: 0, // Will be updated by admin later
+      price: 0, // Will be updated by admin or hardcoded in frontend
     });
 
     console.log("Quote saved to DB:", newQuote._id);
 
-    // Email to admin
+    // UNCHANGED: Email to admin
     try {
       if (!process.env.ADMIN_EMAIL) {
         throw new Error("ADMIN_EMAIL environment variable is not set");
@@ -200,7 +200,7 @@ export const submitQuote = async (req, res) => {
       console.error("Failed to send admin email:", err);
     }
 
-    // Email to client
+    // UNCHANGED: Email to client
     try {
       await sendEmail(
         formData.email,
@@ -263,7 +263,7 @@ export const submitQuote = async (req, res) => {
   }
 };
 
-// Update quote status (Admin/Client)
+// NEW: Update quote status (Admin/Client)
 export const updateQuoteStatus = async (req, res) => {
   try {
     const { status, paymentStatus } = req.body;
@@ -272,7 +272,7 @@ export const updateQuoteStatus = async (req, res) => {
       return res.status(404).json({ message: "Quote not found" });
     }
 
-    // Check access: admin can update all, client can only update own quotes
+    // Check access: admin can update all, client only own quotes
     if (req.user.role !== "admin" && quote.userId !== req.user.uid) {
       return res.status(403).json({ message: "Access denied" });
     }
@@ -339,7 +339,7 @@ export const updateQuoteStatus = async (req, res) => {
   }
 };
 
-// Send message (Admin/Client)
+// NEW: Send message (Admin/Client)
 export const sendMessage = async (req, res) => {
   try {
     const { content } = req.body;

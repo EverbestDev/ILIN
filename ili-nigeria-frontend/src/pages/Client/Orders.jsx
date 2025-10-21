@@ -27,7 +27,6 @@ export default function ClientOrders() {
   const [filteredQuotes, setFilteredQuotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedQuote, setSelectedQuote] = useState(null);
   const [notification, setNotification] = useState(null);
 
   // Filters
@@ -56,21 +55,27 @@ export default function ClientOrders() {
     setTimeout(() => setNotification(null), 3000);
   };
 
+  // Fetch client-specific quotes
   useEffect(() => {
     const fetchQuotes = async () => {
       try {
         const headers = await getAuthHeaders();
-        const res = await fetch(`${API_URL}?uid=${auth.currentUser.uid}`, {
+        const res = await fetch(`${API_URL}/client`, {
           headers,
           credentials: "include",
         });
-        if (!res.ok) throw new Error(`Failed to fetch quotes: ${res.status}`);
+        
+        if (!res.ok) {
+          throw new Error(`Failed to fetch quotes: ${res.status}`);
+        }
+        
         const data = await res.json();
         setQuotes(data);
         setFilteredQuotes(data);
       } catch (err) {
         console.error("Fetch quotes error:", err);
         setError(err.message);
+        showNotification("Failed to load orders", "error");
       } finally {
         setLoading(false);
       }
@@ -78,29 +83,43 @@ export default function ClientOrders() {
     fetchQuotes();
   }, []);
 
+  // Filter and sort logic
   useEffect(() => {
     let results = [...quotes];
+
+    // Search filter
     if (search.trim()) {
       results = results.filter(
         (q) =>
           q.name?.toLowerCase().includes(search.toLowerCase()) ||
           q.email?.toLowerCase().includes(search.toLowerCase()) ||
-          q.subject?.toLowerCase().includes(search.toLowerCase())
+          q.service?.toLowerCase().includes(search.toLowerCase()) ||
+          q._id?.toLowerCase().includes(search.toLowerCase())
       );
     }
-    if (filterService)
+
+    // Service filter
+    if (filterService) {
       results = results.filter((q) => q.service === filterService);
-    if (filterStatus)
+    }
+
+    // Status filter
+    if (filterStatus) {
       results = results.filter((q) => q.status === filterStatus);
+    }
+
+    // Sort by date
     results.sort((a, b) =>
       sortOrder === "newest"
         ? new Date(b.createdAt) - new Date(a.createdAt)
         : new Date(a.createdAt) - new Date(b.createdAt)
     );
+
     setFilteredQuotes(results);
-    setCurrentPage(1);
+    setCurrentPage(1); // Reset to first page when filters change
   }, [search, filterService, filterStatus, sortOrder, quotes]);
 
+  // Helper functions for styling
   const getServiceColor = (service) => {
     switch (service?.toLowerCase()) {
       case "translation":
@@ -109,6 +128,8 @@ export default function ClientOrders() {
         return "bg-purple-100 text-purple-700 border-purple-200";
       case "localization":
         return "bg-green-100 text-green-700 border-green-200";
+      case "transcription":
+        return "bg-orange-100 text-orange-700 border-orange-200";
       default:
         return "bg-gray-100 text-gray-700 border-gray-200";
     }
@@ -119,25 +140,52 @@ export default function ClientOrders() {
       case "complete":
         return "bg-green-100 text-green-700 border-green-200";
       case "in progress":
-        return "bg-yellow-100 text-yellow-700 border-yellow-200";
+      case "paid":
+        return "bg-blue-100 text-blue-700 border-blue-200";
       case "awaiting payment":
+      case "quoted":
+        return "bg-yellow-100 text-yellow-700 border-yellow-200";
+      case "submitted":
+      case "reviewed":
+        return "bg-gray-100 text-gray-700 border-gray-200";
+      case "cancelled":
         return "bg-red-100 text-red-700 border-red-200";
       default:
         return "bg-gray-100 text-gray-700 border-gray-200";
     }
   };
 
+  const getStatusIcon = (status) => {
+    switch (status?.toLowerCase()) {
+      case "complete":
+        return <CheckCircle className="w-4 h-4" />;
+      case "in progress":
+      case "paid":
+        return <Clock className="w-4 h-4" />;
+      case "awaiting payment":
+        return <DollarSign className="w-4 h-4" />;
+      case "cancelled":
+        return <X className="w-4 h-4" />;
+      default:
+        return <FileText className="w-4 h-4" />;
+    }
+  };
+
+  // Export to CSV
   const handleExportCSV = () => {
     const csvContent = [
-      ["Service", "Status", "Languages", "Date"],
+      ["Order ID", "Service", "Status", "Source Language", "Target Languages", "Date", "Price"],
       ...filteredQuotes.map((q) => [
+        q._id || "",
         q.service || "",
         q.status || "",
-        `${q.sourceLang || ""} → ${q.targetLang || ""}`,
-        new Date(q.date).toLocaleDateString(),
+        q.sourceLanguage || "",
+        q.targetLanguages?.join("; ") || "",
+        new Date(q.createdAt).toLocaleDateString(),
+        q.price ? `${q.price}` : "0",
       ]),
     ]
-      .map((row) => row.join(","))
+      .map((row) => row.map(cell => `"${cell}"`).join(","))
       .join("\n");
 
     const blob = new Blob([csvContent], { type: "text/csv" });
@@ -150,13 +198,19 @@ export default function ClientOrders() {
     showNotification("Orders exported successfully!");
   };
 
+  // Pagination
   const indexOfLast = currentPage * quotesPerPage;
   const indexOfFirst = indexOfLast - quotesPerPage;
   const currentQuotes = filteredQuotes.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(filteredQuotes.length / quotesPerPage);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const paginate = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
 
+  // Loading state
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -168,11 +222,15 @@ export default function ClientOrders() {
     );
   }
 
+  // Error state
   if (error) {
     return (
       <div className="p-6">
         <div className="p-4 text-red-700 border border-red-200 bg-red-50 rounded-xl">
-          <p className="font-medium">Error loading orders</p>
+          <div className="flex items-center gap-2">
+            <AlertCircle className="w-5 h-5" />
+            <p className="font-medium">Error loading orders</p>
+          </div>
           <p className="mt-1 text-sm">{error}</p>
         </div>
       </div>
@@ -201,20 +259,22 @@ export default function ClientOrders() {
         </div>
       )}
 
+      {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900">My Orders</h1>
         <p className="mt-1 text-gray-600">
-          Manage and view your translation orders
+          Manage and track your translation orders
         </p>
       </div>
 
+      {/* Search and Filters Bar */}
       <div className="p-4 bg-white border border-gray-200 shadow-sm rounded-xl">
         <div className="flex flex-col gap-4 sm:flex-row">
           <div className="relative flex-1">
             <Search className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 left-3 top-1/2" />
             <input
               type="text"
-              placeholder="Search by service or status..."
+              placeholder="Search by ID, name, email, or service..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
@@ -236,7 +296,8 @@ export default function ClientOrders() {
 
             <button
               onClick={handleExportCSV}
-              className="px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all flex items-center gap-2 shadow-sm"
+              disabled={filteredQuotes.length === 0}
+              className="px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all flex items-center gap-2 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Download className="w-4 h-4" />
               Export
@@ -244,39 +305,60 @@ export default function ClientOrders() {
           </div>
         </div>
 
+        {/* Expandable Filters */}
         {showFilters && (
           <div className="grid grid-cols-1 gap-3 pt-4 mt-4 border-t border-gray-200 md:grid-cols-3">
-            <select
-              value={filterService}
-              onChange={(e) => setFilterService(e.target.value)}
-              className="px-3 py-2 text-sm border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
-            >
-              <option value="">All Services</option>
-              <option value="Legal Translation">Legal Translation</option>
-              <option value="Technical Manual">Technical Manual</option>
-              <option value="Website Localization">Website Localization</option>
-            </select>
+            <div>
+              <label className="block mb-1 text-xs font-medium text-gray-700">
+                Service
+              </label>
+              <select
+                value={filterService}
+                onChange={(e) => setFilterService(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <option value="">All Services</option>
+                <option value="translation">Translation</option>
+                <option value="interpretation">Interpretation</option>
+                <option value="localization">Localization</option>
+                <option value="transcription">Transcription</option>
+              </select>
+            </div>
 
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-3 py-2 text-sm border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
-            >
-              <option value="">All Statuses</option>
-              <option value="Complete">Complete</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Awaiting Payment">Awaiting Payment</option>
-              <option value="Submitted">Submitted</option>
-            </select>
+            <div>
+              <label className="block mb-1 text-xs font-medium text-gray-700">
+                Status
+              </label>
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <option value="">All Statuses</option>
+                <option value="submitted">Submitted</option>
+                <option value="reviewed">Reviewed</option>
+                <option value="quoted">Quoted</option>
+                <option value="awaiting payment">Awaiting Payment</option>
+                <option value="paid">Paid</option>
+                <option value="in progress">In Progress</option>
+                <option value="complete">Complete</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
 
-            <select
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value)}
-              className="px-3 py-2 text-sm border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
-            >
-              <option value="newest">Newest First</option>
-              <option value="oldest">Oldest First</option>
-            </select>
+            <div>
+              <label className="block mb-1 text-xs font-medium text-gray-700">
+                Sort By
+              </label>
+              <select
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+              </select>
+            </div>
           </div>
         )}
       </div>
@@ -287,6 +369,9 @@ export default function ClientOrders() {
           <table className="w-full">
             <thead className="border-b border-gray-200 bg-gradient-to-r from-gray-50 to-green-50/50">
               <tr>
+                <th className="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
+                  Order ID
+                </th>
                 <th className="px-6 py-4 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
                   Service
                 </th>
@@ -311,8 +396,16 @@ export default function ClientOrders() {
                   className="transition-colors hover:bg-green-50/30"
                 >
                   <td className="px-6 py-4">
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-gray-400" />
+                      <span className="font-mono text-sm text-gray-900">
+                        {quote._id.slice(-8)}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
                     <span
-                      className={`inline-flex px-3 py-1 text-xs font-medium rounded-full border ${getServiceColor(
+                      className={`inline-flex px-3 py-1 text-xs font-medium rounded-full border capitalize ${getServiceColor(
                         quote.service
                       )}`}
                     >
@@ -321,18 +414,24 @@ export default function ClientOrders() {
                   </td>
                   <td className="px-6 py-4">
                     <span
-                      className={`inline-flex px-3 py-1 text-xs font-medium rounded-full border ${getStatusColor(
+                      className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-full border capitalize ${getStatusColor(
                         quote.status
                       )}`}
                     >
+                      {getStatusIcon(quote.status)}
                       {quote.status}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-600">
-                    {quote.sourceLang} → {quote.targetLang}
+                    <div className="flex flex-col">
+                      <span className="font-medium">{quote.sourceLanguage}</span>
+                      <span className="text-xs text-gray-500">
+                        → {quote.targetLanguages?.join(", ") || "N/A"}
+                      </span>
+                    </div>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-600">
-                    {new Date(quote.date).toLocaleDateString("en-US", {
+                    {new Date(quote.createdAt).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
                       year: "numeric",
@@ -353,11 +452,13 @@ export default function ClientOrders() {
               ))}
               {currentQuotes.length === 0 && (
                 <tr>
-                  <td colSpan="5" className="px-6 py-12 text-center">
+                  <td colSpan="6" className="px-6 py-12 text-center">
                     <FileText className="w-12 h-12 mx-auto mb-3 text-gray-300" />
                     <p className="font-medium text-gray-600">No orders found</p>
                     <p className="mt-1 text-sm text-gray-500">
-                      Try adjusting your filters or search criteria
+                      {search || filterService || filterStatus
+                        ? "Try adjusting your filters or search criteria"
+                        : "You haven't placed any orders yet"}
                     </p>
                   </td>
                 </tr>
@@ -384,7 +485,7 @@ export default function ClientOrders() {
               <button
                 onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 disabled:opacity-50"
+                className="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="sr-only">Previous</span>
                 <ChevronLeft className="w-5 h-5" aria-hidden="true" />
@@ -406,7 +507,7 @@ export default function ClientOrders() {
               <button
                 onClick={() => paginate(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 disabled:opacity-50"
+                className="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="sr-only">Next</span>
                 <ChevronRight className="w-5 h-5" aria-hidden="true" />

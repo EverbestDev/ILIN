@@ -47,12 +47,14 @@ const uploadMiddleware = (req, res, next) => {
   });
 };
 
+// UNCHANGED: Existing routes
 router.post("/", uploadMiddleware, submitQuote);
 router.get("/", protect, restrictTo("admin"), getAllQuotes);
 router.get("/client", protect, getClientQuotes);
 router.get("/:id", protect, getQuoteById);
 router.delete("/:id", protect, restrictTo("admin"), deleteQuote);
 router.patch("/:id/status", protect, updateQuoteStatus);
-router.post("/:id/messages", protect, sendMessage); // New: Send message for a quote
+// NEW: Message route for client/admin communication
+router.post("/:id/messages", protect, sendMessage);
 
 export default router;

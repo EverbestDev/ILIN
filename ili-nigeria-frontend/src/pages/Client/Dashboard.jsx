@@ -7,15 +7,10 @@ import {
   Clock,
   ArrowUpRight,
   ArrowDownRight,
-  TrendingUp,
-  Mail,
   CheckCircle,
   Globe,
   PlusCircle,
-  ExternalLink,
   X,
-  Send,
-  File,
   AlertCircle,
 } from "lucide-react";
 
@@ -78,57 +73,69 @@ const ClientDashboard = () => {
     const fetchData = async () => {
       try {
         const headers = await getAuthHeaders();
-        const [ordersRes, settingsRes] = await Promise.all([
-          fetch(`${QUOTES_API_URL}?uid=${user.uid}`, {
+        const [quotesRes, settingsRes] = await Promise.all([
+          fetch(`${QUOTES_API_URL}/client`, {
             headers,
             credentials: "include",
           }),
           fetch(SETTINGS_API_URL, { headers, credentials: "include" }),
         ]);
 
-        if (!ordersRes.ok)
-          throw new Error(`Failed to fetch orders: ${ordersRes.status}`);
+        if (!quotesRes.ok)
+          throw new Error(`Failed to fetch quotes: ${quotesRes.status}`);
         if (!settingsRes.ok)
           throw new Error(`Failed to fetch settings: ${settingsRes.status}`);
 
-        const ordersData = await ordersRes.json();
-        const settingsData = await settingsRes.json();
+        const [quotesData, settingsData] = await Promise.all([
+          quotesRes.json(),
+          settingsRes.json(),
+        ]);
 
-        setOrders(ordersData);
+        setOrders(quotesData);
         setAdminSettings(settingsData);
       } catch (err) {
         console.error("Fetch error:", err);
         setError(err.message);
+        showNotification("Failed to load dashboard", "error");
       } finally {
         setLoading(false);
       }
     };
     fetchData();
-  }, [user]);
+  }, []);
 
   const clientStats = useMemo(() => {
     const totalOrders = orders.length;
     const inProgress = orders.filter(
-      (order) => order.status === "In Progress"
+      (order) =>
+        order.status === "In Progress" || order.status === "in progress"
     ).length;
     const completed = orders.filter(
-      (order) => order.status === "Completed"
+      (order) => order.status === "Completed" || order.status === "complete"
     ).length;
     const totalSpent = orders.reduce(
       (sum, order) => sum + (order.price || 0),
       0
     );
     const recentActivity = orders
-      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .sort(
+        (a, b) =>
+          new Date(b.date || b.createdAt) - new Date(a.date || a.createdAt)
+      )
       .slice(0, 5)
       .map((order) => ({
         id: order._id,
         type: "Order",
         description: `Status: ${order.status} - ${order.service}`,
-        time: new Date(order.date).toLocaleString(),
-        icon: order.status === "Completed" ? CheckCircle : Clock,
+        time: new Date(order.date || order.createdAt).toLocaleString(),
+        icon:
+          order.status === "Completed" || order.status === "complete"
+            ? CheckCircle
+            : Clock,
         color:
-          order.status === "Completed" ? "text-green-600" : "text-yellow-600",
+          order.status === "Completed" || order.status === "complete"
+            ? "text-green-600"
+            : "text-yellow-600",
         path: `/client/orders/${order._id}`,
       }));
 
@@ -148,29 +155,32 @@ const ClientDashboard = () => {
   const handleSubmitQuote = async (e) => {
     e.preventDefault();
     try {
+      const headers = await getAuthHeaders();
       const formData = new FormData();
+
       Object.keys(quoteFormData).forEach((key) => {
-        if (key === "targetLanguages") {
-          formData.append(key, quoteFormData[key].join(","));
-        } else if (key === "documents") {
+        if (key === "documents") {
           quoteFormData.documents.forEach((file) =>
             formData.append("documents", file)
+          );
+        } else if (key === "targetLanguages") {
+          quoteFormData.targetLanguages.forEach((lang) =>
+            formData.append("targetLanguages[]", lang)
           );
         } else {
           formData.append(key, quoteFormData[key]);
         }
       });
 
-      const headers = await getAuthHeaders();
-      delete headers["Content-Type"]; // Let browser set it for FormData
-
-      const res = await fetch(QUOTES_API_URL, {
+      const res = await fetch(`${QUOTES_API_URL}/client`, {
         method: "POST",
-        headers,
+        headers: { Authorization: headers.Authorization },
         body: formData,
       });
 
       if (!res.ok) throw new Error(`Failed to submit quote: ${res.status}`);
+
+      const data = await res.json();
       showNotification("Quote submitted successfully", "success");
       setShowQuoteModal(false);
       setQuoteFormData({
@@ -191,14 +201,15 @@ const ClientDashboard = () => {
         glossary: false,
       });
 
-      // Refresh orders
-      const newHeaders = await getAuthHeaders();
-      const ordersRes = await fetch(`${QUOTES_API_URL}?uid=${user.uid}`, {
-        headers: newHeaders,
+      // Refresh orders after submission
+      const quotesRes = await fetch(`${QUOTES_API_URL}/client`, {
+        headers,
         credentials: "include",
       });
-      const ordersData = await ordersRes.json();
-      setOrders(ordersData);
+      if (quotesRes.ok) {
+        const quotesData = await quotesRes.json();
+        setOrders(quotesData);
+      }
     } catch (err) {
       console.error("Submit quote error:", err);
       showNotification("Failed to submit quote", "error");
@@ -206,8 +217,11 @@ const ClientDashboard = () => {
   };
 
   const handleQuoteInputChange = (e) => {
-    const { name, value } = e.target;
-    setQuoteFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setQuoteFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const handleQuoteFileUpload = (files) => {
@@ -515,7 +529,8 @@ const ClientDashboard = () => {
                     setQuoteFormData({
                       ...quoteFormData,
                       targetLanguages: e.target.value
-                        .split(", ")
+                        .split(",")
+                        .map((lang) => lang.trim())
                         .filter(Boolean),
                     })
                   }
@@ -545,12 +560,7 @@ const ClientDashboard = () => {
                   type="checkbox"
                   name="certification"
                   checked={quoteFormData.certification}
-                  onChange={(e) =>
-                    setQuoteFormData({
-                      ...quoteFormData,
-                      certification: e.target.checked,
-                    })
-                  }
+                  onChange={handleQuoteInputChange}
                   className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
                 />
                 <label className="text-sm font-medium text-gray-700">
