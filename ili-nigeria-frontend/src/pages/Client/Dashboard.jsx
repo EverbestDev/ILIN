@@ -14,14 +14,11 @@ import {
   AlertCircle,
 } from "lucide-react";
 
-const QUOTES_API_URL =
-  "https://ilin-backend.onrender.com/api/quotes" ||
-  import.meta.env.VITE_API_URL + "/api/quotes" ||
-  "http://localhost:5000/api/quotes";
-const SETTINGS_API_URL =
-  "https://ilin-backend.onrender.com/api/settings/user" ||
-  import.meta.env.VITE_API_URL + "/api/settings/user" ||
-  "http://localhost:5000/api/settings/user";
+const BASE_URL =
+  import.meta.env.VITE_API_URL || "https://ilin-backend.onrender.com";
+
+const QUOTES_API_URL = `${BASE_URL}/api/quotes`;
+const SETTINGS_API_URL = `${BASE_URL}/api/settings/user`;
 
 const ClientDashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -154,10 +151,25 @@ const ClientDashboard = () => {
 
   const handleSubmitQuote = async (e) => {
     e.preventDefault();
+
+    // prevent double-click or repeat submission
+    if (loading) return;
+
+    setLoading(true);
     try {
       const headers = await getAuthHeaders();
       const formData = new FormData();
 
+      // --- ✅ 1. Auto-fill logged-in user's name & email ---
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const displayName = currentUser.displayName || "Client";
+        const email = currentUser.email || "unknown@ili.com";
+        formData.append("name", displayName);
+        formData.append("email", email);
+      }
+
+      // --- ✅ 2. Append all form fields ---
       Object.keys(quoteFormData).forEach((key) => {
         if (key === "documents") {
           quoteFormData.documents.forEach((file) =>
@@ -172,7 +184,8 @@ const ClientDashboard = () => {
         }
       });
 
-      const res = await fetch(`${QUOTES_API_URL}`, {
+      // --- ✅ 3. Send POST request to /api/quotes/user ---
+      const res = await fetch(`${QUOTES_API_URL}/user`, {
         method: "POST",
         headers: { Authorization: headers.Authorization },
         body: formData,
@@ -181,6 +194,8 @@ const ClientDashboard = () => {
       if (!res.ok) throw new Error(`Failed to submit quote: ${res.status}`);
 
       const data = await res.json();
+
+      // --- ✅ 4. Success feedback & reset form ---
       showNotification("Quote submitted successfully", "success");
       setShowQuoteModal(false);
       setQuoteFormData({
@@ -201,11 +216,16 @@ const ClientDashboard = () => {
         glossary: false,
       });
 
-      // Refresh orders after submission
-      const quotesRes = await fetch(`${QUOTES_API_URL}/client`, {
-        headers,
-        credentials: "include",
-      });
+      // --- ✅ 5. Refresh dashboard quotes (no cache) ---
+      const quotesRes = await fetch(
+        `${QUOTES_API_URL}/client?nocache=${Date.now()}`,
+        {
+          headers,
+          credentials: "include",
+          cache: "no-store",
+        }
+      );
+
       if (quotesRes.ok) {
         const quotesData = await quotesRes.json();
         setOrders(quotesData);
@@ -213,8 +233,11 @@ const ClientDashboard = () => {
     } catch (err) {
       console.error("Submit quote error:", err);
       showNotification("Failed to submit quote", "error");
+    } finally {
+      setLoading(false);
     }
   };
+  
 
   const handleQuoteInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -494,9 +517,10 @@ const ClientDashboard = () => {
                   required
                 >
                   <option value="">Select service</option>
-                  <option value="Translation">Translation</option>
-                  <option value="Interpretation">Interpretation</option>
-                  <option value="Localization">Localization</option>
+                  <option value="translation">Translation</option>
+                  <option value="interpretation">Interpretation</option>
+                  <option value="localization">Localization</option>
+                  <option value="transcription">Transcription</option>
                 </select>
               </div>
               <div>
@@ -511,10 +535,10 @@ const ClientDashboard = () => {
                   required
                 >
                   <option value="">Select language</option>
-                  <option value="English">English</option>
-                  <option value="Spanish">Spanish</option>
-                  <option value="French">French</option>
-                  <option value="German">German</option>
+                  <option value="english">English</option>
+                  <option value="spanish">Spanish</option>
+                  <option value="french">French</option>
+                  <option value="german">German</option>
                 </select>
               </div>
               <div>
@@ -616,9 +640,14 @@ const ClientDashboard = () => {
               </div>
               <button
                 type="submit"
-                className="w-full px-6 py-3 font-medium text-white transition-all bg-green-600 rounded-lg hover:bg-green-700"
+                disabled={loading}
+                className={`w-full px-6 py-3 font-medium text-white transition-all rounded-lg ${
+                  loading
+                    ? "bg-green-400 cursor-not-allowed"
+                    : "bg-green-600 hover:bg-green-700"
+                }`}
               >
-                Submit Quote
+                {loading ? "Submitting..." : "Submit Quote"}
               </button>
             </form>
           </div>
