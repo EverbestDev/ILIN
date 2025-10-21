@@ -64,14 +64,14 @@ export default function ClientOrders() {
           headers,
           credentials: "include",
         });
-        
-        if (!res.ok) {
-          throw new Error(`Failed to fetch quotes: ${res.status}`);
-        }
-        
+        if (!res.ok) throw new Error(`Failed to fetch quotes: ${res.status}`);
         const data = await res.json();
-        setQuotes(data);
-        setFilteredQuotes(data);
+        const updatedQuotes = data.map(quote => ({
+          ...quote,
+          price: (quote.wordCount || 0) * 0.1 + (quote.pageCount || 0) * 5 + (quote.certification ? 50 : 0)
+        }));
+        setQuotes(updatedQuotes);
+        setFilteredQuotes(updatedQuotes);
       } catch (err) {
         console.error("Fetch quotes error:", err);
         setError(err.message);

@@ -2,6 +2,35 @@ import Quote from "../models/Quote.js";
 import sendEmail from "../utils/email.js";
 import cloudinary from "cloudinary";
 
+// UPDATED: Restore Cloudinary configuration
+cloudinary.v2.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// UPDATED: Restore uploadToCloudinary helper
+const uploadToCloudinary = (fileBuffer, filename, mimetype) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.v2.uploader.upload_stream(
+      {
+        folder: "ILI_Nigeria/quotes",
+        resource_type: "auto",
+        public_id: filename,
+      },
+      (err, result) => {
+        if (err) {
+          console.error("Cloudinary upload error:", err);
+          reject(new Error(`Cloudinary upload failed: ${err.message}`));
+        } else {
+          resolve(result);
+        }
+      }
+    );
+    stream.end(fileBuffer);
+  });
+};
+
 // UNCHANGED: Get all quotes (Admin)
 export const getAllQuotes = async (req, res) => {
   try {
@@ -13,7 +42,7 @@ export const getAllQuotes = async (req, res) => {
   }
 };
 
-// UPDATED: Get quotes for client (filter by userId)
+// UNCHANGED: Get quotes for client
 export const getClientQuotes = async (req, res) => {
   try {
     const quotes = await Quote.find({ userId: req.user.uid }).sort({
@@ -26,14 +55,13 @@ export const getClientQuotes = async (req, res) => {
   }
 };
 
-// UNCHANGED: Get single quote by ID (Admin/Client)
+// UNCHANGED: Get single quote by ID
 export const getQuoteById = async (req, res) => {
   try {
     const quote = await Quote.findById(req.params.id);
     if (!quote) {
       return res.status(404).json({ message: "Quote not found" });
     }
-    // Check access: admin can see all, client only own quotes
     if (req.user.role !== "admin" && quote.userId !== req.user.uid) {
       return res.status(403).json({ message: "Access denied" });
     }
@@ -51,8 +79,6 @@ export const deleteQuote = async (req, res) => {
     if (!quote) {
       return res.status(404).json({ message: "Quote not found" });
     }
-
-    // If there are documents attached, remove them from Cloudinary
     if (quote.documents && quote.documents.length > 0) {
       for (const doc of quote.documents) {
         try {
@@ -70,8 +96,6 @@ export const deleteQuote = async (req, res) => {
         }
       }
     }
-
-    // Delete the quote record from DB
     await Quote.findByIdAndDelete(req.params.id);
     res.json({ message: "Quote and files deleted successfully" });
   } catch (error) {
@@ -80,11 +104,27 @@ export const deleteQuote = async (req, res) => {
   }
 };
 
-// UPDATED: Submit quote (Public/Client) - Save userId, improve error handling
+// UPDATED: Submit quote with improved error handling
 export const submitQuote = async (req, res) => {
   try {
     console.log("Incoming body:", req.body);
     console.log("Incoming files:", req.files);
+
+    // Validate required fields
+    const requiredFields = [
+      "name",
+      "email",
+      "service",
+      "sourceLanguage",
+      "urgency",
+    ];
+    for (const field of requiredFields) {
+      if (!req.body[field]) {
+        return res
+          .status(400)
+          .json({ message: `Missing required field: ${field}` });
+      }
+    }
 
     let files = [];
     if (req.files && req.files.length > 0) {
@@ -106,7 +146,7 @@ export const submitQuote = async (req, res) => {
             };
           } catch (err) {
             console.error(
-              `Cloudinary upload failed for ${file.originalname}`,
+              `Cloudinary upload failed for ${file.originalname}:`,
               err
             );
             throw new Error(`Cloudinary upload failed: ${err.message}`);
@@ -116,29 +156,25 @@ export const submitQuote = async (req, res) => {
     }
 
     let formData = req.body;
-
-    // Handle multi-select fields
     if (formData["targetLanguages[]"]) {
       formData.targetLanguages = Array.isArray(formData["targetLanguages[]"])
         ? formData["targetLanguages[]"]
         : [formData["targetLanguages[]"]];
       delete formData["targetLanguages[]"];
     }
-
-    // Convert checkboxes
     formData.certification =
       formData.certification === "true" || formData.certification === true;
     formData.glossary =
       formData.glossary === "true" || formData.glossary === true;
 
-    // Save to DB with userId if authenticated
+    // Save to DB
     const newQuote = await Quote.create({
       ...formData,
       documents: files,
-      userId: req.user?.uid || null, // Save userId for logged-in clients
+      userId: req.user?.uid || null,
       status: "submitted",
       paymentStatus: "pending",
-      price: 0, // Will be updated by admin or hardcoded in frontend
+      price: 0,
     });
 
     console.log("Quote saved to DB:", newQuote._id);
@@ -146,56 +182,61 @@ export const submitQuote = async (req, res) => {
     // UNCHANGED: Email to admin
     try {
       if (!process.env.ADMIN_EMAIL) {
-        throw new Error("ADMIN_EMAIL environment variable is not set");
+        console.error("ADMIN_EMAIL not set");
+      } else {
+        await sendEmail(
+          [process.env.ADMIN_EMAIL, "olawooreusamahabidemi@gmail.com"],
+          `New Quote Request from ${formData.name}`,
+          `
+            <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9fafb; padding: 20px;">
+              <div style="text-align: center; padding-bottom: 20px;">
+                <h1 style="color: #2f855a;">ILI Nigeria</h1>
+                <p style="color: #718096;">New Quote Request Received</p>
+              </div>
+              <div style="background-color: #fff; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <h3 style="color: #2f855a;">Quote Details</h3>
+                <p><strong>Service:</strong> ${formData.service}</p>
+                <p><strong>Languages:</strong> ${formData.sourceLanguage} → ${
+            formData.targetLanguages?.join(", ") || "N/A"
+          }</p>
+                <p><strong>Urgency:</strong> ${formData.urgency}</p>
+                <p><strong>Certification:</strong> ${
+                  formData.certification ? "Yes" : "No"
+                }</p>
+                <p><strong>Word Count:</strong> ${
+                  formData.wordCount || "N/A"
+                }</p>
+                <p><strong>Page Count:</strong> ${
+                  formData.pageCount || "N/A"
+                }</p>
+                <p><strong>Industry:</strong> ${formData.industry || "N/A"}</p>
+                <p><strong>Special Instructions:</strong> ${
+                  formData.specialInstructions || "N/A"
+                }</p>
+                <p><strong>Client:</strong> ${formData.name} (${
+            formData.email
+          })</p>
+                <p><strong>Phone:</strong> ${formData.phone || "N/A"}</p>
+                <p><strong>Company:</strong> ${formData.company || "N/A"}</p>
+                <p><strong>Documents:</strong> ${
+                  files.length > 0
+                    ? files
+                        .map(
+                          (f) =>
+                            `<a href="${f.url}" style="color: #2f855a;">${f.name}</a>`
+                        )
+                        .join("<br>")
+                    : "No documents uploaded"
+                }</p>
+              </div>
+              <div style="text-align: center; color: #718096; font-size: 12px; margin-top: 20px;">
+                ILI Nigeria | hello@ili-nigeria.com | +234 803 123 4567
+              </div>
+            </div>
+          `
+        );
+        console.log("Admin email sent");
       }
-      await sendEmail(
-        [process.env.ADMIN_EMAIL, "olawooreusamahabidemi@gmail.com"],
-        `New Quote Request from ${formData.name}`,
-        `
-          <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9fafb; padding: 20px;">
-            <div style="text-align: center; padding-bottom: 20px;">
-              <h1 style="color: #2f855a;">ILI Nigeria</h1>
-              <p style="color: #718096;">New Quote Request Received</p>
-            </div>
-            <div style="background-color: #fff; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0;">
-              <h3 style="color: #2f855a;">Quote Details</h3>
-              <p><strong>Service:</strong> ${formData.service}</p>
-              <p><strong>Languages:</strong> ${formData.sourceLanguage} → ${
-          formData.targetLanguages?.join(", ") || "N/A"
-        }</p>
-              <p><strong>Urgency:</strong> ${formData.urgency}</p>
-              <p><strong>Certification:</strong> ${
-                formData.certification ? "Yes" : "No"
-              }</p>
-              <p><strong>Word Count:</strong> ${formData.wordCount || "N/A"}</p>
-              <p><strong>Page Count:</strong> ${formData.pageCount || "N/A"}</p>
-              <p><strong>Industry:</strong> ${formData.industry || "N/A"}</p>
-              <p><strong>Special Instructions:</strong> ${
-                formData.specialInstructions || "N/A"
-              }</p>
-              <p><strong>Client:</strong> ${formData.name} (${
-          formData.email
-        })</p>
-              <p><strong>Phone:</strong> ${formData.phone || "N/A"}</p>
-              <p><strong>Company:</strong> ${formData.company || "N/A"}</p>
-              <p><strong>Documents:</strong> ${
-                files.length > 0
-                  ? files
-                      .map(
-                        (f) =>
-                          `<a href="${f.url}" style="color: #2f855a;">${f.name}</a>`
-                      )
-                      .join("<br>")
-                  : "No documents uploaded"
-              }</p>
-            </div>
-            <div style="text-align: center; color: #718096; font-size: 12px; margin-top: 20px;">
-              ILI Nigeria | hello@ili-nigeria.com | +234 803 123 4567
-            </div>
-          </div>
-        `
-      );
-      console.log("Admin email sent");
     } catch (err) {
       console.error("Failed to send admin email:", err);
     }
@@ -263,7 +304,7 @@ export const submitQuote = async (req, res) => {
   }
 };
 
-// NEW: Update quote status (Admin/Client)
+// UNCHANGED: Update quote status
 export const updateQuoteStatus = async (req, res) => {
   try {
     const { status, paymentStatus } = req.body;
@@ -271,13 +312,9 @@ export const updateQuoteStatus = async (req, res) => {
     if (!quote) {
       return res.status(404).json({ message: "Quote not found" });
     }
-
-    // Check access: admin can update all, client only own quotes
     if (req.user.role !== "admin" && quote.userId !== req.user.uid) {
       return res.status(403).json({ message: "Access denied" });
     }
-
-    // Restrict client actions
     if (req.user.role !== "admin") {
       if (!["awaiting payment", "cancelled"].includes(status)) {
         return res
@@ -288,14 +325,9 @@ export const updateQuoteStatus = async (req, res) => {
           });
       }
     }
-
-    // Update fields
     if (status) quote.status = status;
     if (paymentStatus) quote.paymentStatus = paymentStatus;
-
     await quote.save();
-
-    // Send email notification to admin
     try {
       if (!process.env.ADMIN_EMAIL) {
         throw new Error("ADMIN_EMAIL environment variable is not set");
@@ -329,7 +361,6 @@ export const updateQuoteStatus = async (req, res) => {
     } catch (err) {
       console.error("Failed to send admin notification email:", err);
     }
-
     res.json({ message: "Quote status updated successfully", quote });
   } catch (error) {
     console.error("Failed to update quote status:", error);
@@ -339,7 +370,7 @@ export const updateQuoteStatus = async (req, res) => {
   }
 };
 
-// NEW: Send message (Admin/Client)
+// UNCHANGED: Send message
 export const sendMessage = async (req, res) => {
   try {
     const { content } = req.body;
@@ -347,21 +378,15 @@ export const sendMessage = async (req, res) => {
     if (!quote) {
       return res.status(404).json({ message: "Quote not found" });
     }
-
-    // Check access
     if (req.user.role !== "admin" && quote.userId !== req.user.uid) {
       return res.status(403).json({ message: "Access denied" });
     }
-
     quote.messages.push({
       sender: req.user.role === "admin" ? "admin" : "client",
       content,
       timestamp: new Date(),
     });
-
     await quote.save();
-
-    // Notify other party
     try {
       const recipient =
         req.user.role === "admin" ? quote.email : process.env.ADMIN_EMAIL;
@@ -395,7 +420,6 @@ export const sendMessage = async (req, res) => {
     } catch (err) {
       console.error("Failed to send message notification email:", err);
     }
-
     res.json({ message: "Message sent successfully", quote });
   } catch (error) {
     console.error("Failed to send message:", error);
@@ -404,5 +428,3 @@ export const sendMessage = async (req, res) => {
       .json({ message: "Failed to send message", error: error.message });
   }
 };
-
-console.log("ADMIN_EMAIL:", process.env.ADMIN_EMAIL || "Not set");
