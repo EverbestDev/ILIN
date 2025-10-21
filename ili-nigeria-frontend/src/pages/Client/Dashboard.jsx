@@ -151,26 +151,24 @@ const ClientDashboard = () => {
 
   const handleSubmitQuote = async (e) => {
     e.preventDefault();
-
-    // prevent double-click or repeat submission
     if (loading) return;
-
+  
     setLoading(true);
     try {
       const headers = await getAuthHeaders();
       const formData = new FormData();
-
-      // --- ✅ 1. Auto-fill logged-in user's name & email ---
+  
+      // --- 1. Add user details from Firebase ---
       const currentUser = auth.currentUser;
       if (currentUser) {
-        const displayName = currentUser.displayName || "Client";
-        const email = currentUser.email || "unknown@ili.com";
-        formData.append("name", displayName);
-        formData.append("email", email);
+        formData.append("name", currentUser.displayName || "Client");
+        formData.append("email", currentUser.email || "unknown@ili.com");
       }
-
-      // --- ✅ 2. Append all form fields ---
+  
+      // --- 2. Append all other fields EXCEPT name/email ---
       Object.keys(quoteFormData).forEach((key) => {
+        if (["name", "email"].includes(key)) return; // ⛔ skip duplicates
+  
         if (key === "documents") {
           quoteFormData.documents.forEach((file) =>
             formData.append("documents", file)
@@ -183,21 +181,21 @@ const ClientDashboard = () => {
           formData.append(key, quoteFormData[key]);
         }
       });
-
-      // --- ✅ 3. Send POST request to /api/quotes/user ---
+  
+      // --- 3. Submit to backend ---
       const res = await fetch(`${QUOTES_API_URL}/user`, {
         method: "POST",
         headers: { Authorization: headers.Authorization },
         body: formData,
       });
-
+  
       if (!res.ok) throw new Error(`Failed to submit quote: ${res.status}`);
-
+  
       const data = await res.json();
-
-      // --- ✅ 4. Success feedback & reset form ---
       showNotification("Quote submitted successfully", "success");
       setShowQuoteModal(false);
+  
+      // --- 4. Reset and refresh dashboard ---
       setQuoteFormData({
         service: "",
         sourceLanguage: "",
@@ -215,8 +213,7 @@ const ClientDashboard = () => {
         industry: "",
         glossary: false,
       });
-
-      // --- ✅ 5. Refresh dashboard quotes (no cache) ---
+  
       const quotesRes = await fetch(
         `${QUOTES_API_URL}/client?nocache=${Date.now()}`,
         {
@@ -225,7 +222,7 @@ const ClientDashboard = () => {
           cache: "no-store",
         }
       );
-
+  
       if (quotesRes.ok) {
         const quotesData = await quotesRes.json();
         setOrders(quotesData);
