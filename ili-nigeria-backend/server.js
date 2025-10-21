@@ -1,6 +1,10 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+//weSocket
+import { Server } from "socket.io";
+import http from "http";
+
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
@@ -35,6 +39,7 @@ admin.initializeApp({
 });
 
 const app = express();
+const server = http.createServer(app);
 
 // Connect to database
 connectDB();
@@ -127,5 +132,35 @@ app.get("/", (req, res) => {
   res.send("Backend is running with CORS fixed");
 });
 
+//WebSocket
+// Initialize Socket.io
+const io = new Server(server, {
+  cors: {
+    origin: ["http://localhost:5173", "https://ilin-nigeria.vercel.app"], // adjust to your frontend URLs
+    methods: ["GET", "POST"],
+  },
+});
+
+// Handle socket connection
+io.on("connection", (socket) => {
+  console.log("🟢 User connected:", socket.id);
+
+  // Join user-specific room
+  socket.on("joinRoom", (userId) => {
+    socket.join(userId);
+    console.log(`User joined room: ${userId}`);
+  });
+
+  // Disconnect event
+  socket.on("disconnect", () => {
+    console.log("🔴 User disconnected:", socket.id);
+  });
+});
+
+//Make io available to routes/controllers
+app.set("io", io);
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () =>
+  console.log(`🚀 Server & Socket.io running on port ${PORT}`)
+);

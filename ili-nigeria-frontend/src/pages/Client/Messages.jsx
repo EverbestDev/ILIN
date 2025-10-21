@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { io } from "socket.io-client";
+
 import { useNavigate } from "react-router-dom";
 import {
   Send,
@@ -36,6 +38,36 @@ export default function ClientMessages() {
   const [sortOrder, setSortOrder] = useState("newest");
   const [sourceFilter, setSourceFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
+
+
+  const socketRef = useRef(null);
+
+  useEffect(() => {
+    socketRef.current = io(
+      import.meta.env.VITE_API_URL || "https://ilin-backend.onrender.com"
+    );
+
+    socketRef.current.on("newReply", (data) => {
+      if (auth.currentUser && data.userId === auth.currentUser.uid) {
+        setMessages((prev) => [data, ...prev]);
+        setFilteredMessages((prev) => [data, ...prev]);
+      }
+    });
+
+    socketRef.current.on("messageStatusUpdated", (update) => {
+      setMessages((prev) =>
+        prev.map((m) =>
+          m._id === update.id ? { ...m, isRead: update.isRead } : m
+        )
+      );
+    });
+
+    return () => {
+      socketRef.current.disconnect();
+    };
+  }, []);
+
+
   const messagesPerPage = 10;
 
   const getAuthHeaders = async () => {
@@ -63,6 +95,15 @@ export default function ClientMessages() {
       navigate("/login");
     }
   }, [navigate]);
+
+  //Websocket
+  useEffect(() => {
+    if (auth.currentUser && socketRef.current) {
+      socketRef.current.emit("joinRoom", auth.currentUser.uid);
+      console.log("Joined room:", auth.currentUser.uid);
+    }
+  }, [auth.currentUser]);
+  
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -99,6 +140,31 @@ export default function ClientMessages() {
     };
     if (auth.currentUser) fetchMessages();
   }, []);
+
+
+  //websocket
+  useEffect(() => {
+    socket.on("newReply", (data) => {
+      // If this reply belongs to a thread the client is part of, update messages
+      if (auth.currentUser && data.userId === auth.currentUser.uid) {
+        setMessages((prev) => [data, ...prev]);
+        setFilteredMessages((prev) => [data, ...prev]);
+      }
+    });
+
+    socket.on("messageStatusUpdated", (update) => {
+      setMessages((prev) =>
+        prev.map((m) =>
+          m._id === update.id ? { ...m, isRead: update.isRead } : m
+        )
+      );
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+  
 
   useEffect(() => {
     let results = [...messages];
