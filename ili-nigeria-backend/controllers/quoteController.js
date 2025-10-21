@@ -105,14 +105,11 @@ export const deleteQuote = async (req, res) => {
 };
 
 // UPDATED: Submit quote with improved error handling
-// UPDATED: Submit quote with improved error handling
+// CLEANED & FINAL submitQuote
 export const submitQuote = async (req, res) => {
   try {
-    console.log("Incoming body:", req.body);
-    console.log("Incoming files:", req.files);
-
-    // ✅ Confirm auth user
-    console.log("Authenticated user:", req.user ? req.user.uid : "Guest");
+    // Log summary only (no sensitive data)
+    console.log(`📥 Quote submission received from ${req.user?.uid || "guest"}`);
 
     // Validate required fields
     const requiredFields = ["name", "email", "service", "sourceLanguage", "urgency"];
@@ -122,25 +119,18 @@ export const submitQuote = async (req, res) => {
       }
     }
 
-    // Upload files if any
+    // Upload documents (if any)
     let files = [];
-    if (req.files && req.files.length > 0) {
+    if (req.files?.length > 0) {
       files = await Promise.all(
         req.files.map(async (file) => {
-          try {
-            console.log(`⬆Uploading to Cloudinary: ${file.originalname}`);
-            const uploaded = await uploadToCloudinary(file.buffer, file.originalname, file.mimetype);
-            console.log(`Uploaded: ${uploaded.secure_url}`);
-            return {
-              name: file.originalname,
-              url: uploaded.secure_url,
-              size: file.size,
-              type: file.mimetype,
-            };
-          } catch (err) {
-            console.error(`Cloudinary upload failed for ${file.originalname}:`, err);
-            throw new Error(`Cloudinary upload failed: ${err.message}`);
-          }
+          const uploaded = await uploadToCloudinary(file.buffer, file.originalname, file.mimetype);
+          return {
+            name: file.originalname,
+            url: uploaded.secure_url,
+            size: file.size,
+            type: file.mimetype,
+          };
         })
       );
     }
@@ -154,10 +144,11 @@ export const submitQuote = async (req, res) => {
       delete formData["targetLanguages[]"];
     }
 
-    formData.certification = formData.certification === "true" || formData.certification === true;
-    formData.glossary = formData.glossary === "true" || formData.glossary === true;
+    formData.certification =
+      formData.certification === "true" || formData.certification === true;
+    formData.glossary =
+      formData.glossary === "true" || formData.glossary === true;
 
-    // ✅ Correct userId assignment
     const userId = req.user?.uid || null;
 
     // Save to DB
@@ -170,12 +161,71 @@ export const submitQuote = async (req, res) => {
       price: 0,
     });
 
-    console.log("✅ Quote saved to DB:", newQuote._id, "for user:", userId);
+    console.log(`✅ Quote saved: ${newQuote._id} (user: ${userId || "guest"})`);
 
-    // ✅ End of function — just send a response for now
-    res.json({ message: "Quote submitted successfully", quoteId: newQuote._id });
+    // Helper: Safe email send with retry
+    const sendWithRetry = async (to, subject, html) => {
+      try {
+        await sendEmail(to, subject, html);
+      } catch (err) {
+        console.warn(`Email send failed, retrying once: ${subject}`);
+        try {
+          await sendEmail(to, subject, html);
+        } catch (retryErr) {
+          console.error(`Second attempt failed for "${subject}":`, retryErr.message);
+        }
+      }
+    };
+
+    // --- 📧 Send Admin Notification ---
+    if (process.env.ADMIN_EMAIL) {
+      const adminEmails = process.env.ADMIN_EMAIL.split(",").map((e) => e.trim());
+      await sendWithRetry(
+        adminEmails,
+        `New Quote Request from ${formData.name}`,
+        `
+          <div style="font-family: Arial; background-color: #f9fafb; padding: 20px;">
+            <h2 style="color:#2f855a;">New Quote Request</h2>
+            <p><strong>Service:</strong> ${formData.service}</p>
+            <p><strong>Languages:</strong> ${formData.sourceLanguage} → ${formData.targetLanguages?.join(", ") || "N/A"}</p>
+            <p><strong>Urgency:</strong> ${formData.urgency}</p>
+            <p><strong>Client:</strong> ${formData.name} (${formData.email})</p>
+            <p><strong>Company:</strong> ${formData.company || "N/A"}</p>
+            <p><strong>Special Instructions:</strong> ${formData.specialInstructions || "N/A"}</p>
+            <p><strong>Documents:</strong><br>
+              ${files.length > 0 ? files.map((f) => `<a href="${f.url}">${f.name}</a>`).join("<br>") : "No documents uploaded"}
+            </p>
+          </div>
+        `
+      );
+      console.log("📩 Admin notification sent");
+    } else {
+      console.warn("⚠️ ADMIN_EMAIL not configured in environment");
+    }
+
+    // --- 📧 Send Client Confirmation ---
+    await sendWithRetry(
+      formData.email,
+      "Thank You for Your Quote Request - ILI Nigeria",
+      `
+        <div style="font-family: Arial; background-color: #f9fafb; padding: 20px;">
+          <h2 style="color:#2b6cb0;">Your Quote Request Has Been Received</h2>
+          <p>Hi ${formData.name},</p>
+          <p>We’ve received your quote request and will get back to you soon.</p>
+          <p><strong>Service:</strong> ${formData.service}</p>
+          <p><strong>Reference ID:</strong> ${newQuote._id}</p>
+          <p>Thank you for choosing ILI Nigeria.</p>
+        </div>
+      `
+    );
+    console.log("📩 Client confirmation sent");
+
+    res.json({
+      message: "Quote submitted successfully",
+      quoteId: newQuote._id,
+    });
   } catch (error) {
-    console.error("Failed to submit quote:", error);
+    console.error("❌ Failed to submit quote:", error.message);
     res.status(500).json({ message: "Failed to submit quote", error: error.message });
   }
 };
@@ -194,12 +244,10 @@ export const updateQuoteStatus = async (req, res) => {
     }
     if (req.user.role !== "admin") {
       if (!["awaiting payment", "cancelled"].includes(status)) {
-        return res
-          .status(403)
-          .json({
-            message:
-              "Clients can only set status to 'awaiting payment' or 'cancelled'",
-          });
+        return res.status(403).json({
+          message:
+            "Clients can only set status to 'awaiting payment' or 'cancelled'",
+        });
       }
     }
     if (status) quote.status = status;
@@ -304,4 +352,4 @@ export const sendMessage = async (req, res) => {
       .status(500)
       .json({ message: "Failed to send message", error: error.message });
   }
-}
+};

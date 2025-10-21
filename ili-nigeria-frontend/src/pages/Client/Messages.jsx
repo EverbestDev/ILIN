@@ -18,9 +18,9 @@ const MESSAGE_API_URL =
   import.meta.env.VITE_API_URL + "/api/messages" ||
   "http://localhost:5000/api/messages";
 const CONTACT_API_URL =
-  "https://ilin-backend.onrender.com/api/contact/client" ||
-  import.meta.env.VITE_API_URL + "/api/contact/client" ||
-  "http://localhost:5000/api/contact/client";
+  "https://ilin-backend.onrender.com/api/contact/user" ||
+  import.meta.env.VITE_API_URL + "/api/contact/user" ||
+  "http://localhost:5000/api/contact/user";
 
 export default function ClientMessages() {
   const navigate = useNavigate();
@@ -219,11 +219,11 @@ export default function ClientMessages() {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Messages</h1>
+      <div className="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <h1 className="mb-6 text-3xl font-bold text-gray-900">Messages</h1>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm mb-6 border border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="p-4 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-gray-900">
             New Message
           </h2>
           <div className="grid grid-cols-1 gap-4">
@@ -247,7 +247,7 @@ export default function ClientMessages() {
             />
             <button
               onClick={handleSendMessage}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2"
+              className="flex items-center gap-2 px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-700"
             >
               <Send className="w-4 h-4" />
               Send Message
@@ -255,13 +255,13 @@ export default function ClientMessages() {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-sm mb-6 border border-gray-200">
+        <div className="p-4 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900">
               Filter Messages
             </h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <input
               type="text"
               placeholder="Search by subject..."
@@ -290,39 +290,39 @@ export default function ClientMessages() {
         </div>
 
         {loading ? (
-          <div className="text-center py-10">
-            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-green-500 border-t-transparent"></div>
+          <div className="py-10 text-center">
+            <div className="inline-block w-8 h-8 border-4 border-green-500 rounded-full animate-spin border-t-transparent"></div>
             <p className="mt-2 text-gray-600">Loading messages...</p>
           </div>
         ) : error ? (
-          <div className="text-center py-10 text-red-600">
+          <div className="py-10 text-center text-red-600">
             <AlertCircle className="w-12 h-12 mx-auto mb-2" />
             <p>{error}</p>
           </div>
         ) : currentThreads.length === 0 ? (
-          <div className="text-center py-10">
+          <div className="py-10 text-center">
             <MessageSquare className="w-12 h-12 mx-auto mb-2 text-gray-300" />
             <p className="text-gray-600">No messages found</p>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-6 py-3 text-xs font-medium text-left text-gray-500 uppercase">
                       Source
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-6 py-3 text-xs font-medium text-left text-gray-500 uppercase">
                       Subject
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-6 py-3 text-xs font-medium text-left text-gray-500 uppercase">
                       Latest Message
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-6 py-3 text-xs font-medium text-left text-gray-500 uppercase">
                       Date
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-6 py-3 text-xs font-medium text-right text-gray-500 uppercase">
                       Actions
                     </th>
                   </tr>
@@ -330,24 +330,24 @@ export default function ClientMessages() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {currentThreads.map((thread) => (
                     <tr key={thread.threadId} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                         {thread.source === "public" ? "Public" : "Client"}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
                         {thread.subject}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                         {thread.latestMessage.message.substring(0, 50)}...
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                         {new Date(
                           thread.latestMessage.createdAt
                         ).toLocaleDateString()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
                         <button
                           onClick={() => setSelectedThread(thread.threadId)}
-                          className="text-blue-600 hover:text-blue-800 mr-4"
+                          className="mr-4 text-blue-600 hover:text-blue-800"
                         >
                           <Eye className="w-5 h-5" />
                         </button>
@@ -386,7 +386,7 @@ export default function ClientMessages() {
                     setCurrentPage((prev) => Math.max(prev - 1, 1))
                   }
                   disabled={currentPage === 1}
-                  className="px-3 py-1 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-100 disabled:opacity-50"
+                  className="px-3 py-1 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 disabled:opacity-50"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
@@ -395,7 +395,7 @@ export default function ClientMessages() {
                     setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                   }
                   disabled={currentPage === totalPages}
-                  className="px-3 py-1 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-100 disabled:opacity-50"
+                  className="px-3 py-1 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 disabled:opacity-50"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
@@ -446,7 +446,7 @@ export default function ClientMessages() {
                 {messages.find(
                   (m) => m.threadId === selectedThread && m.source === "client"
                 ) && (
-                  <div className="p-4 bg-gray-50 rounded-lg">
+                  <div className="p-4 rounded-lg bg-gray-50">
                     <textarea
                       placeholder="Type your reply..."
                       value={replyMessage}
@@ -456,7 +456,7 @@ export default function ClientMessages() {
                     />
                     <button
                       onClick={() => handleReply(selectedThread)}
-                      className="mt-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2"
+                      className="flex items-center gap-2 px-4 py-2 mt-2 text-white bg-green-600 rounded-lg hover:bg-green-700"
                     >
                       <Send className="w-4 h-4" />
                       Send Reply
