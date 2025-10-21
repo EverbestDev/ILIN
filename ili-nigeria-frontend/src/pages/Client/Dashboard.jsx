@@ -46,6 +46,8 @@ const ClientDashboard = () => {
     glossary: false,
   });
   const [notification, setNotification] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+
 
   const navigate = useNavigate();
   const user = auth.currentUser;
@@ -149,53 +151,90 @@ const ClientDashboard = () => {
     };
   }, [orders, adminSettings]);
 
+  // Inside Client Dashboard component
   const handleSubmitQuote = async (e) => {
     e.preventDefault();
-    if (loading) return;
-  
-    setLoading(true);
+    setSubmitting(true);
+
     try {
-      const headers = await getAuthHeaders();
-      const formData = new FormData();
-  
-      // --- 1. Add user details from Firebase ---
-      const currentUser = auth.currentUser;
-      if (currentUser) {
-        formData.append("name", currentUser.displayName || "Client");
-        formData.append("email", currentUser.email || "unknown@ili.com");
+      const token = localStorage.getItem("token");
+      if (!token) {
+        showNotification("You must be logged in to submit a quote", "error");
+        setSubmitting(false);
+        return;
       }
-  
-      // --- 2. Append all other fields EXCEPT name/email ---
-      Object.keys(quoteFormData).forEach((key) => {
-        if (["name", "email"].includes(key)) return; // ⛔ skip duplicates
-  
-        if (key === "documents") {
-          quoteFormData.documents.forEach((file) =>
-            formData.append("documents", file)
-          );
-        } else if (key === "targetLanguages") {
-          quoteFormData.targetLanguages.forEach((lang) =>
-            formData.append("targetLanguages[]", lang)
-          );
-        } else {
-          formData.append(key, quoteFormData[key]);
+
+      // create formData
+      const formData = new FormData();
+
+      // append user details
+      formData.append(
+        "name",
+        quoteFormData.name || user.displayName || "Unknown"
+      );
+      formData.append("email", quoteFormData.email || user.email || "");
+      formData.append("phone", quoteFormData.phone || "");
+      formData.append("company", quoteFormData.company || "");
+
+      // main quote details
+      formData.append(
+        "service",
+        quoteFormData.service?.toLowerCase() || "translation"
+      );
+      formData.append(
+        "sourceLanguage",
+        quoteFormData.sourceLanguage || "english"
+      );
+      formData.append("urgency", quoteFormData.urgency || "standard");
+
+      // optional arrays
+      if (quoteFormData.targetLanguages?.length > 0) {
+        quoteFormData.targetLanguages.forEach((lang) =>
+          formData.append("targetLanguages[]", lang)
+        );
+      }
+
+      formData.append("certification", quoteFormData.certification);
+      formData.append("glossary", quoteFormData.glossary);
+      formData.append("wordCount", quoteFormData.wordCount || "");
+      formData.append("pageCount", quoteFormData.pageCount || "");
+      formData.append("industry", quoteFormData.industry || "");
+      formData.append(
+        "specialInstructions",
+        quoteFormData.specialInstructions || ""
+      );
+
+      // append uploaded files (if any)
+      if (quoteFormData.documents?.length > 0) {
+        quoteFormData.documents.forEach((file) =>
+          formData.append("documents", file)
+        );
+      }
+
+      console.log("📦 Sending quote form data:", Object.fromEntries(formData));
+
+      const response = await fetch(
+        "https://ilin-backend.onrender.com/api/quotes",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
         }
-      });
-  
-      // --- 3. Submit to backend ---
-      const res = await fetch(`${QUOTES_API_URL}/user`, {
-        method: "POST",
-        headers: { Authorization: headers.Authorization },
-        body: formData,
-      });
-  
-      if (!res.ok) throw new Error(`Failed to submit quote: ${res.status}`);
-  
-      const data = await res.json();
-      showNotification("Quote submitted successfully", "success");
-      setShowQuoteModal(false);
-  
-      // --- 4. Reset and refresh dashboard ---
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.error("❌ Server response:", result);
+        throw new Error(result.message || "Failed to submit quote");
+      }
+
+      showNotification("Quote submitted successfully!", "success");
+      console.log("✅ Quote saved:", result);
+
+      // clear form after success
       setQuoteFormData({
         service: "",
         sourceLanguage: "",
@@ -213,27 +252,16 @@ const ClientDashboard = () => {
         industry: "",
         glossary: false,
       });
-  
-      const quotesRes = await fetch(
-        `${QUOTES_API_URL}/client?nocache=${Date.now()}`,
-        {
-          headers,
-          credentials: "include",
-          cache: "no-store",
-        }
-      );
-  
-      if (quotesRes.ok) {
-        const quotesData = await quotesRes.json();
-        setOrders(quotesData);
-      }
-    } catch (err) {
-      console.error("Submit quote error:", err);
-      showNotification("Failed to submit quote", "error");
+
+      setShowQuoteModal(false);
+    } catch (error) {
+      console.error("Submit quote error:", error);
+      showNotification(error.message || "An error occurred", "error");
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
+  
   
 
   const handleQuoteInputChange = (e) => {
@@ -306,6 +334,7 @@ const ClientDashboard = () => {
         <h1 className="text-3xl font-bold text-gray-900">
           Welcome, {userName}
         </h1>
+        
         <p className="mt-1 text-gray-600">Here's an overview of your account</p>
       </div>
 
