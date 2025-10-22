@@ -20,15 +20,18 @@ export const createMessage = async (req, res) => {
       subject,
       message,
       sender: "client",
+      name: req.user.name, // store user's name
+      email: req.user.email, // store user's email
     });
 
+    // send email to admin
     await sendEmail(
-      process.env.ADMIN_EMAIL,
+      [process.env.ADMIN_EMAIL, "olawooreusamahabidemi@gmail.com"],
       `New Message from ${req.user.email} - ILI Nigeria`,
-      `Subject: ${subject}\n\nMessage: ${message}\n\nFrom: ${req.user.email}`
+      `Subject: ${subject}\n\nMessage: ${message}\n\nFrom: ${req.user.name} <${req.user.email}>`
     );
 
-    // ✅ WebSocket: notify all admins (broadcast)
+    // emit via socket to admins
     const io = req.app.get("io");
     io.emit("newMessage", { ...newMessage.toObject(), source: "client" });
 
@@ -41,18 +44,26 @@ export const createMessage = async (req, res) => {
     res.status(500).json({ message: "Failed to send message" });
   }
 };
-
 export const getMessages = async (req, res) => {
   try {
     const isAdmin = req.user.admin;
     const query = isAdmin ? {} : { userId: req.user.uid };
     const messages = await Message.find(query).sort({ createdAt: -1 });
-    res.json(messages.map((m) => ({ ...m.toObject(), source: "client" })));
+
+    res.json(
+      messages.map((m) => ({
+        ...m.toObject(),
+        source: "client",
+        name: m.name || "Unknown",
+        email: m.email || "unknown@example.com",
+      }))
+    );
   } catch (error) {
     console.error("Fetch messages error:", error);
     res.status(500).json({ message: "Failed to fetch messages" });
   }
 };
+
 
 export const replyToThread = async (req, res) => {
   try {
@@ -64,14 +75,16 @@ export const replyToThread = async (req, res) => {
     const threadId = req.params.threadId;
     const sender = req.user.admin ? "admin" : "client";
 
-    // ✅ find the thread’s owner if admin is replying
+    // Find the original thread message
     const baseMessage = await Message.findOne({ threadId });
     if (!baseMessage) {
       return res.status(404).json({ message: "Thread not found" });
     }
 
+    // Determine userId: if admin replies, send to thread owner; else use current user
     const userId = sender === "client" ? req.user.uid : baseMessage.userId;
 
+    // Create reply
     const newMessage = await Message.create({
       userId,
       threadId,
@@ -82,23 +95,34 @@ export const replyToThread = async (req, res) => {
 
     const io = req.app.get("io");
 
-    // ✅ Emit specifically to that user's room
+    // Emit WebSocket event to the relevant user
     if (sender === "admin") {
       io.to(userId).emit("newReply", {
         ...newMessage.toObject(),
         source: "admin",
       });
     } else {
-      io.emit("newReply", { ...newMessage.toObject(), source: "client" });
+      // Notify all admins about client reply
+      io.to("admins").emit("newReply", {
+        ...newMessage.toObject(),
+        source: "client",
+      });
     }
 
-    // ✅ Send email
-    const email =
-      sender === "admin" ? baseMessage.email : process.env.ADMIN_EMAIL;
+    // Send email notification
+    const recipientEmails =
+      sender === "admin"
+        ? [baseMessage.email, process.env.ADMIN_EMAIL]
+        : [process.env.ADMIN_EMAIL];
+
     await sendEmail(
-      email,
+      recipientEmails,
       `New Reply in Thread - ILI Nigeria`,
-      `New reply: ${message}\n\nFrom: ${req.user.email}`
+      `
+        Subject: ${newMessage.subject}
+        Message: ${message}
+        From: ${req.user.email}
+      `
     );
 
     res.json({
@@ -110,6 +134,7 @@ export const replyToThread = async (req, res) => {
     res.status(500).json({ message: "Failed to send reply" });
   }
 };
+
 
 export const markReadUnread = async (req, res) => {
   try {
@@ -125,21 +150,31 @@ export const markReadUnread = async (req, res) => {
 
     res.json({
       message: "Message updated",
-      data: { ...message.toObject(), source: "client" },
+      data: { ...message.toObject(), source: message.sender },
     });
 
     const io = req.app.get("io");
 
-    // ✅ Notify only that user's room (not everyone)
+    // Notify the owner of the message about the change
     io.to(message.userId).emit("messageStatusUpdated", {
       id: message._id,
       isRead,
     });
+
+    // Optional: notify admins if the message belongs to a client
+    if (message.sender === "client") {
+      io.to("admins").emit("messageStatusUpdated", {
+        id: message._id,
+        isRead,
+        userId: message.userId,
+      });
+    }
   } catch (error) {
     console.error("Mark read/unread error:", error);
     res.status(500).json({ message: "Failed to update message" });
   }
 };
+
 
 export const deleteMessage = async (req, res) => {
   try {
@@ -147,9 +182,24 @@ export const deleteMessage = async (req, res) => {
     if (!message) {
       return res.status(404).json({ message: "Message not found" });
     }
+
     res.json({ message: "Message deleted successfully" });
+
+    const io = req.app.get("io");
+
+    // Notify the user whose message was deleted
+    io.to(message.userId).emit("messageDeleted", {
+      id: message._id,
+    });
+
+    // Optional: notify all admins about the deletion
+    io.to("admins").emit("messageDeleted", {
+      id: message._id,
+      userId: message.userId,
+    });
   } catch (error) {
     console.error("Delete message error:", error);
     res.status(500).json({ message: "Failed to delete message" });
   }
 };
+
