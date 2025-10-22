@@ -1,6 +1,5 @@
 import { io } from "socket.io-client";
 
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -102,20 +101,18 @@ export default function AdminContacts() {
     if (auth.currentUser) fetchContacts();
   }, []);
 
-
   //websocket
   useEffect(() => {
     socket.on("newMessage", (data) => {
       setContacts((prev) => [data, ...prev]);
       showNotification(`New message from ${data.userId}`, "success");
     });
-    
-  
+
     socket.on("newReply", (data) => {
       // Client or admin reply update
       setContacts((prev) => [data, ...prev]);
     });
-  
+
     socket.on("messageStatusUpdated", (update) => {
       setContacts((prev) =>
         prev.map((m) =>
@@ -123,15 +120,13 @@ export default function AdminContacts() {
         )
       );
     });
-  
+
     return () => {
       socket.off("newMessage");
       socket.off("newReply");
       socket.off("messageStatusUpdated");
     };
-    
   }, []);
-  
 
   useEffect(() => {
     let results = [...contacts];

@@ -27,10 +27,11 @@ export const createMessage = async (req, res) => {
 
     // Send email notification to admin
     await sendEmail(
-      process.env.ADMIN_EMAIL,
+      process.env.ADMIN_EMAIL.split(","),
       `New Message from ${req.user.email} - ILI Nigeria`,
       `Subject: ${subject}\n\nMessage: ${message}\n\nFrom: ${req.user.name} <${req.user.email}>`
     );
+    
 
     // Emit to admins only via socket
     const io = req.app.get("io");
@@ -133,7 +134,6 @@ export const replyToThread = async (req, res) => {
     res.status(500).json({ message: "Failed to send reply" });
   }
 };
-
 
 export const markReadUnread = async (req, res) => {
   try {
