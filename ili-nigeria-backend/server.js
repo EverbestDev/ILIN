@@ -146,16 +146,22 @@ io.on("connection", (socket) => {
   console.log("🟢 User connected:", socket.id);
 
   // Join user-specific room
-  socket.on("joinRoom", (userId) => {
-    socket.join(userId);
-    console.log(`User joined room: ${userId}`);
+  socket.on("joinRoom", ({ userId, isAdmin }) => {
+    if (isAdmin) {
+      socket.join("admins"); // all admins in one room
+      console.log(`Admin joined admins room`);
+    } else if (userId) {
+      socket.join(userId); // each client has their own room
+      console.log(`User joined room: ${userId}`);
+    }
   });
 
-  // Disconnect event
   socket.on("disconnect", () => {
     console.log("🔴 User disconnected:", socket.id);
   });
 });
+
+
 
 //Make io available to routes/controllers
 app.set("io", io);

@@ -14,28 +14,33 @@ export const createMessage = async (req, res) => {
     const userId = req.user.uid;
     const threadId = new mongoose.Types.ObjectId().toString();
 
+    // Save message to DB
     const newMessage = await Message.create({
       userId,
       threadId,
       subject,
       message,
       sender: "client",
-      name: req.user.name, // store user's name
-      email: req.user.email, // store user's email
+      name: req.user.name,
+      email: req.user.email,
     });
 
-    // send email to admin
+    // Send email notification to admin
     await sendEmail(
       [process.env.ADMIN_EMAIL, "olawooreusamahabidemi@gmail.com"],
       `New Message from ${req.user.email} - ILI Nigeria`,
       `Subject: ${subject}\n\nMessage: ${message}\n\nFrom: ${req.user.name} <${req.user.email}>`
     );
 
-    // emit via socket to admins
+    // Emit to admins only via socket
     const io = req.app.get("io");
-    io.emit("newMessage", { ...newMessage.toObject(), source: "client" });
+    io.to("admins").emit("newMessage", {
+      ...newMessage.toObject(),
+      source: "client",
+    });
 
-    res.json({
+    // Respond to client
+    res.status(201).json({
       message: "Message sent successfully",
       data: { ...newMessage.toObject(), source: "client" },
     });
@@ -44,6 +49,7 @@ export const createMessage = async (req, res) => {
     res.status(500).json({ message: "Failed to send message" });
   }
 };
+
 export const getMessages = async (req, res) => {
   try {
     const isAdmin = req.user.admin;
@@ -84,19 +90,22 @@ export const replyToThread = async (req, res) => {
     // Determine userId: if admin replies, send to thread owner; else use current user
     const userId = sender === "client" ? req.user.uid : baseMessage.userId;
 
-    // Create reply
+    // Create reply message with original subject
     const newMessage = await Message.create({
       userId,
       threadId,
-      subject: "Reply",
+      subject: baseMessage.subject || "Reply",
       message,
       sender,
+      name: sender === "client" ? req.user.name : baseMessage.name,
+      email: sender === "client" ? req.user.email : baseMessage.email,
     });
 
     const io = req.app.get("io");
 
-    // Emit WebSocket event to the relevant user
+    // --- SOCKET EMISSION ---
     if (sender === "admin") {
+      // Send reply to the thread owner
       io.to(userId).emit("newReply", {
         ...newMessage.toObject(),
         source: "admin",
@@ -109,19 +118,19 @@ export const replyToThread = async (req, res) => {
       });
     }
 
-    // Send email notification
+    // --- EMAIL NOTIFICATION ---
     const recipientEmails =
       sender === "admin"
-        ? [baseMessage.email, process.env.ADMIN_EMAIL]
+        ? [baseMessage.email, process.env.ADMIN_EMAIL].filter(Boolean)
         : [process.env.ADMIN_EMAIL];
 
     await sendEmail(
       recipientEmails,
       `New Reply in Thread - ILI Nigeria`,
       `
-        Subject: ${newMessage.subject}
-        Message: ${message}
-        From: ${req.user.email}
+Subject: ${newMessage.subject}
+Message: ${message}
+From: ${req.user.email || "unknown@example.com"}
       `
     );
 
