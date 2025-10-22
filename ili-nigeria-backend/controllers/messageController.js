@@ -80,68 +80,60 @@ export const replyToThread = async (req, res) => {
     const threadId = req.params.threadId;
     const sender = req.user.admin ? "admin" : "client";
 
-    // Find the original thread message
-    const baseMessage = await Message.findOne({ threadId });
-    if (!baseMessage) {
-      return res.status(404).json({ message: "Thread not found" });
+    // find original message to extract user info
+    const originalMessage = await Message.findOne({ threadId });
+    if (!originalMessage) {
+      return res.status(404).json({ message: "Original thread not found" });
     }
 
-    // Determine userId: if admin replies, send to thread owner; else use current user
-    const userId = sender === "client" ? req.user.uid : baseMessage.userId;
+    const userId = sender === "client" ? req.user.uid : originalMessage.userId;
 
-    // Create reply message with original subject
     const newMessage = await Message.create({
       userId,
       threadId,
-      subject: baseMessage.subject || "Reply",
+      subject: "Reply",
       message,
       sender,
-      name: sender === "client" ? req.user.name : baseMessage.name,
-      email: sender === "client" ? req.user.email : baseMessage.email,
     });
 
+    // WebSocket
     const io = req.app.get("io");
+    io.emit("newReply", { ...newMessage.toObject(), source: "client" });
 
-    // --- SOCKET EMISSION ---
+    // Determine recipient email correctly
+    let recipientEmail;
+
     if (sender === "admin") {
-      // Send reply to the thread owner
-      io.to(userId).emit("newReply", {
-        ...newMessage.toObject(),
-        source: "admin",
-      });
+      // Admin replying to client → fetch client email from Firebase Auth
+      const firebaseAdmin = (await import("firebase-admin")).default;
+      const userRecord = await firebaseAdmin.auth().getUser(userId);
+      recipientEmail = userRecord.email;
     } else {
-      // Notify all admins about client reply
-      io.to("admins").emit("newReply", {
-        ...newMessage.toObject(),
-        source: "client",
-      });
+      // Client replying to admin
+      recipientEmail = process.env.ADMIN_EMAIL;
     }
 
-    // --- EMAIL NOTIFICATION ---
-    const recipientEmails =
-      sender === "admin"
-        ? [baseMessage.email, process.env.ADMIN_EMAIL].filter(Boolean)
-        : [process.env.ADMIN_EMAIL];
+    if (!recipientEmail || !recipientEmail.includes("@")) {
+      console.error("❌ Invalid recipient email:", recipientEmail);
+      return res.status(400).json({ message: "Invalid recipient email" });
+    }
 
     await sendEmail(
-      recipientEmails,
+      recipientEmail,
       `New Reply in Thread - ILI Nigeria`,
-      `
-Subject: ${newMessage.subject}
-Message: ${message}
-From: ${req.user.email || "unknown@example.com"}
-      `
+      `New reply: ${message}\n\nFrom: ${req.user.email}`
     );
 
     res.json({
       message: "Reply sent successfully",
-      data: { ...newMessage.toObject(), source: sender },
+      data: { ...newMessage.toObject(), source: "client" },
     });
   } catch (error) {
     console.error("Reply error:", error);
     res.status(500).json({ message: "Failed to send reply" });
   }
 };
+
 
 export const markReadUnread = async (req, res) => {
   try {
