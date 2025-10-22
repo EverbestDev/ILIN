@@ -111,7 +111,7 @@ export const replyToThread = async (req, res) => {
       recipientEmail = userRecord.email;
     } else {
       // Client replying to admin
-      recipientEmail = process.env.ADMIN_EMAIL;
+      recipientEmail = process.env.ADMIN_EMAIL.split(","),
     }
 
     if (!recipientEmail || !recipientEmail.includes("@")) {
