@@ -1,17 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
-
 import { useNavigate } from "react-router-dom";
 import {
   Send,
   Eye,
   X,
-  Filter,
-  Mail,
-  ChevronLeft,
-  ChevronRight,
   AlertCircle,
   MessageSquare,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { auth } from "../../utility/firebase";
 
@@ -19,6 +16,7 @@ const MESSAGE_API_URL =
   "https://ilin-backend.onrender.com/api/messages" ||
   import.meta.env.VITE_API_URL + "/api/messages" ||
   "http://localhost:5000/api/messages";
+
 const CONTACT_API_URL =
   "https://ilin-backend.onrender.com/api/contact" ||
   import.meta.env.VITE_API_URL + "/api/contact" ||
@@ -38,21 +36,64 @@ export default function ClientMessages() {
   const [sortOrder, setSortOrder] = useState("newest");
   const [sourceFilter, setSourceFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const [updatedThreadId, setUpdatedThreadId] = useState(null);
 
   const socketRef = useRef(null);
+  const modalMessagesEndRef = useRef(null);
 
+  const messagesPerPage = 10;
+
+  const showNotification = (message, type = "success") => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 3000);
+  };
+
+  const getAuthHeaders = async () => {
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not authenticated");
+    const idToken = await user.getIdToken();
+    return {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    };
+  };
+
+  useEffect(() => {
+    if (!auth.currentUser) {
+      navigate("/login");
+    }
+  }, [navigate]);
+
+  // Initialize WebSocket
   useEffect(() => {
     socketRef.current = io(
       import.meta.env.VITE_API_URL || "https://ilin-backend.onrender.com"
     );
 
+    // Join room
+    if (auth.currentUser) {
+      socketRef.current.emit("joinRoom", auth.currentUser.uid);
+    }
+
+    // Listen for new replies
     socketRef.current.on("newReply", (data) => {
-      if (auth.currentUser && data.userId === auth.currentUser.uid) {
+      if (data.userId === auth.currentUser?.uid) {
         setMessages((prev) => [data, ...prev]);
-        setFilteredMessages((prev) => [data, ...prev]);
+        setFilteredMessages((prev) => {
+          const exists = prev.find((m) => m._id === data._id);
+          if (!exists) return [data, ...prev];
+          return prev;
+        });
+        setSelectedThread((prevThreadId) =>
+          prevThreadId === data.threadId ? prevThreadId : prevThreadId
+        );
+        setUpdatedThreadId(data.threadId);
+        setTimeout(() => setUpdatedThreadId(null), 2000);
+        showNotification("New reply received!", "success");
       }
     });
 
+    // Listen for read/unread updates
     socketRef.current.on("messageStatusUpdated", (update) => {
       setMessages((prev) =>
         prev.map((m) =>
@@ -66,42 +107,7 @@ export default function ClientMessages() {
     };
   }, []);
 
-  const messagesPerPage = 10;
-
-  const getAuthHeaders = async () => {
-    const user = auth.currentUser;
-    console.log("Current user:", user ? user.uid : "No user");
-    if (!user) throw new Error("User not authenticated");
-    const idToken = await user.getIdToken();
-    console.log("ID Token:", idToken);
-    const idTokenResult = await user.getIdTokenResult();
-    console.log("Token claims:", idTokenResult.claims);
-    return {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${idToken}`,
-    };
-  };
-
-  const showNotification = (message, type = "success") => {
-    setNotification({ message, type });
-    setTimeout(() => setNotification(null), 3000);
-  };
-
-  useEffect(() => {
-    if (!auth.currentUser) {
-      console.log("No user logged in, redirecting to login");
-      navigate("/login");
-    }
-  }, [navigate]);
-
-  //Websocket
-  useEffect(() => {
-    if (auth.currentUser && socketRef.current) {
-      socketRef.current.emit("joinRoom", auth.currentUser.uid);
-      console.log("Joined room:", auth.currentUser.uid);
-    }
-  }, [auth.currentUser]);
-
+  // Fetch messages & contacts
   useEffect(() => {
     const fetchMessages = async () => {
       try {
@@ -114,18 +120,20 @@ export default function ClientMessages() {
           throw new Error(`Failed to fetch messages: ${messagesRes.status}`);
         if (!contactsRes.ok)
           throw new Error(`Failed to fetch contacts: ${contactsRes.status}`);
+
         const messagesData = await messagesRes.json();
         const contactsData = await contactsRes.json();
         const combined = [
           ...messagesData,
           ...contactsData.map((c) => ({
             ...c,
-            threadId: c._id, // Treat each contact as a single-message thread
+            threadId: c._id,
             userId: auth.currentUser.uid,
             sender: "client",
-            isRead: true, // Public contacts are read by default
+            isRead: true,
           })),
         ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
         setMessages(combined);
         setFilteredMessages(combined);
       } catch (err) {
@@ -135,32 +143,11 @@ export default function ClientMessages() {
         setLoading(false);
       }
     };
+
     if (auth.currentUser) fetchMessages();
   }, []);
 
-  //websocket
-  useEffect(() => {
-    socket.on("newReply", (data) => {
-      // If this reply belongs to a thread the client is part of, update messages
-      if (auth.currentUser && data.userId === auth.currentUser.uid) {
-        setMessages((prev) => [data, ...prev]);
-        setFilteredMessages((prev) => [data, ...prev]);
-      }
-    });
-
-    socket.on("messageStatusUpdated", (update) => {
-      setMessages((prev) =>
-        prev.map((m) =>
-          m._id === update.id ? { ...m, isRead: update.isRead } : m
-        )
-      );
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-
+  // Filter & sort messages
   useEffect(() => {
     let results = [...messages];
     if (search.trim()) {
@@ -180,6 +167,14 @@ export default function ClientMessages() {
     setCurrentPage(1);
   }, [search, sortOrder, sourceFilter, messages]);
 
+  // Scroll to newest message in modal
+  useEffect(() => {
+    if (modalMessagesEndRef.current) {
+      modalMessagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, selectedThread]);
+
+  // Handlers
   const handleSendMessage = async () => {
     try {
       const headers = await getAuthHeaders();
@@ -244,14 +239,15 @@ export default function ClientMessages() {
     }
   };
 
+  // Pagination
   const indexOfLast = currentPage * messagesPerPage;
   const indexOfFirst = indexOfLast - messagesPerPage;
+
+  // Build threads
   const threads = [];
   const threadMap = new Map();
   filteredMessages.forEach((msg) => {
-    if (!threadMap.has(msg.threadId)) {
-      threadMap.set(msg.threadId, []);
-    }
+    if (!threadMap.has(msg.threadId)) threadMap.set(msg.threadId, []);
     threadMap.get(msg.threadId).push(msg);
   });
   threadMap.forEach((msgs) => {
@@ -263,6 +259,7 @@ export default function ClientMessages() {
       source: msgs[0].source,
     });
   });
+
   const currentThreads = threads.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(threads.length / messagesPerPage);
 
@@ -283,6 +280,7 @@ export default function ClientMessages() {
       <div className="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <h1 className="mb-6 text-3xl font-bold text-gray-900">Messages</h1>
 
+        {/* New Message */}
         <div className="p-4 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
           <h2 className="mb-4 text-lg font-semibold text-gray-900">
             New Message
@@ -316,6 +314,7 @@ export default function ClientMessages() {
           </div>
         </div>
 
+        {/* Filter */}
         <div className="p-4 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900">
@@ -350,6 +349,7 @@ export default function ClientMessages() {
           </div>
         </div>
 
+        {/* Messages Table */}
         {loading ? (
           <div className="py-10 text-center">
             <div className="inline-block w-8 h-8 border-4 border-green-500 rounded-full animate-spin border-t-transparent"></div>
@@ -390,7 +390,14 @@ export default function ClientMessages() {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {currentThreads.map((thread) => (
-                    <tr key={thread.threadId} className="hover:bg-gray-50">
+                    <tr
+                      key={thread.threadId}
+                      className={`hover:bg-gray-50 ${
+                        updatedThreadId === thread.threadId
+                          ? "bg-green-100 animate-pulse"
+                          : ""
+                      }`}
+                    >
                       <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                         {thread.source === "public" ? "Public" : "Client"}
                       </td>
@@ -435,6 +442,8 @@ export default function ClientMessages() {
                 </tbody>
               </table>
             </div>
+
+            {/* Pagination */}
             <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200">
               <p className="text-sm text-gray-600">
                 Showing {indexOfFirst + 1} to{" "}
@@ -465,65 +474,52 @@ export default function ClientMessages() {
           </div>
         )}
 
+        {/* Modal */}
         {selectedThread && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <div className="w-full max-w-3xl bg-white rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
-              <div className="sticky top-0 flex items-center justify-between p-6 bg-white border-b border-gray-200">
-                <h2 className="text-2xl font-bold text-gray-900">
-                  Message Thread
+            <div className="w-full max-w-2xl p-6 bg-white rounded-lg shadow-lg">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-gray-900">
+                  Thread Messages
                 </h2>
                 <button
                   onClick={() => setSelectedThread(null)}
-                  className="text-gray-600 hover:text-gray-800"
+                  className="text-gray-500 hover:text-gray-700"
                 >
-                  <X className="w-6 h-6" />
+                  <X className="w-5 h-5" />
                 </button>
               </div>
-              <div className="p-6 space-y-6">
+              <div className="space-y-4 overflow-y-auto max-h-96">
                 {messages
                   .filter((m) => m.threadId === selectedThread)
                   .map((msg) => (
-                    <div
-                      key={msg._id}
-                      className={`p-4 rounded-lg ${
-                        msg.source === "public"
-                          ? "bg-gray-50"
-                          : msg.sender === "client"
-                          ? "bg-blue-50"
-                          : "bg-green-50"
-                      }`}
-                    >
-                      <p className="text-sm text-gray-600">
-                        {msg.source === "public"
-                          ? "Public"
-                          : msg.sender === "client"
-                          ? "You"
-                          : "Admin"}{" "}
-                        - {new Date(msg.createdAt).toLocaleString()}
+                    <div key={msg._id} className="p-3 border rounded-lg">
+                      <p className="text-sm font-medium text-gray-900">
+                        {msg.subject}
                       </p>
-                      <p className="font-medium text-gray-900">{msg.message}</p>
+                      <p className="text-sm text-gray-700">{msg.message}</p>
+                      <p className="text-xs text-gray-500">
+                        {new Date(msg.createdAt).toLocaleString()}
+                      </p>
                     </div>
                   ))}
-                {messages.find(
-                  (m) => m.threadId === selectedThread && m.source === "client"
-                ) && (
-                  <div className="p-4 rounded-lg bg-gray-50">
-                    <textarea
-                      placeholder="Type your reply..."
-                      value={replyMessage}
-                      onChange={(e) => setReplyMessage(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                      rows="4"
-                    />
-                    <button
-                      onClick={() => handleReply(selectedThread)}
-                      className="flex items-center gap-2 px-4 py-2 mt-2 text-white bg-green-600 rounded-lg hover:bg-green-700"
-                    >
-                      <Send className="w-4 h-4" />
-                      Send Reply
-                    </button>
-                  </div>
-                )}
+                <div ref={modalMessagesEndRef}></div>
+              </div>
+              <div className="mt-4">
+                <textarea
+                  rows="3"
+                  placeholder="Type your reply..."
+                  value={replyMessage}
+                  onChange={(e) => setReplyMessage(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+                />
+                <button
+                  onClick={() => handleReply(selectedThread)}
+                  className="flex items-center gap-2 px-4 py-2 mt-2 text-white bg-green-600 rounded-lg hover:bg-green-700"
+                >
+                  <Send className="w-4 h-4" />
+                  Send Reply
+                </button>
               </div>
             </div>
           </div>
