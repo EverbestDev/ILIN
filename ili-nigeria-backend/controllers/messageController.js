@@ -105,19 +105,21 @@ export const replyToThread = async (req, res) => {
     let recipientEmail;
 
     if (sender === "admin") {
-      // Admin replying to client → fetch client email from Firebase Auth
-      const firebaseAdmin = (await import("firebase-admin")).default;
-      const userRecord = await firebaseAdmin.auth().getUser(userId);
-      recipientEmail = userRecord.email;
+      try {
+        const firebaseAdmin = (await import("firebase-admin")).default;
+        const userRecord = await firebaseAdmin.auth().getUser(userId);
+        recipientEmail = userRecord.email;
+      } catch (err) {
+        console.error(
+          "Failed to fetch client email from Firebase:",
+          err.message
+        );
+        recipientEmail = process.env.ADMIN_EMAIL.split(","); // fallback
+      }
     } else {
-      // Client replying to admin
-      recipientEmail = process.env.ADMIN_EMAIL.split(",")
+      recipientEmail = process.env.ADMIN_EMAIL.split(",");
     }
-
-    if (!recipientEmail || !recipientEmail.includes("@")) {
-      console.error("❌ Invalid recipient email:", recipientEmail);
-      return res.status(400).json({ message: "Invalid recipient email" });
-    }
+    
 
     await sendEmail(
       recipientEmail,
