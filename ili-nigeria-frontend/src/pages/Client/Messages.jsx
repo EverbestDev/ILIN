@@ -13,9 +13,9 @@ import {
 import { auth } from "../../utility/firebase";
 
 const MESSAGE_API_URL =
-  "https://ilin-backend.onrender.com/api/messages" ||
-  import.meta.env.VITE_API_URL + "/api/messages" ||
-  "http://localhost:5000/api/messages";
+  "https://ilin-backend.onrender.com/api/messages/user" ||
+  import.meta.env.VITE_API_URL + "/api/messages/user" ||
+  "http://localhost:5000/api/messages/user";
 
 const CONTACT_API_URL =
   "https://ilin-backend.onrender.com/api/contact" ||
