@@ -27,7 +27,7 @@ export const createMessage = async (req, res) => {
 
     // Send email notification to admin
     await sendEmail(
-      [process.env.ADMIN_EMAIL, "olawooreusamahabidemi@gmail.com"],
+      process.env.ADMIN_EMAIL,
       `New Message from ${req.user.email} - ILI Nigeria`,
       `Subject: ${subject}\n\nMessage: ${message}\n\nFrom: ${req.user.name} <${req.user.email}>`
     );
@@ -69,7 +69,6 @@ export const getMessages = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch messages" });
   }
 };
-
 
 export const replyToThread = async (req, res) => {
   try {
@@ -144,7 +143,6 @@ From: ${req.user.email || "unknown@example.com"}
   }
 };
 
-
 export const markReadUnread = async (req, res) => {
   try {
     const { isRead } = req.body;
@@ -184,7 +182,6 @@ export const markReadUnread = async (req, res) => {
   }
 };
 
-
 export const deleteMessage = async (req, res) => {
   try {
     const message = await Message.findByIdAndDelete(req.params.id);
@@ -211,4 +208,3 @@ export const deleteMessage = async (req, res) => {
     res.status(500).json({ message: "Failed to delete message" });
   }
 };
-
