@@ -103,16 +103,44 @@ export default function AdminContacts() {
 
   //websocket
   useEffect(() => {
+    // New message from client
     socket.on("newMessage", (data) => {
-      setContacts((prev) => [data, ...prev]);
-      showNotification(`New message from ${data.userId}`, "success");
+      setContacts((prev) => {
+        const exists = prev.find((c) => c.threadId === data.threadId);
+        if (exists) {
+          return prev.map((c) =>
+            c.threadId === data.threadId
+              ? {
+                  ...c,
+                  threadMessages: [...(c.threadMessages || []), data],
+                }
+              : c
+          );
+        }
+        return [data, ...prev];
+      });
+
+      showNotification(
+        `New message from ${data.name || data.userId || "Unknown Sender"}`,
+        "success"
+      );
     });
 
+    // New reply from either admin or client
     socket.on("newReply", (data) => {
-      // Client or admin reply update
-      setContacts((prev) => [data, ...prev]);
+      setContacts((prev) =>
+        prev.map((c) =>
+          c.threadId === data.threadId
+            ? {
+                ...c,
+                threadMessages: [...(c.threadMessages || []), data],
+              }
+            : c
+        )
+      );
     });
 
+    // Message status update
     socket.on("messageStatusUpdated", (update) => {
       setContacts((prev) =>
         prev.map((m) =>
@@ -121,12 +149,19 @@ export default function AdminContacts() {
       );
     });
 
+    // Message deleted
+    socket.on("messageDeleted", (update) => {
+      setContacts((prev) => prev.filter((m) => m._id !== update.id));
+    });
+
     return () => {
       socket.off("newMessage");
       socket.off("newReply");
       socket.off("messageStatusUpdated");
+      socket.off("messageDeleted");
     };
   }, []);
+  
 
   useEffect(() => {
     let results = [...contacts];
@@ -150,23 +185,33 @@ export default function AdminContacts() {
     setCurrentPage(1);
   }, [search, sortOrder, sourceFilter, contacts]);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, source) => {
     try {
       const headers = await getAuthHeaders();
-      const res = await fetch(`${MESSAGE_API_URL}/${id}`, {
+
+      // Dynamically choose correct endpoint
+      const endpoint =
+        source === "public" ? `${API_URL}/${id}` : `${MESSAGE_API_URL}/${id}`;
+
+      const res = await fetch(endpoint, {
         method: "DELETE",
         headers,
         credentials: "include",
       });
+
       if (!res.ok) throw new Error(`Failed to delete: ${res.status}`);
+
+      // Update UI
       setContacts((prev) => prev.filter((c) => c._id !== id));
       setDeleteConfirm(null);
-      showNotification("Contact deleted successfully", "success");
+      showNotification("Message deleted successfully", "success");
     } catch (err) {
       console.error("Delete contact error:", err);
       showNotification(`Error deleting contact: ${err.message}`, "error");
     }
   };
+  
+  
 
   const handleStartThread = async (contact) => {
     if (!replyText.trim()) {
@@ -188,14 +233,14 @@ export default function AdminContacts() {
       if (!res.ok) throw new Error(`Failed to start thread: ${res.status}`);
       const data = await res.json();
       setContacts((prev) => [
-        { ...data.data, source: "sender" },
+        { ...data.data, source: "client" },
         ...prev.filter((c) => c._id !== data.data._id),
       ]);
       setSelectedContact({
         ...contact,
         threadId: data.data.threadId,
         threadMessages: [data.data],
-        source: "sender",
+        source: "client",
         replyMode: true,
       });
       setReplyText("");
@@ -222,7 +267,7 @@ export default function AdminContacts() {
       if (!res.ok) throw new Error(`Failed to send reply: ${res.status}`);
       const data = await res.json();
       setContacts((prev) => [
-        { ...data.data, source: "sender" },
+        { ...data.data, source: "client" },
         ...prev.filter((c) => c._id !== data.data._id),
       ]);
       setSelectedContact((prev) => ({
@@ -1039,7 +1084,9 @@ export default function AdminContacts() {
                   Cancel
                 </button>
                 <button
-                  onClick={() => handleDelete(deleteConfirm._id)}
+                  onClick={() =>
+                    handleDelete(deleteConfirm._id, deleteConfirm.source)
+                  }
                   className="flex-1 px-4 py-3 font-medium text-white transition-all rounded-lg shadow-lg bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800"
                 >
                   Delete Forever
