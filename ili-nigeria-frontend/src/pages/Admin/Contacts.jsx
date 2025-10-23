@@ -698,18 +698,20 @@ export default function AdminContacts() {
               <div className="flex items-center gap-3">
                 <div className="flex items-center justify-center w-12 h-12 font-bold text-white bg-white/20 rounded-xl">
                   {(
-                    contact.name?.trim()?.charAt(0) ||
-                    contact.email?.trim()?.charAt(0) ||
-                    contact.userId?.trim()?.charAt(0) ||
+                    selectedContact.name?.trim()?.charAt(0) ||
+                    selectedContact.email?.trim()?.charAt(0) ||
+                    selectedContact.userId?.trim()?.charAt(0) ||
                     "?"
                   ).toUpperCase()}
-                  
+
                   {/* to be removed */}
                   <p className="font-medium text-gray-900">
-                    {contact.name || contact.userId || "Unnamed User"}
+                    {selectedContact.name ||
+                      selectedContact.userId ||
+                      "Unnamed User"}
                   </p>
                   <p className="text-sm text-gray-600">
-                    {contact.email || "No email"}
+                    {selectedContact.email || "No email"}
                   </p>
                 </div>
                 <div>
