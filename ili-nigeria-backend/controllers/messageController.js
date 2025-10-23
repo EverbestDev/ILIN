@@ -99,7 +99,8 @@ export const replyToThread = async (req, res) => {
 
     // WebSocket
     const io = req.app.get("io");
-    io.emit("newReply", { ...newMessage.toObject(), source: "client" });
+    io.emit("newReply", { ...newMessage.toObject(), source: sender });
+
 
     // Determine recipient email correctly
     let recipientEmail;

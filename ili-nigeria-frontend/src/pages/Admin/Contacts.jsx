@@ -304,7 +304,7 @@ export default function AdminContacts() {
               : "bg-red-50 border-red-200 text-red-800"
           }`}
         >
-          <div className="flex items-center gap-3">
+          <div className="z-20 flex items-center gap-3">
             {notification.type === "success" ? (
               <CheckCircle className="w-5 h-5" />
             ) : (
@@ -698,10 +698,19 @@ export default function AdminContacts() {
               <div className="flex items-center gap-3">
                 <div className="flex items-center justify-center w-12 h-12 font-bold text-white bg-white/20 rounded-xl">
                   {(
-                    selectedContact.name?.charAt(0) ||
-                    selectedContact.email?.charAt(0) ||
+                    contact.name?.trim()?.charAt(0) ||
+                    contact.email?.trim()?.charAt(0) ||
+                    contact.userId?.trim()?.charAt(0) ||
                     "?"
                   ).toUpperCase()}
+                  
+                  {/* to be removed */}
+                  <p className="font-medium text-gray-900">
+                    {contact.name || contact.userId || "Unnamed User"}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {contact.email || "No email"}
+                  </p>
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-white">
