@@ -161,7 +161,6 @@ export default function AdminContacts() {
       socket.off("messageDeleted");
     };
   }, []);
-  
 
   useEffect(() => {
     let results = [...contacts];
@@ -210,14 +209,13 @@ export default function AdminContacts() {
       showNotification(`Error deleting contact: ${err.message}`, "error");
     }
   };
-  
-  
 
   const handleStartThread = async (contact) => {
     if (!replyText.trim()) {
       showNotification("Message cannot be empty", "error");
       return;
     }
+
     try {
       const headers = await getAuthHeaders();
       const res = await fetch(MESSAGE_API_URL, {
@@ -230,12 +228,16 @@ export default function AdminContacts() {
           userId: contact.email, // Use email as userId for public contacts
         }),
       });
+
       if (!res.ok) throw new Error(`Failed to start thread: ${res.status}`);
+
       const data = await res.json();
+
       setContacts((prev) => [
         { ...data.data, source: "client" },
         ...prev.filter((c) => c._id !== data.data._id),
       ]);
+
       setSelectedContact({
         ...contact,
         threadId: data.data.threadId,
@@ -243,6 +245,7 @@ export default function AdminContacts() {
         source: "client",
         replyMode: true,
       });
+
       setReplyText("");
       showNotification("Thread started successfully", "success");
     } catch (err) {
