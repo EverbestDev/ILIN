@@ -98,8 +98,22 @@ export const replyToThread = async (req, res) => {
     });
 
     // Emit correct sender via WebSocket
+    // WebSocket - targeted emission
     const io = req.app.get("io");
-    io.emit("newReply", { ...newMessage.toObject(), source: sender });
+
+    if (sender === "client") {
+      // Client replied → Notify all admins
+      io.to("admins").emit("newReply", {
+        ...newMessage.toObject(),
+        source: "client",
+      });
+    } else {
+      // Admin replied → Notify specific client (their UID)
+      io.to(userId).emit("newReply", {
+        ...newMessage.toObject(),
+        source: "admin",
+      });
+    }
 
     // Determine correct recipient
     let recipientEmail;

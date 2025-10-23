@@ -84,6 +84,7 @@ export default function ClientMessages() {
           if (!exists) return [data, ...prev];
           return prev;
         });
+        showNotification("New reply from admin!", "success");
         setSelectedThread((prevThreadId) =>
           prevThreadId === data.threadId ? prevThreadId : prevThreadId
         );

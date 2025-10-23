@@ -113,6 +113,7 @@ export default function AdminContacts() {
               ? {
                   ...c,
                   threadMessages: [...(c.threadMessages || []), data],
+                  updatedAt: new Date(),
                 }
               : c
           );
@@ -121,7 +122,9 @@ export default function AdminContacts() {
       });
 
       showNotification(
-        `New message from ${data.name || data.userId || "Unknown Sender"}`,
+        data.source === "client"
+          ? `New client reply received`
+          : `Admin reply recorded`,
         "success"
       );
     });
