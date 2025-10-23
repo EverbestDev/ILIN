@@ -153,7 +153,7 @@ export default function AdminContacts() {
   const handleDelete = async (id) => {
     try {
       const headers = await getAuthHeaders();
-      const res = await fetch(`${API_URL}/${id}`, {
+      const res = await fetch(`${MESSAGE_API_URL}/${id}`, {
         method: "DELETE",
         headers,
         credentials: "include",
@@ -188,14 +188,14 @@ export default function AdminContacts() {
       if (!res.ok) throw new Error(`Failed to start thread: ${res.status}`);
       const data = await res.json();
       setContacts((prev) => [
-        { ...data.data, source: "client" },
+        { ...data.data, source: "sender" },
         ...prev.filter((c) => c._id !== data.data._id),
       ]);
       setSelectedContact({
         ...contact,
         threadId: data.data.threadId,
         threadMessages: [data.data],
-        source: "client",
+        source: "sender",
         replyMode: true,
       });
       setReplyText("");
@@ -222,7 +222,7 @@ export default function AdminContacts() {
       if (!res.ok) throw new Error(`Failed to send reply: ${res.status}`);
       const data = await res.json();
       setContacts((prev) => [
-        { ...data.data, source: "client" },
+        { ...data.data, source: "sender" },
         ...prev.filter((c) => c._id !== data.data._id),
       ]);
       setSelectedContact((prev) => ({
