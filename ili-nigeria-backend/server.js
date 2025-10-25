@@ -142,24 +142,40 @@ const io = new Server(server, {
 });
 
 // Handle socket connection
+// Handle socket connections
 io.on("connection", (socket) => {
   console.log("🟢 User connected:", socket.id);
 
-  // Join user-specific room
-  socket.on("joinRoom", ({ userId, isAdmin }) => {
-    if (isAdmin) {
-      socket.join("admins"); // all admins in one room
-      console.log(`Admin joined admins room`);
-    } else if (userId) {
-      socket.join(userId); // each client has their own room
-      console.log(`User joined room: ${userId}`);
+  // 🔹 Unified join event for both admins & clients
+  socket.on("join", ({ userId, admin }) => {
+    try {
+      if (admin) {
+        socket.join("admins");
+        console.log("👑 Admin joined 'admins' room");
+      } else if (userId) {
+        socket.join(`user:${userId}`);
+        console.log(`🙋 Client joined room: user:${userId}`);
+      } else {
+        console.warn("⚠️ join event received without userId/admin");
+      }
+    } catch (err) {
+      console.error("Join room error:", err);
     }
+  });
+
+  // Optional: for debugging, track rooms
+  socket.on("rooms", () => {
+    console.log("Socket rooms:", Array.from(socket.rooms));
   });
 
   socket.on("disconnect", () => {
     console.log("🔴 User disconnected:", socket.id);
   });
 });
+
+// Make io accessible to controllers
+app.set("io", io);
+
 
 
 
