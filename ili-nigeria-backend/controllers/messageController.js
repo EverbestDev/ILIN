@@ -97,16 +97,40 @@ export const replyToThread = async (req, res) => {
       return res.status(400).json({ message: "Message is required" });
     }
 
-    const threadId = req.params.threadId;
+    let { threadId } = req.params;
     const sender = req.user?.admin ? "admin" : "client";
+    const io = req.app.get("io");
 
-    // find original thread (first message)
+    // 🩹 if threadId looks like "contact-..." → convert it to a real message thread
+    if (threadId.startsWith("contact-")) {
+      const contactId = threadId.replace("contact-", "");
+      const contact = await mongoose.model("Contact").findById(contactId);
+      if (!contact) {
+        return res.status(404).json({ message: "Original contact not found" });
+      }
+
+      // Create a new message thread from this contact
+      const newThreadId = new mongoose.Types.ObjectId().toString();
+      const firstMessage = await Message.create({
+        userId: contact.email, // using email as identifier for non-clients
+        threadId: newThreadId,
+        subject: `Re: ${contact.service || "Contact Inquiry"}`,
+        message: contact.message,
+        sender: "client",
+        name: contact.name,
+        email: contact.email,
+      });
+
+      threadId = newThreadId; // replace fake contact-... id
+    }
+
+    // find the original message thread
     const original = await Message.findOne({ threadId });
     if (!original) {
       return res.status(404).json({ message: "Thread not found" });
     }
 
-    // If admin replies, recipient userId is original.userId (may be null for public contacts)
+    // sender logic
     const userId = sender === "admin" ? original.userId : req.user.uid;
 
     const newMessage = await Message.create({
@@ -115,21 +139,17 @@ export const replyToThread = async (req, res) => {
       subject: "Reply",
       message,
       sender,
-      name: sender === "client" ? req.user.name || original.name : original.name,
-      email: sender === "client" ? req.user.email || original.email : original.email,
+      name:
+        sender === "client" ? req.user.name || original.name : original.name,
+      email:
+        sender === "client" ? req.user.email || original.email : original.email,
     });
 
-    // Emit sockets:
-    const io = req.app.get("io");
-    // admins should always see replies (update their thread view)
+    // emit to all
     io.to("admins").emit("newReply", { ...newMessage.toObject() });
-
-    // If there is a userId (logged-in client), notify them in their room
-    if (userId) {
+    if (userId)
       io.to(`user:${userId}`).emit("newReply", { ...newMessage.toObject() });
-    }
 
-    // Do NOT send email on replies (avoids spam and email 400 issues).
     return res.json({
       message: "Reply sent successfully",
       data: { ...newMessage.toObject() },
@@ -139,6 +159,7 @@ export const replyToThread = async (req, res) => {
     return res.status(500).json({ message: "Failed to send reply" });
   }
 };
+
 
 export const markReadUnread = async (req, res) => {
   try {
