@@ -18,7 +18,7 @@ export default function ClientMessages() {
   const socketRef = useRef(null);
 
   const getAuthHeaders = async () => {
-    const user = auth.currentUser;
+    const user = auth.currentUser;node 
     if (!user) throw new Error("Not authenticated");
     const token = await user.getIdToken();
     return {
