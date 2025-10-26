@@ -1,217 +1,369 @@
 // controllers/messageController.js
 import mongoose from "mongoose";
 import Message from "../models/Message.js";
+import admin from "firebase-admin";
 import sendEmail from "../utils/email.js";
 
 /**
- * Helper: normalize ADMIN_EMAIL env into array of valid emails
+ * CLIENT: Create new message thread
+ * POST /api/messages
  */
-const getAdminEmails = () => {
-  const raw = process.env.ADMIN_EMAIL || "";
-  return raw
-    .split(",")
-    .map((e) => e.trim())
-    .filter((e) => e && e.includes("@"));
-};
-
 export const createMessage = async (req, res) => {
   try {
     const { subject, message } = req.body;
-    if (!subject || !message) {
-      return res.status(400).json({ message: "Subject and message required" });
+
+    if (!subject?.trim() || !message?.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Subject and message are required",
+      });
     }
 
-    // If admin creates a thread on behalf of a public contact, they can pass userId,name,email.
-    const isAdmin = !!req.user?.admin;
-    const userId = isAdmin ? req.body.userId || null : req.user.uid;
-    const name = isAdmin ? req.body.name || null : req.user.name || null;
-    const email = isAdmin ? req.body.email || null : req.user.email || null;
-
+    const userId = req.user.uid;
     const threadId = new mongoose.Types.ObjectId().toString();
 
+    // Create message
     const newMessage = await Message.create({
-      userId,
       threadId,
-      subject,
-      message,
+      userId,
+      subject: subject.trim(),
+      message: message.trim(),
       sender: "client",
-      name,
-      email,
+      senderName: req.user.name || "Client User",
+      senderEmail: req.user.email || "unknown@example.com",
+      originType: "client_initiated",
     });
 
-    // Emit: new thread to admins only
-    const io = req.app.get("io");
-    io.to("admins").emit("newThread", { ...newMessage.toObject() });
+    // Send email notification to admin (only on thread creation)
+    try {
+      const adminEmails = process.env.ADMIN_EMAIL.split(",").map((e) =>
+        e.trim()
+      );
+      await sendEmail(
+        adminEmails,
+        `New Message Thread - ${subject}`,
+        `New message thread created by ${req.user.name || "Client"}
 
-    // Send admin email only when a **real client** created the thread (not when admin creates on behalf)
-    if (!isAdmin) {
-      try {
-        const adminEmails = getAdminEmails();
-        if (adminEmails.length) {
-          // sendEmail expects string or array-of-strings
-          await sendEmail(
-            adminEmails,
-            `New Message from ${email || "client"} - ILI Nigeria`,
-            `Subject: ${subject}\n\nMessage: ${message}\n\nFrom: ${name || email || "Client"}`
-          );
-        }
-      } catch (err) {
-        // Log but don't crash the request — email failures shouldn't block thread creation
-        console.error("Email send (newThread) failed:", err?.message || err);
-      }
+Subject: ${subject}
+Message: ${message}
+
+From: ${req.user.email}
+Thread ID: ${threadId}
+
+Please login to the admin dashboard to respond.`
+      );
+    } catch (emailError) {
+      console.error("Email notification failed:", emailError);
+      // Don't fail the request if email fails
     }
 
-    return res.status(201).json({
+    // Emit to all admins via WebSocket
+    const io = req.app.get("io");
+    if (io) {
+      io.to("admins").emit("new_client_message", {
+        ...newMessage.toObject(),
+        type: "new_thread",
+      });
+    }
+
+    res.status(201).json({
+      success: true,
       message: "Message sent successfully",
-      data: { ...newMessage.toObject() },
+      data: newMessage,
     });
   } catch (error) {
     console.error("Create message error:", error);
-    return res.status(500).json({ message: "Failed to send message" });
+    res.status(500).json({
+      success: false,
+      message: "Failed to send message",
+      error: error.message,
+    });
   }
 };
 
+/**
+ * GET all messages for user (client sees own, admin sees all)
+ * GET /api/messages
+ */
 export const getMessages = async (req, res) => {
   try {
-    const isAdmin = !!req.user?.admin;
+    const isAdmin = req.user.role === "admin";
     const query = isAdmin ? {} : { userId: req.user.uid };
+
     const messages = await Message.find(query).sort({ createdAt: -1 });
-    // return raw messages; frontend groups by threadId
-    return res.json(
-      messages.map((m) => ({
-        ...m.toObject(),
-        name: m.name || null,
-        email: m.email || null,
-      }))
+
+    // Group by threadId for easier frontend processing
+    const threads = {};
+    messages.forEach((msg) => {
+      if (!threads[msg.threadId]) {
+        threads[msg.threadId] = {
+          threadId: msg.threadId,
+          subject: msg.subject,
+          userId: msg.userId,
+          originType: msg.originType,
+          messages: [],
+          latestMessage: null,
+          unreadCount: 0,
+        };
+      }
+      threads[msg.threadId].messages.push(msg);
+
+      // Track unread count
+      if (!msg.isRead && msg.sender !== (isAdmin ? "admin" : "client")) {
+        threads[msg.threadId].unreadCount++;
+      }
+    });
+
+    // Set latest message for each thread
+    Object.values(threads).forEach((thread) => {
+      thread.messages.sort(
+        (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+      );
+      thread.latestMessage = thread.messages[thread.messages.length - 1];
+    });
+
+    // Convert to array and sort by latest message
+    const threadArray = Object.values(threads).sort(
+      (a, b) =>
+        new Date(b.latestMessage.createdAt) -
+        new Date(a.latestMessage.createdAt)
     );
+
+    res.json({
+      success: true,
+      data: threadArray,
+    });
   } catch (error) {
-    console.error("Fetch messages error:", error);
-    return res.status(500).json({ message: "Failed to fetch messages" });
+    console.error("Get messages error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch messages",
+      error: error.message,
+    });
   }
 };
 
+/**
+ * GET single thread messages
+ * GET /api/messages/threads/:threadId
+ */
+export const getThreadMessages = async (req, res) => {
+  try {
+    const { threadId } = req.params;
+    const isAdmin = req.user.role === "admin";
+
+    // Find all messages in thread
+    const messages = await Message.find({ threadId }).sort({ createdAt: 1 });
+
+    if (messages.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Thread not found",
+      });
+    }
+
+    // Check permission (client can only see their own threads)
+    if (!isAdmin && messages[0].userId !== req.user.uid) {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied",
+      });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        threadId,
+        subject: messages[0].subject,
+        messages,
+      },
+    });
+  } catch (error) {
+    console.error("Get thread messages error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch thread messages",
+      error: error.message,
+    });
+  }
+};
+
+/**
+ * REPLY to thread (both client and admin)
+ * POST /api/messages/threads/:threadId/reply
+ */
 export const replyToThread = async (req, res) => {
   try {
+    const { threadId } = req.params;
     const { message } = req.body;
-    if (!message) {
-      return res.status(400).json({ message: "Message is required" });
-    }
 
-    let { threadId } = req.params;
-    const sender = req.user?.admin ? "admin" : "client";
-    const io = req.app.get("io");
-
-    // 🩹 if threadId looks like "contact-..." → convert it to a real message thread
-    if (threadId.startsWith("contact-")) {
-      const contactId = threadId.replace("contact-", "");
-      const contact = await mongoose.model("Contact").findById(contactId);
-      if (!contact) {
-        return res.status(404).json({ message: "Original contact not found" });
-      }
-
-      // Create a new message thread from this contact
-      const newThreadId = new mongoose.Types.ObjectId().toString();
-      const firstMessage = await Message.create({
-        userId: contact.email, // using email as identifier for non-clients
-        threadId: newThreadId,
-        subject: `Re: ${contact.service || "Contact Inquiry"}`,
-        message: contact.message,
-        sender: "client",
-        name: contact.name,
-        email: contact.email,
+    if (!message?.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Message is required",
       });
-
-      threadId = newThreadId; // replace fake contact-... id
     }
 
-    // find the original message thread
-    const original = await Message.findOne({ threadId });
-    if (!original) {
-      return res.status(404).json({ message: "Thread not found" });
+    const isAdmin = req.user.role === "admin";
+    const sender = isAdmin ? "admin" : "client";
+
+    // Get original thread to verify it exists and get userId
+    const originalMessage = await Message.findOne({ threadId });
+    if (!originalMessage) {
+      return res.status(404).json({
+        success: false,
+        message: "Thread not found",
+      });
     }
 
-    // sender logic
-    const userId = sender === "admin" ? original.userId : req.user.uid;
+    // Check permission (client can only reply to their own threads)
+    if (!isAdmin && originalMessage.userId !== req.user.uid) {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied",
+      });
+    }
 
-    const newMessage = await Message.create({
-      userId,
+    // Create reply
+    const reply = await Message.create({
       threadId,
-      subject: "Reply",
-      message,
+      userId: originalMessage.userId, // Always use original thread's userId
+      subject: originalMessage.subject,
+      message: message.trim(),
       sender,
-      name:
-        sender === "client" ? req.user.name || original.name : original.name,
-      email:
-        sender === "client" ? req.user.email || original.email : original.email,
+      senderName: req.user.name || (isAdmin ? "Admin" : "Client User"),
+      senderEmail: req.user.email || "unknown@example.com",
+      originType: originalMessage.originType,
     });
 
-    // emit to all
-    io.to("admins").emit("newReply", { ...newMessage.toObject() });
-    if (userId)
-      io.to(`user:${userId}`).emit("newReply", { ...newMessage.toObject() });
+    // WebSocket notification
+    const io = req.app.get("io");
+    if (io) {
+      if (sender === "client") {
+        // Client replied → notify admins
+        io.to("admins").emit("new_client_reply", reply);
+      } else {
+        // Admin replied → notify specific client
+        io.to(`user-${originalMessage.userId}`).emit("new_admin_reply", reply);
+      }
+    }
 
-    return res.json({
+    res.status(201).json({
+      success: true,
       message: "Reply sent successfully",
-      data: { ...newMessage.toObject() },
+      data: reply,
     });
   } catch (error) {
     console.error("Reply error:", error);
-    return res.status(500).json({ message: "Failed to send reply" });
+    res.status(500).json({
+      success: false,
+      message: "Failed to send reply",
+      error: error.message,
+    });
   }
 };
 
-
+/**
+ * MARK message as read/unread
+ * PATCH /api/messages/:id/read
+ */
 export const markReadUnread = async (req, res) => {
   try {
+    const { id } = req.params;
     const { isRead } = req.body;
+
+    if (typeof isRead !== "boolean") {
+      return res.status(400).json({
+        success: false,
+        message: "isRead must be a boolean",
+      });
+    }
+
     const message = await Message.findByIdAndUpdate(
-      req.params.id,
+      id,
       { isRead },
       { new: true }
     );
+
     if (!message) {
-      return res.status(404).json({ message: "Message not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Message not found",
+      });
     }
 
+    // WebSocket notification
     const io = req.app.get("io");
-    // notify owner
-    if (message.userId) {
-      io.to(`user:${message.userId}`).emit("messageStatusUpdated", {
+    if (io) {
+      // Notify both admin and client
+      io.to("admins").emit("message_status_updated", {
         id: message._id,
+        threadId: message.threadId,
+        isRead,
+      });
+      io.to(`user-${message.userId}`).emit("message_status_updated", {
+        id: message._id,
+        threadId: message.threadId,
         isRead,
       });
     }
-    // notify admins
-    io.to("admins").emit("messageStatusUpdated", {
-      id: message._id,
-      isRead,
-      userId: message.userId,
-    });
 
-    return res.json({ message: "Message updated", data: { ...message.toObject() } });
+    res.json({
+      success: true,
+      message: "Message updated",
+      data: message,
+    });
   } catch (error) {
     console.error("Mark read/unread error:", error);
-    return res.status(500).json({ message: "Failed to update message" });
+    res.status(500).json({
+      success: false,
+      message: "Failed to update message",
+      error: error.message,
+    });
   }
 };
 
-export const deleteMessage = async (req, res) => {
+/**
+ * DELETE entire thread (admin only)
+ * DELETE /api/messages/threads/:threadId
+ */
+export const deleteThread = async (req, res) => {
   try {
-    const message = await Message.findByIdAndDelete(req.params.id);
-    if (!message) {
-      return res.status(404).json({ message: "Message not found" });
+    const { threadId } = req.params;
+
+    // Find all messages in thread
+    const messages = await Message.find({ threadId });
+
+    if (messages.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Thread not found",
+      });
     }
 
+    const userId = messages[0].userId;
+
+    // Delete all messages in thread
+    const result = await Message.deleteMany({ threadId });
+
+    // WebSocket notification
     const io = req.app.get("io");
-    // notify owner & admins
-    if (message.userId) {
-      io.to(`user:${message.userId}`).emit("messageDeleted", { id: message._id });
+    if (io) {
+      io.to("admins").emit("thread_deleted", { threadId });
+      io.to(`user-${userId}`).emit("thread_deleted", { threadId });
     }
-    io.to("admins").emit("messageDeleted", { id: message._id, userId: message.userId });
 
-    return res.json({ message: "Message deleted successfully" });
+    res.json({
+      success: true,
+      message: "Thread deleted successfully",
+      deletedCount: result.deletedCount,
+    });
   } catch (error) {
-    console.error("Delete message error:", error);
-    return res.status(500).json({ message: "Failed to delete message" });
+    console.error("Delete thread error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete thread",
+      error: error.message,
+    });
   }
 };
