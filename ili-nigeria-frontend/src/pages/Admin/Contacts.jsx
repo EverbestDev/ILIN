@@ -67,26 +67,10 @@ export default function AdminContacts() {
 
     socketRef.current = io(API_URL);
 
-    // Join admin room
+    // Join user-specific room
     socketRef.current.emit("join_room", {
       userId: auth.currentUser.uid,
       isAdmin: true,
-    });
-
-    // Listen for new client messages
-    socketRef.current.on("new_client_message", (message) => {
-      const newThread = {
-        threadId: message.threadId,
-        subject: message.subject,
-        userId: message.userId,
-        originType: message.originType,
-        messages: [message],
-        latestMessage: message,
-        unreadCount: 1,
-      };
-
-      setThreads((prev) => [newThread, ...prev]);
-      showNotification("New message from client", "success");
     });
 
     // Listen for client replies
@@ -105,11 +89,15 @@ export default function AdminContacts() {
         })
       );
 
-      if (selectedThread === reply.threadId) {
-        setThreadMessages((prev) => [...prev, reply]);
-      }
+      // Always update thread messages if it matches
+      setThreadMessages((prev) => {
+        if (prev.length > 0 && prev[0].threadId === reply.threadId) {
+          return [...prev, reply];
+        }
+        return prev;
+      });
 
-      showNotification("New reply from client", "success");
+      showNotification("New reply from admin", "success");
     });
 
     // Listen for message status updates
@@ -128,19 +116,27 @@ export default function AdminContacts() {
         })
       );
 
-      if (selectedThread === update.threadId) {
-        setThreadMessages((prev) =>
-          prev.map((msg) =>
-            msg._id === update.id ? { ...msg, isRead: update.isRead } : msg
-          )
-        );
+      setThreadMessages((prev) =>
+        prev.map((msg) =>
+          msg._id === update.id ? { ...msg, isRead: update.isRead } : msg
+        )
+      );
+    });
+
+    // Listen for thread deletion
+    socketRef.current.on("thread_deleted", (data) => {
+      setThreads((prev) => prev.filter((t) => t.threadId !== data.threadId));
+      if (selectedThread === data.threadId) {
+        setSelectedThread(null);
+        setThreadMessages([]);
       }
+      showNotification("Thread was deleted by admin", "info");
     });
 
     return () => {
       socketRef.current?.disconnect();
     };
-  }, [navigate, selectedThread]);
+  }, [navigate]);
 
   // Fetch threads
   useEffect(() => {
@@ -325,7 +321,7 @@ export default function AdminContacts() {
       {/* Notification */}
       {notification && (
         <div
-          className={`fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 ${
+          className={`fixed top-4 right-4 z-80 px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 ${
             notification.type === "success"
               ? "bg-green-500 text-white"
               : notification.type === "error"

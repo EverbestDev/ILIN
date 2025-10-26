@@ -48,7 +48,6 @@ export default function ClientMessages() {
     };
   };
 
-  // Auto-scroll to latest message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [threadMessages]);
@@ -65,10 +64,10 @@ export default function ClientMessages() {
     // Join user-specific room
     socketRef.current.emit("join_room", {
       userId: auth.currentUser.uid,
-      isAdmin: false,
+      isAdmin: false, // Change to true in AdminMessages.jsx
     });
 
-    // Listen for admin replies
+    // Listen for admin replies (or new_client_reply for admin)
     socketRef.current.on("new_admin_reply", (reply) => {
       setThreads((prev) =>
         prev.map((thread) => {
@@ -84,10 +83,14 @@ export default function ClientMessages() {
         })
       );
 
-      // Update current thread view if open
-      if (selectedThread === reply.threadId) {
-        setThreadMessages((prev) => [...prev, reply]);
-      }
+      // Always update thread messages if it matches
+      setThreadMessages((prev) => {
+        // Only update if this is the selected thread
+        if (prev.length > 0 && prev[0].threadId === reply.threadId) {
+          return [...prev, reply];
+        }
+        return prev;
+      });
 
       showNotification("New reply from admin", "success");
     });
@@ -108,13 +111,11 @@ export default function ClientMessages() {
         })
       );
 
-      if (selectedThread === update.threadId) {
-        setThreadMessages((prev) =>
-          prev.map((msg) =>
-            msg._id === update.id ? { ...msg, isRead: update.isRead } : msg
-          )
-        );
-      }
+      setThreadMessages((prev) =>
+        prev.map((msg) =>
+          msg._id === update.id ? { ...msg, isRead: update.isRead } : msg
+        )
+      );
     });
 
     // Listen for thread deletion
@@ -130,7 +131,7 @@ export default function ClientMessages() {
     return () => {
       socketRef.current?.disconnect();
     };
-  }, [navigate, selectedThread]);
+  }, [navigate]);
 
   // Fetch threads
   useEffect(() => {
