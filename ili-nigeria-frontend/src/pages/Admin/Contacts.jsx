@@ -454,16 +454,19 @@ export default function AdminContacts() {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <div className="flex items-center justify-center w-10 h-10 font-semibold text-white bg-green-600 rounded-lg">
-                            {thread.latestMessage.senderName
-                              .charAt(0)
-                              .toUpperCase()}
+                            {(
+                              thread.latestMessage?.senderName?.charAt(0) ||
+                              thread.latestMessage?.senderEmail?.charAt(0) ||
+                              "?"
+                            ).toUpperCase()}
                           </div>
                           <div>
                             <p className="font-medium text-gray-900">
-                              {thread.latestMessage.senderName}
+                              {thread.latestMessage?.senderName ||
+                                "Unknown User"}
                             </p>
                             <p className="text-sm text-gray-600">
-                              {thread.latestMessage.senderEmail}
+                              {thread.latestMessage?.senderEmail || "No email"}
                             </p>
                           </div>
                         </div>
