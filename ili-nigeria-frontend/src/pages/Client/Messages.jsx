@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
+import { auth } from "../../utility/firebase";
 import {
   Send,
   MessageSquare,
@@ -12,11 +13,6 @@ import {
   CheckCircle,
   AlertCircle,
 } from "lucide-react";
-
-// Replace with your actual Firebase import
-const auth = {
-  currentUser: null, // This should come from your firebase.js
-};
 
 const API_URL =
   import.meta.env.VITE_API_URL || "https://ilin-backend.onrender.com";
