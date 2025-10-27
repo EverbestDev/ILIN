@@ -445,7 +445,7 @@ export default function AdminContacts() {
         ) : (
           <>
             <div className="overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm">
-              <table className="w-full">
+              <table className="w-full overflow-x-auto">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">
