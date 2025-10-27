@@ -18,7 +18,10 @@ import { auth } from "../../utility/firebase";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const BASE_URL = "https://ilin-backend.onrender.com" || import.meta.env.VITE_API_URL || "http://localhost:5000";
+  const BASE_URL =
+    "https://ilin-backend.onrender.com" ||
+    import.meta.env.VITE_API_URL ||
+    "http://localhost:5000";
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -51,7 +54,6 @@ const Dashboard = () => {
       Authorization: `Bearer ${idToken}`,
     };
   };
-
 
   const getDateRange = () => {
     const now = new Date();
@@ -98,7 +100,9 @@ const Dashboard = () => {
             }).then((res) =>
               res.ok
                 ? res.json()
-                : Promise.reject(new Error(`Failed to fetch stats: ${res.status}`))
+                : Promise.reject(
+                    new Error(`Failed to fetch stats: ${res.status}`)
+                  )
             ),
             fetch(`${BASE_URL}/api/quotes`, {
               headers,
@@ -106,7 +110,9 @@ const Dashboard = () => {
             }).then((res) =>
               res.ok
                 ? res.json()
-                : Promise.reject(new Error(`Failed to fetch quotes: ${res.status}`))
+                : Promise.reject(
+                    new Error(`Failed to fetch quotes: ${res.status}`)
+                  )
             ),
             fetch(`${BASE_URL}/api/subscribe`, {
               headers,
@@ -114,15 +120,19 @@ const Dashboard = () => {
             }).then((res) =>
               res.ok
                 ? res.json()
-                : Promise.reject(new Error(`Failed to fetch subscribers: ${res.status}`))
+                : Promise.reject(
+                    new Error(`Failed to fetch subscribers: ${res.status}`)
+                  )
             ),
             fetch(`${BASE_URL}/api/contact`, {
               headers,
               credentials: "include",
             }).then((res) =>
               res.ok
-                ? res.json()
-                : Promise.reject(new Error(`Failed to fetch contacts: ${res.status}`))
+                ? res.json().then((data) => (Array.isArray(data) ? data : []))
+                : Promise.reject(
+                    new Error(`Failed to fetch contacts: ${res.status}`)
+                  )
             ),
             fetch(`${BASE_URL}/api/tasks`, {
               headers,
@@ -130,7 +140,9 @@ const Dashboard = () => {
             }).then((res) =>
               res.ok
                 ? res.json()
-                : Promise.reject(new Error(`Failed to fetch tasks: ${res.status}`))
+                : Promise.reject(
+                    new Error(`Failed to fetch tasks: ${res.status}`)
+                  )
             ),
           ]);
 
@@ -169,9 +181,11 @@ const Dashboard = () => {
           )
         );
         setRawContacts(
-          contactsRes.sort(
-            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-          )
+          Array.isArray(contactsRes)
+            ? contactsRes.sort(
+                (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+              )
+            : []
         );
         setRawTasks(
           tasksRes.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -764,7 +778,7 @@ const Dashboard = () => {
             )}
           </div>
         </div>
-        
+
         <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-semibold text-gray-900">
@@ -807,7 +821,7 @@ const Dashboard = () => {
             )}
           </div>
         </div>
-      
+
         <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-semibold text-gray-900">

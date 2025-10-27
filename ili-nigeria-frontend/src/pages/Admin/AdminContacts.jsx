@@ -24,7 +24,8 @@ import {
 
 import { auth } from "../../utility/firebase";
 
-const API_URL = import.meta.env.VITE_API_URL || "https://ilin-backend.onrender.com";
+const API_URL =
+  import.meta.env.VITE_API_URL || "https://ilin-backend.onrender.com";
 
 export default function AdminContacts() {
   const navigate = useNavigate();
@@ -112,11 +113,18 @@ export default function AdminContacts() {
         if (!res.ok) throw new Error("Failed to fetch contacts");
 
         const data = await res.json();
-        setContacts(data || []);
-        setFilteredContacts(data || []);
+
+        // Ensure data is always an array
+        const contactsArray = Array.isArray(data) ? data : [];
+
+        setContacts(contactsArray);
+        setFilteredContacts(contactsArray);
       } catch (error) {
         console.error("Fetch error:", error);
         showNotification(error.message, "error");
+        // Set empty arrays on error
+        setContacts([]);
+        setFilteredContacts([]);
       } finally {
         setLoading(false);
       }
@@ -203,7 +211,9 @@ export default function AdminContacts() {
       if (!res.ok) throw new Error("Failed to archive contact");
 
       setContacts((prev) =>
-        prev.map((c) => (c._id === contactId ? { ...c, status: "archived" } : c))
+        prev.map((c) =>
+          c._id === contactId ? { ...c, status: "archived" } : c
+        )
       );
 
       setArchiveConfirm(null);
@@ -256,9 +266,18 @@ export default function AdminContacts() {
 
   const getStatusBadge = (status) => {
     const badges = {
-      new: { color: "bg-orange-100 text-orange-800 border-orange-200", text: "New" },
-      converted: { color: "bg-green-100 text-green-800 border-green-200", text: "Converted" },
-      archived: { color: "bg-gray-100 text-gray-800 border-gray-200", text: "Archived" },
+      new: {
+        color: "bg-orange-100 text-orange-800 border-orange-200",
+        text: "New",
+      },
+      converted: {
+        color: "bg-green-100 text-green-800 border-green-200",
+        text: "Converted",
+      },
+      archived: {
+        color: "bg-gray-100 text-gray-800 border-gray-200",
+        text: "Archived",
+      },
     };
     const badge = badges[status] || badges.new;
     return (
@@ -306,8 +325,12 @@ export default function AdminContacts() {
       <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Contact Submissions</h1>
-          <p className="mt-1 text-gray-600">Manage public contact form submissions</p>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Contact Submissions
+          </h1>
+          <p className="mt-1 text-gray-600">
+            Manage public contact form submissions
+          </p>
         </div>
 
         {/* Stats */}
@@ -317,7 +340,9 @@ export default function AdminContacts() {
               <User className="w-5 h-5 text-blue-600" />
               <span className="text-xs font-medium text-gray-500">TOTAL</span>
             </div>
-            <p className="mt-2 text-2xl font-bold text-gray-900">{stats.total}</p>
+            <p className="mt-2 text-2xl font-bold text-gray-900">
+              {stats.total}
+            </p>
             <p className="text-xs text-gray-600">All Contacts</p>
           </div>
 
@@ -333,27 +358,39 @@ export default function AdminContacts() {
           <div className="p-5 bg-white border border-gray-200 rounded-lg shadow-sm">
             <div className="flex items-center justify-between">
               <CheckCircle className="w-5 h-5 text-green-600" />
-              <span className="text-xs font-medium text-gray-500">CONVERTED</span>
+              <span className="text-xs font-medium text-gray-500">
+                CONVERTED
+              </span>
             </div>
-            <p className="mt-2 text-2xl font-bold text-gray-900">{stats.converted}</p>
+            <p className="mt-2 text-2xl font-bold text-gray-900">
+              {stats.converted}
+            </p>
             <p className="text-xs text-gray-600">To Threads</p>
           </div>
 
           <div className="p-5 bg-white border border-gray-200 rounded-lg shadow-sm">
             <div className="flex items-center justify-between">
               <Archive className="w-5 h-5 text-gray-600" />
-              <span className="text-xs font-medium text-gray-500">ARCHIVED</span>
+              <span className="text-xs font-medium text-gray-500">
+                ARCHIVED
+              </span>
             </div>
-            <p className="mt-2 text-2xl font-bold text-gray-900">{stats.archived}</p>
+            <p className="mt-2 text-2xl font-bold text-gray-900">
+              {stats.archived}
+            </p>
             <p className="text-xs text-gray-600">Resolved</p>
           </div>
 
           <div className="p-5 bg-white border border-gray-200 rounded-lg shadow-sm">
             <div className="flex items-center justify-between">
               <Calendar className="w-5 h-5 text-purple-600" />
-              <span className="text-xs font-medium text-gray-500">THIS WEEK</span>
+              <span className="text-xs font-medium text-gray-500">
+                THIS WEEK
+              </span>
             </div>
-            <p className="mt-2 text-2xl font-bold text-gray-900">{stats.thisWeek}</p>
+            <p className="mt-2 text-2xl font-bold text-gray-900">
+              {stats.thisWeek}
+            </p>
             <p className="text-xs text-gray-600">Last 7 Days</p>
           </div>
         </div>
@@ -440,9 +477,11 @@ export default function AdminContacts() {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <div className="flex items-center justify-center w-10 h-10 font-semibold text-white bg-green-600 rounded-lg">
-                            {(contact.name?.charAt(0) || 
-                              contact.email?.charAt(0) || 
-                              "?").toUpperCase()}
+                            {(
+                              contact.name?.charAt(0) ||
+                              contact.email?.charAt(0) ||
+                              "?"
+                            ).toUpperCase()}
                           </div>
                           <div>
                             <p className="font-medium text-gray-900">
@@ -452,7 +491,9 @@ export default function AdminContacts() {
                               {contact.email || "No email"}
                             </p>
                             {contact.phone && (
-                              <p className="text-xs text-gray-500">{contact.phone}</p>
+                              <p className="text-xs text-gray-500">
+                                {contact.phone}
+                              </p>
                             )}
                           </div>
                         </div>
@@ -562,7 +603,9 @@ export default function AdminContacts() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="w-full max-w-2xl bg-white rounded-lg shadow-xl">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h2 className="text-xl font-bold text-gray-900">Contact Details</h2>
+              <h2 className="text-xl font-bold text-gray-900">
+                Contact Details
+              </h2>
               <button
                 onClick={() => setSelectedContact(null)}
                 className="text-gray-400 hover:text-gray-600"
@@ -618,13 +661,17 @@ export default function AdminContacts() {
                   <label className="block mb-1 text-sm font-semibold text-gray-700">
                     Service
                   </label>
-                  <p className="text-gray-900">{selectedContact.service || "N/A"}</p>
+                  <p className="text-gray-900">
+                    {selectedContact.service || "N/A"}
+                  </p>
                 </div>
                 <div>
                   <label className="block mb-1 text-sm font-semibold text-gray-700">
                     Urgency
                   </label>
-                  <p className="text-gray-900">{selectedContact.urgency || "Standard"}</p>
+                  <p className="text-gray-900">
+                    {selectedContact.urgency || "Standard"}
+                  </p>
                 </div>
                 <div>
                   <label className="block mb-1 text-sm font-semibold text-gray-700">
@@ -701,7 +748,9 @@ export default function AdminContacts() {
                     {convertConfirm.name}
                   </span>
                   <br />
-                  <span className="text-sm text-gray-600">{convertConfirm.email}</span>
+                  <span className="text-sm text-gray-600">
+                    {convertConfirm.email}
+                  </span>
                 </p>
               </div>
               <div className="flex gap-3">
@@ -735,7 +784,8 @@ export default function AdminContacts() {
                 Archive Contact?
               </h3>
               <p className="mb-4 text-center text-gray-600">
-                This will mark the contact as archived but keep it in the database.
+                This will mark the contact as archived but keep it in the
+                database.
               </p>
               <div className="p-3 mb-6 rounded-lg bg-gray-50">
                 <p className="text-center">
@@ -743,7 +793,9 @@ export default function AdminContacts() {
                     {archiveConfirm.name}
                   </span>
                   <br />
-                  <span className="text-sm text-gray-600">{archiveConfirm.email}</span>
+                  <span className="text-sm text-gray-600">
+                    {archiveConfirm.email}
+                  </span>
                 </p>
               </div>
               <div className="flex gap-3">
@@ -777,7 +829,8 @@ export default function AdminContacts() {
                 Delete Contact?
               </h3>
               <p className="mb-4 text-center text-gray-600">
-                This will permanently delete the contact. This action cannot be undone.
+                This will permanently delete the contact. This action cannot be
+                undone.
               </p>
               <div className="p-3 mb-6 rounded-lg bg-gray-50">
                 <p className="text-center">
@@ -785,7 +838,9 @@ export default function AdminContacts() {
                     {deleteConfirm.name}
                   </span>
                   <br />
-                  <span className="text-sm text-gray-600">{deleteConfirm.email}</span>
+                  <span className="text-sm text-gray-600">
+                    {deleteConfirm.email}
+                  </span>
                 </p>
               </div>
               <p className="mb-6 text-sm font-medium text-center text-red-600">

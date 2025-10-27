@@ -125,36 +125,13 @@ export const submitContact = async (req, res) => {
 // ADMIN: Get all contacts
 export const getContacts = async (req, res) => {
   try {
-    const { status, search } = req.query;
-
-    let query = {};
-
-    // Filter by status
-    if (status && status !== "all") {
-      query.status = status;
-    }
-
-    // Search filter
-    if (search) {
-      query.$or = [
-        { name: { $regex: search, $options: "i" } },
-        { email: { $regex: search, $options: "i" } },
-        { subject: { $regex: search, $options: "i" } },
-      ];
-    }
-
-    const contacts = await Contact.find(query).sort({ createdAt: -1 });
-
-    res.json({
-      success: true,
-      data: contacts,
-    });
+    const contacts = await Contact.find().sort({ createdAt: -1 });
+    
+    // IMPORTANT: Return as array directly for compatibility
+    res.json(contacts);
   } catch (error) {
-    console.error("Fetch contacts error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Failed to fetch contacts",
-    });
+    console.error("Failed to fetch contacts:", error);
+    res.status(500).json({ message: "Failed to fetch contacts" });
   }
 };
 
@@ -230,6 +207,15 @@ export const archiveContact = async (req, res) => {
       });
     }
 
+    // WebSocket notification
+    const io = req.app.get("io");
+    if (io) {
+      io.to("admins").emit("contact_status_updated", {
+        id: contact._id,
+        status: "archived",
+      });
+    }
+
     res.json({
       success: true,
       message: "Contact archived successfully",
@@ -276,10 +262,10 @@ export const convertToThread = async (req, res) => {
     const threadId = new mongoose.Types.ObjectId().toString();
     const userId = firebaseUser ? firebaseUser.uid : `guest_${contact.email}`;
 
-    // Create first message in thread
+    // Create first message in thread (from client perspective)
     await Message.create({
       threadId,
-      userId,
+      userId: firebaseUser ? firebaseUser.uid : userId,
       subject: contact.service || "General Inquiry",
       message: contact.message,
       sender: "client",
@@ -340,6 +326,7 @@ export const convertToThread = async (req, res) => {
     res.json({
       success: true,
       message: "Contact converted to thread successfully",
+      threadId,
       data: {
         threadId,
         isRegisteredUser: !!firebaseUser,
