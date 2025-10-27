@@ -56,7 +56,7 @@ export default function Footer() {
     {
       icon: <MessageCircle className="w-5 h-5" />,
       name: "MessageCircle",
-      url: "#",
+      url: "https://www.facebook.com/share/p/1MhSGUpwDz/",
     },
   ];
 
@@ -192,7 +192,7 @@ export default function Footer() {
                     </div>
                     <div>
                       <p className="font-semibold text-white">
-                        +234 810 6738 2
+                        +234 810 906 7382
                       </p>
                       <p className="text-sm text-green-200">
                         24/7 Support Line

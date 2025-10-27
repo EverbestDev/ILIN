@@ -305,7 +305,7 @@ export default function AdminContacts() {
       {/* Notification */}
       {notification && (
         <div
-          className={`fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 ${
+          className={`fixed top-4 right-4 z-80 px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 ${
             notification.type === "success"
               ? "bg-green-500 text-white"
               : notification.type === "error"

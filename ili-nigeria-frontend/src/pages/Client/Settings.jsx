@@ -1,29 +1,34 @@
 import React, { useState, useEffect } from "react";
 import {
   User,
-  Mail,
   Lock,
   Bell,
-  Save,
   CheckCircle,
   AlertCircle,
+  Loader2,
 } from "lucide-react";
 import { auth } from "../../utility/firebase";
+import {
+  updatePassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+} from "firebase/auth";
 
 const API_URL =
-  "https://ilin-backend.onrender.com/api/settings/user" ||
-  import.meta.env.VITE_API_URL + "/api/settings/user" ||
-  "http://localhost:5000/api/settings/user";
+  import.meta.env.VITE_API_URL || "https://ilin-backend.onrender.com";
 
 const ClientSettings = () => {
   const [notification, setNotification] = useState(null);
   const [activeTab, setActiveTab] = useState("profile");
+  const [loading, setLoading] = useState(false);
+  const [passwordLoading, setPasswordLoading] = useState(false);
 
   // Profile state
   const [profile, setProfile] = useState({
-    name: "Sarah Chen",
-    email: "sarah@client.com",
-    phone: "+1 (555) 987-6543",
+    name: "",
+    username: "",
+    email: "",
+    phone: "",
   });
 
   // Notification preferences state
@@ -53,24 +58,31 @@ const ClientSettings = () => {
 
   const showNotification = (message, type = "success") => {
     setNotification({ message, type });
-    setTimeout(() => setNotification(null), 3000);
+    setTimeout(() => setNotification(null), 4000);
   };
 
+  // Fetch settings
   useEffect(() => {
     const fetchUserSettings = async () => {
       try {
         const headers = await getAuthHeaders();
-        const res = await fetch(API_URL, {
+        const res = await fetch(`${API_URL}/api/settings/user`, {
           headers,
           credentials: "include",
         });
         if (!res.ok) throw new Error(`Failed to fetch settings: ${res.status}`);
         const data = await res.json();
+
         setProfile({
-          name: data.name || "",
-          email: auth.currentUser.email,
+          name: data.name || auth.currentUser.displayName || "",
+          username: data.username || "",
+          email: data.email || auth.currentUser.email,
           phone: data.phone || "",
         });
+
+        if (data.preferences) {
+          setPreferences(data.preferences);
+        }
       } catch (err) {
         console.error("Fetch user settings error:", err);
         showNotification("Failed to load settings", "error");
@@ -79,37 +91,87 @@ const ClientSettings = () => {
     fetchUserSettings();
   }, []);
 
+  // Save Profile
   const handleSaveProfile = async () => {
+    setLoading(true);
     try {
       const headers = await getAuthHeaders();
-      const res = await fetch(API_URL, {
+      const res = await fetch(`${API_URL}/api/settings/user`, {
         method: "POST",
         headers,
         credentials: "include",
-        body: JSON.stringify({ name: profile.name, phone: profile.phone }),
+        body: JSON.stringify({
+          name: profile.name,
+          username: profile.username,
+          phone: profile.phone,
+        }),
       });
+
       if (!res.ok) throw new Error(`Failed to update profile: ${res.status}`);
-      await auth.currentUser.updateProfile({ displayName: profile.name });
+
+      // Update local auth display name
+      await auth.currentUser.reload();
+
       showNotification("Profile updated successfully", "success");
+
+      // Trigger page reload to update navbar
+      setTimeout(() => window.location.reload(), 1500);
     } catch (err) {
       console.error("Update profile error:", err);
       showNotification("Failed to update profile", "error");
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Save Preferences
+  const handlePreferenceSave = async () => {
+    setLoading(true);
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch(`${API_URL}/api/settings/user`, {
+        method: "POST",
+        headers,
+        credentials: "include",
+        body: JSON.stringify({ preferences }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update preferences");
+      showNotification("Preferences saved successfully", "success");
+    } catch (err) {
+      console.error("Update preferences error:", err);
+      showNotification("Failed to save preferences", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Change Password
   const handlePasswordChange = async () => {
     if (security.newPassword !== security.confirmPassword) {
       showNotification("Passwords do not match", "error");
       return;
     }
+
+    if (security.newPassword.length < 6) {
+      showNotification("Password must be at least 6 characters", "error");
+      return;
+    }
+
+    setPasswordLoading(true);
     try {
       const user = auth.currentUser;
-      const credential = auth.EmailAuthProvider.credential(
+      const credential = EmailAuthProvider.credential(
         user.email,
         security.currentPassword
       );
-      await user.reauthenticateWithCredential(credential);
-      await user.updatePassword(security.newPassword);
+
+      // Reauthenticate
+      await reauthenticateWithCredential(user, credential);
+
+      // Update password
+      await updatePassword(user, security.newPassword);
+
       showNotification("Password updated successfully", "success");
       setSecurity({
         currentPassword: "",
@@ -118,12 +180,14 @@ const ClientSettings = () => {
       });
     } catch (err) {
       console.error("Password change error:", err);
-      showNotification("Failed to update password", "error");
+      if (err.code === "auth/wrong-password") {
+        showNotification("Current password is incorrect", "error");
+      } else {
+        showNotification("Failed to update password", "error");
+      }
+    } finally {
+      setPasswordLoading(false);
     }
-  };
-
-  const handlePreferenceSave = () => {
-    showNotification("Preferences saved successfully", "success");
   };
 
   const tabs = [
@@ -133,11 +197,10 @@ const ClientSettings = () => {
   ];
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Notification Toast */}
+    <div className="p-4 space-y-6 sm:p-6">
       {notification && (
         <div
-          className={`fixed top-6 right-6 z-50 px-6 py-4 rounded-xl shadow-lg border animate-slide-in ${
+          className={`fixed top-6 right-6 z-50 px-4 sm:px-6 py-4 rounded-xl shadow-lg border animate-slide-in ${
             notification.type === "success"
               ? "bg-green-50 border-green-200 text-green-800"
               : "bg-red-50 border-red-200 text-red-800"
@@ -149,30 +212,32 @@ const ClientSettings = () => {
             ) : (
               <AlertCircle className="w-5 h-5" />
             )}
-            <p className="font-medium">{notification.message}</p>
+            <p className="text-sm font-medium sm:text-base">
+              {notification.message}
+            </p>
           </div>
         </div>
       )}
 
-      {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-        <p className="mt-1 text-gray-600">
+        <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+          Settings
+        </h1>
+        <p className="mt-1 text-sm text-gray-600 sm:text-base">
           Manage your personal details, preferences, and security
         </p>
       </div>
 
-      {/* Tabs */}
       <div className="bg-white border border-gray-200 shadow-sm rounded-xl">
-        <div className="px-6 border-b border-gray-200">
-          <nav className="flex gap-8 -mb-px">
+        <div className="px-4 border-b border-gray-200 sm:px-6 overflow-x-auto">
+          <nav className="flex gap-4 sm:gap-8 -mb-px min-w-max">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 py-4 border-b-2 font-medium text-sm transition-colors ${
+                  className={`flex items-center gap-2 py-4 border-b-2 font-medium text-sm transition-colors whitespace-nowrap ${
                     activeTab === tab.id
                       ? "border-green-600 text-green-600"
                       : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
@@ -186,55 +251,60 @@ const ClientSettings = () => {
           </nav>
         </div>
 
-        <div className="p-6">
-          {/* Profile Tab */}
+        <div className="p-4 sm:p-6">
           {activeTab === "profile" && (
             <div className="space-y-6">
               <h2 className="text-xl font-bold text-gray-900">Profile</h2>
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
-                  <label
-                    htmlFor="name"
-                    className="block mb-2 text-sm font-medium text-gray-700"
-                  >
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
                     Full Name
                   </label>
                   <input
-                    id="name"
                     type="text"
                     value={profile.name}
-                    onChange={(e) =>
-                      setProfile({ ...profile, name: e.target.value })
-                    }
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                    disabled
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed"
                   />
+                  <p className="mt-1 text-xs text-gray-500">
+                    Contact support to change your full name
+                  </p>
                 </div>
                 <div>
-                  <label
-                    htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-gray-700"
-                  >
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    value={profile.username}
+                    onChange={(e) =>
+                      setProfile({ ...profile, username: e.target.value })
+                    }
+                    placeholder="Display name for navbar"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                  />
+                  <p className="mt-1 text-xs text-gray-500">
+                    This will appear in your dashboard navbar
+                  </p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div>
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
                     Email Address
                   </label>
                   <input
-                    id="email"
                     type="email"
                     value={profile.email}
                     disabled
                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed"
                   />
                 </div>
-              </div>
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
-                  <label
-                    htmlFor="phone"
-                    className="block mb-2 text-sm font-medium text-gray-700"
-                  >
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
                     Phone Number
                   </label>
                   <input
-                    id="phone"
                     type="tel"
                     value={profile.phone}
                     onChange={(e) =>
@@ -246,14 +316,15 @@ const ClientSettings = () => {
               </div>
               <button
                 onClick={handleSaveProfile}
-                className="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all"
+                disabled={loading}
+                className="flex items-center gap-2 px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
+                {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                 Save Profile Changes
               </button>
             </div>
           )}
 
-          {/* Preferences Tab */}
           {activeTab === "preferences" && (
             <div className="space-y-6">
               <h2 className="text-xl font-bold text-gray-900">Preferences</h2>
@@ -261,7 +332,7 @@ const ClientSettings = () => {
                 Customize your notification settings
               </p>
               <div className="space-y-4">
-                <label className="flex items-center gap-3 cursor-pointer">
+                <label className="flex items-start gap-3 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={preferences.emailUpdates}
@@ -271,7 +342,7 @@ const ClientSettings = () => {
                         emailUpdates: e.target.checked,
                       })
                     }
-                    className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                    className="w-4 h-4 mt-1 text-green-600 border-gray-300 rounded focus:ring-green-500"
                   />
                   <div>
                     <p className="font-medium text-gray-900">Email Updates</p>
@@ -280,8 +351,7 @@ const ClientSettings = () => {
                     </p>
                   </div>
                 </label>
-
-                <label className="flex items-center gap-3 cursor-pointer">
+                <label className="flex items-start gap-3 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={preferences.emailNotifications}
@@ -291,7 +361,7 @@ const ClientSettings = () => {
                         emailNotifications: e.target.checked,
                       })
                     }
-                    className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                    className="w-4 h-4 mt-1 text-green-600 border-gray-300 rounded focus:ring-green-500"
                   />
                   <div>
                     <p className="font-medium text-gray-900">
@@ -302,8 +372,7 @@ const ClientSettings = () => {
                     </p>
                   </div>
                 </label>
-
-                <label className="flex items-center gap-3 cursor-pointer">
+                <label className="flex items-start gap-3 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={preferences.pushNotifications}
@@ -313,7 +382,7 @@ const ClientSettings = () => {
                         pushNotifications: e.target.checked,
                       })
                     }
-                    className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                    className="w-4 h-4 mt-1 text-green-600 border-gray-300 rounded focus:ring-green-500"
                   />
                   <div>
                     <p className="font-medium text-gray-900">
@@ -324,8 +393,7 @@ const ClientSettings = () => {
                     </p>
                   </div>
                 </label>
-
-                <label className="flex items-center gap-3 cursor-pointer">
+                <label className="flex items-start gap-3 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={preferences.smsAlerts}
@@ -335,7 +403,7 @@ const ClientSettings = () => {
                         smsAlerts: e.target.checked,
                       })
                     }
-                    className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                    className="w-4 h-4 mt-1 text-green-600 border-gray-300 rounded focus:ring-green-500"
                   />
                   <div>
                     <p className="font-medium text-gray-900">SMS Alerts</p>
@@ -347,20 +415,19 @@ const ClientSettings = () => {
               </div>
               <button
                 onClick={handlePreferenceSave}
-                className="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all"
+                disabled={loading}
+                className="flex items-center gap-2 px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
+                {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                 Save Preferences
               </button>
             </div>
           )}
 
-          {/* Security Tab */}
           {activeTab === "security" && (
             <div className="space-y-8">
               <h2 className="text-xl font-bold text-gray-900">Security</h2>
-
-              {/* Change Password */}
-              <div className="p-6 border border-gray-200 bg-gray-50 rounded-xl">
+              <div className="p-4 border border-gray-200 sm:p-6 bg-gray-50 rounded-xl">
                 <h3 className="flex items-center gap-2 mb-4 font-semibold text-gray-900">
                   <Lock className="w-5 h-5 text-green-600" />
                   Change Password
@@ -416,8 +483,12 @@ const ClientSettings = () => {
                   </div>
                   <button
                     onClick={handlePasswordChange}
-                    className="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all"
+                    disabled={passwordLoading}
+                    className="flex items-center gap-2 px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
+                    {passwordLoading && (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    )}
                     Update Password
                   </button>
                 </div>

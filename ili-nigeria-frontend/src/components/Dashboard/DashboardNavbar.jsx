@@ -44,7 +44,7 @@ const DashboardNavbar = ({
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
       if (currentUser) {
         setUser({
-          name: currentUser.displayName || "User",
+          name: currentUser.displayName || "User", 
           email: currentUser.email,
           photoURL: currentUser.photoURL,
         });
