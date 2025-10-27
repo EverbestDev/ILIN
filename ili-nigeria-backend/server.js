@@ -136,17 +136,16 @@ app.get("/", (req, res) => {
 // Initialize Socket.io
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", "https://ilin-nigeria.vercel.app"], // adjust to your frontend URLs
+    origin: ["http://localhost:5173", "https://ilin-nigeria.vercel.app"],
     methods: ["GET", "POST"],
   },
 });
 
 // Handle socket connection
-// Handle socket connections
 io.on("connection", (socket) => {
   console.log("🟢 User connected:", socket.id);
 
-  // 🔹 Unified join event for both admins & clients
+  // Unified join event for both admins & clients
   socket.on("join", ({ userId, admin }) => {
     try {
       if (admin) {

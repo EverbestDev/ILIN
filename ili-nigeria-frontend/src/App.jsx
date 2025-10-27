@@ -30,7 +30,8 @@ import Login from "./pages/Default/Login";
 import Dashboard from "./pages/Admin/Dashboard";
 import AdminQuotes from "./pages/Admin/Quotes";
 import Subscribers from "./pages/Admin/Subscribers";
-import Contacts from "./pages/Admin/Contacts";
+import Contacts from "./pages/Admin/Contacts"; //client messages import
+import AdminContacts from "./pages/Admin/AdminContacts";
 import Schedules from "./pages/Admin/Schedules";
 import Analytics from "./pages/Admin/Analytics";
 import Settings from "./pages/Admin/Settings";
@@ -226,6 +227,14 @@ function App() {
               element={
                 <AdminLayout>
                   <Contacts />
+                </AdminLayout>
+              }
+            />
+            <Route
+              path="/admin/public-contacts"
+              element={
+                <AdminLayout>
+                  <AdminContacts />
                 </AdminLayout>
               }
             />

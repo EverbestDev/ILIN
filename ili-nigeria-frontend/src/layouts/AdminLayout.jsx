@@ -8,6 +8,7 @@ import {
   Settings,
   BarChart3,
   Calendar,
+  MessagesSquare,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DashboardNavbar from "../components/Dashboard/DashboardNavbar";
@@ -31,7 +32,7 @@ const AdminLayout = ({ children }) => {
   const adminData = {
     brandName: "ILIN",
     portalTitle: "Admin Portal",
-    userName: profile.name || "John Doe",
+    userName: profile.name || "User",
     userEmail: profile.email || "admin@ilin.com",
     userRole: "Super Admin",
     unreadNotificationCount: 3,
@@ -80,9 +81,16 @@ const AdminLayout = ({ children }) => {
       },
       {
         id: "contacts",
-        label: "Contact Messages",
+        label: "Client Messages",
         icon: Mail,
         path: "/admin/contacts",
+        badge: 5,
+      },
+      {
+        id: "public-contacts",
+        label: "Contact Messages",
+        icon: MessagesSquare,
+        path: "/admin/public-contacts",
         badge: 5,
       },
       {

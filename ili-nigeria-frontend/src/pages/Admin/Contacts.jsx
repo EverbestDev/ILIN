@@ -20,7 +20,7 @@ import {
 const API_URL =
   import.meta.env.VITE_API_URL || "https://ilin-backend.onrender.com";
 
-export default function AdminContacts() {
+export default function Contacts() {
   const navigate = useNavigate();
   const [threads, setThreads] = useState([]);
   const [filteredThreads, setFilteredThreads] = useState([]);
