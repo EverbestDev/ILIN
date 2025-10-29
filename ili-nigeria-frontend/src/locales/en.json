@@ -1068,5 +1068,131 @@
       "country": "Nigeria",
       "language": "English"
     }
-  }
+  },
+  
+    "aboutpage": {
+      "hero": {
+        "badge": "About ILI-Nigeria",
+        "title": "Bridging Cultures Through",
+        "subtitle": "Expert Translation",
+        "description": "For over a decade, we've been Nigeria's trusted translation partner, helping businesses, organizations, and individuals communicate effectively across languages and cultures."
+      },
+      "stats": {
+        "clients": {
+          "label": "Happy Clients",
+          "value": "5,000+",
+          "desc": "Satisfied customers worldwide"
+        },
+        "languages": {
+          "label": "Languages",
+          "value": "50+",
+          "desc": "Supported language pairs"
+        },
+        "projects": {
+          "label": "Projects",
+          "value": "25,000+",
+          "desc": "Successfully completed"
+        },
+        "experience": {
+          "label": "Years Experience",
+          "value": "15+",
+          "desc": "In translation industry"
+        }
+      },
+      "story": {
+        "title": "Our Story: From Local Vision to Global Impact",
+        "para1": "Founded in 2010 in the heart of Lagos, ILI-Nigeria began with a simple yet powerful vision: to break down language barriers that prevent Nigerian businesses from accessing global opportunities.",
+        "para2": "What started as a small team of passionate linguists has grown into Nigeria's premier translation and interpretation service, trusted by government agencies, multinational corporations, and individual professionals across Africa and beyond.",
+        "para3": "Today, we're proud to serve clients in over 50 languages, with a team of certified translators who understand not just words, but the cultural nuances that make communication truly effective."
+      },
+      "mission": {
+        "title": "Our Mission",
+        "subtitle": "Breaking barriers, building bridges",
+        "description": "To provide world-class translation and interpretation services that enable seamless communication across cultures, empowering Nigerian businesses and individuals to thrive in the global marketplace."
+      },
+      "vision": {
+        "title": "Our Vision",
+        "subtitle": "A connected, multilingual world",
+        "description": "To be Africa's leading language services provider, recognized globally for our expertise, cultural sensitivity, and commitment to excellence in translation and interpretation."
+      },
+      "values": {
+        "title": "Values That Guide Everything We Do",
+        "subtitle": "Our core values are the foundation of our service excellence and the reason thousands of clients trust us with their most important communications.",
+        "precision": {
+          "title": "Precision & Accuracy",
+          "desc": "We maintain the highest standards of accuracy in every translation project, ensuring your message is conveyed exactly as intended."
+        },
+        "cultural": {
+          "title": "Cultural Sensitivity",
+          "desc": "Understanding cultural nuances is at the heart of effective translation. We respect and preserve cultural context in every project."
+        },
+        "speed": {
+          "title": "Speed & Efficiency",
+          "desc": "We understand deadlines matter. Our streamlined processes ensure rapid delivery without compromising quality."
+        },
+        "trust": {
+          "title": "Trust & Confidentiality",
+          "desc": "Your documents are secure with us. We maintain strict confidentiality protocols and secure handling procedures."
+        }
+      },
+      "timeline": {
+        "title": "Our Journey Through the Years",
+        "subtitle": "Key milestones that shaped ILI-Nigeria into the trusted translation partner we are today",
+        "0": {
+          "title": "Foundation",
+          "desc": "ILI-Nigeria was founded with a vision to bridge communication gaps across Nigerian businesses and international partners."
+        },
+        "1": {
+          "title": "ISO Certification",
+          "desc": "Achieved ISO 17100 certification, establishing our commitment to international quality standards."
+        },
+        "2": {
+          "title": "Digital Expansion",
+          "desc": "Launched our digital platform, enabling seamless online translation services across Africa."
+        },
+        "3": {
+          "title": "Regional Leader",
+          "desc": "Became West Africa's leading translation service provider, serving clients across 15+ countries."
+        },
+        "4": {
+          "title": "AI Integration",
+          "desc": "Integrated advanced CAT tools and AI-assisted quality assurance while maintaining human expertise."
+        },
+        "5": {
+          "title": "Global Recognition",
+          "desc": "Recognized as Nigeria's premier translation service with international partnerships and certifications."
+        }
+      },
+      "team": {
+        "title": "Meet Our Leadership Team",
+        "subtitle": "The experienced professionals who guide our vision and ensure the highest standards of service delivery across all our operations.",
+        "0": {
+          "role": "Founder & CEO",
+          "desc": "15+ years in linguistics and international business. PhD in Applied Linguistics from University of Niamey, Niger.",
+          "spec": "Strategic Leadership & Linguistics"
+        },
+        "1": {
+          "role": "Chief Operations Officer",
+          "desc": "Expert in translation project management with extensive experience in quality assurance systems.",
+          "spec": "Operations & Quality Management"
+        },
+        "2": {
+          "role": "Technology Director",
+          "desc": "Leading our digital transformation with cutting-edge translation technology and AI integration.",
+          "spec": "Technology & Innovation"
+        },
+        "3": {
+          "role": "Head of Linguistics",
+          "desc": "Oversees linguistic quality and cultural adaptation across all African and Middle Eastern languages.",
+          "spec": "Linguistics & Cultural Adaptation"
+        }
+      },
+      "cta": {
+        "title": "Ready to Work with Nigeria's Translation Experts?",
+        "description": "Join thousands of satisfied clients who trust ILI-Nigeria for accurate, culturally-sensitive translation services. Let's help you communicate effectively across languages and cultures.",
+        "getQuote": "Get Free Quote",
+        "contact": "Contact Our Team"
+      }
+    }
+  
 }

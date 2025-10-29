@@ -86,45 +86,43 @@
     }
   },
 
-  
-  
-    "languages": {
-      "globalReach": "Portée Globale",
-      "header": "Langues Supportées",
-      "description": "Des langues internationales majeures aux dialectes nigérians locaux, nous vous connectons avec des locuteurs à travers le globe. Nos traducteurs certifiés se spécialisent dans les nuances culturelles et les variations régionales.",
-      "stats": {
-        "languages": "Langues Supportées",
-        "speakers": "Locuteurs Natifs Atteints",
-        "countries": "Pays Couverts"
-      },
-      "popular": {
-        "title": "Langues Les Plus Demandées"
-      },
-      "explore": {
-        "title": "Explorer Toutes les Langues"
-      },
-      "search": {
-        "placeholder": "Rechercher des langues..."
-      },
-      "regions": {
-        "all": "Toutes",
-        "african": "Africaines",
-        "european": "Européennes",
-        "asian": "Asiatiques",
-        "middle_eastern": "Moyen-Orientales",
-        "americas": "Américaines"
-      },
-      "localExpertise": "Expertise Locale",
-      "seeAll": "Voir Toutes les Langues",
-      "noResults": "Aucune langue trouvée correspondant à vos critères.",
-      "cta": {
-        "title": "Vous Ne Voyez Pas Votre Langue ?",
-        "description": "Nous étendons constamment nos capacités linguistiques. Si vous avez besoin d'une langue non listée ici, contactez-nous - nous avons probablement des traducteurs qualifiés disponibles.",
-        "request": "Demander une Langue",
-        "viewAll": "Voir Toutes les Langues"
-      }
+  "languages": {
+    "globalReach": "Portée Globale",
+    "header": "Langues Supportées",
+    "description": "Des langues internationales majeures aux dialectes nigérians locaux, nous vous connectons avec des locuteurs à travers le globe. Nos traducteurs certifiés se spécialisent dans les nuances culturelles et les variations régionales.",
+    "stats": {
+      "languages": "Langues Supportées",
+      "speakers": "Locuteurs Natifs Atteints",
+      "countries": "Pays Couverts"
     },
-  
+    "popular": {
+      "title": "Langues Les Plus Demandées"
+    },
+    "explore": {
+      "title": "Explorer Toutes les Langues"
+    },
+    "search": {
+      "placeholder": "Rechercher des langues..."
+    },
+    "regions": {
+      "all": "Toutes",
+      "african": "Africaines",
+      "european": "Européennes",
+      "asian": "Asiatiques",
+      "middle_eastern": "Moyen-Orientales",
+      "americas": "Américaines"
+    },
+    "localExpertise": "Expertise Locale",
+    "seeAll": "Voir Toutes les Langues",
+    "noResults": "Aucune langue trouvée correspondant à vos critères.",
+    "cta": {
+      "title": "Vous Ne Voyez Pas Votre Langue ?",
+      "description": "Nous étendons constamment nos capacités linguistiques. Si vous avez besoin d'une langue non listée ici, contactez-nous - nous avons probablement des traducteurs qualifiés disponibles.",
+      "request": "Demander une Langue",
+      "viewAll": "Voir Toutes les Langues"
+    }
+  },
+
   "direction": "ltr",
   "industries": {
     "header": {
@@ -1074,6 +1072,131 @@
     "region": {
       "country": "Nigeria",
       "language": "Français"
+    }
+  },
+
+  "aboutpage": {
+    "hero": {
+      "badge": "À Propos d'ILI-Nigeria",
+      "title": "Établir des Ponts Entre les Cultures par",
+      "subtitle": "la Traduction Experte",
+      "description": "Depuis plus d'une décennie, nous sommes le partenaire de traduction de confiance du Nigeria, aidant les entreprises, les organisations et les individus à communiquer efficacement à travers les langues et les cultures."
+    },
+    "stats": {
+      "clients": {
+        "label": "Clients Satisfaits",
+        "value": "5 000+",
+        "desc": "Clients satisfaits dans le monde entier"
+      },
+      "languages": {
+        "label": "Langues",
+        "value": "50+",
+        "desc": "Paires de langues supportées"
+      },
+      "projects": {
+        "label": "Projets",
+        "value": "25 000+",
+        "desc": "Complétés avec succès"
+      },
+      "experience": {
+        "label": "Années d'Expérience",
+        "value": "15+",
+        "desc": "Dans l'industrie de la traduction"
+      }
+    },
+    "story": {
+      "title": "Notre Histoire : De la Vision Locale à l'Impact Mondial",
+      "para1": "Fondée en 2010 au cœur de Lagos, ILI-Nigeria a commencé avec une vision simple mais puissante : éliminer les barrières linguistiques qui empêchent les entreprises nigérianes d'accéder aux opportunités mondiales.",
+      "para2": "Ce qui a commencé comme une petite équipe de linguistes passionnés s'est transformé en le principal service de traduction et d'interprétation du Nigeria, approuvé par les agences gouvernementales, les sociétés multinationales et les professionnels individuels en Afrique et au-delà.",
+      "para3": "Aujourd'hui, nous sommes fiers de servir les clients dans plus de 50 langues, avec une équipe de traducteurs certifiés qui comprennent non seulement les mots, mais aussi les nuances culturelles qui rendent la communication véritablement efficace."
+    },
+    "mission": {
+      "title": "Notre Mission",
+      "subtitle": "Éliminer les barrières, construire des ponts",
+      "description": "Fournir des services de traduction et d'interprétation de classe mondiale qui permettent une communication transparente à travers les cultures, autonomisant les entreprises et les individus nigérians à prospérer sur le marché mondial."
+    },
+    "vision": {
+      "title": "Notre Vision",
+      "subtitle": "Un monde connecté et multilingue",
+      "description": "Être le principal fournisseur de services linguistiques en Afrique, reconnu mondialement pour notre expertise, notre sensibilité culturelle et notre engagement envers l'excellence en traduction et interprétation."
+    },
+    "values": {
+      "title": "Les Valeurs qui Nous Guident",
+      "subtitle": "Nos valeurs fondamentales sont la base de notre excellence en service et la raison pour laquelle des milliers de clients nous font confiance avec leurs communications les plus importantes.",
+      "precision": {
+        "title": "Précision et Exactitude",
+        "desc": "Nous maintenons les plus hauts standards de précision dans chaque projet de traduction, garantissant que votre message est transmis exactement comme prévu."
+      },
+      "cultural": {
+        "title": "Sensibilité Culturelle",
+        "desc": "Comprendre les nuances culturelles est au cœur d'une traduction efficace. Nous respectons et préservons le contexte culturel dans chaque projet."
+      },
+      "speed": {
+        "title": "Vitesse et Efficacité",
+        "desc": "Nous comprenons que les délais sont importants. Nos processus rationalisés garantissent une livraison rapide sans compromettre la qualité."
+      },
+      "trust": {
+        "title": "Confiance et Confidentialité",
+        "desc": "Vos documents sont en sécurité avec nous. Nous maintenons des protocoles de confidentialité stricts et des procédures de manipulation sécurisées."
+      }
+    },
+    "timeline": {
+      "title": "Notre Parcours à Travers les Années",
+      "subtitle": "Les jalons clés qui ont transformé ILI-Nigeria en le partenaire de traduction de confiance d'aujourd'hui",
+      "0": {
+        "title": "Fondation",
+        "desc": "ILI-Nigeria a été fondée avec la vision de combler les fossés de communication entre les entreprises nigérianes et les partenaires internationaux."
+      },
+      "1": {
+        "title": "Certification ISO",
+        "desc": "Obtention de la certification ISO 17100, établissant notre engagement envers les normes de qualité internationales."
+      },
+      "2": {
+        "title": "Expansion Numérique",
+        "desc": "Lancement de notre plateforme numérique, permettant des services de traduction en ligne transparents en Afrique."
+      },
+      "3": {
+        "title": "Leader Régional",
+        "desc": "Devenu le principal fournisseur de services de traduction en Afrique de l'Ouest, servant des clients dans plus de 15 pays."
+      },
+      "4": {
+        "title": "Intégration de l'IA",
+        "desc": "Intégration d'outils CAT avancés et d'assurance qualité assistée par IA tout en maintenant l'expertise humaine."
+      },
+      "5": {
+        "title": "Reconnaissance Mondiale",
+        "desc": "Reconnu comme le premier service de traduction du Nigeria avec des partenariats internationaux et des certifications."
+      }
+    },
+    "team": {
+      "title": "Rencontrez Notre Équipe Dirigeante",
+      "subtitle": "Les professionnels expérimentés qui guident notre vision et garantissent les normes de service les plus élevées dans toutes nos opérations.",
+      "0": {
+        "role": "Fondateur et Directeur Général",
+        "desc": "15+ ans en linguistique et commerce international. Doctorat en linguistique appliquée de l'Université de Niamey, Niger.",
+        "spec": "Leadership Stratégique et Linguistique"
+      },
+      "1": {
+        "role": "Directrice des Opérations",
+        "desc": "Expert en gestion de projets de traduction avec une vaste expérience en systèmes d'assurance qualité.",
+        "spec": "Opérations et Gestion de la Qualité"
+      },
+      "2": {
+        "role": "Directeur Technologique",
+        "desc": "Menant notre transformation numérique avec la technologie de traduction de pointe et l'intégration de l'IA.",
+        "spec": "Technologie et Innovation"
+      },
+      "3": {
+        "role": "Chef de Linguistique",
+        "desc": "Supervise la qualité linguistique et l'adaptation culturelle dans toutes les langues africaines et moyen-orientales.",
+        "spec": "Linguistique et Adaptation Culturelle"
+      }
+    },
+    "cta": {
+      "title": "Prêt à Travailler avec les Experts en Traduction du Nigeria ?",
+      "description": "Rejoignez des milliers de clients satisfaits qui font confiance à ILI-Nigeria pour des services de traduction précis et culturellement sensibles. Laissez-nous vous aider à communiquer efficacement à travers les langues et les cultures.",
+      "getQuote": "Obtenir un Devis Gratuit",
+      "contact": "Contacter Notre Équipe"
     }
   }
 }
