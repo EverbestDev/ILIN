@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next"; // <-- ADDED
 import {
   Scale,
   Heart,
@@ -10,7 +11,6 @@ import {
   Building,
   Plane,
   ShoppingCart,
-  Factory,
   Users,
   ArrowRight,
   CheckCircle,
@@ -20,177 +20,108 @@ import {
 } from "lucide-react";
 
 export default function IndustryExpertise() {
+  const { t } = useTranslation(); // <-- ADDED
   const navigate = useNavigate();
   const [activeIndustry, setActiveIndustry] = useState(0);
 
-  const industries = [
-    {
-      icon: <Scale className="w-8 h-8 text-blue-600" />,
-      title: "Legal & Immigration",
-      subtitle: "Certified • Accurate • Court-Accepted",
-      description:
-        "Specialized legal translation services for immigration, litigation, contracts, and official documentation with certified accuracy.",
-      services: [
-        "Immigration documents",
-        "Court proceedings",
-        "Legal contracts",
-        "Affidavits & certificates",
-        "Patent applications",
-        "Compliance documents",
-      ],
-      stats: { projects: "2,500+", accuracy: "99.8%", certified: true },
+  // NOTE: The data structure is now TRANSLATED/MAPPED from the i18n JSON
+  // We use a mapping function to build the final industries array from the translation file.
+  const industryKeys = [
+    "legal",
+    "medical",
+    "business",
+    "educational",
+    "religious",
+    "government",
+    "tourism",
+    "ecommerce",
+  ];
+
+  const iconMap = {
+    legal: <Scale className="w-8 h-8 text-blue-600" />,
+    medical: <Heart className="w-8 h-8 text-red-600" />,
+    business: <TrendingUp className="w-8 h-8 text-green-600" />,
+    educational: <GraduationCap className="w-8 h-8 text-purple-600" />,
+    religious: <Church className="w-8 h-8 text-amber-600" />,
+    government: <Building className="w-8 h-8 text-indigo-600" />,
+    tourism: <Plane className="w-8 h-8 text-sky-600" />,
+    ecommerce: <ShoppingCart className="w-8 h-8 text-emerald-600" />,
+  };
+
+  const colorMap = {
+    legal: {
       bgColor: "bg-blue-50",
       borderColor: "border-blue-200",
       iconBg: "bg-blue-100",
-      popular: true,
+      color: "text-blue-600",
     },
-    {
-      icon: <Heart className="w-8 h-8 text-red-600" />,
-      title: "Medical & Healthcare",
-      subtitle: "Precise • Confidential • Life-Critical",
-      description:
-        "Medical translation services ensuring patient safety through accurate translation of medical records, pharmaceutical documents, and clinical trials.",
-      services: [
-        "Medical records",
-        "Pharmaceutical documents",
-        "Clinical trial materials",
-        "Patient consent forms",
-        "Medical device manuals",
-        "Research publications",
-      ],
-      stats: { projects: "1,800+", accuracy: "99.9%", certified: true },
+    medical: {
       bgColor: "bg-red-50",
       borderColor: "border-red-200",
       iconBg: "bg-red-100",
-      popular: true,
+      color: "text-red-600",
     },
-    {
-      icon: <TrendingUp className="w-8 h-8 text-green-600" />,
-      title: "Business & Finance",
-      subtitle: "Strategic • Compliant • Growth-Focused",
-      description:
-        "Financial and business translation services supporting international expansion, investment, and cross-border commerce.",
-      services: [
-        "Financial reports",
-        "Business plans",
-        "Investment documents",
-        "Banking materials",
-        "Insurance policies",
-        "Audit reports",
-      ],
-      stats: { projects: "3,200+", accuracy: "99.7%", certified: true },
+    business: {
       bgColor: "bg-green-50",
       borderColor: "border-green-200",
       iconBg: "bg-green-100",
-      popular: true,
+      color: "text-green-600",
     },
-    {
-      icon: <GraduationCap className="w-8 h-8 text-purple-600" />,
-      title: "Educational Institutions",
-      subtitle: "Academic • Recognized • Student-Focused",
-      description:
-        "Educational translation services supporting international students, academic research, and institutional partnerships.",
-      services: [
-        "Academic transcripts",
-        "Diploma certificates",
-        "Research papers",
-        "Course materials",
-        "Student applications",
-        "Institutional agreements",
-      ],
-      stats: { projects: "4,100+", accuracy: "99.6%", certified: true },
+    educational: {
       bgColor: "bg-purple-50",
       borderColor: "border-purple-200",
       iconBg: "bg-purple-100",
-      popular: false,
+      color: "text-purple-600",
     },
-    {
-      icon: <Church className="w-8 h-8 text-amber-600" />,
-      title: "Religious Organizations",
-      subtitle: "Respectful • Cultural • Faithful",
-      description:
-        "Faith-based translation services with deep cultural understanding and respect for religious texts and materials.",
-      services: [
-        "Religious texts",
-        "Sermon materials",
-        "Faith-based content",
-        "Community outreach",
-        "Missionary documents",
-        "Spiritual guidance",
-      ],
-      stats: { projects: "850+", accuracy: "99.5%", certified: false },
+    religious: {
       bgColor: "bg-amber-50",
       borderColor: "border-amber-200",
       iconBg: "bg-amber-100",
-      popular: false,
+      color: "text-amber-600",
     },
-    {
-      icon: <Building className="w-8 h-8 text-indigo-600" />,
-      title: "Government Agencies",
-      subtitle: "Official • Secure • Compliant",
-      description:
-        "Government translation services ensuring compliance with official standards and security requirements for public sector communications.",
-      services: [
-        "Official documents",
-        "Policy materials",
-        "Public communications",
-        "Regulatory documents",
-        "International agreements",
-        "Diplomatic correspondence",
-      ],
-      stats: { projects: "1,200+", accuracy: "99.9%", certified: true },
+    government: {
       bgColor: "bg-indigo-50",
       borderColor: "border-indigo-200",
       iconBg: "bg-indigo-100",
-      popular: false,
+      color: "text-indigo-600",
     },
-    {
-      icon: <Plane className="w-8 h-8 text-sky-600" />,
-      title: "Tourism & Hospitality",
-      subtitle: "Welcoming • Cultural • Experience-Driven",
-      description:
-        "Tourism and hospitality translations that capture cultural nuances and create welcoming experiences for international visitors.",
-      services: [
-        "Marketing materials",
-        "Website content",
-        "Menu translations",
-        "Tour guides",
-        "Hotel communications",
-        "Travel documentation",
-      ],
-      stats: { projects: "950+", accuracy: "99.4%", certified: false },
+    tourism: {
       bgColor: "bg-sky-50",
       borderColor: "border-sky-200",
       iconBg: "bg-sky-100",
-      popular: false,
+      color: "text-sky-600",
     },
-    {
-      icon: <ShoppingCart className="w-8 h-8 text-emerald-600" />,
-      title: "E-commerce & Retail",
-      subtitle: "Converting • Localized • Sales-Driven",
-      description:
-        "E-commerce translation services that drive sales through culturally-adapted product descriptions and marketing content.",
-      services: [
-        "Product descriptions",
-        "Marketing campaigns",
-        "Customer support",
-        "Payment systems",
-        "User interfaces",
-        "Brand messaging",
-      ],
-      stats: { projects: "2,800+", accuracy: "99.3%", certified: false },
+    ecommerce: {
       bgColor: "bg-emerald-50",
       borderColor: "border-emerald-200",
       iconBg: "bg-emerald-100",
-      popular: true,
+      color: "text-emerald-600",
     },
-  ];
+  };
+
+  const industries = industryKeys.map((key) => ({
+    key: key,
+    icon: iconMap[key],
+    title: t(`industries.${key}.title`),
+    subtitle: t(`industries.${key}.subtitle`),
+    description: t(`industries.${key}.description`),
+    services: t(`industries.${key}.services`, { returnObjects: true }),
+    stats: {
+      projects: t(`industries.${key}.stats.projects`),
+      accuracy: t(`industries.${key}.stats.accuracy`),
+      certified: t(`industries.${key}.stats.certified`) === "true", // Convert string to boolean
+    },
+    ...colorMap[key],
+    popular: t(`industries.${key}.popular`) === "true", // Convert string to boolean
+  }));
 
   const popularIndustries = industries.filter((industry) => industry.popular);
 
   const handleGetQuote = () => {
     navigate("/quote");
   };
+
+  const activeIndustryData = industries[activeIndustry];
 
   return (
     <section className="px-6 py-20 bg-gray-50 md:px-20">
@@ -203,16 +134,16 @@ export default function IndustryExpertise() {
         className="max-w-4xl mx-auto mb-16 text-center"
       >
         <span className="inline-block px-6 py-2 mb-4 text-sm font-semibold text-green-600 bg-green-100 rounded-full">
-          Industry Expertise
+          {t("industries.header.badge")} {/* <-- TRANSLATE */}
         </span>
         <h2 className="mb-6 text-3xl font-bold text-gray-900 md:text-4xl">
-          Specialized Knowledge Across
-          <span className="block text-green-600">Every Industry</span>
+          {t("industries.header.title.part1")}
+          <span className="block text-green-600">
+            {t("industries.header.title.part2")}
+          </span>
         </h2>
         <p className="text-lg leading-relaxed text-gray-600">
-          Our certified translators don't just speak languages - they understand
-          industries. From technical jargon to cultural nuances, we deliver
-          translations that work in your specific field.
+          {t("industries.header.description")}
         </p>
       </motion.div>
 
@@ -225,7 +156,7 @@ export default function IndustryExpertise() {
         className="mb-20"
       >
         <h3 className="mb-12 text-2xl font-bold text-center text-gray-900">
-          Most Requested Industries
+          {t("industries.popular.title")} {/* <-- TRANSLATE */}
         </h3>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {popularIndustries.map((industry, index) => (
@@ -239,9 +170,11 @@ export default function IndustryExpertise() {
               onClick={() => setActiveIndustry(industries.indexOf(industry))}
             >
               {/* Popular Badge */}
-              <div className="absolute top-4 right-4">
+              <div className="absolute top-4 end-4">
+                {" "}
+                {/* <-- RTL: right-4 -> end-4 */}
                 <span className="px-2 py-1 text-xs font-bold text-white bg-green-500 rounded-full">
-                  Popular
+                  {t("industries.popular.badge")} {/* <-- TRANSLATE */}
                 </span>
               </div>
 
@@ -266,21 +199,27 @@ export default function IndustryExpertise() {
                   <p className="font-semibold text-gray-900">
                     {industry.stats.projects}
                   </p>
-                  <p>Projects</p>
+                  <p>{t("industries.stats.projectsLabel")}</p>{" "}
+                  {/* <-- TRANSLATE */}
                 </div>
-                <div className="text-right">
+                <div className="text-end">
+                  {" "}
+                  {/* <-- RTL: text-right -> text-end */}
                   <p className="font-semibold text-gray-900">
                     {industry.stats.accuracy}
                   </p>
-                  <p>Accuracy</p>
+                  <p>{t("industries.stats.accuracyLabel")}</p>{" "}
+                  {/* <-- TRANSLATE */}
                 </div>
               </div>
 
               {/* Certified Badge */}
               {industry.stats.certified && (
                 <div className="flex items-center mt-3 text-xs text-green-600">
-                  <Award className="w-3 h-3 mr-1" />
-                  Certified Available
+                  <Award className="w-3 h-3 me-1" />{" "}
+                  {/* <-- RTL: mr-1 -> me-1 */}
+                  {t("industries.stats.certifiedAvailable")}{" "}
+                  {/* <-- TRANSLATE */}
                 </div>
               )}
             </motion.div>
@@ -297,7 +236,7 @@ export default function IndustryExpertise() {
         className="mb-16"
       >
         <h3 className="mb-12 text-2xl font-bold text-center text-gray-900">
-          Complete Industry Coverage
+          {t("industries.details.title")} {/* <-- TRANSLATE */}
         </h3>
 
         {/* Industry Navigation Tabs */}
@@ -320,29 +259,29 @@ export default function IndustryExpertise() {
         {/* Active Industry Details */}
         <motion.div
           key={activeIndustry}
-          initial={{ opacity: 0, x: 20 }}
+          initial={{ opacity: 0, x: t("direction") === "rtl" ? -20 : 20 }} // RTL adjustment for animation
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
           className="max-w-4xl mx-auto"
         >
           <div
-            className={`p-8 bg-white border-2 rounded-2xl shadow-lg ${industries[activeIndustry].borderColor} md:p-12`}
+            className={`p-8 bg-white border-2 rounded-2xl shadow-lg ${activeIndustryData.borderColor} md:p-12`}
           >
             <div className="flex flex-col items-start gap-8 md:flex-row">
               {/* Left Side - Icon and Title */}
               <div className="flex-shrink-0">
                 <div
-                  className={`w-20 h-20 mb-4 rounded-2xl ${industries[activeIndustry].iconBg} flex items-center justify-center`}
+                  className={`w-20 h-20 mb-4 rounded-2xl ${activeIndustryData.iconBg} flex items-center justify-center`}
                 >
-                  {industries[activeIndustry].icon}
+                  {activeIndustryData.icon}
                 </div>
                 <div className="flex items-center gap-4">
                   <div>
                     <h4 className="text-2xl font-bold text-gray-900">
-                      {industries[activeIndustry].title}
+                      {activeIndustryData.title}
                     </h4>
                     <p className="font-medium text-green-600">
-                      {industries[activeIndustry].subtitle}
+                      {activeIndustryData.subtitle}
                     </p>
                   </div>
                 </div>
@@ -351,17 +290,21 @@ export default function IndustryExpertise() {
               {/* Right Side - Content */}
               <div className="flex-1">
                 <p className="mb-6 leading-relaxed text-gray-600">
-                  {industries[activeIndustry].description}
+                  {activeIndustryData.description}
                 </p>
 
                 {/* Services Grid */}
+                <h5 className="mb-3 text-lg font-semibold text-gray-800">
+                  {t("industries.details.servicesHeader")} {/* <-- TRANSLATE */}
+                </h5>
                 <div className="grid grid-cols-1 gap-3 mb-6 md:grid-cols-2">
-                  {industries[activeIndustry].services.map((service, idx) => (
+                  {activeIndustryData.services.map((service, idx) => (
                     <div
                       key={idx}
                       className="flex items-center text-sm text-gray-700"
                     >
-                      <CheckCircle className="flex-shrink-0 w-4 h-4 mr-2 text-green-500" />
+                      <CheckCircle className="flex-shrink-0 w-4 h-4 me-2 text-green-500" />{" "}
+                      {/* <-- RTL: mr-2 -> me-2 */}
                       {service}
                     </div>
                   ))}
@@ -370,34 +313,40 @@ export default function IndustryExpertise() {
                 {/* Stats and Features */}
                 <div className="flex flex-wrap gap-6 p-4 rounded-lg bg-gray-50">
                   <div className="flex items-center">
-                    <Users className="w-5 h-5 mr-2 text-green-600" />
+                    <Users className="w-5 h-5 me-2 text-green-600" />{" "}
+                    {/* <-- RTL: mr-2 -> me-2 */}
                     <span className="text-sm">
-                      <strong>
-                        {industries[activeIndustry].stats.projects}
-                      </strong>{" "}
-                      projects completed
+                      <strong>{activeIndustryData.stats.projects}</strong>{" "}
+                      {t("industries.details.projectsStat")}{" "}
+                      {/* <-- TRANSLATE */}
                     </span>
                   </div>
                   <div className="flex items-center">
-                    <Shield className="w-5 h-5 mr-2 text-green-600" />
+                    <Shield className="w-5 h-5 me-2 text-green-600" />{" "}
+                    {/* <-- RTL: mr-2 -> me-2 */}
                     <span className="text-sm">
-                      <strong>
-                        {industries[activeIndustry].stats.accuracy}
-                      </strong>{" "}
-                      accuracy rate
+                      <strong>{activeIndustryData.stats.accuracy}</strong>{" "}
+                      {t("industries.details.accuracyStat")}{" "}
+                      {/* <-- TRANSLATE */}
                     </span>
                   </div>
-                  {industries[activeIndustry].stats.certified && (
+                  {activeIndustryData.stats.certified && (
                     <div className="flex items-center">
-                      <Award className="w-5 h-5 mr-2 text-green-600" />
+                      <Award className="w-5 h-5 me-2 text-green-600" />{" "}
+                      {/* <-- RTL: mr-2 -> me-2 */}
                       <span className="text-sm">
-                        Certified translations available
+                        {t("industries.details.certifiedStat")}{" "}
+                        {/* <-- TRANSLATE */}
                       </span>
                     </div>
                   )}
                   <div className="flex items-center">
-                    <Clock className="w-5 h-5 mr-2 text-green-600" />
-                    <span className="text-sm">24-72 hour turnaround</span>
+                    <Clock className="w-5 h-5 me-2 text-green-600" />{" "}
+                    {/* <-- RTL: mr-2 -> me-2 */}
+                    <span className="text-sm">
+                      {t("industries.details.turnaroundStat")}{" "}
+                      {/* <-- TRANSLATE */}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -417,12 +366,10 @@ export default function IndustryExpertise() {
         <div className="p-8 shadow-xl bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl md:p-12">
           <Building className="w-16 h-16 mx-auto mb-6 text-white" />
           <h3 className="mb-4 text-2xl font-bold text-white md:text-3xl">
-            Need Industry-Specific Expertise?
+            {t("industries.cta.title")} {/* <-- TRANSLATE */}
           </h3>
           <p className="mb-8 text-lg leading-relaxed text-green-100">
-            Our specialized translators understand your industry's unique
-            requirements, terminology, and regulatory standards. Get expert
-            translation that speaks your business language.
+            {t("industries.cta.description")} {/* <-- TRANSLATE */}
           </p>
           <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
             <motion.button
@@ -431,8 +378,9 @@ export default function IndustryExpertise() {
               onClick={handleGetQuote}
               className="inline-flex items-center px-8 py-4 font-medium text-green-600 transition-all duration-300 bg-white rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-white"
             >
-              Get Industry Quote
-              <ArrowRight className="w-5 h-5 ml-2" />
+              {t("industries.cta.quoteButton")} {/* <-- TRANSLATE */}
+              <ArrowRight className="w-5 h-5 ms-2" />{" "}
+              {/* <-- RTL: ml-2 -> ms-2 */}
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -440,7 +388,7 @@ export default function IndustryExpertise() {
               onClick={() => navigate("/services")}
               className="inline-flex items-center px-8 py-4 font-medium text-white transition-all duration-300 border-2 border-white rounded-lg hover:bg-white hover:text-green-600 focus:outline-none focus:ring-2 focus:ring-white"
             >
-              View All Services
+              {t("industries.cta.servicesButton")} {/* <-- TRANSLATE */}
             </motion.button>
           </div>
         </div>

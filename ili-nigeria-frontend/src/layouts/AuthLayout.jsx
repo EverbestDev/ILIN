@@ -1,13 +1,15 @@
+import { useRTL } from "../hooks/useRTL";
 import React from "react";
-import { ArrowLeft, Heart } from "lucide-react"; // Import ArrowLeft for the back button
+import { ArrowLeft, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const AuthLayout = ({ children }) => {
+  const dir = useRTL();
   const currentYear = new Date().getFullYear();
 
   return (
     // Set min-h-screen to ensure layout covers full viewport height
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div dir={dir} className="flex flex-col min-h-screen bg-gray-50">
       {/* HEADER (NAV) - Contains the "Go Back" button */}
       <header className="px-6 py-4 bg-white border-b border-gray-100 shadow-sm">
         <div className="flex items-center justify-between">

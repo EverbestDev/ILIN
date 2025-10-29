@@ -1,0 +1,1072 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "languages": "Languages",
+    "contact": "Contact",
+    "login": "Login",
+    "getQuote": "Get Quote"
+  },
+  "language": {
+    "en": "English",
+    "fr": "Français",
+    "ar": "العربية",
+    "yo": "Yorùbá"
+  },
+  "hero": {
+    "title1": "Breaking",
+    "title2": "Language Barriers",
+    "title3": "Building",
+    "title4": "Global Connections",
+    "description1": "We provide professional translation and interpretation services in over",
+    "languages": "200+ languages",
+    "description2": "From documents, websites, and apps to voiceovers and real-time interpretation, our certified experts ensure your message reaches the world with clarity and cultural accuracy.",
+    "getQuote": "Get a Quote",
+    "learnMore": "Learn More",
+    "imageAlt1": "Translation Illustration 1",
+    "imageAlt2": "Translation Illustration 2",
+    "imageAlt3": "Translation Illustration 3",
+    "goToSlide": "Go to slide {{number}}"
+  },
+
+  "about": {
+    "heading": {
+      "badge": "About Us",
+      "description": "We are a professional translation and interpretation company helping businesses, organizations, and individuals communicate seamlessly across cultures. With certified translators and cultural experts, we ensure your message is delivered with clarity and precision."
+    },
+    "image": {
+      "alt": "About our translation company"
+    },
+    "features": {
+      "learnMore": "Learn More",
+      "languages": {
+        "title": "50+ Languages",
+        "desc": "Communicate seamlessly in more than 50 languages worldwide."
+      },
+      "experts": {
+        "title": "Certified Experts",
+        "desc": "Work with accredited translators and interpreters for guaranteed quality."
+      },
+      "delivery": {
+        "title": "Fast & Reliable Delivery",
+        "desc": "Timely translations without compromising on accuracy."
+      },
+      "accuracy": {
+        "title": "Cultural Accuracy",
+        "desc": "Preserving cultural meaning and nuance in every translation."
+      }
+    },
+    "offer": {
+      "title": "What We Offer",
+      "description": "Our services are designed to help you break barriers and communicate confidently, no matter where you are in the world."
+    },
+    "highlights": {
+      "learnMore": "Learn More",
+      "global": {
+        "title": "Global Translation Services",
+        "desc": "We support over 50+ world languages with precise, human-level translation. Our certified translators ensure your message maintains its meaning and cultural nuance across all languages.",
+        "cta": "Get a Quote"
+      },
+      "interpreting": {
+        "title": "Live Interpreting",
+        "desc": "Real-time interpretation for events, meetings, and international conferences.",
+        "cta": "View Details"
+      },
+      "faith": {
+        "title": "Faith-Based Translation",
+        "desc": "Specialized expertise in religious and cultural translation with respect and accuracy.",
+        "cta": "View Details"
+      },
+      "support": {
+        "title": "Support & Consultation",
+        "desc": "Guidance and support for businesses entering global markets.",
+        "cta": "View Details"
+      }
+    }
+  },
+  
+  
+    "languages": {
+      "globalReach": "Global Reach",
+      "header": "Languages Supported",
+      "description": "From major international languages to local Nigerian dialects, we connect you with speakers across the globe. Our certified translators specialize in cultural nuances and regional variations.",
+      "stats": {
+        "languages": "Languages Supported",
+        "speakers": "Native Speakers Reached",
+        "countries": "Countries Covered"
+      },
+      "popular": {
+        "title": "Most Requested Languages"
+      },
+      "explore": {
+        "title": "Explore All Languages"
+      },
+      "search": {
+        "placeholder": "Search languages..."
+      },
+      "regions": {
+        "all": "All",
+        "african": "African",
+        "european": "European",
+        "asian": "Asian",
+        "middle_eastern": "Middle Eastern",
+        "americas": "Americas"
+      },
+      "localExpertise": "Local Expertise",
+      "seeAll": "See All Languages",
+      "noResults": "No languages found matching your criteria.",
+      "cta": {
+        "title": "Don't See Your Language?",
+        "description": "We're constantly expanding our language capabilities. If you need a language not listed here, contact us - we likely have qualified translators available.",
+        "request": "Request Language",
+        "viewAll": "View All Languages"
+      }
+    },
+  
+  
+
+  "direction": "ltr",
+  "industries": {
+    "header": {
+      "badge": "Industry Expertise",
+      "title": {
+        "part1": "Specialized Knowledge Across",
+        "part2": "Every Industry"
+      },
+      "description": "Our certified translators don't just speak languages - they understand industries. From technical jargon to cultural nuances, we deliver translations that work in your specific field."
+    },
+    "popular": {
+      "title": "Most Requested Industries",
+      "badge": "Popular"
+    },
+    "stats": {
+      "projectsLabel": "Projects",
+      "accuracyLabel": "Accuracy",
+      "certifiedAvailable": "Certified Available"
+    },
+    "details": {
+      "title": "Complete Industry Coverage",
+      "servicesHeader": "Key Services Offered:",
+      "projectsStat": "projects completed",
+      "accuracyStat": "accuracy rate",
+      "certifiedStat": "Certified translations available",
+      "turnaroundStat": "24-72 hour turnaround"
+    },
+    "cta": {
+      "title": "Need Industry-Specific Expertise?",
+      "description": "Our specialized translators understand your industry's unique requirements, terminology, and regulatory standards. Get expert translation that speaks your business language.",
+      "quoteButton": "Get Industry Quote",
+      "servicesButton": "View All Services"
+    },
+    "legal": {
+      "title": "Legal & Immigration",
+      "subtitle": "Certified • Accurate • Court-Accepted",
+      "description": "Specialized legal translation services for immigration, litigation, contracts, and official documentation with certified accuracy.",
+      "services": [
+        "Immigration documents",
+        "Court proceedings",
+        "Legal contracts",
+        "Affidavits & certificates",
+        "Patent applications",
+        "Compliance documents"
+      ],
+      "stats": {
+        "projects": "2,500+",
+        "accuracy": "99.8%",
+        "certified": "true"
+      },
+      "popular": "true"
+    },
+    "medical": {
+      "title": "Medical & Healthcare",
+      "subtitle": "Precise • Confidential • Life-Critical",
+      "description": "Medical translation services ensuring patient safety through accurate translation of medical records, pharmaceutical documents, and clinical trials.",
+      "services": [
+        "Medical records",
+        "Pharmaceutical documents",
+        "Clinical trial materials",
+        "Patient consent forms",
+        "Medical device manuals",
+        "Research publications"
+      ],
+      "stats": {
+        "projects": "1,800+",
+        "accuracy": "99.9%",
+        "certified": "true"
+      },
+      "popular": "true"
+    },
+    "business": {
+      "title": "Business & Finance",
+      "subtitle": "Strategic • Compliant • Growth-Focused",
+      "description": "Financial and business translation services supporting international expansion, investment, and cross-border commerce.",
+      "services": [
+        "Financial reports",
+        "Business plans",
+        "Investment documents",
+        "Banking materials",
+        "Insurance policies",
+        "Audit reports"
+      ],
+      "stats": {
+        "projects": "3,200+",
+        "accuracy": "99.7%",
+        "certified": "true"
+      },
+      "popular": "true"
+    },
+    "educational": {
+      "title": "Educational Institutions",
+      "subtitle": "Academic • Recognized • Student-Focused",
+      "description": "Educational translation services supporting international students, academic research, and institutional partnerships.",
+      "services": [
+        "Academic transcripts",
+        "Diploma certificates",
+        "Research papers",
+        "Course materials",
+        "Student applications",
+        "Institutional agreements"
+      ],
+      "stats": {
+        "projects": "4,100+",
+        "accuracy": "99.6%",
+        "certified": "true"
+      },
+      "popular": "false"
+    },
+    "religious": {
+      "title": "Religious Organizations",
+      "subtitle": "Respectful • Cultural • Faithful",
+      "description": "Faith-based translation services with deep cultural understanding and respect for religious texts and materials.",
+      "services": [
+        "Religious texts",
+        "Sermon materials",
+        "Faith-based content",
+        "Community outreach",
+        "Missionary documents",
+        "Spiritual guidance"
+      ],
+      "stats": {
+        "projects": "850+",
+        "accuracy": "99.5%",
+        "certified": "false"
+      },
+      "popular": "false"
+    },
+    "government": {
+      "title": "Government Agencies",
+      "subtitle": "Official • Secure • Compliant",
+      "description": "Government translation services ensuring compliance with official standards and security requirements for public sector communications.",
+      "services": [
+        "Official documents",
+        "Policy materials",
+        "Public communications",
+        "Regulatory documents",
+        "International agreements",
+        "Diplomatic correspondence"
+      ],
+      "stats": {
+        "projects": "1,200+",
+        "accuracy": "99.9%",
+        "certified": "true"
+      },
+      "popular": "false"
+    },
+    "tourism": {
+      "title": "Tourism & Hospitality",
+      "subtitle": "Welcoming • Cultural • Experience-Driven",
+      "description": "Tourism and hospitality translations that capture cultural nuances and create welcoming experiences for international visitors.",
+      "services": [
+        "Marketing materials",
+        "Website content",
+        "Menu translations",
+        "Tour guides",
+        "Hotel communications",
+        "Travel documentation"
+      ],
+      "stats": {
+        "projects": "950+",
+        "accuracy": "99.4%",
+        "certified": "false"
+      },
+      "popular": "false"
+    },
+    "ecommerce": {
+      "title": "E-commerce & Retail",
+      "subtitle": "Converting • Localized • Sales-Driven",
+      "description": "E-commerce translation services that drive sales through culturally-adapted product descriptions and marketing content.",
+      "services": [
+        "Product descriptions",
+        "Marketing campaigns",
+        "Customer support",
+        "Payment systems",
+        "User interfaces",
+        "Brand messaging"
+      ],
+      "stats": {
+        "projects": "2,800+",
+        "accuracy": "99.3%",
+        "certified": "false"
+      },
+      "popular": "true"
+    }
+  },
+  "whyChooseUs": {
+    "header": {
+      "badge": "Why Choose Us",
+      "title": {
+        "part1": "Nigeria's Most Trusted",
+        "part2": "Translation Partner"
+      },
+      "description": "Join thousands of satisfied clients who trust ILI-Nigeria for their most important translation needs. Here's why we're the preferred choice across Nigeria and beyond."
+    },
+    "stats": {
+      "clients": "Happy Clients",
+      "projects": "Projects Completed",
+      "satisfaction": "Satisfaction Rate",
+      "languages": "Languages Supported"
+    },
+    "cta": {
+      "title": "Ready to Experience the Difference?",
+      "description": "Join over 5,000+ satisfied clients who trust ILI-Nigeria for their translation needs. Get your free quote today and see why we're Nigeria's #1 translation service.",
+      "quoteButton": "Get Free Quote",
+      "contactButton": "Contact Us Today"
+    }
+  },
+  "advantages": {
+    "title": "What Sets Us Apart",
+    "certified": {
+      "title": "Certified Translators",
+      "description": "All our translators are certified professionals with industry-specific expertise and proven track records.",
+      "features": [
+        "ISO 17100 Certified",
+        "University Qualified",
+        "Industry Specialists",
+        "Continuous Training"
+      ]
+    },
+    "delivery": {
+      "title": "Lightning-Fast Delivery",
+      "description": "We understand deadlines matter. Our streamlined process ensures rapid turnaround without compromising quality.",
+      "features": [
+        "24-hour Rush Service",
+        "Real-time Updates",
+        "Weekend Availability",
+        "Express Processing"
+      ]
+    },
+    "quality": {
+      "title": "Quality Guaranteed",
+      "description": "Every translation undergoes rigorous quality checks with our multi-step review process and accuracy guarantee.",
+      "features": [
+        "3-Step Review Process",
+        "99.8% Accuracy Rate",
+        "Money-back Guarantee",
+        "Quality Certificates"
+      ]
+    },
+    "cultural": {
+      "title": "Cultural Sensitivity",
+      "description": "We don't just translate words - we bridge cultures with deep understanding of local customs and nuances.",
+      "features": [
+        "Local Cultural Experts",
+        "Nigerian Market Focus",
+        "Regional Variations",
+        "Cultural Adaptation"
+      ]
+    },
+    "industry": {
+      "title": "Industry Expertise",
+      "description": "Specialized knowledge across 8+ industries ensures your content is translated with the right terminology.",
+      "features": [
+        "8+ Industries Covered",
+        "Technical Specialists",
+        "Legal Certified",
+        "Medical Expertise"
+      ]
+    },
+    "support": {
+      "title": "24/7 Support",
+      "description": "Round-the-clock customer support ensures you always have assistance when you need it most.",
+      "features": [
+        "24/7 Live Chat",
+        "Dedicated Managers",
+        "Phone Support",
+        "WhatsApp Available"
+      ]
+    }
+  },
+  "testimonialsHeader": "What Our Clients Say",
+  "testimonialProjectLabel": "Project",
+  "testimonials": [
+    {
+      "name": "Adebayo Okonkwo",
+      "role": "Immigration Lawyer",
+      "company": "Lagos Legal Associates",
+      "location": "Lagos, Nigeria",
+      "rating": 5,
+      "text": "ILI-Nigeria transformed my practice. Their certified translations are accepted by embassies worldwide, and the turnaround time is incredible. I've processed over 200 immigration cases with their help.",
+      "project": "Legal Document Translation",
+      "image": "👨🏿‍💼"
+    },
+    {
+      "name": "Dr. Fatima Al-Hassan",
+      "role": "Medical Director",
+      "company": "Abuja Medical Center",
+      "location": "Abuja, Nigeria",
+      "rating": 5,
+      "text": "When dealing with international patients, accuracy is literally life or death. ILI-Nigeria's medical translations are flawless, and their cultural sensitivity makes our patients feel understood.",
+      "project": "Medical Records Translation",
+      "image": "👩🏿‍⚕️"
+    },
+    {
+      "name": "James Chen",
+      "role": "Business Development",
+      "company": "TechNova Solutions",
+      "location": "Singapore",
+      "rating": 5,
+      "text": "Expanding into the African market seemed daunting until we found ILI-Nigeria. They didn't just translate our website - they localized it perfectly for Nigerian customers. Sales increased 340%!",
+      "project": "Website Localization",
+      "image": "👨‍💻"
+    },
+    {
+      "name": "Sarah Muhammad",
+      "role": "PhD Student",
+      "company": "University of Cambridge",
+      "location": "Cambridge, UK",
+      "rating": 5,
+      "text": "My academic transcripts needed perfect translation for my Cambridge application. ILI-Nigeria delivered certified translations that were accepted immediately. They made my dream possible!",
+      "project": "Academic Transcript Translation",
+      "image": "👩🏿‍🎓"
+    },
+    {
+      "name": "Pastor David Okafor",
+      "role": "Senior Pastor",
+      "company": "Grace Baptist Church",
+      "location": "Enugu, Nigeria",
+      "rating": 5,
+      "text": "Translating religious materials requires deep cultural understanding. ILI-Nigeria's team respected our faith while delivering translations that truly connected with our multilingual congregation.",
+      "project": "Religious Content Translation",
+      "image": "👨🏿‍🏫"
+    }
+  ],
+  "process": {
+    "header": {
+      "badge": "How It Works",
+      "title": "Simple 4-Step Process",
+      "description": "From upload to delivery - professional translation made easy"
+    },
+    "number": "0{{number}}",
+    "steps": {
+      "upload": {
+        "title": "Upload & Quote",
+        "description": "Send your document and get instant quote",
+        "details": "Free quote in 30 minutes"
+      },
+      "assignment": {
+        "title": "Expert Assignment",
+        "description": "Certified translator matched to your project",
+        "details": "Industry specialist selected"
+      },
+      "translation": {
+        "title": "Translation & Review",
+        "description": "Professional translation with quality checks",
+        "details": "3-step review process"
+      },
+      "delivery": {
+        "title": "Delivery & Support",
+        "description": "Final document with ongoing support",
+        "details": "24/7 customer service"
+      }
+    },
+    "features": {
+      "deliveryTime": "24-48 hour delivery",
+      "confidentiality": "100% confidential",
+      "quality": "Certified quality"
+    },
+    "cta": {
+      "title": "Ready to Get Started?",
+      "description": "Upload your document now and get a free quote in minutes",
+      "button": "Start Your Project"
+    }
+  },
+  "pricing": {
+    "header": {
+      "badge": "Transparent Pricing",
+      "title": "Simple, Fair Pricing",
+      "description": "Choose the package that fits your needs. All prices in Nigerian Naira."
+    },
+    "toggle": {
+      "perWord": "Per Word",
+      "perPage": "Per Page"
+    },
+    "popularBadge": "Most Popular",
+    "units": {
+      "word": "word",
+      "page": "page"
+    },
+    "chooseButton": "Choose {{packageName}}",
+    "packages": {
+      "standard": {
+        "name": "Standard",
+        "subtitle": "For everyday translation needs",
+        "pricePerWord": "₦25",
+        "pricePerPage": "₦8,500",
+        "turnaround": "48-72 hours",
+        "features": [
+          "Professional translation",
+          "Basic quality check",
+          "Email support",
+          "Standard delivery"
+        ]
+      },
+      "professional": {
+        "name": "Professional",
+        "subtitle": "Most popular choice",
+        "pricePerWord": "₦35",
+        "pricePerPage": "₦12,000",
+        "turnaround": "24-48 hours",
+        "features": [
+          "Certified translator",
+          "2-step quality review",
+          "Priority support",
+          "Rush delivery available",
+          "Revision included"
+        ]
+      },
+      "premium": {
+        "name": "Premium",
+        "subtitle": "For critical documents",
+        "pricePerWord": "₦50",
+        "pricePerPage": "₦18,000",
+        "turnaround": "12-24 hours",
+        "features": [
+          "Expert specialist",
+          "3-step quality review",
+          "Dedicated manager",
+          "Same-day delivery",
+          "Unlimited revisions",
+          "Certification included"
+        ]
+      }
+    },
+    "calculator": {
+      "title": "Quick Price Estimate",
+      "description": "Get an instant estimate for your project",
+      "button": "Calculate Price"
+    },
+    "trustIndicators": {
+      "guarantee": "Money-back Guarantee",
+      "quality": "Certified Quality",
+      "delivery": "On-time Delivery"
+    }
+  },
+  "stories": {
+    "header": {
+      "badge": "Success Stories",
+      "title": "Real Results, Real Impact",
+      "description": "See how we've helped clients achieve their global ambitions"
+    },
+    "labels": {
+      "challenge": "Challenge",
+      "solution": "Solution",
+      "in": "in"
+    },
+    "technova": {
+      "company": "TechNova Solutions",
+      "industry": "E-commerce",
+      "challenge": "Expanding into African markets",
+      "solution": "Website & marketing localization",
+      "results": {
+        "metric": "340%",
+        "description": "Sales increase",
+        "timeline": "6 months"
+      },
+      "stats": [
+        {
+          "iconKey": "trendingUp",
+          "label": "Revenue Growth",
+          "value": "340%"
+        },
+        {
+          "iconKey": "globeBlue",
+          "label": "Markets Entered",
+          "value": "12"
+        },
+        {
+          "iconKey": "usersPurple",
+          "label": "New Customers",
+          "value": "15K+"
+        }
+      ],
+      "quote": "ILI-Nigeria didn't just translate our content - they helped us understand the market.",
+      "client": "James Chen, Business Director"
+    },
+    "lagosMedical": {
+      "company": "Lagos Medical Center",
+      "industry": "Healthcare",
+      "challenge": "Serving international patients",
+      "solution": "Medical document translation",
+      "results": {
+        "metric": "95%",
+        "description": "Patient satisfaction",
+        "timeline": "1 year"
+      },
+      "stats": [
+        {
+          "iconKey": "usersRed",
+          "label": "Patients Served",
+          "value": "2,500+"
+        },
+        {
+          "iconKey": "globeBlue",
+          "label": "Languages",
+          "value": "15"
+        },
+        {
+          "iconKey": "awardAmber",
+          "label": "Accuracy Rate",
+          "value": "99.9%"
+        }
+      ],
+      "quote": "Accurate medical translation is literally life-saving. ILI-Nigeria delivers perfection.",
+      "client": "Dr. Sarah Adebayo, Chief Medical Officer"
+    },
+    "federalMinistry": {
+      "company": "Federal Ministry",
+      "industry": "Government",
+      "challenge": "International agreements",
+      "solution": "Official document translation",
+      "results": {
+        "metric": "100%",
+        "description": "Embassy acceptance",
+        "timeline": "2 years"
+      },
+      "stats": [
+        {
+          "iconKey": "awardBlue",
+          "label": "Documents",
+          "value": "1,200+"
+        },
+        {
+          "iconKey": "globeGreen",
+          "label": "Countries",
+          "value": "25"
+        },
+        {
+          "iconKey": "clockOrange",
+          "label": "Avg. Delivery",
+          "value": "24hrs"
+        }
+      ],
+      "quote": "Official translations require absolute precision. ILI-Nigeria has never failed us.",
+      "client": "Hon. Minister's Office"
+    },
+    "cta": {
+      "title": "Ready to Create Your Success Story?",
+      "description": "Join these successful companies and achieve your global goals",
+      "button": "Start Your Project"
+    }
+  },
+  "team": {
+    "header": {
+      "badge": "Our Team",
+      "title": "Expert Translators, Proven Results",
+      "description": "Meet the certified professionals who make your global communication possible"
+    },
+    "labels": {
+      "languages": "Languages",
+      "experience": "experience",
+      "certifications": "Certifications",
+      "plus": "+{{count}}"
+    },
+    "stats": [
+      {
+        "iconKey": "users",
+        "label": "Expert Translators",
+        "value": "50+"
+      },
+      {
+        "iconKey": "languages",
+        "label": "Languages Covered",
+        "value": "50+"
+      },
+      {
+        "iconKey": "award",
+        "label": "Certifications",
+        "value": "200+"
+      },
+      {
+        "iconKey": "globe",
+        "label": "Years Experience",
+        "value": "15+"
+      }
+    ],
+    "members": {
+      "aminaBello": {
+        "name": "Dr. Amina Bello",
+        "role": "Chief Translation Officer",
+        "specialization": "Medical & Legal Translation",
+        "languages": ["English", "French", "Arabic", "Hausa"],
+        "experience": "12+ years",
+        "certifications": ["ISO 17100", "Medical Certified", "Court Certified"],
+        "location": "Lagos, Nigeria",
+        "expertise": "Led 5,000+ medical translations with 99.9% accuracy"
+      },
+      "emmanuelOkafor": {
+        "name": "Emmanuel Okafor",
+        "role": "Senior Business Translator",
+        "specialization": "Finance & Technology",
+        "languages": ["English", "Igbo", "German", "Mandarin"],
+        "experience": "8+ years",
+        "certifications": [
+          "Business Certified",
+          "Tech Specialist",
+          "Financial Expert"
+        ],
+        "location": "Abuja, Nigeria",
+        "expertise": "Helped 200+ companies expand internationally"
+      },
+      "fatimaAlRashid": {
+        "name": "Hussaina Yusuf",
+        "role": "Cultural Adaptation Specialist",
+        "specialization": "Religious & Educational Content",
+        "languages": ["Arabic", "English", "French", "Yoruba"],
+        "experience": "10+ years",
+        "certifications": [
+          "Cultural Expert",
+          "Educational Certified",
+          "Religious Scholar"
+        ],
+        "location": "Kano, Nigeria",
+        "expertise": "Cultural adaptation for 1,500+ educational projects"
+      },
+      "sarahAdeyemi": {
+        "name": "Sarah Adeyemi",
+        "role": "Quality Assurance Director",
+        "specialization": "Multi-language Quality Control",
+        "languages": ["English", "Spanish", "Portuguese", "Yoruba"],
+        "experience": "9+ years",
+        "certifications": ["QA Certified", "ISO Auditor", "Linguistics PhD"],
+        "location": "Lagos, Nigeria",
+        "expertise": "Reviewed 15,000+ translations with zero errors"
+      }
+    },
+    "cta": {
+      "work": {
+        "title": "Work With Our Experts",
+        "description": "Get matched with the perfect translator for your project needs",
+        "button": "Start Project"
+      },
+      "join": {
+        "title": "Join Our Team",
+        "description": "Are you a certified translator? We're always looking for talent",
+        "button": "Apply Now"
+      }
+    }
+  },
+  "technology": {
+    "header": {
+      "badge": "Technology & Tools",
+      "title": "Cutting-Edge Translation Technology",
+      "description": "Advanced tools and AI-powered systems ensuring faster delivery and higher quality"
+    },
+    "main": [
+      {
+        "iconKey": "cpu",
+        "title": "AI-Powered CAT Tools",
+        "description": "Advanced Computer-Assisted Translation tools for consistency and speed",
+        "features": [
+          "Translation Memory",
+          "Terminology Database",
+          "Quality Assurance",
+          "Real-time Collaboration"
+        ],
+        "bgColor": "bg-blue-50",
+        "iconBg": "bg-blue-100",
+        "borderColor": "border-blue-200"
+      },
+      {
+        "iconKey": "shield",
+        "title": "Security & Encryption",
+        "description": "Bank-level security protecting your confidential documents",
+        "features": [
+          "256-bit SSL Encryption",
+          "Secure File Transfer",
+          "NDA Compliance",
+          "GDPR Compliant"
+        ],
+        "bgColor": "bg-green-50",
+        "iconBg": "bg-green-100",
+        "borderColor": "border-green-200"
+      },
+      {
+        "iconKey": "eye",
+        "title": "Quality Assurance",
+        "description": "Multi-layered quality checks ensuring perfect translations",
+        "features": [
+          "Automated QA Checks",
+          "Human Review",
+          "Consistency Verification",
+          "Final Proofreading"
+        ],
+        "bgColor": "bg-purple-50",
+        "iconBg": "bg-purple-100",
+        "borderColor": "border-purple-200"
+      },
+      {
+        "iconKey": "monitor",
+        "title": "Project Management",
+        "description": "Real-time tracking and communication throughout your project",
+        "features": [
+          "Live Progress Updates",
+          "Client Portal Access",
+          "24/7 Support Chat",
+          "Delivery Notifications"
+        ],
+        "bgColor": "bg-orange-50",
+        "iconBg": "bg-orange-100",
+        "borderColor": "border-orange-200"
+      }
+    ],
+    "security": {
+      "title": "Security & Confidentiality",
+      "description": "Your documents are protected with enterprise-grade security",
+      "features": [
+        {
+          "iconKey": "lock",
+          "text": "End-to-end encryption"
+        },
+        {
+          "iconKey": "database",
+          "text": "Secure cloud storage"
+        },
+        {
+          "iconKey": "award",
+          "text": "ISO 27001 certified"
+        },
+        {
+          "iconKey": "shield",
+          "text": "GDPR compliant"
+        }
+      ]
+    },
+    "stats": [
+      {
+        "iconKey": "zap",
+        "value": "50%",
+        "description": "Faster delivery with CAT tools"
+      },
+      {
+        "iconKey": "eye",
+        "value": "99.8%",
+        "description": "Quality accuracy rate"
+      },
+      {
+        "iconKey": "cloud",
+        "value": "100%",
+        "description": "Secure file handling"
+      }
+    ],
+    "cta": {
+      "title": "Experience the Technology Advantage",
+      "description": "Let our advanced tools and expert team deliver superior translations for your project",
+      "button": "Start Your Project"
+    }
+  },
+  "contact": {
+    "header": {
+      "badge": "Get Started Today",
+      "title": "Ready to Break Language Barriers?",
+      "description": "Join thousands of satisfied clients who trust ILI-Nigeria for their global communication needs"
+    },
+    "methods": {
+      "title": "Choose Your Preferred Contact Method",
+      "whatsapp": {
+        "title": "WhatsApp Chat",
+        "description": "Instant response via WhatsApp",
+        "action": "Chat Now",
+        "available": "24/7 Available"
+      },
+      "phone": {
+        "title": "Phone Support",
+        "description": "Speak directly with our experts",
+        "action": "Call Now",
+        "available": "Mon-Fri 8AM-6PM"
+      },
+      "email": {
+        "title": "Email Support",
+        "description": "Detailed project discussions",
+        "action": "Send Email",
+        "available": "24hr Response"
+      }
+    },
+    "stats": [
+      {
+        "iconKey": "users",
+        "label": "Expert Team",
+        "value": "50+",
+        "bgColor": "bg-green-50"
+      },
+      {
+        "iconKey": "zap",
+        "label": "Fast Delivery",
+        "value": "24hrs",
+        "bgColor": "bg-amber-50"
+      },
+      {
+        "iconKey": "shield",
+        "label": "Accuracy Rate",
+        "value": "99.8%",
+        "bgColor": "bg-blue-50"
+      },
+      {
+        "iconKey": "globe",
+        "label": "Languages",
+        "value": "50+",
+        "bgColor": "bg-emerald-50"
+      }
+    ],
+    "offices": {
+      "title": "Our Locations",
+      "description": "Visit us at any of our offices",
+      "mainOfficeBadge": "Main Office",
+      "emergencyNote": "Emergency support available 24/7",
+      "officeOgunHours": "Mon-Fri 8AM-6PM",
+      "officeAbujaHours": "Mon-Fri 9AM-5PM",
+      "officeNiameyHours": "Mon-Fri 9AM-5PM",
+      "ogun": {
+        "city": "Ogun State",
+        "fullAddress": "Ago-Iwoye, Ogun State"
+      },
+      "abuja": {
+        "city": "Abuja FCT",
+        "fullAddress": "Central Business District, FCT"
+      },
+      "niamey": {
+        "city": "Niamey, Niger Rep.",
+        "fullAddress": "GRA Phase 2, Niamey"
+      }
+    },
+    "quoteCard": {
+      "title": "Need a Quick Quote?",
+      "description": "Upload your document and get pricing in minutes",
+      "buttonQuote": "Get Free Quote",
+      "buttonContact": "Full Contact Form"
+    },
+    "whyChooseUs": {
+      "title": "Why Choose ILI-Nigeria",
+      "features": [
+        "Certified translators and linguists",
+        "24-48 hour turnaround time",
+        "99.8% accuracy guarantee",
+        "Competitive Nigerian pricing"
+      ]
+    },
+    "businessHours": {
+      "title": "Business Hours",
+      "periods": [
+        {
+          "day": "Monday - Friday",
+          "hours": "8:00 AM - 6:00 PM"
+        },
+        {
+          "day": "Saturday",
+          "hours": "9:00 AM - 2:00 PM"
+        },
+        {
+          "day": "Sunday",
+          "hours": "Closed"
+        }
+      ]
+    },
+    "bottomCta": {
+      "title": "Start Your Translation Project Today",
+      "description": "Join over 5,000+ satisfied clients who trust ILI-Nigeria for accurate, fast, and culturally-sensitive translation services.",
+      "buttonQuote": "Get Started Now",
+      "buttonConsultation": "Schedule Consultation"
+    }
+  },
+
+  "footer": {
+    "newsletter": {
+      "title": "Stay Updated with Translation Insights",
+      "description": "Get expert tips, industry news, and special offers delivered to your inbox. Join 5,000+ professionals who trust our insights.",
+      "placeholder": "Enter your email address",
+      "subscribe": "Subscribe",
+      "subscribing": "Subscribing...",
+      "success": "Thanks for subscribing!",
+      "errorEmpty": "Please enter an email address",
+      "errorInvalid": "Please enter a valid email address",
+      "errorFail": "Failed to subscribe",
+      "errorTry": "Something went wrong. Please try again.",
+      "privacy": "No spam. Unsubscribe anytime. We respect your privacy."
+    },
+    "company": {
+      "name": "ILI Nigeria",
+      "description": "Nigeria's premier translation and interpretation service. Breaking language barriers and building global connections since 2010."
+    },
+    "contact": {
+      "phone": "+234 810 906 7382",
+      "phoneLabel": "24/7 Support Line",
+      "email": "official.intlng@gmail.com",
+      "emailLabel": "Quick response guaranteed",
+      "address": "Itamerin, Ago-Iwoye",
+      "region": "Ogun, Nigeria 100001"
+    },
+    "social": {
+      "title": "Connect With Us"
+    },
+    "sections": {
+      "quickLinks": "Quick Links",
+      "services": "Our Services",
+      "industries": "Industries We Serve"
+    },
+    "quickLinks": {
+      "aboutUs": "About Us",
+      "services": "Our Services",
+      "languages": "Languages",
+      "getQuote": "Get Quote",
+      "contact": "Contact"
+    },
+    "services": {
+      "document": "Document Translation",
+      "website": "Website Localization",
+      "interpretation": "Live Interpretation",
+      "certified": "Certified Translation"
+    },
+    "industries": {
+      "legal": "Legal & Immigration",
+      "medical": "Medical & Healthcare",
+      "business": "Business & Finance",
+      "educational": "Educational Institutions"
+    },
+    "hours": {
+      "title": "Business Hours",
+      "weekdays": "Monday - Friday",
+      "weekdaysTime": "8:00 AM - 6:00 PM",
+      "saturday": "Saturday",
+      "saturdayTime": "9:00 AM - 3:00 PM",
+      "sunday": "Sunday",
+      "closed": "Closed",
+      "emergency": "Emergency support available 24/7"
+    },
+    "certifications": {
+      "title": "Our Certifications",
+      "iso17100": "ISO 17100 Certified",
+      "gdpr": "GDPR Compliant",
+      "iso27001": "ISO 27001 Security"
+    },
+    "copyright": "© 2025 ILI Nigeria. All rights reserved.",
+    "legal": {
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "cookies": "Cookie Policy"
+    },
+    "region": {
+      "country": "Nigeria",
+      "language": "English"
+    }
+  }
+}

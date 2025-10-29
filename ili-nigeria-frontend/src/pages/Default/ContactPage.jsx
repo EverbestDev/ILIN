@@ -149,26 +149,28 @@ export default function ContactPage() {
     e.preventDefault();
     setSuccess("");
     setError("");
-
+  
     const validationMsg = validateForm(formData);
     if (validationMsg) {
       setError(validationMsg);
       return;
     }
-
+  
     setLoading(true);
     try {
       const response = await fetch(
-        " https://ilin-backend.onrender.com/api/contact",
+        "https://ilin-backend.onrender.com/api/contact",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
         }
       );
-
+  
       const data = await response.json();
-      if (response.ok) {
+      
+      // FIXED: Check data.success instead of response.ok
+      if (data.success) {
         setSuccess(
           <span className="flex items-center gap-2">
             <CheckCircle className="w-5 h-5 text-green-600" />
@@ -193,6 +195,7 @@ export default function ContactPage() {
         );
       }
     } catch (err) {
+      console.error("Submit error:", err);
       setError(
         <span className="flex items-center gap-2">
           <XCircle className="w-5 h-5 text-red-600" />
@@ -202,7 +205,6 @@ export default function ContactPage() {
     }
     setLoading(false);
   };
-
   const handleGetQuote = () => {
     navigate("/quote");
   };

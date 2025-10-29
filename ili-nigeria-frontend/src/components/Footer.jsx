@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Globe,
   Mail,
@@ -18,30 +19,31 @@ import {
 } from "lucide-react";
 
 export default function Footer() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const quickLinks = [
-    { name: "About Us", path: "/about" },
-    { name: "Our Services", path: "/services" },
-    { name: "Languages", path: "/languages" },
-    { name: "Get Quote", path: "/quote" },
-    { name: "Contact", path: "/contact" },
+    { name: t("footer.quickLinks.aboutUs"), path: "/about" },
+    { name: t("footer.quickLinks.services"), path: "/services" },
+    { name: t("footer.quickLinks.languages"), path: "/languages" },
+    { name: t("footer.quickLinks.getQuote"), path: "/quote" },
+    { name: t("footer.quickLinks.contact"), path: "/contact" },
   ];
 
   const services = [
-    { name: "Document Translation", path: "/services" },
-    { name: "Website Localization", path: "/services" },
-    { name: "Live Interpretation", path: "/services" },
-    { name: "Certified Translation", path: "/services" },
+    { name: t("footer.services.document"), path: "/services" },
+    { name: t("footer.services.website"), path: "/services" },
+    { name: t("footer.services.interpretation"), path: "/services" },
+    { name: t("footer.services.certified"), path: "/services" },
   ];
 
   const industries = [
-    { name: "Legal & Immigration", path: "/services" },
-    { name: "Medical & Healthcare", path: "/services" },
-    { name: "Business & Finance", path: "/services" },
-    { name: "Educational Institutions", path: "/services" },
+    { name: t("footer.industries.legal"), path: "/services" },
+    { name: t("footer.industries.medical"), path: "/services" },
+    { name: t("footer.industries.business"), path: "/services" },
+    { name: t("footer.industries.educational"), path: "/services" },
   ];
 
   const socialLinks = [
@@ -61,49 +63,50 @@ export default function Footer() {
   ];
 
   const handleLinkClick = (path) => {
-
     console.log(`Navigate to: ${path}`);
   };
 
   const handleSubscribe = async (e) => {
-  e.preventDefault();
-  setMessage("");
-  setIsLoading(true);
+    e.preventDefault();
+    setMessage("");
+    setIsLoading(true);
 
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!email || email.trim() === "") {
-    setMessage(" Please enter an email address");
-    setIsLoading(false);
-    return;
-  }
-  if (!emailRegex.test(email)) {
-    setMessage("Please enter a valid email address");
-    setIsLoading(false);
-    return;
-  }
-
-  try {
-    const response = await fetch("https://ilin-backend.onrender.com/api/subscribe", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      setMessage("Thanks for subscribing!");
-      setEmail("");
-    } else {
-      setMessage(`${data.message || "Failed to subscribe"}`);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || email.trim() === "") {
+      setMessage(t("footer.newsletter.errorEmpty"));
+      setIsLoading(false);
+      return;
     }
-  } catch (error) {
-    setMessage("Something went wrong. Please try again.");
-  } finally {
-    setIsLoading(false);
-  }
-};
+    if (!emailRegex.test(email)) {
+      setMessage(t("footer.newsletter.errorInvalid"));
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "https://ilin-backend.onrender.com/api/subscribe",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage(t("footer.newsletter.success"));
+        setEmail("");
+      } else {
+        setMessage(`${data.message || t("footer.newsletter.errorFail")}`);
+      }
+    } catch (error) {
+      setMessage(t("footer.newsletter.errorTry"));
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <footer className="overflow-hidden bg-gradient-to-br from-green-600 via-green-700 to-green-800 rounded-t-xl md:rounded-t-none">
@@ -118,18 +121,17 @@ export default function Footer() {
               </div>
             </div>
             <h3 className="mb-4 text-3xl font-bold text-white">
-              Stay Updated with Translation Insights
+              {t("footer.newsletter.title")}
             </h3>
             <p className="max-w-2xl mx-auto mb-10 text-lg leading-relaxed text-green-100">
-              Get expert tips, industry news, and special offers delivered to
-              your inbox. Join 5,000+ professionals who trust our insights.
+              {t("footer.newsletter.description")}
             </p>
             <div className="flex flex-col max-w-lg gap-4 mx-auto sm:flex-row">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value.trim())}
-                placeholder="Enter your email address"
+                placeholder={t("footer.newsletter.placeholder")}
                 className="flex-1 px-6 py-4 text-gray-900 placeholder-gray-500 transition-all duration-300 bg-white shadow-lg rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-400 focus:ring-opacity-50"
                 required
               />
@@ -141,20 +143,25 @@ export default function Footer() {
                 }`}
               >
                 <Send className="w-5 h-5 mr-2" />
-                {isLoading ? "Subscribing..." : "Subscribe"}
+                {isLoading
+                  ? t("footer.newsletter.subscribing")
+                  : t("footer.newsletter.subscribe")}
               </button>
             </div>
             {message && (
               <p
                 className={`mt-6 text-lg font-medium ${
-                  message.includes("✅") ? "text-green-200" : "text-red-300"
+                  message.includes("✅") ||
+                  message.includes(t("footer.newsletter.success"))
+                    ? "text-green-200"
+                    : "text-red-300"
                 }`}
               >
                 {message}
               </p>
             )}
             <p className="mt-6 text-sm text-green-200">
-              No spam. Unsubscribe anytime. We respect your privacy.
+              {t("footer.newsletter.privacy")}
             </p>
           </div>
         </div>
@@ -172,13 +179,13 @@ export default function Footer() {
                   <div className="flex items-center justify-center mr-4 bg-white shadow-lg w-14 h-14 rounded-xl">
                     <Globe className="w-8 h-8 text-green-600" />
                   </div>
-                  <h2 className="text-3xl font-bold text-white">ILI Nigeria</h2>
+                  <h2 className="text-3xl font-bold text-white">
+                    {t("footer.company.name")}
+                  </h2>
                 </div>
 
                 <p className="mb-8 text-lg leading-relaxed text-green-100">
-                  Nigeria's premier translation and interpretation service.
-                  Breaking language barriers and building global connections
-                  since 2010.
+                  {t("footer.company.description")}
                 </p>
 
                 {/* Contact Information */}
@@ -192,10 +199,10 @@ export default function Footer() {
                     </div>
                     <div>
                       <p className="font-semibold text-white">
-                        +234 810 906 7382
+                        {t("footer.contact.phone")}
                       </p>
                       <p className="text-sm text-green-200">
-                        24/7 Support Line
+                        {t("footer.contact.phoneLabel")}
                       </p>
                     </div>
                   </a>
@@ -208,10 +215,10 @@ export default function Footer() {
                     </div>
                     <div>
                       <p className="font-semibold text-white">
-                        official.intlng@gmail.com
+                        {t("footer.contact.email")}
                       </p>
                       <p className="text-sm text-green-200">
-                        Quick response guaranteed
+                        {t("footer.contact.emailLabel")}
                       </p>
                     </div>
                   </a>
@@ -221,10 +228,10 @@ export default function Footer() {
                     </div>
                     <div>
                       <p className="font-semibold text-white">
-                        Itamerin, Ago-Iwoye
+                        {t("footer.contact.address")}
                       </p>
                       <p className="text-sm text-green-200">
-                        Ogun, Nigeria 100001
+                        {t("footer.contact.region")}
                       </p>
                     </div>
                   </div>
@@ -233,7 +240,7 @@ export default function Footer() {
                 {/* Social Media */}
                 <div>
                   <h4 className="mb-6 text-xl font-semibold text-white">
-                    Connect With Us
+                    {t("footer.social.title")}
                   </h4>
                   <div className="flex space-x-4">
                     {socialLinks.map((social, index) => (
@@ -259,7 +266,7 @@ export default function Footer() {
                 {/* Quick Links */}
                 <div>
                   <h3 className="mb-4 text-xl font-bold text-white">
-                    Quick Links
+                    {t("footer.sections.quickLinks")}
                   </h3>
                   <ul className="space-y-4">
                     {quickLinks.map((link, index) => (
@@ -279,7 +286,7 @@ export default function Footer() {
                 {/* Services */}
                 <div>
                   <h3 className="mb-4 text-xl font-bold text-white">
-                    Our Services
+                    {t("footer.sections.services")}
                   </h3>
                   <ul className="space-y-4">
                     {services.map((service, index) => (
@@ -299,7 +306,7 @@ export default function Footer() {
                 {/* Industries */}
                 <div>
                   <h3 className="mb-4 text-xl font-bold text-white">
-                    Industries We Serve
+                    {t("footer.sections.industries")}
                   </h3>
                   <ul className="space-y-4">
                     {industries.map((industry, index) => (
@@ -326,35 +333,39 @@ export default function Footer() {
                       <Clock className="w-6 h-6 text-white" />
                     </div>
                     <h4 className="text-xl font-bold text-white">
-                      Business Hours
+                      {t("footer.hours.title")}
                     </h4>
                   </div>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <span className="font-medium text-green-100">
-                        Monday - Friday
+                        {t("footer.hours.weekdays")}
                       </span>
                       <span className="font-bold text-white">
-                        8:00 AM - 6:00 PM
+                        {t("footer.hours.weekdaysTime")}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="font-medium text-green-100">
-                        Saturday
+                        {t("footer.hours.saturday")}
                       </span>
                       <span className="font-bold text-white">
-                        9:00 AM - 3:00 PM
+                        {t("footer.hours.saturdayTime")}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="font-medium text-green-100">Sunday</span>
-                      <span className="font-bold text-orange-300">Closed</span>
+                      <span className="font-medium text-green-100">
+                        {t("footer.hours.sunday")}
+                      </span>
+                      <span className="font-bold text-orange-300">
+                        {t("footer.hours.closed")}
+                      </span>
                     </div>
                     <div className="pt-4 mt-6 border-t border-green-500/30">
                       <div className="flex items-center text-orange-300">
                         <CheckCircle className="w-5 h-5 mr-3" />
                         <span className="font-medium">
-                          Emergency support available 24/7
+                          {t("footer.hours.emergency")}
                         </span>
                       </div>
                     </div>
@@ -368,7 +379,7 @@ export default function Footer() {
                       <Award className="w-6 h-6 text-white" />
                     </div>
                     <h4 className="text-xl font-bold text-white">
-                      Our Certifications
+                      {t("footer.certifications.title")}
                     </h4>
                   </div>
                   <div className="space-y-6">
@@ -377,7 +388,7 @@ export default function Footer() {
                         <Award className="w-6 h-6 text-amber-600" />
                       </div>
                       <span className="text-lg font-semibold text-white">
-                        ISO 17100 Certified
+                        {t("footer.certifications.iso17100")}
                       </span>
                     </div>
                     <div className="flex items-center">
@@ -385,7 +396,7 @@ export default function Footer() {
                         <Shield className="w-6 h-6 text-blue-600" />
                       </div>
                       <span className="text-lg font-semibold text-white">
-                        GDPR Compliant
+                        {t("footer.certifications.gdpr")}
                       </span>
                     </div>
                     <div className="flex items-center">
@@ -393,7 +404,7 @@ export default function Footer() {
                         <CheckCircle className="w-6 h-6 text-green-600" />
                       </div>
                       <span className="text-lg font-semibold text-white">
-                        ISO 27001 Security
+                        {t("footer.certifications.iso27001")}
                       </span>
                     </div>
                   </div>
@@ -414,31 +425,35 @@ export default function Footer() {
                 <Globe className="w-6 h-6 text-white" />
               </div>
               <p className="text-lg font-semibold text-green-100">
-                © 2025 ILI Nigeria. All rights reserved.
+                {t("footer.copyright")}
               </p>
             </div>
 
             {/* Legal Links */}
             <div className="flex flex-wrap items-center gap-8">
               <button className="text-lg font-semibold text-green-100 transition-colors hover:text-white">
-                Privacy Policy
+                {t("footer.legal.privacy")}
               </button>
               <span className="text-2xl text-green-400">•</span>
               <button className="text-lg font-semibold text-green-100 transition-colors hover:text-white">
-                Terms of Service
+                {t("footer.legal.terms")}
               </button>
               <span className="text-2xl text-green-400">•</span>
               <button className="text-lg font-semibold text-green-100 transition-colors hover:text-white">
-                Cookie Policy
+                {t("footer.legal.cookies")}
               </button>
             </div>
 
             {/* Language/Region */}
             <div className="flex items-center px-6 py-3 bg-green-700 shadow-lg rounded-xl">
               <MapPin className="w-5 h-5 mr-3 text-white" />
-              <span className="font-semibold text-white">Nigeria</span>
+              <span className="font-semibold text-white">
+                {t("footer.region.country")}
+              </span>
               <span className="mx-4 text-xl text-green-300">•</span>
-              <span className="font-semibold text-white">English</span>
+              <span className="font-semibold text-white">
+                {t("footer.region.language")}
+              </span>
             </div>
           </div>
         </div>

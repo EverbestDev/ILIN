@@ -1,5 +1,9 @@
+
 @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
 @import "tailwindcss";
+
+
+
 
 @theme {
   --color-dark-green: #1a3c2b;
@@ -52,5 +56,20 @@ body {
   to {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+@keyframes marquee-rtl {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(0); }
+}
+.animate-marquee-rtl {
+  animation: marquee-rtl 30s linear infinite;
+}
+
+/* Mobile: Reduce speed, prevent overflow */
+@media (max-width: 768px) {
+  .animate-marquee,
+  .animate-marquee-rtl {
+    animation-duration: 45s; /* Slower on mobile */
   }
 }

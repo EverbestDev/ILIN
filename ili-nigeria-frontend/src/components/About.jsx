@@ -1,69 +1,66 @@
 import { motion } from "framer-motion";
 import { Globe, BookOpen, Zap, Flag, MessageSquare, Phone } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next"; // ← ADD
 import aboutImg from "../assets/about.png";
 
 export default function About() {
+  const { t } = useTranslation(); // ← ADD
   const navigate = useNavigate();
 
   const features = [
     {
       icon: <Globe className="w-10 h-10 mx-auto text-gray-50" />,
-      title: "50+ Languages",
-      desc: "Communicate seamlessly in more than 50 languages worldwide.",
+      title: t("about.features.languages.title"), // ← TRANSLATE
+      desc: t("about.features.languages.desc"),
     },
     {
       icon: <BookOpen className="w-10 h-10 mx-auto text-green-600" />,
-      title: "Certified Experts",
-      desc: "Work with accredited translators and interpreters for guaranteed quality.",
+      title: t("about.features.experts.title"),
+      desc: t("about.features.experts.desc"),
     },
     {
       icon: <Zap className="w-10 h-10 mx-auto text-yellow-500" />,
-      title: "Fast & Reliable Delivery",
-      desc: "Timely translations without compromising on accuracy.",
+      title: t("about.features.delivery.title"),
+      desc: t("about.features.delivery.desc"),
     },
     {
       icon: <Flag className="w-10 h-10 mx-auto text-red-500" />,
-      title: "Cultural Accuracy",
-      desc: "Preserving cultural meaning and nuance in every translation.",
+      title: t("about.features.accuracy.title"),
+      desc: t("about.features.accuracy.desc"),
     },
   ];
 
-  const handleGetQuote = () => {
-    navigate("/quote");
-  };
-
-  const handleLearnMore = () => {
-    navigate("/about");
-  };
+  const handleGetQuote = () => navigate("/quote");
+  const handleLearnMore = () => navigate("/about");
 
   const highlights = [
     {
       icon: <Globe className="w-10 h-10 text-green-600" />,
-      title: "Global Translation Services",
-      desc: "We support over 50+ world languages with precise, human-level translation. Our certified translators ensure your message maintains its meaning and cultural nuance across all languages.",
-      cta: "Get a Quote",
+      title: t("about.highlights.global.title"), // ← TRANSLATE
+      desc: t("about.highlights.global.desc"),
+      cta: t("about.highlights.global.cta"),
       featured: true,
     },
     {
       icon: <MessageSquare className="w-10 h-10 text-green-600" />,
-      title: "Live Interpreting",
-      desc: "Real-time interpretation for events, meetings, and international conferences.",
-      cta: "View Details",
+      title: t("about.highlights.interpreting.title"),
+      desc: t("about.highlights.interpreting.desc"),
+      cta: t("about.highlights.interpreting.cta"),
       onClick: handleLearnMore,
     },
     {
       icon: <BookOpen className="w-10 h-10 text-purple-600" />,
-      title: "Faith-Based Translation",
-      desc: "Specialized expertise in religious and cultural translation with respect and accuracy.",
-      cta: "View Details",
+      title: t("about.highlights.faith.title"),
+      desc: t("about.highlights.faith.desc"),
+      cta: t("about.highlights.faith.cta"),
       onClick: handleLearnMore,
     },
     {
       icon: <Phone className="w-10 h-10 text-red-600" />,
-      title: "Support & Consultation",
-      desc: "Guidance and support for businesses entering global markets.",
-      cta: "View Details",
+      title: t("about.highlights.support.title"),
+      desc: t("about.highlights.support.desc"),
+      cta: t("about.highlights.support.cta"),
       onClick: handleLearnMore,
     },
   ];
@@ -83,13 +80,10 @@ export default function About() {
         className="max-w-3xl mx-auto mb-12 text-center"
       >
         <span className="inline-block px-6 py-2 mb-4 text-sm font-semibold text-green-600 bg-green-100 rounded-full">
-          About Us
+          {t("about.heading.badge")} {/* ← TRANSLATE */}
         </span>
         <p className="mt-2 text-lg leading-relaxed text-gray-600">
-          We are a professional translation and interpretation company helping
-          businesses, organizations, and individuals communicate seamlessly
-          across cultures. With certified translators and cultural experts, we
-          ensure your message is delivered with clarity and precision.
+          {t("about.heading.description")}
         </p>
       </motion.div>
 
@@ -105,7 +99,7 @@ export default function About() {
         >
           <img
             src={aboutImg}
-            alt="About our translation company"
+            alt={t("about.image.alt")} 
             className="object-cover w-full shadow-lg rounded-2xl"
           />
         </motion.div>
@@ -128,7 +122,7 @@ export default function About() {
               className="relative p-6 overflow-hidden text-center transition bg-white shadow-md group rounded-xl hover:shadow-lg"
             >
               {/* Animated green line (inside card) */}
-              <span className="absolute top-0 w-0 h-1 transition-all duration-500 bg-green-600 left-1/2 group-hover:w-full group-hover:left-0"></span>
+              <span className="absolute top-0 w-0 h-1 transition-all duration-500 bg-green-600 start-1/2 group-hover:w-full group-hover:start-0"></span> {/* ← RTL: start-1/2 */}
 
               {item.icon}
               <h4 className="mt-4 text-lg font-semibold text-gray-800">
@@ -139,7 +133,7 @@ export default function About() {
                 onClick={handleLearnMore}
                 className="px-4 py-2 mt-4 text-white transition bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
               >
-                Learn More
+                {t("about.features.learnMore")} 
               </button>
             </motion.div>
           ))}
@@ -149,11 +143,10 @@ export default function About() {
       {/* What We Offer - Updated Layout */}
       <div className="mt-20 text-center">
         <h3 className="text-2xl font-bold text-gray-800 md:text-3xl">
-          What We Offer
+          {t("about.offer.title")} {/* ← TRANSLATE */}
         </h3>
         <p className="max-w-2xl mx-auto mt-4 text-gray-600">
-          Our services are designed to help you break barriers and communicate
-          confidently, no matter where you are in the world.
+          {t("about.offer.description")}
         </p>
 
         {/* Featured Service - Full Width Card */}
@@ -193,14 +186,14 @@ export default function About() {
                       onClick={handleLearnMore}
                       className="px-8 py-4 font-semibold text-white transition-all duration-300 border-2 border-white rounded-xl hover:bg-white hover:text-green-600 focus:outline-none focus:ring-2 focus:ring-white"
                     >
-                      Learn More
+                      {t("about.highlights.learnMore")} 
                     </motion.button>
                   </div>
                 </div>
               </div>
               {/* Decorative elements */}
-              <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 bg-white rounded-full opacity-5"></div>
-              <div className="absolute bottom-0 left-0 w-24 h-24 -mb-12 -ml-12 bg-white rounded-full opacity-5"></div>
+              <div className="absolute top-0 end-0 w-32 h-32 -mt-16 -me-16 bg-white rounded-full opacity-5"></div> {/* ← RTL: end-0 */}
+              <div className="absolute bottom-0 start-0 w-24 h-24 -mb-12 -ms-12 bg-white rounded-full opacity-5"></div> {/* ← RTL: start-0 */}
             </div>
           </motion.div>
         )}

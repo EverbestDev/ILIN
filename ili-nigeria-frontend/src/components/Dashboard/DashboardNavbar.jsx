@@ -1,3 +1,5 @@
+// REPLACE your entire DashboardNavbar.jsx with this updated version:
+
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../utility/firebase";
@@ -15,14 +17,15 @@ import {
   ArrowRight,
 } from "lucide-react";
 
+const API_URL =
+  import.meta.env.VITE_API_URL || "https://ilin-backend.onrender.com";
+
 const DashboardNavbar = ({
   onMenuToggle,
   brandName = "ILIN",
   portalTitle = "Portal",
   userRole,
   onLogout,
-  unreadNotificationCount = 0,
-  notificationsList = [],
   showNotifications = true,
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -34,17 +37,23 @@ const DashboardNavbar = ({
     photoURL: null,
   });
 
+  // Real notification state
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [notifications, setNotifications] = useState([]);
+
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const notificationsRef = useRef(null);
   const profileButtonRef = useRef(null);
   const notificationButtonRef = useRef(null);
 
+  const isAdmin = userRole === "Super Admin";
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
       if (currentUser) {
         setUser({
-          name: currentUser.displayName || "User", 
+          name: currentUser.displayName || "User",
           email: currentUser.email,
           photoURL: currentUser.photoURL,
         });
@@ -53,10 +62,44 @@ const DashboardNavbar = ({
     return unsubscribe;
   }, []);
 
+  // Fetch notifications
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      if (!auth.currentUser) return;
+
+      try {
+        const token = await auth.currentUser.getIdToken();
+        const endpoint = isAdmin
+          ? "/api/notifications/admin"
+          : "/api/notifications/client";
+
+        const res = await fetch(`${API_URL}${endpoint}`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          setUnreadCount(data.unreadCount || 0);
+          setNotifications(data.notifications || []);
+        }
+      } catch (error) {
+        console.error("Fetch notifications error:", error);
+      }
+    };
+
+    fetchNotifications();
+
+    // Refresh every 30 seconds
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+  }, [isAdmin]);
+
   // Click outside handler
   useEffect(() => {
     const handleClickOutside = (event) => {
-      // Check if click is outside profile dropdown
       if (
         dropdownOpen &&
         dropdownRef.current &&
@@ -67,7 +110,6 @@ const DashboardNavbar = ({
         setDropdownOpen(false);
       }
 
-      // Check if click is outside notifications dropdown
       if (
         notificationsOpen &&
         notificationsRef.current &&
@@ -92,10 +134,14 @@ const DashboardNavbar = ({
   };
 
   const handleSettingsNavigate = () => {
-    const path =
-      userRole === "Super Admin" ? "/admin/settings" : "/client/settings";
+    const path = isAdmin ? "/admin/settings" : "/client/settings";
     navigate(path);
     closeAllDropdowns();
+  };
+
+  const handleNotificationClick = (notification) => {
+    navigate(notification.link);
+    setNotificationsOpen(false);
   };
 
   const getInitials = (name) => {
@@ -114,7 +160,6 @@ const DashboardNavbar = ({
           <div className="flex items-center justify-between h-16">
             {/* Left Section - Logo & Menu */}
             <div className="flex items-center gap-4">
-              {/* Menu Toggle Button */}
               <button
                 onClick={onMenuToggle}
                 className="p-2 transition-colors rounded-lg hover:bg-gray-100"
@@ -123,7 +168,6 @@ const DashboardNavbar = ({
                 <Menu className="w-6 h-6 text-gray-700" />
               </button>
 
-              {/* Logo & Brand */}
               <div className="flex items-center gap-3">
                 <div className="items-center justify-center hidden w-10 h-10 shadow-md bg-gradient-to-br from-green-600 to-green-700 rounded-xl md:flex">
                   <Globe className="w-6 h-6 text-white" />
@@ -160,36 +204,37 @@ const DashboardNavbar = ({
                     type="button"
                   >
                     <Bell className="w-5 h-5 text-gray-700" />
-                    {unreadNotificationCount > 0 && (
+                    {unreadCount > 0 && (
                       <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-xs font-medium text-white bg-red-600 rounded-full">
-                        {unreadNotificationCount > 99
-                          ? "99+"
-                          : unreadNotificationCount}
+                        {unreadCount > 99 ? "99+" : unreadCount}
                       </span>
                     )}
                   </button>
                   {notificationsOpen && (
                     <div
                       ref={notificationsRef}
-                      className="absolute z-50 w-[calc(100vw-6rem)] sm:w-80 md:w-96 mt-2 overflow-hidden bg-white border border-gray-200 shadow-xl right-0 sm:right-0 rounded-xl"
+                      className="absolute z-50 w-[calc(100vw-2rem)] sm:w-80 md:w-96 mt-2 overflow-hidden bg-white border border-gray-200 shadow-xl right-0 rounded-xl"
                     >
                       <div className="px-4 py-3 border-b border-gray-200 bg-gradient-to-r from-green-50 to-green-100">
                         <div className="flex items-center justify-between">
                           <p className="text-sm font-semibold text-gray-900">
                             Notifications
                           </p>
-                          {unreadNotificationCount > 0 && (
+                          {unreadCount > 0 && (
                             <span className="px-2 py-1 text-xs font-medium text-green-700 bg-green-200 rounded-full">
-                              {unreadNotificationCount} new
+                              {unreadCount} new
                             </span>
                           )}
                         </div>
                       </div>
                       <div className="py-1 overflow-y-auto max-h-80">
-                        {notificationsList.length ? (
-                          notificationsList.map((notification) => (
+                        {notifications.length > 0 ? (
+                          notifications.map((notification) => (
                             <div
                               key={notification.id}
+                              onClick={() =>
+                                handleNotificationClick(notification)
+                              }
                               className={`px-4 py-3 border-b border-gray-100 last:border-b-0 transition-colors cursor-pointer ${
                                 notification.unread
                                   ? "bg-blue-50 hover:bg-blue-100"
@@ -349,11 +394,10 @@ const DashboardNavbar = ({
         </div>
       </header>
 
-      {/* Enhanced Profile Modal */}
+      {/* Profile Modal */}
       {showProfileModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto animate-[fadeIn_0.2s_ease-in-out]">
-            {/* Header with gradient */}
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div className="relative px-6 py-6 bg-gradient-to-r from-green-600 to-green-700 sm:py-8">
               <button
                 onClick={() => setShowProfileModal(false)}
@@ -377,7 +421,6 @@ const DashboardNavbar = ({
               </div>
             </div>
 
-            {/* Profile Information */}
             <div className="px-4 py-4 space-y-3 sm:px-6 sm:py-6 sm:space-y-4">
               <div className="-mt-2 text-center">
                 <h2 className="px-2 mb-1 text-xl font-bold text-gray-900 break-words sm:text-2xl">
@@ -389,7 +432,6 @@ const DashboardNavbar = ({
               </div>
 
               <div className="pt-3 space-y-2 sm:space-y-3 sm:pt-4">
-                {/* Email */}
                 <div className="flex items-start gap-3 p-3 rounded-lg bg-gray-50">
                   <div className="flex items-center justify-center flex-shrink-0 bg-blue-100 rounded-lg w-9 h-9 sm:w-10 sm:h-10">
                     <Mail className="w-4 h-4 text-blue-600 sm:w-5 sm:h-5" />
@@ -404,7 +446,6 @@ const DashboardNavbar = ({
                   </div>
                 </div>
 
-                {/* Role */}
                 <div className="flex items-start gap-3 p-3 rounded-lg bg-gray-50">
                   <div className="flex items-center justify-center flex-shrink-0 bg-green-100 rounded-lg w-9 h-9 sm:w-10 sm:h-10">
                     <Shield className="w-4 h-4 text-green-600 sm:w-5 sm:h-5" />
@@ -420,20 +461,17 @@ const DashboardNavbar = ({
                 </div>
               </div>
 
-              {/* Info message */}
               <div className="p-3 mt-4 border border-blue-100 rounded-lg sm:mt-6 sm:p-4 bg-blue-50">
                 <p className="text-xs text-blue-900 sm:text-sm">
                   <span className="font-medium">Need to make changes?</span>
                   <br />
                   <span className="text-blue-700">
-                    You can edit your profile information and manage your
-                    account preferences in Settings.
+                    You can edit your profile information in Settings.
                   </span>
                 </p>
               </div>
             </div>
 
-            {/* Footer Actions */}
             <div className="flex gap-2 px-4 py-3 border-t border-gray-200 sm:px-6 sm:py-4 bg-gray-50 sm:gap-3">
               <button
                 onClick={() => setShowProfileModal(false)}

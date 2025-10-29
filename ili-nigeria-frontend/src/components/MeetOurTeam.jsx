@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next"; // <-- ADDED
 import {
   Award,
   Globe,
@@ -9,92 +10,49 @@ import {
   MapPin,
   Star,
   Languages,
+  ArrowLeft, // Added for RTL consistency
 } from "lucide-react";
 
 export default function MeetOurTeam() {
+  const { t, i18n } = useTranslation(); // <-- ADDED
   const navigate = useNavigate();
+  const isRtl = i18n.language === "ar"; // Data structure mapped from JSON keys
 
-  const teamMembers = [
-    {
-      name: "Dr. Amina Bello",
-      role: "Chief Translation Officer",
-      specialization: "Medical & Legal Translation",
-      languages: ["English", "French", "Arabic", "Hausa"],
-      experience: "12+ years",
-      certifications: ["ISO 17100", "Medical Certified", "Court Certified"],
-      location: "Lagos, Nigeria",
-      initials: "AB",
-      bgColor: "bg-blue-600",
-      expertise: "Led 5,000+ medical translations with 99.9% accuracy",
-    },
-    {
-      name: "Emmanuel Okafor",
-      role: "Senior Business Translator",
-      specialization: "Finance & Technology",
-      languages: ["English", "Igbo", "German", "Mandarin"],
-      experience: "8+ years",
-      certifications: [
-        "Business Certified",
-        "Tech Specialist",
-        "Financial Expert",
-      ],
-      location: "Abuja, Nigeria",
-      initials: "EO",
-      bgColor: "bg-green-600",
-      expertise: "Helped 200+ companies expand internationally",
-    },
-    {
-      name: "Fatima Al-Rashid",
-      role: "Cultural Adaptation Specialist",
-      specialization: "Religious & Educational Content",
-      languages: ["Arabic", "English", "French", "Yoruba"],
-      experience: "10+ years",
-      certifications: [
-        "Cultural Expert",
-        "Educational Certified",
-        "Religious Scholar",
-      ],
-      location: "Kano, Nigeria",
-      initials: "FR",
-      bgColor: "bg-purple-600",
-      expertise: "Cultural adaptation for 1,500+ educational projects",
-    },
-    {
-      name: "Sarah Adeyemi",
-      role: "Quality Assurance Director",
-      specialization: "Multi-language Quality Control",
-      languages: ["English", "Spanish", "Portuguese", "Yoruba"],
-      experience: "9+ years",
-      certifications: ["QA Certified", "ISO Auditor", "Linguistics PhD"],
-      location: "Lagos, Nigeria",
-      initials: "SA",
-      bgColor: "bg-red-600",
-      expertise: "Reviewed 15,000+ translations with zero errors",
-    },
-  ];
+  const memberKeys = [
+    "aminaBello",
+    "emmanuelOkafor",
+    "fatimaAlRashid",
+    "sarahAdeyemi",
+  ]; // Non-translatable styling props (used to map data dynamically)
 
-  const teamStats = [
-    {
-      icon: <Users className="w-8 h-8 text-green-600" />,
-      label: "Expert Translators",
-      value: "50+",
-    },
-    {
-      icon: <Languages className="w-8 h-8 text-blue-600" />,
-      label: "Languages Covered",
-      value: "50+",
-    },
-    {
-      icon: <Award className="w-8 h-8 text-amber-600" />,
-      label: "Certifications",
-      value: "200+",
-    },
-    {
-      icon: <Globe className="w-8 h-8 text-purple-600" />,
-      label: "Years Experience",
-      value: "15+",
-    },
-  ];
+  const memberStyleMap = {
+    aminaBello: { initials: "AB", bgColor: "bg-blue-600" },
+    emmanuelOkafor: { initials: "EO", bgColor: "bg-green-600" },
+    fatimaAlRashid: { initials: "FR", bgColor: "bg-purple-600" },
+    sarahAdeyemi: { initials: "SA", bgColor: "bg-red-600" },
+  };
+
+  const statsIconMap = {
+    users: <Users className="w-8 h-8 text-green-600" />,
+    languages: <Languages className="w-8 h-8 text-blue-600" />,
+    award: <Award className="w-8 h-8 text-amber-600" />,
+    globe: <Globe className="w-8 h-8 text-purple-600" />,
+  }; // Map team data from JSON
+
+  const teamMembers = memberKeys.map((key) => {
+    const member = t(`team.members.${key}`, { returnObjects: true });
+    return {
+      ...member,
+      ...memberStyleMap[key],
+      // The languages array must remain untranslated (or only transliterated) for technical correctness
+      languages: member.languages,
+    };
+  }); // Map stats data from JSON
+
+  const teamStats = t("team.stats", { returnObjects: true }).map((stat) => ({
+    ...stat,
+    icon: statsIconMap[stat.iconKey],
+  }));
 
   const handleJoinTeam = () => {
     navigate("/contact");
@@ -102,11 +60,18 @@ export default function MeetOurTeam() {
 
   const handleGetQuote = () => {
     navigate("/quote");
-  };
+  }; // Helper functions for RTL styling
+
+  const CTAArrowIcon = isRtl ? ArrowLeft : ArrowRight;
+  const marginStart = isRtl ? "ms-2" : "mr-2";
+  const marginEnd = isRtl ? "me-2" : "ml-2";
+  const LanguageCountClass = isRtl ? "flex-row-reverse" : "flex-row";
 
   return (
-    <section className="px-6 py-16 bg-white md:px-20">
-      {/* Section Header - Compact */}
+    <section
+      className="px-6 py-16 bg-white md:px-20"
+      dir={isRtl ? "rtl" : "ltr"}
+    >
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -115,18 +80,15 @@ export default function MeetOurTeam() {
         className="max-w-3xl mx-auto mb-12 text-center"
       >
         <span className="inline-block px-4 py-1 mb-3 text-sm font-semibold text-green-600 bg-green-100 rounded-full">
-          Our Team
+          {t("team.header.badge")}
         </span>
-        <h2 className="mb-4 text-3xl font-bold text-gray-900">
-          Expert Translators, Proven Results
-        </h2>
-        <p className="text-gray-600">
-          Meet the certified professionals who make your global communication
-          possible
-        </p>
-      </motion.div>
 
-      {/* Team Stats */}
+        <h2 className="mb-4 text-3xl font-bold text-gray-900">
+          {t("team.header.title")}
+        </h2>
+
+        <p className="text-gray-600">{t("team.header.description")}</p>
+      </motion.div>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -137,6 +99,7 @@ export default function MeetOurTeam() {
         {teamStats.map((stat, index) => (
           <div key={index} className="p-6 text-center bg-gray-50 rounded-xl">
             <div className="flex justify-center mb-3">{stat.icon}</div>
+
             <h3 className="mb-2 text-2xl font-bold text-gray-900">
               {stat.value}
             </h3>
@@ -144,8 +107,6 @@ export default function MeetOurTeam() {
           </div>
         ))}
       </motion.div>
-
-      {/* Team Members */}
       <div className="grid max-w-6xl grid-cols-1 gap-8 mx-auto mb-12 md:grid-cols-2 lg:grid-cols-4">
         {teamMembers.map((member, index) => (
           <motion.div
@@ -164,21 +125,23 @@ export default function MeetOurTeam() {
                 {member.initials}
               </div>
             </div>
-
             {/* Info */}
             <div className="mb-4 text-center">
               <h3 className="mb-1 text-lg font-bold text-gray-900">
                 {member.name}
               </h3>
+
               <p className="mb-2 text-sm font-medium text-green-600">
                 {member.role}
               </p>
               <p className="text-sm text-gray-600">{member.specialization}</p>
             </div>
-
             {/* Languages */}
             <div className="mb-4">
-              <p className="mb-2 text-xs text-gray-500">Languages:</p>
+              <p className="mb-2 text-xs text-gray-500">
+                {t("team.labels.languages")}:
+              </p>
+
               <div className="flex flex-wrap gap-1">
                 {member.languages.slice(0, 3).map((lang, idx) => (
                   <span
@@ -190,32 +153,39 @@ export default function MeetOurTeam() {
                 ))}
                 {member.languages.length > 3 && (
                   <span className="px-2 py-1 text-xs text-gray-700 bg-gray-100 rounded">
-                    +{member.languages.length - 3}
+                    {t("team.labels.plus", {
+                      count: member.languages.length - 3,
+                    })}
                   </span>
                 )}
               </div>
             </div>
-
             {/* Experience & Location */}
             <div className="mb-4 space-y-2">
-              <div className="flex items-center text-sm text-gray-600">
-                <Star className="w-4 h-4 mr-2 text-amber-500" />
-                {member.experience} experience
+              <div
+                className={`flex items-center text-sm text-gray-600 ${LanguageCountClass}`}
+              >
+                <Star className={`w-4 h-4 ${marginStart} text-amber-500`} />
+                {member.experience} {t("team.labels.experience")}
               </div>
-              <div className="flex items-center text-sm text-gray-600">
-                <MapPin className="w-4 h-4 mr-2 text-green-600" />
+
+              <div
+                className={`flex items-center text-sm text-gray-600 ${LanguageCountClass}`}
+              >
+                <MapPin className={`w-4 h-4 ${marginStart} text-green-600`} />
                 {member.location}
               </div>
             </div>
-
             {/* Expertise */}
             <div className="mb-4">
               <p className="text-xs italic text-gray-600">{member.expertise}</p>
             </div>
-
             {/* Certifications */}
             <div>
-              <p className="mb-2 text-xs text-gray-500">Certifications:</p>
+              <p className="mb-2 text-xs text-gray-500">
+                {t("team.labels.certifications")}:
+              </p>
+
               <div className="flex flex-wrap gap-1">
                 {member.certifications.slice(0, 2).map((cert, idx) => (
                   <span
@@ -227,7 +197,9 @@ export default function MeetOurTeam() {
                 ))}
                 {member.certifications.length > 2 && (
                   <span className="px-2 py-1 text-xs text-green-700 bg-green-100 rounded">
-                    +{member.certifications.length - 2}
+                    {t("team.labels.plus", {
+                      count: member.certifications.length - 2,
+                    })}
                   </span>
                 )}
               </div>
@@ -235,7 +207,6 @@ export default function MeetOurTeam() {
           </motion.div>
         ))}
       </div>
-
       {/* CTA Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -245,39 +216,39 @@ export default function MeetOurTeam() {
         className="max-w-4xl mx-auto"
       >
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {/* Work With Us */}
           <div className="p-6 text-center bg-green-50 rounded-xl">
             <BookOpen className="w-12 h-12 mx-auto mb-4 text-green-600" />
+
             <h3 className="mb-3 text-xl font-bold text-gray-900">
-              Work With Our Experts
+              {t("team.cta.work.title")}
             </h3>
             <p className="mb-4 text-sm text-gray-600">
-              Get matched with the perfect translator for your project needs
+              {t("team.cta.work.description")}
             </p>
             <button
               onClick={handleGetQuote}
               className="inline-flex items-center px-6 py-3 font-medium text-white transition-colors bg-green-600 rounded-lg hover:bg-green-700"
             >
-              Start Project
-              <ArrowRight className="w-5 h-5 ml-2" />
+              {t("team.cta.work.button")}
+              <CTAArrowIcon className={`w-5 h-5 ${marginEnd}`} />
             </button>
           </div>
 
-          {/* Join Team */}
           <div className="p-6 text-center bg-orange-50 rounded-xl">
             <Users className="w-12 h-12 mx-auto mb-4 text-orange-600" />
+
             <h3 className="mb-3 text-xl font-bold text-gray-900">
-              Join Our Team
+              {t("team.cta.join.title")}
             </h3>
             <p className="mb-4 text-sm text-gray-600">
-              Are you a certified translator? We're always looking for talent
+              {t("team.cta.join.description")}
             </p>
             <button
               onClick={handleJoinTeam}
               className="inline-flex items-center px-6 py-3 font-medium text-orange-600 transition-colors bg-white border-2 border-orange-500 rounded-lg hover:bg-orange-500 hover:text-white"
             >
-              Apply Now
-              <ArrowRight className="w-5 h-5 ml-2" />
+              {t("team.cta.join.button")}
+              <CTAArrowIcon className={`w-5 h-5 ${marginEnd}`} />
             </button>
           </div>
         </div>

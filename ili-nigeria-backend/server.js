@@ -25,7 +25,8 @@ import taskRouter from "./routes/task.js";
 import authRoutes from "./routes/auth.js";
 import settingsRoutes from "./routes/settings.js";
 import messageRoutes from "./routes/message.js";
-
+import notificationRoutes from "./routes/notification.js";
+import analyticsRoutes from "./routes/analytics.js";
 import { protect, restrictTo } from "./middleware/auth.js";
 import { startTaskReminder } from "./utils/taskReminder.js";
 
@@ -43,6 +44,7 @@ const server = http.createServer(app);
 
 // Connect to database
 connectDB();
+startTaskReminder();
 
 // Middlewares
 app.use(express.json());
@@ -126,6 +128,8 @@ app.use("/api/admin", protect, restrictTo("admin"), adminRoutes);
 app.use("/api/tasks", protect, restrictTo("admin"), taskRouter);
 app.use("/api/messages", messageRoutes);
 app.use("/api/settings", settingsRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 // Test route
 app.get("/", (req, res) => {

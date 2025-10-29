@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next"; // <-- ADDED
 import {
   Upload,
   Search,
@@ -9,68 +10,73 @@ import {
   Clock,
   Shield,
   Award,
+  ArrowLeft, // Added for RTL consistency
 } from "lucide-react";
 
 export default function ProcessWalkthrough() {
+  const { t, i18n } = useTranslation(); // <-- ADDED
   const navigate = useNavigate();
 
-  const steps = [
-    {
-      icon: <Upload className="w-8 h-8 text-blue-600" />,
-      title: "Upload & Quote",
-      description: "Send your document and get instant quote",
-      details: "Free quote in 30 minutes",
-      bgColor: "bg-blue-50",
-      iconBg: "bg-blue-100",
-      number: "01",
-    },
-    {
-      icon: <Search className="w-8 h-8 text-purple-600" />,
-      title: "Expert Assignment",
-      description: "Certified translator matched to your project",
-      details: "Industry specialist selected",
-      bgColor: "bg-purple-50",
-      iconBg: "bg-purple-100",
-      number: "02",
-    },
-    {
-      icon: <FileText className="w-8 h-8 text-orange-600" />,
-      title: "Translation & Review",
-      description: "Professional translation with quality checks",
-      details: "3-step review process",
-      bgColor: "bg-orange-50",
-      iconBg: "bg-orange-100",
-      number: "03",
-    },
-    {
-      icon: <CheckCircle className="w-8 h-8 text-green-600" />,
-      title: "Delivery & Support",
-      description: "Final document with ongoing support",
-      details: "24/7 customer service",
-      bgColor: "bg-green-50",
-      iconBg: "bg-green-100",
-      number: "04",
-    },
-  ];
+  const isRtl = i18n.language === "ar";
 
-  const features = [
-    {
-      icon: <Clock className="w-5 h-5 text-green-600" />,
-      text: "24-48 hour delivery",
-    },
-    {
-      icon: <Shield className="w-5 h-5 text-green-600" />,
-      text: "100% confidential",
-    },
-    {
-      icon: <Award className="w-5 h-5 text-green-600" />,
-      text: "Certified quality",
-    },
-  ];
+  // Data structure mapped from JSON keys
+  const stepKeys = ["upload", "assignment", "translation", "delivery"];
+
+  const iconMap = {
+    upload: <Upload className="w-8 h-8 text-blue-600" />,
+    assignment: <Search className="w-8 h-8 text-purple-600" />,
+    translation: <FileText className="w-8 h-8 text-orange-600" />,
+    delivery: <CheckCircle className="w-8 h-8 text-green-600" />,
+  };
+
+  const colorMap = {
+    upload: { iconBg: "bg-blue-100" },
+    assignment: { iconBg: "bg-purple-100" },
+    translation: { iconBg: "bg-orange-100" },
+    delivery: { iconBg: "bg-green-100" },
+  };
+
+  // Steps array dynamically pulling from translation keys
+  const steps = stepKeys.map((key, index) => ({
+    key: key,
+    icon: iconMap[key],
+    title: t(`process.steps.${key}.title`),
+    description: t(`process.steps.${key}.description`),
+    details: t(`process.steps.${key}.details`),
+    iconBg: colorMap[key].iconBg,
+    number: t("process.number", { number: index + 1 }), // Use i18n for number localization
+  }));
+
+  // Features array dynamically pulling from translation keys
+  const featureKeys = ["deliveryTime", "confidentiality", "quality"];
+
+  const featureIconMap = {
+    deliveryTime: <Clock className="w-5 h-5 text-green-600" />,
+    confidentiality: <Shield className="w-5 h-5 text-green-600" />,
+    quality: <Award className="w-5 h-5 text-green-600" />,
+  };
+
+  const features = featureKeys.map((key) => ({
+    icon: featureIconMap[key],
+    text: t(`process.features.${key}`),
+  }));
 
   const handleGetStarted = () => {
     navigate("/quote");
   };
+
+  // Helper function for positioning class
+  const getNumberPositionClass = () => {
+    return isRtl ? "-top-3 -left-3" : "-top-3 -right-3";
+  };
+
+  // Helper function for margin class
+  const getMarginClass = () => {
+    return isRtl ? "me-2" : "ml-2";
+  };
+
+  // Helper function for the Arrow icon
+  const ArrowIcon = isRtl ? ArrowLeft : ArrowRight;
 
   return (
     <section className="px-6 py-16 bg-gray-50 md:px-20">
@@ -83,14 +89,12 @@ export default function ProcessWalkthrough() {
         className="max-w-3xl mx-auto mb-12 text-center"
       >
         <span className="inline-block px-4 py-1 mb-3 text-sm font-semibold text-green-600 bg-green-100 rounded-full">
-          How It Works
+          {t("process.header.badge")}
         </span>
         <h2 className="mb-4 text-3xl font-bold text-gray-900">
-          Simple 4-Step Process
+          {t("process.header.title")}
         </h2>
-        <p className="text-gray-600">
-          From upload to delivery - professional translation made easy
-        </p>
+        <p className="text-gray-600">{t("process.header.description")}</p>
       </motion.div>
 
       {/* Process Steps - Streamlined */}
@@ -106,7 +110,9 @@ export default function ProcessWalkthrough() {
               className="relative p-6 transition-shadow duration-300 bg-white shadow-md rounded-xl hover:shadow-lg"
             >
               {/* Step Number */}
-              <div className="absolute flex items-center justify-center w-8 h-8 text-sm font-bold text-white bg-green-600 rounded-full -top-3 -right-3">
+              <div
+                className={`absolute flex items-center justify-center w-8 h-8 text-sm font-bold text-white bg-green-600 rounded-full ${getNumberPositionClass()}`} // <-- RTL Position
+              >
                 {step.number}
               </div>
 
@@ -128,8 +134,13 @@ export default function ProcessWalkthrough() {
 
               {/* Connector Arrow (hidden on mobile, last item) */}
               {index < steps.length - 1 && (
-                <div className="absolute hidden transform -translate-y-1/2 lg:block -right-3 top-1/2">
-                  <ArrowRight className="w-6 h-6 text-gray-300" />
+                <div
+                  className={`absolute hidden transform -translate-y-1/2 lg:block ${
+                    isRtl ? "-left-3" : "-right-3"
+                  } top-1/2`} // <-- RTL Position
+                >
+                  <ArrowIcon className="w-6 h-6 text-gray-300" />{" "}
+                  {/* <-- Dynamic Arrow */}
                 </div>
               )}
             </motion.div>
@@ -149,7 +160,9 @@ export default function ProcessWalkthrough() {
           {features.map((feature, index) => (
             <div key={index} className="flex items-center">
               {feature.icon}
-              <span className="ml-2 font-medium text-gray-700">
+              <span className={`${getMarginClass()} font-medium text-gray-700`}>
+                {" "}
+                {/* <-- RTL Margin */}
                 {feature.text}
               </span>
             </div>
@@ -167,19 +180,18 @@ export default function ProcessWalkthrough() {
       >
         <div className="p-8 shadow-lg bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl">
           <h3 className="mb-4 text-2xl font-bold text-white">
-            Ready to Get Started?
+            {t("process.cta.title")}
           </h3>
-          <p className="mb-6 text-green-100">
-            Upload your document now and get a free quote in minutes
-          </p>
+          <p className="mb-6 text-green-100">{t("process.cta.description")}</p>
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleGetStarted}
             className="inline-flex items-center px-8 py-3 font-medium text-green-600 transition-all duration-300 bg-white rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-white"
           >
-            Start Your Project
-            <ArrowRight className="w-5 h-5 ml-2" />
+            {t("process.cta.button")}
+            <ArrowIcon className={`w-5 h-5 ${getMarginClass()}`} />{" "}
+            {/* <-- RTL Margin and Dynamic Arrow */}
           </motion.button>
         </div>
       </motion.div>

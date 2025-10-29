@@ -1,0 +1,1064 @@
+{
+  "nav": {
+    "home": "Ile",
+    "about": "Nipa Wa",
+    "services": "Awọn Iṣẹ",
+    "languages": "Awọn Èdè",
+    "contact": "Kan si Wa",
+    "login": "Wọle",
+    "getQuote": "Gba Iye Owo"
+  },
+  "language": {
+    "en": "Èdè Gẹ̀ẹ́sì",
+    "fr": "Èdè Faransé",
+    "ar": "Èdè Lárúbáwá",
+    "yo": "Èdè Yorùbá"
+  },
+
+  "hero": {
+    "title1": "Fífọ́",
+    "title2": "Ìdènà Èdè",
+    "title3": "Kíkọ́",
+    "title4": "Àsọ̀pọ̀ Àgbáyé",
+    "description1": "A ń pèsè iṣẹ́ ìtumọ̀ àti ìtumọ̀ ọ̀rọ̀ sí i ní èdè tí ó ju",
+    "languages": "200 lọ",
+    "description2": "Láti ìwé, ojú ewé intánẹ́ẹ̀tì, àti àwọn àpò fọ́ọ̀mù sí ohùn ọ̀rọ̀ àti ìtumọ̀ lásìkò gidi, àwọn amọ̀yẹ́ wa tí a fọwọ́ sí i rí i dájú pé ìfiranṣẹ́ rẹ dé orí ilẹ̀ ayé pẹ̀lú ìmọ́lẹ̀ àti ìṣọ̀tẹ́ àṣà.",
+    "getQuote": "Gba Ìdíye",
+    "learnMore": "Kọ́ Òye",
+    "imageAlt1": "Àwòrán Ìtumọ̀ 1",
+    "imageAlt2": "Àwòrán Ìtumọ̀ 2",
+    "imageAlt3": "Àwòrán Ìtumọ̀ 3",
+    "goToSlide": "Lọ sí fáàdì {{number}}"
+  },
+
+  "about": {
+    "heading": {
+      "badge": "Nipa Wa",
+      "description": "A jẹ́ ilé-iṣẹ́ ìtumọ̀ àti ìtúmọ̀ ọ̀rọ̀ tó ń ran àwọn ilé-iṣẹ́, àwọn àjọ, àti àwọn ẹni kọọkan lọ́wọ́ láti bá a rò lọ́rọ̀ pẹ̀lú àìlera. Pẹ̀lú àwọn onítumọ̀ tó ní ìjẹ́rìí àti amòye nípa àṣà, a dájú pé ìfiranṣẹ́ rẹ yóò jẹ́ kedere àti pẹ̀lú ìtọ́kasí tó pé."
+    },
+    "image": {
+      "alt": "Nipa ilé-iṣẹ́ ìtumọ̀ wa"
+    },
+    "features": {
+      "learnMore": "Kọ́ Òye Síi",
+      "languages": {
+        "title": "Èdè 50+",
+        "desc": "Bá àwọn ènìyàn sọ̀rọ̀ ní rírò nínú díẹ̀ ju èdè 50 lọ káàkiri ayé."
+      },
+      "experts": {
+        "title": "Amòye Tó Ní Ìjẹ́rìí",
+        "desc": "Ṣíṣe pẹ̀lú àwọn onítumọ̀ àti alátumọ̀ tó ní ìjẹ́rìí fún ìdánilójú àtọ́kànwá."
+      },
+      "delivery": {
+        "title": "Ìtúmọ̀ Kánkán & Tó Pé",
+        "desc": "Ìtumọ̀ tó yara tó sì pé, láì fi àtọ́ka sílẹ̀."
+      },
+      "accuracy": {
+        "title": "Ìtókasí Àṣà",
+        "desc": "Ìtókasí ìtumọ̀ tó bójú tó àṣà àti ìtumọ̀ gidi nínú gbogbo èdè."
+      }
+    },
+    "offer": {
+      "title": "Ohun Tí A N Ṣe",
+      "description": "Àwọn iṣẹ́ wa ni a ṣe láti ràn ọ lọ́wọ́ láti bù ú wọ́pọ̀ àti láti bá gbogbo ènìyàn sọ̀rọ̀ ní ìgbọ́kànlé, níbi tí o bá wà lórílẹ̀-èdè ayé."
+    },
+    "highlights": {
+      "learnMore": "Kọ́ Òye Síi",
+      "global": {
+        "title": "Ìtumọ̀ Àgbáyé",
+        "desc": "A ń pèsè ìtumọ̀ ní èdè 50+ káàkiri ayé pẹ̀lú ìtumọ̀ tó dá lórí ìmọ̀ ènìyàn. Àwọn onítumọ̀ wa tó ní ìjẹ́rìí ń dájú pé ìfiranṣẹ́ rẹ ń dúró pẹ̀lú ìtumọ̀ rẹ àti àṣà rẹ nínú gbogbo èdè.",
+        "cta": "Gba Ìdíyelé"
+      },
+      "interpreting": {
+        "title": "Ìtúmọ̀ Lásìkò Gidi",
+        "desc": "Ìtúmọ̀ lásìkò fún àwọn ìpàdé, àjọyọ̀, àti àpérò àgbáyé.",
+        "cta": "Wo Àlàyé"
+      },
+      "faith": {
+        "title": "Ìtumọ̀ Ìsìn",
+        "desc": "Ìmọ̀ amòye nípa ìtumọ̀ ẹ̀sìn àti àṣà pẹ̀lú ìbọwọ̀ àti àtọ́ka gidi.",
+        "cta": "Wo Àlàyé"
+      },
+      "support": {
+        "title": "Ìrànlọ́wọ́ & Ìmọ̀ràn",
+        "desc": "Ìtọ́sọ́nà àti ìrànlọ́wọ́ fún àwọn ilé-iṣẹ́ tó ń wọlé sí ọjà àgbáyé.",
+        "cta": "Wo Àlàyé"
+      }
+    }
+  },
+
+  
+    "languages": {
+      "globalReach": "Ìbáṣepọ̀ Àgbáyé",
+      "header": "Àwọn Èdè Tí A ń Ṣàtìlẹ́yìn Fún",
+      "description": "Látinú àwọn èdè àgbáyé pàtàkì dé àwọn èdè ilẹ̀ Nàìjíríà àbínibí, a ń so ọ pọ̀ mọ́ àwọn olùsọ̀rọ̀ káàkiri ayé. Àwọn onítumọ̀ wa tó ní ìjẹ́rìí ní ìmọ̀ nípa àṣà àti àwọn àtúnṣe agbègbè.",
+      "stats": {
+        "languages": "Àwọn Èdè Tí A ń Ṣàtìlẹ́yìn Fún",
+        "speakers": "Àwọn Oní Èdè Àbínibí Tí A Dé",
+        "countries": "Àwọn Orílẹ̀-Èdè Tí A Bo"
+      },
+      "popular": {
+        "title": "Àwọn Èdè Tí Won Máa ń Béèrè Jùlọ"
+      },
+      "explore": {
+        "title": "Ṣàwárí Gbogbo Àwọn Èdè"
+      },
+      "search": {
+        "placeholder": "Ṣàwárí àwọn èdè..."
+      },
+      "regions": {
+        "all": "Gbogbo",
+        "african": "Áfíríkà",
+        "european": "Yúróòpù",
+        "asian": "Ásíà",
+        "middle_eastern": "Àárín Gbùngbùn Ìlà-Oòrùn",
+        "americas": "Amẹ́ríkà"
+      },
+      "localExpertise": "Ìmọ̀ Agbègbè",
+      "seeAll": "Wo Gbogbo Àwọn Èdè",
+      "noResults": "Kò sí èdè tó bá àyẹ̀wò rẹ mu.",
+      "cta": {
+        "title": "O kò rí èdè rẹ?",
+        "description": "A ń gbooro agbára ìtumọ̀ wa lọ́jọ́ dé ọjọ́. Bí o bá nílò èdè tí kò sí nínú àtòjọ̀ yìí, bá wa sọ̀rọ̀ — a lè ní àwọn onítumọ̀ tó dára jùlọ fún un.",
+        "request": "Béèrè èdè kan",
+        "viewAll": "Wo Gbogbo Àwọn Èdè"
+      }
+    },
+  
+
+  "direction": "ltr",
+  "industries": {
+    "header": {
+      "badge": "Ìmọ̀ Ọlá Àgbàye",
+      "title": {
+        "part1": "Ìmọ̀ Ìmọ̀-ìjìnlẹ̀ Kárí",
+        "part2": "Gbogbo Ilé-iṣẹ́"
+      },
+      "description": "Àwọn olùtumọ̀ wa tí a fọwọ́ sí kò kàn mọ èdè lásán—wọ́n mọ àwọn ilé-iṣẹ́. Láti ọ̀rọ̀ ọ̀mọ̀ràn títí dé àwọn ìbòrò àṣà, a mú ìtumọ̀ jáde tí ó ṣiṣẹ́ ní pápá rẹ pàtó."
+    },
+    "popular": {
+      "title": "Àwọn Ilé-iṣẹ́ Tí Wọ́n Béré Jù Lọ",
+      "badge": "Gbajúmọ̀"
+    },
+    "stats": {
+      "projectsLabel": "Àwọn Iṣẹ́",
+      "accuracyLabel": "Ìpọ́mọ́",
+      "certifiedAvailable": "Ìfọwọ́sí Wà"
+    },
+    "details": {
+      "title": "Ìgbòkègbodò Ilé-iṣẹ́ Pípé",
+      "servicesHeader": "Àwọn Iṣẹ́ Pàtàkì Tí A Fúnni:",
+      "projectsStat": "àwọn iṣẹ́ tí a ti parí",
+      "accuracyStat": "ìwọ̀n ìpọ́mọ́",
+      "certifiedStat": "Àwọn ìtumọ̀ tí a fọwọ́ sí wà",
+      "turnaroundStat": "Ìparí iṣẹ́ ní wákàtí 24-72"
+    },
+    "cta": {
+      "title": "Ṣé O Nílò Ìmọ̀ Ọlá Ilé-iṣẹ́ Pàtó?",
+      "description": "Àwọn olùtumọ̀ wa tí wọ́n jẹ́ onímọ̀-ìjìnlẹ̀ lóye àwọn ìbéèrè, àwọn ọ̀rọ̀ ọ̀mọ̀ràn, àti àwọn ìlànà ìdarí pàtó ti ilé-iṣẹ́ rẹ. Gba ìtumọ̀ ọ̀mọ̀ràn tí ó sọ èdè ìṣòwò rẹ.",
+      "quoteButton": "Béèrè Ìdíye Ilé-iṣẹ́",
+      "servicesButton": "Wo Gbogbo Àwọn Iṣẹ́"
+    },
+    "legal": {
+      "title": "Òfin & Ìgbégún",
+      "subtitle": "Tí A Fọwọ́ Sí • Pípọ́mọ́ • Tí Ilé-ẹjọ́ Gbà",
+      "description": "Àwọn iṣẹ́ ìtumọ̀ òfin tí ó jẹ́ àkànṣe fún ìgbégún, ìjà-ẹ̀tọ́, àwọn àdéhùn, àti àwọn ìwé àṣẹ pẹ̀lú ìpọ́mọ́ tí a fọwọ́ sí.",
+      "services": [
+        "Àwọn ìwé ìgbégún",
+        "Àwọn ìgbésẹ̀ ilé-ẹjọ́",
+        "Àwọn àdéhùn òfin",
+        "Àwọn ìwé-ẹ̀rí & àwọn ìwé àṣẹ",
+        "Àwọn ìbéèrè ìdásílẹ̀",
+        "Àwọn ìwé ìgbìmọ̀"
+      ],
+      "stats": {
+        "projects": "2,500+",
+        "accuracy": "99.8%",
+        "certified": "true"
+      },
+      "popular": "true"
+    },
+    "medical": {
+      "title": "Ìṣègùn & Ìtọ́jú Ìlera",
+      "subtitle": "Pípọ́mọ́ • Ìpamọ́ • Pàtàkì fún Ìgbésí Ayé",
+      "description": "Àwọn iṣẹ́ ìtumọ̀ ìṣègùn tí ó rí i dájú pé ààbò aláìsàn wà ní ààbò nípasẹ̀ ìtumọ̀ pípọ́mọ́ ti àwọn ìwé ìṣègùn, àwọn ìwé òògùn, àti àwọn ìdánwò oníwòsàn.",
+      "services": [
+        "Àwọn ìwé ìṣègùn",
+        "Àwọn ìwé òògùn",
+        "Àwọn ohun èlò ìdánwò oníwòsàn",
+        "Àwọn fọ́ọmù ìfọwọ́sí aláìsàn",
+        "Àwọn ìwé ìtọ́nisọ́nà ohun èlò ìṣègùn",
+        "Àwọn ìtẹ̀jáde ìwádìí"
+      ],
+      "stats": {
+        "projects": "1,800+",
+        "accuracy": "99.9%",
+        "certified": "true"
+      },
+      "popular": "true"
+    },
+    "business": {
+      "title": "Ìṣòwò & Ìṣúná",
+      "subtitle": "Ìlànà • Ìgbìmọ̀ • Lórí Ìdàgbàsókè",
+      "description": "Àwọn iṣẹ́ ìtumọ̀ ìṣúná àti ìṣòwò tí ó ṣe ìtìlẹ́yìn fún ìtẹ̀síwájú àgbáyé, ìfowópamọ́, àti ìṣòwò kárí-ayé.",
+      "services": [
+        "Àwọn ìròyìn ìṣúná",
+        "Àwọn ètò ìṣòwò",
+        "Àwọn ìwé ìfowópamọ́",
+        "Àwọn ohun èlò báńkì",
+        "Àwọn ìlànà ìdáàbòbò",
+        "Àwọn ìròyìn ìwádìí"
+      ],
+      "stats": {
+        "projects": "3,200+",
+        "accuracy": "99.7%",
+        "certified": "true"
+      },
+      "popular": "true"
+    },
+    "educational": {
+      "title": "Àwọn Ilé-ẹ̀kọ́",
+      "subtitle": "Ìwé Kíkà • Tí A Mọ̀ • Lórí Akẹ́kọ̀ọ́",
+      "description": "Àwọn iṣẹ́ ìtumọ̀ ẹ̀kọ́ tí ó ṣe ìtìlẹ́yìn fún àwọn akẹ́kọ̀ọ́ àgbáyé, ìwádìí ọ̀mọ̀wé, àti àwọn ìbáṣepọ̀ ilé-iṣẹ́.",
+      "services": [
+        "Àwọn àkọsílẹ̀ ẹ̀kọ́",
+        "Àwọn ìwé ẹ̀rí diploma",
+        "Àwọn ìwé ìwádìí",
+        "Àwọn ohun èlò kíkà",
+        "Àwọn ìbéèrè akẹ́kọ̀ọ́",
+        "Àwọn àdéhùn ilé-iṣẹ́"
+      ],
+      "stats": {
+        "projects": "4,100+",
+        "accuracy": "99.6%",
+        "certified": "true"
+      },
+      "popular": "false"
+    },
+    "religious": {
+      "title": "Àwọn Ẹgbẹ́ Ẹ̀sìn",
+      "subtitle": "Ọ̀wọ̀ • Àṣà • Olóòótọ́",
+      "description": "Àwọn iṣẹ́ ìtumọ̀ orí ẹ̀sìn pẹ̀lú òye àṣà tí ó jinlẹ̀ àti ọ̀wọ̀ fún àwọn ìwé àti ohun èlò ẹ̀sìn.",
+      "services": [
+        "Àwọn ìwé ẹ̀sìn",
+        "Àwọn ohun èlò ìwàásù",
+        "Àwọn ohun èlò orí ẹ̀sìn",
+        "Ìpàdé àwùjọ",
+        "Àwọn ìwé ìránṣẹ́ ẹ̀sìn",
+        "Ìtọ́sọ́nà ẹ̀mí"
+      ],
+      "stats": {
+        "projects": "850+",
+        "accuracy": "99.5%",
+        "certified": "false"
+      },
+      "popular": "false"
+    },
+    "government": {
+      "title": "Àwọn Ilé-iṣẹ́ Ìjọba",
+      "subtitle": "Aláṣẹ • Tí Ó Dánilójú • Ìgbìmọ̀",
+      "description": "Àwọn iṣẹ́ ìtumọ̀ ìjọba tí ó rí i dájú pé ìgbìmọ̀ wà pẹ̀lú àwọn ìlànà aláṣẹ àti àwọn ìbéèrè ààbò fún ìbáraẹnisọrọ̀ àwọn ará ìlú.",
+      "services": [
+        "Àwọn ìwé aláṣẹ",
+        "Àwọn ohun èlò ìlànà",
+        "Ìbáraẹnisọrọ̀ àwọn ará ìlú",
+        "Àwọn ìwé ìdarí",
+        "Àwọn àdéhùn àgbáyé",
+        "Ìgbìmọ̀ ajíṣẹ́-ọ̀rọ̀"
+      ],
+      "stats": {
+        "projects": "1,200+",
+        "accuracy": "99.9%",
+        "certified": "true"
+      },
+      "popular": "false"
+    },
+    "tourism": {
+      "title": "Ìrìn-àjò & Ilé-ìgbálẹ̀jó",
+      "subtitle": "Ìtẹ́wọ́gbà • Àṣà • Lórí Ìrírí",
+      "description": "Àwọn ìtumọ̀ ìrìn-àjò àti ilé-ìgbálẹ̀jó tí ó mú àwọn ìbòrò àṣà wá, tí ó sì dá àwọn ìrírí ìtẹ́wọ́gbà fún àwọn àlejò àgbáyé.",
+      "services": [
+        "Àwọn ohun èlò ìpolówó ọjà",
+        "Àwọn ohun èlò ojú-òpó wẹ́ẹ̀bù",
+        "Àwọn ìtumọ̀ àwọn oúnjẹ",
+        "Àwọn ìtọ́nisọ́nà ìrìn-àjò",
+        "Ìbáraẹnisọrọ̀ ilé-ìgbálẹ̀jó",
+        "Àwọn ìwé ìrìn-àjò"
+      ],
+      "stats": {
+        "projects": "950+",
+        "accuracy": "99.4%",
+        "certified": "false"
+      },
+      "popular": "false"
+    },
+    "ecommerce": {
+      "title": "Ìṣòwò Lórí Ẹ̀rọ Ayélujára & Títà Ní Ilé-ìtajà",
+      "subtitle": "Ìyípadà • Ìwífún • Lórí Títà",
+      "description": "Àwọn iṣẹ́ ìtumọ̀ ìṣòwò lórí ẹ̀rọ ayélujára tí ó mú títà wá nípasẹ̀ àwọn ìṣàpèjúwe ọjà àti àwọn ohun èlò ìpolówó ọjà tí a yí padà fún àṣà.",
+      "services": [
+        "Ìṣàpèjúwe ọjà",
+        "Àwọn ìpolówó ọjà",
+        "Ìtìlẹ́yìn oníbàárà",
+        "Àwọn ètò ìsanwó",
+        "Àwọn ìbáṣepọ̀ olùlò",
+        "Ìránṣẹ́ orúkọ ọjà"
+      ],
+      "stats": {
+        "projects": "2,800+",
+        "accuracy": "99.3%",
+        "certified": "false"
+      },
+      "popular": "true"
+    }
+  },
+  "whyChooseUs": {
+    "header": {
+      "badge": "Èéṣe Tí O Fi Ní Láti Yàn Wá",
+      "title": {
+        "part1": "Alábàákẹ́gbẹ́ Ìtumọ̀ Tí Wọ́n Gbẹ́kẹ̀ Lé Jù Lọ",
+        "part2": "Ní Nàìjíríà"
+      },
+      "description": "Dára pọ̀ mọ́ ẹgbẹ̀rún àwọn oníbàárà tí wọ́n ti tẹ́ lọ́rùn tí wọ́n gbẹ́kẹ̀ lé ILI-Nigeria fún àwọn àìní ìtumọ̀ pàtàkì wọn. Èyí ni ìdí tí a fi jẹ́ àṣàyàn tí wọ́n fẹ́ràn jù lọ kárí Nàìjíríà àti yíká àgbáyé."
+    },
+    "stats": {
+      "clients": "Àwọn Oníbàárà Ayọ̀",
+      "projects": "Àwọn Iṣẹ́ Tí A Ti Parí",
+      "satisfaction": "Ìwọ̀n Ìtẹ́lọ́rùn",
+      "languages": "Àwọn Èdè Tí A Ń Tì Lẹ́yìn"
+    },
+    "cta": {
+      "title": "Ṣé O Ti Múra Láti Rí Ìyàtọ̀ Náà?",
+      "description": "Dára pọ̀ mọ́ 5,000+ àwọn oníbàárà tí wọ́n ti tẹ́ lọ́rùn tí wọ́n gbẹ́kẹ̀ lé ILI-Nigeria fún àwọn àìní ìtumọ̀ wọn. Gba ìdíye ọ̀fẹ́ rẹ lónìí kí o sì rí i pé èéṣe tí a fi jẹ́ iṣẹ́ ìtumọ̀ Nọ́mbà 1 ti Nàìjíríà.",
+      "quoteButton": "Gba Ìdíye Ọ̀fẹ́",
+      "contactButton": "Kàn Sí Wa Lónìí"
+    }
+  },
+  "advantages": {
+    "title": "Ohun Tí Ó Ya Wa Sọ́tọ̀",
+    "certified": {
+      "title": "Àwọn Olùtumọ̀ Tí A Fọwọ́ Sí",
+      "description": "Gbogbo àwọn olùtumọ̀ wa jẹ́ àwọn ọ̀mọ̀wé tí a fọwọ́ sí pẹ̀lú ìmọ̀-ọlá àkànṣe-iṣẹ́ àti àkọsílẹ̀ iṣẹ́ tí ó dánilójú.",
+      "features": [
+        "Tí A Fọwọ́ Sí ISO 17100",
+        "Tí Ilé-ẹ̀kọ́ Gíga Mú Yẹ",
+        "Àwọn Ọ̀mọ̀ràn Ilé-iṣẹ́",
+        "Ìdálẹ́kọ̀ọ́ Tí Ó Ń Tẹ̀síwájú"
+      ]
+    },
+    "delivery": {
+      "title": "Ìfiránṣẹ́ Tí Ó Yára Bí Ààrá",
+      "description": "A mọ̀ pé àwọn àkókò ìparí iṣẹ́ kà. Ìlànà wa tí a túnṣe rí i dájú pé ìparí iṣẹ́ yára láìsí àtakò sí didara.",
+      "features": [
+        "Iṣẹ́ Àgàgàrì Tí Ó Wá Tààrà Ní Wákàtí 24",
+        "Ìgbéṣẹ̀ Tuntun Ní Àkókò Gidi",
+        "Ànfàní Ìmúlò Ní Ìparí Ọ̀sẹ̀",
+        "Ìparí Iṣẹ́ Àgàgàrì"
+      ]
+    },
+    "quality": {
+      "title": "Didara Tí A Ṣe Ìdánilójú",
+      "description": "Gbogbo ìtumọ̀ kọ̀ọ̀kan ni ó ń kọjá àwọn ìdánwò didara tí ó fún ni lóye pẹ̀lú ìlànà àtúnyẹ̀wò ìgbésẹ̀-púpọ̀ wa àti ìdánilójú ìpọ́mọ́.",
+      "features": [
+        "Ìlànà Àtúnyẹ̀wò Ìgbésẹ̀-3",
+        "Ìwọ̀n Ìpọ́mọ́ 99.8%",
+        "Ìdánilójú Ìdápadà Owó",
+        "Àwọn Ìwé Ẹ̀rí Didara"
+      ]
+    },
+    "cultural": {
+      "title": "Ìfara-balẹ̀ Àṣà",
+      "description": "A kò kàn túmọ̀ àwọn ọ̀rọ̀ lásán - a ń so àwọn àṣà pọ̀ pẹ̀lú òye jíjinlẹ̀ ti àwọn àṣà àti ìbòrò àdúgbò.",
+      "features": [
+        "Àwọn Ọ̀mọ̀ràn Àṣà Àdúgbò",
+        "Ìfọkànsí Ọjà Nàìjíríà",
+        "Àwọn Ìyàtọ̀ Àgbègbè",
+        "Ìfọwọ́wọ̀ Àṣà"
+      ]
+    },
+    "industry": {
+      "title": "Ìmọ̀ Ọlá Àkànṣe-iṣẹ́",
+      "description": "Ìmọ̀-ìjìnlẹ̀ àkànṣe-iṣẹ́ kárí 8+ àwọn ilé-iṣẹ́ rí i dájú pé a túmọ̀ àwọn ohun èlò rẹ pẹ̀lú àwọn ọ̀rọ̀ ọ̀mọ̀ràn tí ó tọ́.",
+      "features": [
+        "8+ Àwọn Ilé-iṣẹ́ Tí A Gbòkègbodò",
+        "Àwọn Ọ̀mọ̀ràn Ìmọ̀-ẹ̀rọ",
+        "Tí A Fọwọ́ Sí Lófin",
+        "Ìmọ̀ Ọlá Ìṣègùn"
+      ]
+    },
+    "support": {
+      "title": "Ìtìlẹ́yìn 24/7",
+      "description": "Ìtìlẹ́yìn oníbàárà wákàtí-yíká rí i dájú pé o ní ìrànlọ́wọ́ nígbàkúgbà tí o bá nílò rẹ̀ jù lọ.",
+      "features": [
+        "Ìjíròrò Láàyè 24/7",
+        "Àwọn Olùdarí Àkànṣe",
+        "Ìtìlẹ́yìn Fóònù",
+        "WhatsApp Wà"
+      ]
+    }
+  },
+  "testimonialsHeader": "Ohun Tí Àwọn Oníbàárà Wa Sọ",
+  "testimonialProjectLabel": "Iṣẹ́",
+  "testimonials": [
+    {
+      "name": "Adebayo Okonkwo",
+      "role": "Agbejoro Igbegun",
+      "company": "Lagos Legal Associates",
+      "location": "Lagos, Nigeria",
+      "rating": 5,
+      "text": "ILI-Nigeria ti yí iṣẹ́ mi padà. Àwọn ìtumọ̀ tí wọ́n fọwọ́ sí ni àwọn aṣojú orílẹ̀-èdè káríayé gbà, àti pé àkókò ìparí iṣẹ́ kò gbàgbé. Mo ti parí 200 àwọn iṣẹ́ ìgbégún pẹ̀lú ìrànlọ́wọ́ wọn.",
+      "project": "Ìtumọ̀ Ìwé Òfin",
+      "image": "👨🏿‍💼"
+    },
+    {
+      "name": "Dr. Fatima Al-Hassan",
+      "role": "Olùdarí Ìṣègùn",
+      "company": "Abuja Medical Center",
+      "location": "Abuja, Nigeria",
+      "rating": 5,
+      "text": "Nígbà tí a bá ń bá àwọn aláìsàn àgbáyé ṣe, ìpọ́mọ́ jẹ́ ọ̀rọ̀ ìyè tàbí ikú. Àwọn ìtumọ̀ ìṣègùn ti ILI-Nigeria kò ní àbùkù, àti pé ìfara-balẹ̀ àṣà wọn mú kí àwọn aláìsàn wa ní òye.",
+      "project": "Ìtumọ̀ Àwọn Ìwé Ìṣègùn",
+      "image": "👩🏿‍⚕️"
+    },
+    {
+      "name": "James Chen",
+      "role": "Ìdàgbàsókè Ìṣòwò",
+      "company": "TechNova Solutions",
+      "location": "Singapore",
+      "rating": 5,
+      "text": "Ìtẹ̀síwájú sí ọjà Áfíríkà dà bí ohun tí ó kún fún ìdààmú títí di ìgbà tí a rí ILI-Nigeria. Wọn kò kàn túmọ̀ ojú-òpó wẹ́ẹ̀bù wa lásán - wọ́n yí i padà pátápátá fún àwọn oníbàárà Nàìjíríà. Àwọn títà pọ̀ sí i ní 340%!",
+      "project": "Ìfọwọ́wọ̀ Ojú-òpó Wẹ́ẹ̀bù",
+      "image": "👨‍💻"
+    },
+    {
+      "name": "Sarah Muhammad",
+      "role": "Ọmọ Akẹ́kọ̀ọ́ PhD",
+      "company": "University of Cambridge",
+      "location": "Cambridge, UK",
+      "rating": 5,
+      "text": "Àwọn àkọsílẹ̀ ọ̀mọ̀wé mi nílò ìtumọ̀ pípé fún ìbéèrè Cambridge mi. ILI-Nigeria fi àwọn ìtumọ̀ tí a fọwọ́ sí ránṣẹ́ tí wọ́n gbà lẹ́sẹ̀kẹsẹ̀. Wọ́n jẹ́ kí àlá mi ṣẹ!",
+      "project": "Ìtumọ̀ Àkọsílẹ̀ Ọ̀mọ̀wé",
+      "image": "👩🏿‍🎓"
+    },
+    {
+      "name": "Pastor David Okafor",
+      "role": "Pásítọ̀ Alàgbà",
+      "company": "Grace Baptist Church",
+      "location": "Enugu, Nigeria",
+      "rating": 5,
+      "text": "Ìtumọ̀ àwọn ohun èlò ẹ̀sìn nílò òye àṣà tí ó jinlẹ̀. Ẹgbẹ́ ILI-Nigeria bọ̀wọ̀ fún ìgbàgbọ́ wa nígbà tí wọ́n ń fi àwọn ìtumọ̀ ránṣẹ́ tí ó kàn wá pẹ̀lú ìjọ wa tí ó ń sọ èdè púpọ̀.",
+      "project": "Ìtumọ̀ Ohun Èlò Ẹ̀sìn",
+      "image": "👨🏿‍🏫"
+    }
+  ],
+  "process": {
+    "header": {
+      "badge": "Bí Ó Ti Ń Ṣiṣẹ́",
+      "title": "Ìlànà Ìgbésẹ̀-4 Tí Ó Rọrùn",
+      "description": "Láti inú ìgbéṣọ̀ sí ìfiránṣẹ́ - ìtumọ̀ ọ̀mọ̀wé tí a ṣe láìrọrùn"
+    },
+    "number": "0{{number}}",
+    "steps": {
+      "upload": {
+        "title": "Ìgbéṣọ̀ àti Ìdíye",
+        "description": "Fi ìwé rẹ ránṣẹ́ kí o sì gba ìdíye lẹ́sẹ̀kẹsẹ̀",
+        "details": "Ìdíye ọ̀fẹ́ ní wákàtí 30"
+      },
+      "assignment": {
+        "title": "Àbùkù Ọ̀mọ̀ràn",
+        "description": "Olùtumọ̀ tí a fọwọ́ sí tí ó bá iṣẹ́ rẹ mu",
+        "details": "Àkànṣe-iṣẹ́ ilé-iṣẹ́ tí a yàn"
+      },
+      "translation": {
+        "title": "Ìtumọ̀ àti Àtúnyẹ̀wò",
+        "description": "Ìtumọ̀ ọ̀mọ̀wé pẹ̀lú àwọn ìdánwò didara",
+        "details": "Ìlànà àtúnyẹ̀wò ìgbésẹ̀-3"
+      },
+      "delivery": {
+        "title": "Ìfiránṣẹ́ àti Ìtìlẹ́yìn",
+        "description": "Ìwé ìkẹyìn pẹ̀lú ìtìlẹ́yìn tí ó ń tẹ̀síwájú",
+        "details": "Iṣẹ́ oníbàárà 24/7"
+      }
+    },
+    "features": {
+      "deliveryTime": "Ìfiránṣẹ́ wákàtí 24-48",
+      "confidentiality": "Ìbàmọ́ 100%",
+      "quality": "Didara tí a fọwọ́ sí"
+    },
+    "cta": {
+      "title": "Ṣé O Ti Múra Láti Bẹ̀rẹ̀?",
+      "description": "Gbé ìwé rẹ lọ sókè nísinsìnyí kí o sì gba ìdíye ọ̀fẹ́ ní iṣẹ́ ìṣẹ́jú",
+      "button": "Bẹ̀rẹ̀ Iṣẹ́ Rẹ"
+    }
+  },
+  "pricing": {
+    "header": {
+      "badge": "Ìdíye Títọ́",
+      "title": "Ìdíye Tí Ó Rọrùn, Tí Ó Tọ́",
+      "description": "Yan èdidi tí ó bá àìní rẹ mu. Gbogbo ìdíye wà ní Naira Nàìjíríà."
+    },
+    "toggle": {
+      "perWord": "Nípa Ọ̀rọ̀",
+      "perPage": "Nípa Ojú-ìwé"
+    },
+    "popularBadge": "Tí Ó Gbajúmọ̀ Jù Lọ",
+    "units": {
+      "word": "ọ̀rọ̀",
+      "page": "ojú-ìwé"
+    },
+    "chooseButton": "Yan {{packageName}}",
+    "packages": {
+      "standard": {
+        "name": "Standard",
+        "subtitle": "Fún àwọn àìní ìtumọ̀ ojoojúmọ́",
+        "pricePerWord": "₦25",
+        "pricePerPage": "₦8,500",
+        "turnaround": "Wákàtí 48-72",
+        "features": [
+          "Ìtumọ̀ ọ̀mọ̀wé",
+          "Ìdánwò didara ìpìlẹ̀",
+          "Ìtìlẹ́yìn lórí Email",
+          "Ìfiránṣẹ́ Standard"
+        ]
+      },
+      "professional": {
+        "name": "Ọ̀mọ̀wé",
+        "subtitle": "Àṣàyàn tí ó gbajúmọ̀ jùlọ",
+        "pricePerWord": "₦35",
+        "pricePerPage": "₦12,000",
+        "turnaround": "Wákàtí 24-48",
+        "features": [
+          "Olùtumọ̀ tí a fọwọ́ sí",
+          "Àtúnyẹ̀wò didara ìgbésẹ̀-2",
+          "Ìtìlẹ́yìn àkọ́kọ́",
+          "Ìfiránṣẹ́ wákàtí wà",
+          "Àtúnṣe wà"
+        ]
+      },
+      "premium": {
+        "name": "Premium",
+        "subtitle": "Fún àwọn ìwé-àṣẹ pàtàkì",
+        "pricePerWord": "₦50",
+        "pricePerPage": "₦18,000",
+        "turnaround": "Wákàtí 12-24",
+        "features": [
+          "Ọ̀mọ̀ràn gbajúmọ̀",
+          "Àtúnyẹ̀wò didara ìgbésẹ̀-3",
+          "Aṣáájú tí a yà sọ́tọ̀",
+          "Ìfiránṣẹ́ ọjọ́ kan náà",
+          "Àtúnṣe láìsí ààlà",
+          "Ìfọwọ́sí wà"
+        ]
+      }
+    },
+    "calculator": {
+      "title": "Ìṣirò Ìdíye Kánkán",
+      "description": "Gba ìṣirò lẹ́sẹ̀kẹsẹ̀ fún iṣẹ́ rẹ",
+      "button": "Ṣirò Ìdíye"
+    },
+    "trustIndicators": {
+      "guarantee": "Ìdánilójú ìpadà owó",
+      "quality": "Didara tí a fọwọ́ sí",
+      "delivery": "Ìfiránṣẹ́ lórí àkókò"
+    }
+  },
+  "stories": {
+    "header": {
+      "badge": "Ìtàn Àṣeyọrí",
+      "title": "Àbájáde Gidi, Ìpa Tòótọ́",
+      "description": "Wo bí a ti ran àwọn oníbàárà lọ́wọ́ láti ṣàṣeyọrí àwọn àfojúsùn wọn káàkiri àgbáyé"
+    },
+    "labels": {
+      "challenge": "Ìpènijà",
+      "solution": "Ojútùú",
+      "in": "ní"
+    },
+    "technova": {
+      "company": "TechNova Solutions",
+      "industry": "Iṣòwò Ìtanna",
+      "challenge": "Fífẹ̀ sí àwọn ọjà Áfíríkà",
+      "solution": "Ìbáṣiṣẹ́ àti ìfiránṣẹ́ ìpolówó ọjà",
+      "results": {
+        "metric": "340%",
+        "description": "Ìbísí Títà",
+        "timeline": "osu 6"
+      },
+      "stats": [
+        {
+          "iconKey": "trendingUp",
+          "label": "Ìdàgbàsókè Owó",
+          "value": "340%"
+        },
+        {
+          "iconKey": "globeBlue",
+          "label": "Ọjà Tí A Tẹ̀síwájú",
+          "value": "12"
+        },
+        {
+          "iconKey": "usersPurple",
+          "label": "Àwọn Oníbàárà Tuntun",
+          "value": "+15K"
+        }
+      ],
+      "quote": "ILI-Nigeria kì í ṣe pé ó kàn tú ohun tí a kọ sí; wọ́n ràn wá lọ́wọ́ láti mọ àwọn ọjà gbogbo.",
+      "client": "James Chen, Olùdarí Iṣẹ́ Àgbà"
+    },
+    "lagosMedical": {
+      "company": "Ilé-Ìwòsàn Lagos",
+      "industry": "Ìlera",
+      "challenge": "Ṣíṣe ìránṣẹ́ fún àwọn aláìsàn àgbáyé",
+      "solution": "Ìtumọ̀ àwọn ìwé ìwòsàn",
+      "results": {
+        "metric": "95%",
+        "description": "Ìtẹ́lọ́rùn Aláìsàn",
+        "timeline": "ọdún 1"
+      },
+      "stats": [
+        {
+          "iconKey": "usersRed",
+          "label": "Àwọn Aláìsàn Tí A Ṣe Ìránṣẹ́ Fún",
+          "value": "+2,500"
+        },
+        {
+          "iconKey": "globeBlue",
+          "label": "Àwọn Èdè",
+          "value": "15"
+        },
+        {
+          "iconKey": "awardAmber",
+          "label": "Ìwọ̀n Ìpéye",
+          "value": "99.9%"
+        }
+      ],
+      "quote": "Ìtumọ̀ ìwòsàn tí ó péye jẹ́ ìgbàlà èmí. ILI-Nigeria ń fi ìdánilójú hàn.",
+      "client": "Dr. Sarah Adebayo, Olùdarí Àwọn Alàkóso Ìwòsàn"
+    },
+    "federalMinistry": {
+      "company": "Iṣẹ́ Ìjọba Àpapọ̀",
+      "industry": "Ìjọba",
+      "challenge": "Àwọn àdéhùn àgbáyé",
+      "solution": "Ìtumọ̀ àwọn ìwé àṣẹ ìjọba",
+      "results": {
+        "metric": "100%",
+        "description": "Ìtẹ́wọ́gbà Ìjoba Ajeji",
+        "timeline": "ọdún 2"
+      },
+      "stats": [
+        {
+          "iconKey": "awardBlue",
+          "label": "Àwọn Ìwé Àṣẹ",
+          "value": "+1,200"
+        },
+        {
+          "iconKey": "globeGreen",
+          "label": "Àwọn Orílẹ̀-Èdè",
+          "value": "25"
+        },
+        {
+          "iconKey": "clockOrange",
+          "label": "Àkókò Ìfiránṣẹ́",
+          "value": "24hrs"
+        }
+      ],
+      "quote": "Àwọn ìtumọ̀ ìjọba ń béèrè ìpéye pípé. ILI-Nigeria kò tíì já wa kulẹ̀ rí.",
+      "client": "Ọ́fíìsì Olùdarí Ọlá"
+    },
+    "cta": {
+      "title": "Ṣé O Ti Múra Láti Dá Ìtàn Àṣeyọrí Rẹ?",
+      "description": "Darapọ̀ mọ́ àwọn ilé-iṣẹ́ àṣeyọrí wọ̀nyí kí o sì ṣàṣeyọrí àwọn àfojúsùn rẹ káàkiri àgbáyé",
+      "button": "Bẹ̀rẹ̀ Iṣẹ́ Rẹ"
+    }
+  },
+  "team": {
+    "header": {
+      "badge": "Ẹgbẹ́ Wa",
+      "title": "Àwọn Olùtumọ̀ Ọ̀mọ̀wé, Àbájáde Tí A Fìdí Rẹ̀ Múlẹ̀",
+      "description": "Pàdé àwọn ọ̀mọ̀wé tí a fọwọ́ sí tí ó jẹ́ kí ìbánisọ̀rọ̀ àgbáyé rẹ ṣe é ṣe"
+    },
+    "labels": {
+      "languages": "Àwọn Èdè",
+      "experience": "ọdún ìrírí",
+      "certifications": "Àwọn Ìfọwọ́sí",
+      "plus": "+{{count}}"
+    },
+    "stats": [
+      {
+        "iconKey": "users",
+        "label": "Àwọn Olùtumọ̀ Ọ̀mọ̀wé",
+        "value": "+50"
+      },
+      {
+        "iconKey": "languages",
+        "label": "Àwọn Èdè Tí A Bo",
+        "value": "+50"
+      },
+      {
+        "iconKey": "award",
+        "label": "Àwọn Ìfọwọ́sí",
+        "value": "+200"
+      },
+      {
+        "iconKey": "globe",
+        "label": "Ọdún Ìrírí",
+        "value": "+15"
+      }
+    ],
+    "members": {
+      "aminaBello": {
+        "name": "Dr. Amina Bello",
+        "role": "Olùdarí Ìtumọ̀ Àkọ́kọ́",
+        "specialization": "Ìtumọ̀ Ìwòsàn àti Òfin",
+        "languages": ["Èdè Gẹ̀ẹ́sì", "Èdè Faransé", "Èdè Árábìkì", "Èdè Hausa"],
+        "experience": "+Ọdún 12",
+        "certifications": ["ISO 17100", "Ìfọwọ́sí Ìwòsàn", "Ìfọwọ́sí Ilé-Ẹjọ́"],
+        "location": "Lagos, Nigeria",
+        "expertise": "Darí +5,000 ìtumọ̀ ìwòsàn pẹ̀lú ìpéye 99.9%"
+      },
+      "emmanuelOkafor": {
+        "name": "Emmanuel Okafor",
+        "role": "Olùtumọ̀ Iṣẹ́ Àgbà",
+        "specialization": "Ìnáwó àti Ìmọ̀ Ẹ̀rọ",
+        "languages": ["Èdè Gẹ̀ẹ́sì", "Èdè Igbo", "Èdè Jámánì", "Èdè Màndárìn"],
+        "experience": "+Ọdún 8",
+        "certifications": ["Ìfọwọ́sí Iṣẹ́", "Ọ̀mọ̀wé Ẹ̀rọ", "Amọ̀ràn Ìnáwó"],
+        "location": "Abuja, Nigeria",
+        "expertise": "Ran +200 ilé-iṣẹ́ lọ́wọ́ láti fẹ̀ sí àgbáyé"
+      },
+      "fatimaAlRashid": {
+        "name": "Hussaina Yusuf",
+        "role": "Ọ̀mọ̀wé Ìbáṣiṣẹ́ Àṣà",
+        "specialization": "Ohun Kíkọ Ẹ̀sìn àti Ẹ̀kọ́",
+        "languages": ["Èdè Árábìkì", "Èdè Gẹ̀ẹ́sì", "Èdè Faransé", "Èdè Yorùbá"],
+        "experience": "+Ọdún 10",
+        "certifications": ["Ọ̀mọ̀wé Àṣà", "Ìfọwọ́sí Ẹ̀kọ́", "Ọ̀mọ̀wé Ẹ̀sìn"],
+        "location": "Kano, Nigeria",
+        "expertise": "Ìbáṣiṣẹ́ àṣà fún +1,500 àwọn iṣẹ́ ẹ̀kọ́"
+      },
+      "sarahAdeyemi": {
+        "name": "Sarah Adeyemi",
+        "role": "Olùdarí Ìdánilójú Didara",
+        "specialization": "Ìdarí Didara Àwọn Èdè Púpọ̀",
+        "languages": ["Èdè Gẹ̀ẹ́sì", "Èdè Sípéènì", "Èdè Pọ̀túgàl", "Èdè Yorùbá"],
+        "experience": "+Ọdún 9",
+        "certifications": ["Ìfọwọ́sí QA", "Olùyẹ̀wò ISO", "PhD Nínú Èdè"],
+        "location": "Lagos, Nigeria",
+        "expertise": "Ṣe àyẹ̀wò +15,000 ìtumọ̀ láìsí àsìṣe"
+      }
+    },
+    "cta": {
+      "work": {
+        "title": "Bá Àwọn Ọ̀mọ̀wé Wa Ṣiṣẹ́",
+        "description": "Rí olùtumọ̀ pípé bá iṣẹ́ rẹ mu",
+        "button": "Bẹ̀rẹ̀ Iṣẹ́"
+      },
+      "join": {
+        "title": "Darapọ̀ Mọ́ Ẹgbẹ́ Wa",
+        "description": "Ṣé Olùtumọ̀ tí a fọwọ́ sí ni ọ́? A máa ń wá àwọn tó kún fún ẹ̀bùn nígbà gbogbo",
+        "button": "Bẹrẹ́ Nísinsìnyí"
+      }
+    }
+  },
+  "technology": {
+    "header": {
+      "badge": "Ìmọ̀ Ẹ̀rọ àti Àwọn Ìlò",
+      "title": "Ìmọ̀ Ẹ̀rọ Ìtumọ̀ Tí Ó Wà Lórí Òkè",
+      "description": "Àwọn ìlò ìgbàlódé àti àwọn ètò tí AI ń fún ní agbára láti ríi dájú pé títẹ̀síwájú yiyara àti didara gíga"
+    },
+    "main": [
+      {
+        "iconKey": "cpu",
+        "title": "Àwọn Ìlò CAT Tí AI ń Fún ní Agbára",
+        "description": "Àwọn ìlò Ìtumọ̀ Tí Kọ̀mpútà Ń Ràn Lọ́wọ́ (CAT) fún ìbámu àti iyára",
+        "features": [
+          "Ìrántí Ìtumọ̀",
+          "Ìdáláwọn Ọ̀rọ̀",
+          "Ìdánilójú Didara",
+          "Ìfọwọ́sowọ́pọ̀ Àkókò Gidi"
+        ],
+        "bgColor": "bg-blue-50",
+        "iconBg": "bg-blue-100",
+        "borderColor": "border-blue-200"
+      },
+      {
+        "iconKey": "shield",
+        "title": "Ààbò àti Ìfipamọ́",
+        "description": "Ààbò ìpele báǹkì tí ó ń dáàbò bo àwọn ìwé àṣírí rẹ",
+        "features": [
+          "Ìfipamọ́ SSL 256-bit",
+          "Ìgbéyàwó Fáìlì Tó Dáàbò",
+          "Ìfaramọ́ NDA",
+          "Ìfaramọ́ GDPR"
+        ],
+        "bgColor": "bg-green-50",
+        "iconBg": "bg-green-100",
+        "borderColor": "border-green-200"
+      },
+      {
+        "iconKey": "eye",
+        "title": "Ìdánilójú Didara",
+        "description": "Àwọn àyẹ̀wò didara onípele púpọ̀ láti ríi dájú pé ìtumọ̀ pípé",
+        "features": [
+          "Àyẹ̀wò QA Laifọwọyi",
+          "Àyẹ̀wò Ènìyàn",
+          "Ìfọwọ́sí Ìbámu",
+          "Àtúnyẹ̀wò Ìkẹyìn"
+        ],
+        "bgColor": "bg-purple-50",
+        "iconBg": "bg-purple-100",
+        "borderColor": "border-purple-200"
+      },
+      {
+        "iconKey": "monitor",
+        "title": "Ìṣàkóso Iṣẹ́",
+        "description": "Títọpa àkókò gidi àti ìbánisọ̀rọ̀ jálẹ̀ iṣẹ́ rẹ",
+        "features": [
+          "Ìgbéyàwó Ìtẹ̀síwájú Lífì",
+          "Ìbáwọlé Pọ́tálì Oníbàárà",
+          "Ìbánisọ̀rọ̀ Ìranlọ́wọ́ 24/7",
+          "Àwọn Ìgbéyàwó Fífúnni"
+        ],
+        "bgColor": "bg-orange-50",
+        "iconBg": "bg-orange-100",
+        "borderColor": "border-orange-200"
+      }
+    ],
+    "security": {
+      "title": "Ààbò àti Àṣírí",
+      "description": "Àwọn ìwé rẹ ti wà ní ààbò pẹ̀lú ààbò ìpele ilé-iṣẹ́",
+      "features": [
+        {
+          "iconKey": "lock",
+          "text": "Ìfipamọ́ láti òpin sí òpin"
+        },
+        {
+          "iconKey": "database",
+          "text": "Ìpamọ́ awọsánmà tó dáàbò"
+        },
+        {
+          "iconKey": "award",
+          "text": "Ìfọwọ́sí ISO 27001"
+        },
+        {
+          "iconKey": "shield",
+          "text": "Ìfaramọ́ GDPR"
+        }
+      ]
+    },
+    "stats": [
+      {
+        "iconKey": "zap",
+        "value": "50%",
+        "description": "Títẹ̀síwájú yiyara pẹ̀lú àwọn ìlò CAT"
+      },
+      {
+        "iconKey": "eye",
+        "value": "99.8%",
+        "description": "Ìwọ̀n ìpéye didara"
+      },
+      {
+        "iconKey": "cloud",
+        "value": "100%",
+        "description": "Ìṣàmúlò fáìlì tó dáàbò"
+      }
+    ],
+    "cta": {
+      "title": "Rí Ìwúlò Ìmọ̀ Ẹ̀rọ",
+      "description": "Jẹ́ kí àwọn ìlò àtijọ́ àti ẹgbẹ́ amọ̀dájú wa mú àwọn ìtumọ̀ tó dára julọ fún iṣẹ́ rẹ",
+      "button": "Bẹ̀rẹ̀ Iṣẹ́ Rẹ"
+    }
+  },
+  "contact": {
+    "header": {
+      "badge": "Bẹ̀rẹ̀ Lónìí",
+      "title": "Ṣé O Ti Ṣetan Lati Bó Àwọn Ìdènà Èdè?",
+      "description": "Darapọ̀ mọ́ ẹgbẹẹgbẹ̀rún àwọn oníbàárà tí ó gbàgbọ́ ILI-Nigeria fún àwọn àìní ìbánisọ̀rọ̀ àgbáyé wọn"
+    },
+    "methods": {
+      "title": "Yàn Ọ̀nà Ìbánisọ̀rọ̀ Tí O Fẹ́",
+      "whatsapp": {
+        "title": "Ìjíròrò WhatsApp",
+        "description": "Ìdáhùn lẹ́sẹ̀kẹsẹ̀ nípa WhatsApp",
+        "action": "Jíròrò Nísinsìnyí",
+        "available": "Wà Ní 24/7"
+      },
+      "phone": {
+        "title": "Ìrànlọ́wọ́ Orí Fóònù",
+        "description": "Sọ̀rọ̀ tààrà pẹ̀lú àwọn amọ̀dájú wa",
+        "action": "Pè Nísinsìnyí",
+        "available": "Ajé-Ẹtì 8AM-6PM"
+      },
+      "email": {
+        "title": "Ìrànlọ́wọ́ Imeeli",
+        "description": "Àwọn ìjíròrò iṣẹ́-ọnà alálàyé",
+        "action": "Fi Imeeli Ránṣẹ́",
+        "available": "Ìdáhùn 24hr"
+      }
+    },
+    "stats": [
+      {
+        "iconKey": "users",
+        "label": "Ẹgbẹ́ Amọ̀dájú",
+        "value": "50+",
+        "bgColor": "bg-green-50"
+      },
+      {
+        "iconKey": "zap",
+        "label": "Títẹ̀síwájú Yiyara",
+        "value": "24hrs",
+        "bgColor": "bg-amber-50"
+      },
+      {
+        "iconKey": "shield",
+        "label": "Ìwọ̀n Ìpéye",
+        "value": "99.8%",
+        "bgColor": "bg-blue-50"
+      },
+      {
+        "iconKey": "globe",
+        "label": "Àwọn Èdè",
+        "value": "50+",
+        "bgColor": "bg-emerald-50"
+      }
+    ],
+    "offices": {
+      "title": "Àwọn Ibi Wa",
+      "description": "Bẹ́ wa wò ní èyíkéyìí nínú àwọn ọ́fíìsì wa",
+      "mainOfficeBadge": "Ọ́fíìsì Àkọ́kọ́",
+      "emergencyNote": "Ìrànlọ́wọ́ ààbò wà ní 24/7",
+      "officeOgunHours": "Ajé-Ẹtì 8:00 AM - 6:00 PM",
+      "officeAbujaHours": "Ajé-Ẹtì 9:00 AM - 5:00 PM",
+      "officeNiameyHours": "Ajé-Ẹtì 9:00 AM - 5:00 PM",
+      "ogun": {
+        "city": "Ìpínlẹ̀ Ògùn",
+        "fullAddress": "Ago-Iwoye, Ìpínlẹ̀ Ògùn"
+      },
+      "abuja": {
+        "city": "Abuja FCT",
+        "fullAddress": "Agbègbè Ìṣòwò Àárín Gbùngbùn, FCT"
+      },
+      "niamey": {
+        "city": "Niamey, Rép. Niger",
+        "fullAddress": "GRA Phase 2, Niamey"
+      }
+    },
+    "quoteCard": {
+      "title": "Ṣé O Nilo Ìṣirò Ìnáwó Kánnà?",
+      "description": "Gbé ìwé rẹ sílẹ̀ kí o sì rí iye owó ní ìṣẹ́jú díẹ̀",
+      "buttonQuote": "Gba Ìṣirò Ìnáwó Ọ̀fẹ́",
+      "buttonContact": "Fọ́ọ̀mù Ìbánisọ̀rọ̀ Pípé"
+    },
+    "whyChooseUs": {
+      "title": "Kí Nìdí Tí O Fi Yẹ Kóo Yàn ILI-Nigeria",
+      "features": [
+        "Àwọn atúmọ̀ èdè àti onímọ̀ èdè tí a fọwọ́ sí",
+        "Àkókò ìmúdájú wà láàárín 24-48 wákàtí",
+        "Ìdánilójú ìpéye 99.8%",
+        "Iye owó Nàìjíríà tí ó tọ́"
+      ]
+    },
+    "businessHours": {
+      "title": "Àwọn Wákàtí Iṣẹ́",
+      "periods": [
+        {
+          "day": "Ajé - Ẹtì",
+          "hours": "8:00 AM - 6:00 PM"
+        },
+        {
+          "day": "Àbámẹ́ta",
+          "hours": "9:00 AM - 2:00 PM"
+        },
+        {
+          "day": "Àìkú",
+          "hours": "Tí a Pa Dè"
+        }
+      ]
+    },
+    "bottomCta": {
+      "title": "Bẹ̀rẹ̀ Iṣẹ́ Ìtumọ̀ Rẹ Lónìí",
+      "description": "Darapọ̀ mọ́ àwọn oníbàárà tí ó ju 5,000 lọ tí ó gbàgbọ́ ILI-Nigeria fún àwọn iṣẹ́ ìtumọ̀ tí ó pé, yara, tí ó sì gbọ́dọ̀ ní àṣà.",
+      "buttonQuote": "Bẹ̀rẹ̀ Nísinsìnyí",
+      "buttonConsultation": "Ṣètò Ìjíròrò"
+    }
+  },
+
+  "footer": {
+    "newsletter": {
+      "title": "Dúró pẹ̀lú Ìmọ̀ Ìtumọ̀",
+      "description": "Ní ìwòye àwùjọ, ìròyìn ilé-iṣẹ́, àti àwọn ìfẹ́ pàtàkì ti a fi sílẹ̀ sí ìbọ́kò ìraá rẹ. Darapọ̀ pẹ̀lú ju 5,000 lọ onígbàgbọ́ tí o gbá ìmọ̀ wa.",
+      "placeholder": "Tẹ àdírẹ́sì imeèlì rẹ",
+      "subscribe": "Ṣe Arapọ̀",
+      "subscribing": "Ṣiṣẹ́ ìarapọ̀...",
+      "success": "E ṣeun fún arapọ̀ rẹ!",
+      "errorEmpty": "Jọ̀wọ́ tẹ àdírẹ́sì imeèlì",
+      "errorInvalid": "Jọ̀wọ́ tẹ àdírẹ́sì imeèlì tó tọ́",
+      "errorFail": "Arapọ̀ kù",
+      "errorTry": "Ọ̀kan kan ṣẹ̀. Jọ̀wọ́ gbìyànjú ní ìran mìíràn.",
+      "privacy": "Láìs imeèlì tí a kò fẹ́. Fifi ìarapọ̀ kúrò ni àkókò eyigkini. A sọrí abínibí rẹ."
+    },
+    "company": {
+      "name": "ILI Nàìjíríà",
+      "description": "Ìlù ṣiṣẹ ìtumọ̀ àti ìtumọ̀ ọ̀rọ̀ ẹ̀ẹ́kẹ́ Nàìjíríà. Fọ́ ìdènà èdè àti ṣe ìbáraẹnisọrọ̀ àgbáyé láti 2010."
+    },
+    "contact": {
+      "phone": "+234 810 906 7382",
+      "phoneLabel": "Òpólọ Ìrànlọwọ́ 24/7",
+      "email": "official.intlng@gmail.com",
+      "emailLabel": "Ibi-ìṣe ìfộwộpộ",
+      "address": "Ìtamẹ̀rìn, Àgò-Ìwọ́yè",
+      "region": "Ògùn, Nàìjíríà 100001"
+    },
+    "social": {
+      "title": "Bá wa Ní Àbísọ̀"
+    },
+    "sections": {
+      "quickLinks": "Òkúta Ìjáde Fáwộ",
+      "services": "Ìlò wa",
+      "industries": "Awùjọ Tí A Ṣiṣẹ́"
+    },
+    "quickLinks": {
+      "aboutUs": "Nípá wa",
+      "services": "Ìlò wa",
+      "languages": "Àwùjọ Èdè",
+      "getQuote": "Gbà Ìdíye",
+      "contact": "Bá wa Ní Àbísọ̀"
+    },
+    "services": {
+      "document": "Ìtumọ̀ Áwe",
+      "website": "Ìrígbalé Àgbàlà Wẹ́bù",
+      "interpretation": "Ìtumọ̀ Lásìkò",
+      "certified": "Ìtumọ̀ Tí a Fọwọ́ Sí"
+    },
+    "industries": {
+      "legal": "Òfìn & Ìgbésẹ̀",
+      "medical": "Àìṣàn & Ìtòpẹ́ Ọgùn",
+      "business": "Iṣẹ́ & Owó",
+      "educational": "Àgbà Ẹ̀kọ́"
+    },
+    "hours": {
+      "title": "Àkókò Ṣiṣẹ́",
+      "weekdays": "Ọjọ́ Àyímọ̀ - Ọjọ́ Ẹtì",
+      "weekdaysTime": "8:00 Ọ̀wọ̀ - 6:00 Àṣálẹ́",
+      "saturday": "Ọjọ́ Àbámẹ́ta",
+      "saturdayTime": "9:00 Ọ̀wọ̀ - 3:00 Àṣálẹ́",
+      "sunday": "Ọjọ́ Àìkú",
+      "closed": "Ìtìkùn",
+      "emergency": "Ìrànlọwọ́ Ìparun Wà 24/7"
+    },
+    "certifications": {
+      "title": "Ìjẹ́ wa",
+      "iso17100": "Tí a Fọwọ́ ISO 17100",
+      "gdpr": "Tí o Bá Ìdè GDPR",
+      "iso27001": "Àbò ISO 27001"
+    },
+    "copyright": "© 2025 ILI Nàìjíríà. Gbogbo ẹtọ́ ni a pa àrin.",
+    "legal": {
+      "privacy": "Ètò Àbínibí",
+      "terms": "Ìbámu Ìlò",
+      "cookies": "Ètò Kúkì"
+    },
+    "region": {
+      "country": "Nàìjíríà",
+      "language": "Èdè Yorùbá"
+    }
+  }
+}

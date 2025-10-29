@@ -1,7 +1,13 @@
-export default {
+module.exports = {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['"Cairo"', "system-ui", "sans-serif"], // Arabic font ready
+      },
+    },
   },
-  plugins: [],
+  plugins: [
+    require("tailwindcss-rtl"), // ← CORRECT PLUGIN
+  ],
 };

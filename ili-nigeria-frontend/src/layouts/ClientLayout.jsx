@@ -1,3 +1,4 @@
+import { useRTL } from "../hooks/useRTL";
 import React, { useEffect, useState } from "react";
 import {
   X,
@@ -13,6 +14,7 @@ import DashboardFooter from "../components/Dashboard/DashboardFooter";
 import { useAuth } from "../context/AuthContext";
 
 const ClientLayout = ({ children }) => {
+  const dir = useRTL();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const { isLoggedIn, profile, isLoading, handleLogout } = useAuth();
@@ -83,7 +85,7 @@ const ClientLayout = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/20 to-gray-50">
+    <div dir={dir} className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/20 to-gray-50">
       <div className="fixed top-0 z-40 w-full">
         <DashboardNavbar
           onMenuToggle={() => setSidebarOpen(!sidebarOpen)}

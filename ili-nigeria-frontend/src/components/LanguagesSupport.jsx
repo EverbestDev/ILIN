@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   Search,
   Globe,
@@ -10,13 +11,19 @@ import {
   Filter,
   CheckCircle,
   MapPin,
+  ChevronDown,
 } from "lucide-react";
 
 export default function LanguagesSupport() {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRegion, setSelectedRegion] = useState("All");
   const [languageCount, setLanguageCount] = useState(0);
+  const [showAll, setShowAll] = useState(false);
+
+  const isArabic = i18n.language === "ar";
+  const isRTL = isArabic;
 
   const regions = [
     "All",
@@ -273,12 +280,17 @@ export default function LanguagesSupport() {
     return matchesSearch && matchesRegion;
   });
 
+  // Show limited languages initially (first 12), expand with showAll
+  const displayLanguages = showAll
+    ? filteredLanguages
+    : filteredLanguages.slice(0, 12);
+
   const popularLanguages = languages.filter((lang) => lang.popular);
 
   // Animated counter effect
   useEffect(() => {
     let start = 0;
-    const end = languages.length;
+    const end = 32;
     const duration = 2000;
     const incrementTime = duration / end;
 
@@ -297,8 +309,31 @@ export default function LanguagesSupport() {
     navigate("/quote");
   };
 
+  const toggleShowAll = () => {
+    setShowAll(!showAll);
+  };
+
+  // Format numbers based on language
+  const formatNumber = (num, suffix = "+") => {
+    if (isArabic) {
+      return convertToArabicNumerals(num) + suffix;
+    }
+    return num + suffix;
+  };
+
+  const convertToArabicNumerals = (num) => {
+    const arabicNumerals = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
+    return String(num)
+      .split("")
+      .map((digit) => arabicNumerals[parseInt(digit)])
+      .join("");
+  };
+
   return (
-    <section className="px-6 py-20 bg-white md:px-20">
+    <section
+      className="px-6 py-20 bg-white md:px-20"
+      dir={isRTL ? "rtl" : "ltr"}
+    >
       {/* Section Header */}
       <motion.div
         initial={{ opacity: 0, y: -30 }}
@@ -308,16 +343,15 @@ export default function LanguagesSupport() {
         className="max-w-4xl mx-auto mb-16 text-center"
       >
         <span className="inline-block px-6 py-2 mb-4 text-sm font-semibold text-green-600 bg-green-100 rounded-full">
-          Global Reach
+          {t("languages.globalReach")}
         </span>
         <h2 className="mb-6 text-3xl font-bold text-gray-900 md:text-4xl">
-          <span className="text-green-600">{languageCount}+ Languages</span>{" "}
-          Supported
+          <span className="text-green-600">
+            {formatNumber(languageCount)} {t("languages.header")}
+          </span>
         </h2>
         <p className="text-lg leading-relaxed text-gray-600">
-          From major international languages to local Nigerian dialects, we
-          connect you with speakers across the globe. Our certified translators
-          specialize in cultural nuances and regional variations.
+          {t("languages.description")}
         </p>
       </motion.div>
 
@@ -331,8 +365,10 @@ export default function LanguagesSupport() {
           className="p-6 text-center bg-green-50 rounded-2xl"
         >
           <Globe className="w-12 h-12 mx-auto mb-4 text-green-600" />
-          <h3 className="mb-2 text-2xl font-bold text-gray-900">50+</h3>
-          <p className="text-gray-600">Languages Supported</p>
+          <h3 className="mb-2 text-2xl font-bold text-gray-900">
+            {formatNumber(50)}
+          </h3>
+          <p className="text-gray-600">{t("languages.stats.languages")}</p>
         </motion.div>
 
         <motion.div
@@ -343,8 +379,10 @@ export default function LanguagesSupport() {
           className="p-6 text-center bg-blue-50 rounded-2xl"
         >
           <Users className="w-12 h-12 mx-auto mb-4 text-blue-600" />
-          <h3 className="mb-2 text-2xl font-bold text-gray-900">3B+</h3>
-          <p className="text-gray-600">Native Speakers Reached</p>
+          <h3 className="mb-2 text-2xl font-bold text-gray-900">
+            {isArabic ? "٣" : "3"}B{formatNumber("+", "")}
+          </h3>
+          <p className="text-gray-600">{t("languages.stats.speakers")}</p>
         </motion.div>
 
         <motion.div
@@ -355,8 +393,11 @@ export default function LanguagesSupport() {
           className="p-6 text-center bg-orange-50 rounded-2xl"
         >
           <MapPin className="w-12 h-12 mx-auto mb-4 text-orange-600" />
-          <h3 className="mb-2 text-2xl font-bold text-gray-900">195</h3>
-          <p className="text-gray-600">Countries Covered</p>
+          <h3 className="mb-2 text-2xl font-bold text-gray-900">
+            {isArabic ? "١٩٥" : "195"}
+            {formatNumber("+", "")}
+          </h3>
+          <p className="text-gray-600">{t("languages.stats.countries")}</p>
         </motion.div>
       </div>
 
@@ -369,9 +410,9 @@ export default function LanguagesSupport() {
         className="mb-16"
       >
         <h3 className="mb-8 text-2xl font-bold text-center text-gray-900">
-          Most Requested Languages
+          {t("languages.popular.title")}
         </h3>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6 overflow-x-auto pb-2 -mx-6 md:-mx-0 md:overflow-visible">
           {popularLanguages.slice(0, 12).map((lang, index) => (
             <motion.div
               key={index}
@@ -379,7 +420,7 @@ export default function LanguagesSupport() {
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="p-4 text-center transition-all duration-300 bg-white border border-gray-200 rounded-xl hover:shadow-lg hover:scale-105 group"
+              className="p-4 text-center transition-all duration-300 bg-white border border-gray-200 rounded-xl hover:shadow-lg hover:scale-105 group min-w-[140px] md:min-w-0"
             >
               <div className="mb-3 text-3xl">{lang.flag}</div>
               <h4 className="mb-1 font-semibold text-gray-900 group-hover:text-green-600">
@@ -401,34 +442,52 @@ export default function LanguagesSupport() {
         className="mb-12"
       >
         <h3 className="mb-8 text-2xl font-bold text-center text-gray-900">
-          Explore All Languages
+          {t("languages.explore.title")}
         </h3>
 
         {/* Search and Filter Controls */}
         <div className="flex flex-col gap-4 mb-8 md:flex-row md:justify-center md:items-center">
           {/* Search Input */}
           <div className="relative">
-            <Search className="absolute w-5 h-5 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
+            <Search
+              className={`absolute w-5 h-5 text-gray-400 transform -translate-y-1/2 top-1/2 ${
+                isRTL ? "end-3" : "start-3"
+              }`}
+            />
             <input
               type="text"
-              placeholder="Search languages..."
+              placeholder={t("languages.search.placeholder")}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full py-3 pl-10 pr-4 border border-gray-300 rounded-lg md:w-80 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className={`w-full py-3 px-4 border border-gray-300 rounded-lg md:w-80 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                isRTL ? "pe-10 ps-4" : "ps-10 pe-4"
+              }`}
+              dir={isRTL ? "rtl" : "ltr"}
             />
           </div>
 
           {/* Region Filter */}
           <div className="relative">
-            <Filter className="absolute w-5 h-5 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
+            <Filter
+              className={`absolute w-5 h-5 text-gray-400 transform -translate-y-1/2 top-1/2 ${
+                isRTL ? "end-3" : "start-3"
+              }`}
+            />
             <select
               value={selectedRegion}
               onChange={(e) => setSelectedRegion(e.target.value)}
-              className="py-3 pl-10 pr-8 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className={`py-3 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                isRTL ? "pe-10 ps-4 text-right" : "ps-10 pe-8"
+              }`}
+              dir={isRTL ? "rtl" : "ltr"}
             >
               {regions.map((region) => (
                 <option key={region} value={region}>
-                  {region} Languages
+                  {t(
+                    `languages.regions.${region
+                      .toLowerCase()
+                      .replace(" ", "_")}`
+                  )}
                 </option>
               ))}
             </select>
@@ -436,22 +495,32 @@ export default function LanguagesSupport() {
         </div>
 
         {/* Languages Grid */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {filteredLanguages.map((lang, index) => (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 overflow-hidden">
+          {displayLanguages.map((lang, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.05 }}
-              className={`p-4 bg-white border rounded-xl hover:shadow-lg transition-all duration-300 group cursor-pointer ${
+              className={`p-4 bg-white border rounded-xl hover:shadow-lg transition-all duration-300 group cursor-pointer overflow-hidden ${
                 lang.region === "African"
                   ? "border-green-200 bg-green-50"
                   : "border-gray-200"
               }`}
             >
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center">
-                  <span className="mr-3 text-2xl">{lang.flag}</span>
+              <div
+                className={`flex items-center justify-between mb-2 ${
+                  isRTL ? "flex-row-reverse" : ""
+                }`}
+              >
+                <div
+                  className={`flex items-center ${
+                    isRTL ? "flex-row-reverse" : ""
+                  }`}
+                >
+                  <span className={`text-2xl ${isRTL ? "ms-3" : "me-3"}`}>
+                    {lang.flag}
+                  </span>
                   <div>
                     <h4 className="font-semibold text-gray-900 group-hover:text-green-600">
                       {lang.name}
@@ -464,20 +533,49 @@ export default function LanguagesSupport() {
                 )}
               </div>
               {lang.region === "African" && (
-                <div className="flex items-center text-xs text-green-600">
-                  <CheckCircle className="w-3 h-3 mr-1" />
-                  Local Expertise
+                <div
+                  className={`flex items-center text-xs text-green-600 ${
+                    isRTL ? "flex-row-reverse" : ""
+                  }`}
+                >
+                  <CheckCircle
+                    className={`w-3 h-3 ${isRTL ? "ms-1" : "me-1"}`}
+                  />
+                  {t("languages.localExpertise")}
                 </div>
               )}
             </motion.div>
           ))}
         </div>
 
+        {/* See All Button */}
+        {filteredLanguages.length > 12 && !showAll && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            viewport={{ once: true }}
+            className="flex justify-center mt-6"
+          >
+            <button
+              onClick={toggleShowAll}
+              className={`inline-flex items-center px-6 py-3 font-medium text-green-600 transition-all duration-300 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-500 hover:scale-105 ${
+                isRTL ? "flex-row-reverse" : ""
+              }`}
+            >
+              {t("languages.seeAll")}
+              <ChevronDown
+                className={`w-4 h-4 transition-transform group-hover:rotate-180 ${
+                  isRTL ? "ms-2" : "ml-2"
+                }`}
+              />
+            </button>
+          </motion.div>
+        )}
+
         {filteredLanguages.length === 0 && (
           <div className="py-12 text-center">
-            <p className="text-gray-500">
-              No languages found matching your criteria.
-            </p>
+            <p className="text-gray-500">{t("languages.noResults")}</p>
           </div>
         )}
       </motion.div>
@@ -490,33 +588,39 @@ export default function LanguagesSupport() {
         viewport={{ once: true }}
         className="max-w-4xl mx-auto text-center"
       >
-        <div className="p-8 shadow-xl  bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl md:p-12">
+        <div className="p-8 shadow-xl bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl md:p-12 overflow-hidden">
           <Globe className="w-16 h-16 mx-auto mb-6 text-white" />
           <h3 className="mb-4 text-2xl font-bold text-white md:text-3xl">
-            Don't See Your Language?
+            {t("languages.cta.title")}
           </h3>
           <p className="mb-8 text-lg leading-relaxed text-green-100">
-            We're constantly expanding our language capabilities. If you need a
-            language not listed here, contact us - we likely have qualified
-            translators available.
+            {t("languages.cta.description")}
           </p>
-          <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
+          <div
+            className={`flex flex-col gap-4 sm:flex-row sm:justify-center ${
+              isRTL ? "flex-row-reverse" : ""
+            }`}
+          >
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleGetQuote}
-              className="inline-flex items-center px-8 py-4 font-medium text-green-600 transition-all duration-300 bg-white rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-white"
+              className={`inline-flex items-center px-8 py-4 font-medium text-green-600 transition-all duration-300 bg-white rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-white ${
+                isRTL ? "flex-row-reverse" : ""
+              }`}
             >
-              Request Language
-              <ArrowRight className="w-5 h-5 ml-2" />
+              {t("languages.cta.request")}
+              <ArrowRight className={`w-5 h-5 ${isRTL ? "ms-2" : "ml-2"}`} />
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate("/languages")}
-              className="inline-flex items-center px-8 py-4 font-medium text-white transition-all duration-300 border-2 border-white rounded-lg hover:bg-white hover:text-green-600 focus:outline-none focus:ring-2 focus:ring-white"
+              className={`inline-flex items-center px-8 py-4 font-medium text-white transition-all duration-300 border-2 border-white rounded-lg hover:bg-white hover:text-green-600 focus:outline-none focus:ring-2 focus:ring-white ${
+                isRTL ? "flex-row-reverse" : ""
+              }`}
             >
-              View All Languages
+              {t("languages.cta.viewAll")}
             </motion.button>
           </div>
         </div>
