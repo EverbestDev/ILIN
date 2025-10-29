@@ -85,46 +85,43 @@
       }
     }
   },
-  
-  
-    "languages": {
-      "globalReach": "Global Reach",
-      "header": "Languages Supported",
-      "description": "From major international languages to local Nigerian dialects, we connect you with speakers across the globe. Our certified translators specialize in cultural nuances and regional variations.",
-      "stats": {
-        "languages": "Languages Supported",
-        "speakers": "Native Speakers Reached",
-        "countries": "Countries Covered"
-      },
-      "popular": {
-        "title": "Most Requested Languages"
-      },
-      "explore": {
-        "title": "Explore All Languages"
-      },
-      "search": {
-        "placeholder": "Search languages..."
-      },
-      "regions": {
-        "all": "All",
-        "african": "African",
-        "european": "European",
-        "asian": "Asian",
-        "middle_eastern": "Middle Eastern",
-        "americas": "Americas"
-      },
-      "localExpertise": "Local Expertise",
-      "seeAll": "See All Languages",
-      "noResults": "No languages found matching your criteria.",
-      "cta": {
-        "title": "Don't See Your Language?",
-        "description": "We're constantly expanding our language capabilities. If you need a language not listed here, contact us - we likely have qualified translators available.",
-        "request": "Request Language",
-        "viewAll": "View All Languages"
-      }
+
+  "languages": {
+    "globalReach": "Global Reach",
+    "header": "Languages Supported",
+    "description": "From major international languages to local Nigerian dialects, we connect you with speakers across the globe. Our certified translators specialize in cultural nuances and regional variations.",
+    "stats": {
+      "languages": "Languages Supported",
+      "speakers": "Native Speakers Reached",
+      "countries": "Countries Covered"
     },
-  
-  
+    "popular": {
+      "title": "Most Requested Languages"
+    },
+    "explore": {
+      "title": "Explore All Languages"
+    },
+    "search": {
+      "placeholder": "Search languages..."
+    },
+    "regions": {
+      "all": "All",
+      "african": "African",
+      "european": "European",
+      "asian": "Asian",
+      "middle_eastern": "Middle Eastern",
+      "americas": "Americas"
+    },
+    "localExpertise": "Local Expertise",
+    "seeAll": "See All Languages",
+    "noResults": "No languages found matching your criteria.",
+    "cta": {
+      "title": "Don't See Your Language?",
+      "description": "We're constantly expanding our language capabilities. If you need a language not listed here, contact us - we likely have qualified translators available.",
+      "request": "Request Language",
+      "viewAll": "View All Languages"
+    }
+  },
 
   "direction": "ltr",
   "industries": {
@@ -1069,130 +1066,386 @@
       "language": "English"
     }
   },
-  
-    "aboutpage": {
-      "hero": {
-        "badge": "About ILI-Nigeria",
-        "title": "Bridging Cultures Through",
-        "subtitle": "Expert Translation",
-        "description": "For over a decade, we've been Nigeria's trusted translation partner, helping businesses, organizations, and individuals communicate effectively across languages and cultures."
+
+  "aboutpage": {
+    "hero": {
+      "badge": "About ILI-Nigeria",
+      "title": "Bridging Cultures Through",
+      "subtitle": "Expert Translation",
+      "description": "For over a decade, we've been Nigeria's trusted translation partner, helping businesses, organizations, and individuals communicate effectively across languages and cultures."
+    },
+    "stats": {
+      "clients": {
+        "label": "Happy Clients",
+        "value": "5,000+",
+        "desc": "Satisfied customers worldwide"
       },
-      "stats": {
-        "clients": {
-          "label": "Happy Clients",
-          "value": "5,000+",
-          "desc": "Satisfied customers worldwide"
-        },
-        "languages": {
-          "label": "Languages",
-          "value": "50+",
-          "desc": "Supported language pairs"
-        },
-        "projects": {
-          "label": "Projects",
-          "value": "25,000+",
-          "desc": "Successfully completed"
-        },
-        "experience": {
-          "label": "Years Experience",
-          "value": "15+",
-          "desc": "In translation industry"
-        }
+      "languages": {
+        "label": "Languages",
+        "value": "50+",
+        "desc": "Supported language pairs"
       },
-      "story": {
-        "title": "Our Story: From Local Vision to Global Impact",
-        "para1": "Founded in 2010 in the heart of Lagos, ILI-Nigeria began with a simple yet powerful vision: to break down language barriers that prevent Nigerian businesses from accessing global opportunities.",
-        "para2": "What started as a small team of passionate linguists has grown into Nigeria's premier translation and interpretation service, trusted by government agencies, multinational corporations, and individual professionals across Africa and beyond.",
-        "para3": "Today, we're proud to serve clients in over 50 languages, with a team of certified translators who understand not just words, but the cultural nuances that make communication truly effective."
+      "projects": {
+        "label": "Projects",
+        "value": "25,000+",
+        "desc": "Successfully completed"
       },
-      "mission": {
-        "title": "Our Mission",
-        "subtitle": "Breaking barriers, building bridges",
-        "description": "To provide world-class translation and interpretation services that enable seamless communication across cultures, empowering Nigerian businesses and individuals to thrive in the global marketplace."
-      },
-      "vision": {
-        "title": "Our Vision",
-        "subtitle": "A connected, multilingual world",
-        "description": "To be Africa's leading language services provider, recognized globally for our expertise, cultural sensitivity, and commitment to excellence in translation and interpretation."
-      },
-      "values": {
-        "title": "Values That Guide Everything We Do",
-        "subtitle": "Our core values are the foundation of our service excellence and the reason thousands of clients trust us with their most important communications.",
-        "precision": {
-          "title": "Precision & Accuracy",
-          "desc": "We maintain the highest standards of accuracy in every translation project, ensuring your message is conveyed exactly as intended."
-        },
-        "cultural": {
-          "title": "Cultural Sensitivity",
-          "desc": "Understanding cultural nuances is at the heart of effective translation. We respect and preserve cultural context in every project."
-        },
-        "speed": {
-          "title": "Speed & Efficiency",
-          "desc": "We understand deadlines matter. Our streamlined processes ensure rapid delivery without compromising quality."
-        },
-        "trust": {
-          "title": "Trust & Confidentiality",
-          "desc": "Your documents are secure with us. We maintain strict confidentiality protocols and secure handling procedures."
-        }
-      },
-      "timeline": {
-        "title": "Our Journey Through the Years",
-        "subtitle": "Key milestones that shaped ILI-Nigeria into the trusted translation partner we are today",
-        "0": {
-          "title": "Foundation",
-          "desc": "ILI-Nigeria was founded with a vision to bridge communication gaps across Nigerian businesses and international partners."
-        },
-        "1": {
-          "title": "ISO Certification",
-          "desc": "Achieved ISO 17100 certification, establishing our commitment to international quality standards."
-        },
-        "2": {
-          "title": "Digital Expansion",
-          "desc": "Launched our digital platform, enabling seamless online translation services across Africa."
-        },
-        "3": {
-          "title": "Regional Leader",
-          "desc": "Became West Africa's leading translation service provider, serving clients across 15+ countries."
-        },
-        "4": {
-          "title": "AI Integration",
-          "desc": "Integrated advanced CAT tools and AI-assisted quality assurance while maintaining human expertise."
-        },
-        "5": {
-          "title": "Global Recognition",
-          "desc": "Recognized as Nigeria's premier translation service with international partnerships and certifications."
-        }
-      },
-      "team": {
-        "title": "Meet Our Leadership Team",
-        "subtitle": "The experienced professionals who guide our vision and ensure the highest standards of service delivery across all our operations.",
-        "0": {
-          "role": "Founder & CEO",
-          "desc": "15+ years in linguistics and international business. PhD in Applied Linguistics from University of Niamey, Niger.",
-          "spec": "Strategic Leadership & Linguistics"
-        },
-        "1": {
-          "role": "Chief Operations Officer",
-          "desc": "Expert in translation project management with extensive experience in quality assurance systems.",
-          "spec": "Operations & Quality Management"
-        },
-        "2": {
-          "role": "Technology Director",
-          "desc": "Leading our digital transformation with cutting-edge translation technology and AI integration.",
-          "spec": "Technology & Innovation"
-        },
-        "3": {
-          "role": "Head of Linguistics",
-          "desc": "Oversees linguistic quality and cultural adaptation across all African and Middle Eastern languages.",
-          "spec": "Linguistics & Cultural Adaptation"
-        }
-      },
-      "cta": {
-        "title": "Ready to Work with Nigeria's Translation Experts?",
-        "description": "Join thousands of satisfied clients who trust ILI-Nigeria for accurate, culturally-sensitive translation services. Let's help you communicate effectively across languages and cultures.",
-        "getQuote": "Get Free Quote",
-        "contact": "Contact Our Team"
+      "experience": {
+        "label": "Years Experience",
+        "value": "15+",
+        "desc": "In translation industry"
       }
+    },
+    "story": {
+      "title": "Our Story: From Local Vision to Global Impact",
+      "para1": "Founded in 2010 in the heart of Lagos, ILI-Nigeria began with a simple yet powerful vision: to break down language barriers that prevent Nigerian businesses from accessing global opportunities.",
+      "para2": "What started as a small team of passionate linguists has grown into Nigeria's premier translation and interpretation service, trusted by government agencies, multinational corporations, and individual professionals across Africa and beyond.",
+      "para3": "Today, we're proud to serve clients in over 50 languages, with a team of certified translators who understand not just words, but the cultural nuances that make communication truly effective."
+    },
+    "mission": {
+      "title": "Our Mission",
+      "subtitle": "Breaking barriers, building bridges",
+      "description": "To provide world-class translation and interpretation services that enable seamless communication across cultures, empowering Nigerian businesses and individuals to thrive in the global marketplace."
+    },
+    "vision": {
+      "title": "Our Vision",
+      "subtitle": "A connected, multilingual world",
+      "description": "To be Africa's leading language services provider, recognized globally for our expertise, cultural sensitivity, and commitment to excellence in translation and interpretation."
+    },
+    "values": {
+      "title": "Values That Guide Everything We Do",
+      "subtitle": "Our core values are the foundation of our service excellence and the reason thousands of clients trust us with their most important communications.",
+      "precision": {
+        "title": "Precision & Accuracy",
+        "desc": "We maintain the highest standards of accuracy in every translation project, ensuring your message is conveyed exactly as intended."
+      },
+      "cultural": {
+        "title": "Cultural Sensitivity",
+        "desc": "Understanding cultural nuances is at the heart of effective translation. We respect and preserve cultural context in every project."
+      },
+      "speed": {
+        "title": "Speed & Efficiency",
+        "desc": "We understand deadlines matter. Our streamlined processes ensure rapid delivery without compromising quality."
+      },
+      "trust": {
+        "title": "Trust & Confidentiality",
+        "desc": "Your documents are secure with us. We maintain strict confidentiality protocols and secure handling procedures."
+      }
+    },
+    "timeline": {
+      "title": "Our Journey Through the Years",
+      "subtitle": "Key milestones that shaped ILI-Nigeria into the trusted translation partner we are today",
+      "0": {
+        "title": "Foundation",
+        "desc": "ILI-Nigeria was founded with a vision to bridge communication gaps across Nigerian businesses and international partners."
+      },
+      "1": {
+        "title": "ISO Certification",
+        "desc": "Achieved ISO 17100 certification, establishing our commitment to international quality standards."
+      },
+      "2": {
+        "title": "Digital Expansion",
+        "desc": "Launched our digital platform, enabling seamless online translation services across Africa."
+      },
+      "3": {
+        "title": "Regional Leader",
+        "desc": "Became West Africa's leading translation service provider, serving clients across 15+ countries."
+      },
+      "4": {
+        "title": "AI Integration",
+        "desc": "Integrated advanced CAT tools and AI-assisted quality assurance while maintaining human expertise."
+      },
+      "5": {
+        "title": "Global Recognition",
+        "desc": "Recognized as Nigeria's premier translation service with international partnerships and certifications."
+      }
+    },
+    "team": {
+      "title": "Meet Our Leadership Team",
+      "subtitle": "The experienced professionals who guide our vision and ensure the highest standards of service delivery across all our operations.",
+      "0": {
+        "role": "Founder & CEO",
+        "desc": "15+ years in linguistics and international business. PhD in Applied Linguistics from University of Niamey, Niger.",
+        "spec": "Strategic Leadership & Linguistics"
+      },
+      "1": {
+        "role": "Chief Operations Officer",
+        "desc": "Expert in translation project management with extensive experience in quality assurance systems.",
+        "spec": "Operations & Quality Management"
+      },
+      "2": {
+        "role": "Technology Director",
+        "desc": "Leading our digital transformation with cutting-edge translation technology and AI integration.",
+        "spec": "Technology & Innovation"
+      },
+      "3": {
+        "role": "Head of Linguistics",
+        "desc": "Oversees linguistic quality and cultural adaptation across all African and Middle Eastern languages.",
+        "spec": "Linguistics & Cultural Adaptation"
+      }
+    },
+    "cta": {
+      "title": "Ready to Work with Nigeria's Translation Experts?",
+      "description": "Join thousands of satisfied clients who trust ILI-Nigeria for accurate, culturally-sensitive translation services. Let's help you communicate effectively across languages and cultures.",
+      "getQuote": "Get Free Quote",
+      "contact": "Contact Our Team"
     }
-  
+  },
+  "servicespage": {
+    "hero": {
+      "badge": "Our Services",
+      "title": "Professional Translation Services",
+      "subtitle": "For Every Need",
+      "description": "From simple documents to complex enterprise solutions, we provide comprehensive language services that help you communicate effectively across cultures and borders."
+    },
+    "stats": {
+      "categories": "Service Categories",
+      "languages": "Languages Supported",
+      "projects": "Projects Completed",
+      "delivery": "Average Delivery"
+    },
+    "main": {
+      "document": {
+        "title": "Document Translation",
+        "subtitle": "Professional • Certified • Accurate",
+        "shortDesc": "Professional translation of legal, medical, business, and academic documents",
+        "description": "Our document translation service covers everything from simple letters to complex technical manuals. Every document is handled by certified translators with expertise in your specific field, ensuring accuracy and cultural appropriateness.",
+        "features": [
+          "Legal documents & contracts",
+          "Medical records & reports",
+          "Academic transcripts & certificates",
+          "Business correspondence",
+          "Technical manuals & guides",
+          "Immigration paperwork"
+        ],
+        "process": [
+          "Document upload and analysis",
+          "Expert translator assignment",
+          "Professional translation",
+          "Quality assurance review",
+          "Client review and feedback",
+          "Final delivery with certification"
+        ],
+        "pricing": {
+          "standard": "₦25/word",
+          "rush": "₦35/word",
+          "certified": "₦40/word"
+        },
+        "turnaround": "24-72 hours"
+      },
+      "localization": {
+        "title": "Website & App Localization",
+        "subtitle": "Global Reach • Cultural Adaptation • SEO Ready",
+        "shortDesc": "Transform your digital presence for international markets",
+        "description": "Go beyond simple translation with our comprehensive localization service. We adapt your website, mobile app, or software for specific markets, considering cultural nuances, local preferences, and technical requirements.",
+        "features": [
+          "Website content localization",
+          "Mobile app internationalization",
+          "E-commerce platform adaptation",
+          "Software interface translation",
+          "SEO optimization for local markets",
+          "Cultural consulting & adaptation"
+        ],
+        "process": [
+          "Platform analysis & strategy",
+          "Content extraction & preparation",
+          "Cultural adaptation planning",
+          "Translation & localization",
+          "Technical integration",
+          "Testing & quality assurance"
+        ],
+        "pricing": {
+          "starting": "₦50,000/project",
+          "enterprise": "Custom pricing",
+          "maintenance": "₦15,000/month"
+        },
+        "turnaround": "1-4 weeks"
+      },
+      "interpretation": {
+        "title": "Live Interpretation",
+        "subtitle": "Real-time • Professional • Seamless",
+        "shortDesc": "On-site and remote interpretation for meetings and events",
+        "description": "Break language barriers in real-time with our professional interpretation services. Whether it's a business meeting, conference, or legal proceeding, our certified interpreters ensure smooth communication.",
+        "features": [
+          "Simultaneous interpretation",
+          "Consecutive interpretation",
+          "Business meeting support",
+          "Conference interpretation",
+          "Legal proceeding assistance",
+          "Remote video interpretation"
+        ],
+        "process": [
+          "Event briefing & preparation",
+          "Interpreter assignment",
+          "Pre-event consultation",
+          "Live interpretation service",
+          "Real-time quality monitoring",
+          "Post-event follow-up"
+        ],
+        "pricing": {
+          "hourly": "₦25,000/hour",
+          "halfday": "₦120,000",
+          "fullday": "₦200,000"
+        },
+        "turnaround": "Same day booking"
+      },
+      "multimedia": {
+        "title": "Voiceover & Subtitling",
+        "subtitle": "Audio • Video • Multimedia Content",
+        "shortDesc": "Professional voiceover and subtitle services for multimedia",
+        "description": "Bring your videos, documentaries, and multimedia content to life in multiple languages. Our native speakers provide professional voiceovers while our subtitle services ensure accessibility.",
+        "features": [
+          "Professional voiceover recording",
+          "Video subtitle creation",
+          "Audio dubbing services",
+          "Documentary translation",
+          "Training video localization",
+          "Podcast transcription & translation"
+        ],
+        "process": [
+          "Content review & analysis",
+          "Script translation",
+          "Voice talent selection",
+          "Recording & production",
+          "Synchronization & timing",
+          "Final delivery & formats"
+        ],
+        "pricing": {
+          "voiceover": "₦5,000/minute",
+          "subtitles": "₦3,000/minute",
+          "dubbing": "₦8,000/minute"
+        },
+        "turnaround": "3-7 days"
+      },
+      "certified": {
+        "title": "Certified Translation",
+        "subtitle": "Official • Notarized • Embassy Accepted",
+        "shortDesc": "Official translations accepted by embassies and institutions",
+        "description": "For legal, academic, or official purposes, our certified translations are accepted by embassies, universities, and government agencies worldwide. Every certified translation comes with official seals and signatures.",
+        "features": [
+          "Embassy-accepted certifications",
+          "University application documents",
+          "Immigration paperwork",
+          "Official government documents",
+          "Notarized translations",
+          "Apostille services"
+        ],
+        "process": [
+          "Document verification",
+          "Certified translator assignment",
+          "Professional translation",
+          "Official certification process",
+          "Notarization (if required)",
+          "Sealed delivery"
+        ],
+        "pricing": {
+          "standard": "₦30,000/document",
+          "rush": "₦45,000/document",
+          "notarized": "₦50,000/document"
+        },
+        "turnaround": "48-72 hours"
+      },
+      "enterprise": {
+        "title": "Enterprise Solutions",
+        "subtitle": "Scalable • Dedicated • 24/7 Support",
+        "shortDesc": "Comprehensive language solutions for large organizations",
+        "description": "Custom translation solutions for enterprises with ongoing language needs. Includes dedicated account management, volume discounts, API integration, and priority support.",
+        "features": [
+          "Dedicated account manager",
+          "Volume pricing discounts",
+          "API integration support",
+          "Priority processing",
+          "24/7 customer support",
+          "Custom workflow solutions"
+        ],
+        "process": [
+          "Needs assessment consultation",
+          "Custom solution design",
+          "Team assignment & training",
+          "Integration & setup",
+          "Ongoing project management",
+          "Performance monitoring"
+        ],
+        "pricing": {
+          "custom": "Custom quotes",
+          "volume": "Up to 40% discount",
+          "monthly": "From ₦500,000"
+        },
+        "turnaround": "Flexible SLAs"
+      }
+    },
+    "pricing": {
+      "title": "Pricing & Timeline",
+      "standard": "Standard",
+      "rush": "Rush",
+      "certified": "Certified",
+      "starting": "Starting",
+      "enterprise": "Enterprise",
+      "maintenance": "Maintenance",
+      "hourly": "Hourly",
+      "halfday": "Half Day",
+      "fullday": "Full Day",
+      "voiceover": "Voiceover",
+      "subtitles": "Subtitles",
+      "dubbing": "Dubbing",
+      "notarized": "Notarized",
+      "custom": "Custom",
+      "volume": "Volume",
+      "monthly": "Monthly",
+      "turnaround": "Turnaround"
+    },
+    "industries": {
+      "title": "Industries We Serve",
+      "subtitle": "Specialized expertise across key sectors with deep understanding of industry terminology and requirements.",
+      "legal": {
+        "title": "Legal & Immigration",
+        "desc": "Court documents, contracts, immigration papers",
+        "projects": "2,500+ projects"
+      },
+      "medical": {
+        "title": "Medical & Healthcare",
+        "desc": "Medical records, pharmaceutical documents",
+        "projects": "1,800+ projects"
+      },
+      "business": {
+        "title": "Business & Finance",
+        "desc": "Financial reports, business plans, contracts",
+        "projects": "3,200+ projects"
+      },
+      "education": {
+        "title": "Education & Academia",
+        "desc": "Academic papers, transcripts, research",
+        "projects": "4,100+ projects"
+      }
+    },
+    "why": {
+      "title": "Why Choose ILI-Nigeria?",
+      "subtitle": "We combine cutting-edge technology with human expertise to deliver translations that exceed expectations every time.",
+      "speed": {
+        "title": "Fast Turnaround",
+        "desc": "24-48 hour delivery on most projects"
+      },
+      "quality": {
+        "title": "Quality Guarantee",
+        "desc": "99.8% accuracy rate with money-back guarantee"
+      },
+      "experts": {
+        "title": "Expert Translators",
+        "desc": "Certified professionals with industry expertise"
+      },
+      "cultural": {
+        "title": "Cultural Accuracy",
+        "desc": "Native speakers who understand local nuances"
+      }
+    },
+    "process": {
+      "title": "Our Process"
+    },
+    "cta": {
+      "title": "Ready to Get Started?",
+      "description": "Get a free quote for your translation project today. Our team is ready to help you communicate effectively across languages and cultures.",
+      "quote": "Get Free Quote",
+      "contact": "Talk to Expert"
+    }
+  }
 }

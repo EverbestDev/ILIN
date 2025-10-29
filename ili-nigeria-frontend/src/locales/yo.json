@@ -1062,126 +1062,384 @@
 
   "aboutpage": {
     "hero": {
-      "badge": "Yoruba ko tii si nile bayii",
-      "title": "Bridging Cultures Through",
-      "subtitle": "Expert Translation",
-      "description": "For over a decade, we've been Nigeria's trusted translation partner, helping businesses, organizations, and individuals communicate effectively across languages and cultures."
+      "badge": "Nípá ILI Nàìjíríà",
+      "title": "Sìde Ìbáraẹnisọrọ̀ Àwùjọ Pẹ̀lú",
+      "subtitle": "Ìtumọ̀ Tí O Ní Ìmọ̀",
+      "description": "Fún ọgọ́ọ́dún tó dé lọ, a ṣiṣẹ́ pẹ̀lú Nàìjíríà nípa ìtumọ̀, tí a ṣe ìrànlọwọ́ àwùjọ, àgbà, àti ènìyàn kọ̀ọ̀kan láti ṣe ìbáraẹnisọrọ̀ tó dára pẹ̀lú ììmọ̀ èdè àti àṣà."
     },
     "stats": {
       "clients": {
-        "label": "Happy Clients",
+        "label": "Àwọn Onímọ̀ Ọ Dùn",
         "value": "5,000+",
-        "desc": "Satisfied customers worldwide"
+        "desc": "Àwọn onímọ̀ òun tó dùn káàkiri ayé"
       },
       "languages": {
-        "label": "Languages",
+        "label": "Àwọn Èdè",
         "value": "50+",
-        "desc": "Supported language pairs"
+        "desc": "Àwọn èdè tó ṣe àtìlẹ́yìn"
       },
       "projects": {
-        "label": "Projects",
+        "label": "Àwọn Ìṣẹ̀",
         "value": "25,000+",
-        "desc": "Successfully completed"
+        "desc": "Tí a ṣe pari niyẹn"
       },
       "experience": {
-        "label": "Years Experience",
+        "label": "Ọdún Ìmọ̀",
         "value": "15+",
-        "desc": "In translation industry"
+        "desc": "Nínú ilé ìṣẹ ìtumọ̀"
       }
     },
     "story": {
-      "title": "Our Story: From Local Vision to Global Impact",
-      "para1": "Founded in 2010 in the heart of Lagos, ILI-Nigeria began with a simple yet powerful vision: to break down language barriers that prevent Nigerian businesses from accessing global opportunities.",
-      "para2": "What started as a small team of passionate linguists has grown into Nigeria's premier translation and interpretation service, trusted by government agencies, multinational corporations, and individual professionals across Africa and beyond.",
-      "para3": "Today, we're proud to serve clients in over 50 languages, with a team of certified translators who understand not just words, but the cultural nuances that make communication truly effective."
+      "title": "Ìtàn wa: Láti Ìgbà Ìkọkọ Sí Ìpilẹ̀ Ní Àgbáyé",
+      "para1": "A ṣe ilumorí ILI Nàìjíríà ni ọdún 2010 ni ojú Èkó, pẹ̀lú ìfẹ́ kan tí o ní agbára: láti fi ìdènà èdè kúrò tí ó dá ládí fún àwùjọ Nàìjíríà láti mọ̀ àwọn ọ̀nà àgbáyé.",
+      "para2": "Ohun tó bẹ̀rẹ̀ sí àkójọ kékeré ti àwọn olùmọ̀ èdè tí o ní ìfẹ́ ti túbọ̀ jáde sí ìlù iṣẹ ìtumọ̀ àti ìtumọ̀ ọ̀rọ̀ ẹ̀ẹ́kẹ́ Nàìjíríà, tí àwùjọ ijọba, àwọn àgbà ìṣẹ àgbáyé, àti àwọn onísẹ̀ kọ̀ọ̀kan tó ní ìgbèkẹ̀le nínú Áfríkà àti ìbẹ̀rẹ̀ rẹ.",
+      "para3": "Lónìí, a ní ìdílẹ̀ ìbajẹ pẹ̀lú àwọn onímọ̀ nínú èdè tó ju 50 lọ, pẹ̀lú àgbà onítumọ̀ tí a fọwọ́ sí tí o mọ̀ kì í ṣe àwọn ọ̀rọ̀ nìkan, ṣùgbọ́n àti àṣà tí ó ṣe ìbáraẹnisọrọ̀ jẹ ní ọ̀nà tó dára."
     },
     "mission": {
-      "title": "Our Mission",
-      "subtitle": "Breaking barriers, building bridges",
-      "description": "To provide world-class translation and interpretation services that enable seamless communication across cultures, empowering Nigerian businesses and individuals to thrive in the global marketplace."
+      "title": "Iṣẹ wa",
+      "subtitle": "Láti fi ìdènà kúrò, kí a sìde",
+      "description": "Láti fúnni ní àwọn ìlò ìtumọ̀ àti ìtumọ̀ ọ̀rọ̀ tí o wúlò jù lọ, tí yóò jẹ ìrànlọwọ́ àwùjọ Nàìjíríà àti ènìyàn kọ̀ọ̀kan láti máa lásìkò nínú àṣà àgbáyé."
     },
     "vision": {
-      "title": "Our Vision",
-      "subtitle": "A connected, multilingual world",
-      "description": "To be Africa's leading language services provider, recognized globally for our expertise, cultural sensitivity, and commitment to excellence in translation and interpretation."
+      "title": "Ìran wa",
+      "subtitle": "Ayé tí a ní ìbáraẹnisọrọ̀ àti èdè pọ̀",
+      "description": "Jẹ mọ́lẹ̀ ti àwọn ìlò èdè tó pọ jù nínú Áfríkà, jẹ ìmọ̀ sí ayé fún ìmọ̀ wa, àyẹ wa fún àṣà, àti ètò wa fún àìṣórí nínú ìtumọ̀ àti ìtumọ̀ ọ̀rọ̀."
     },
     "values": {
-      "title": "Values That Guide Everything We Do",
-      "subtitle": "Our core values are the foundation of our service excellence and the reason thousands of clients trust us with their most important communications.",
+      "title": "Àwọn Ètò Tí Won Dáwọ Gbogbo Ohun Tí A ń Ṣe",
+      "subtitle": "Àwọn ètò ipìlẹ̀ wa jẹ ìpilẹ̀ òkè iṣẹ wa àti ẹ̀kó tí àwọn ẹgbẹ̀ẹ̀ ìgbèkẹ̀le pẹ̀lú wa nínú àwọn ibaśepọ̀ tó ní ìyalẹ̀nu.",
       "precision": {
-        "title": "Precision & Accuracy",
-        "desc": "We maintain the highest standards of accuracy in every translation project, ensuring your message is conveyed exactly as intended."
+        "title": "Ìdíwò àti Òye",
+        "desc": "A pa ètò ìdíwò òkè nínú ìtumọ̀ gbogbo, tí ó ṣe ìdájọ́ ìfiranṣẹ́ rẹ nípa ọ̀nà tí a fẹ̀."
       },
       "cultural": {
-        "title": "Cultural Sensitivity",
-        "desc": "Understanding cultural nuances is at the heart of effective translation. We respect and preserve cultural context in every project."
+        "title": "Àyẹ Àwùjọ",
+        "desc": "Ìmọ̀ àṣà jẹ ọkàn ti ìtumọ̀ tó dára. A sọrí àṣà àti àyẹ àṣà nínú ìtumọ̀ gbogbo."
       },
       "speed": {
-        "title": "Speed & Efficiency",
-        "desc": "We understand deadlines matter. Our streamlined processes ensure rapid delivery without compromising quality."
+        "title": "Ìyara àti Ìlera",
+        "desc": "A mọ̀ pé àkókò ní ìyalẹ̀nu. Àwọn ẹ̀kó wa ṣe ìfiranṣẹ́ lójú àkókò láìbá ìdíwò."
       },
       "trust": {
-        "title": "Trust & Confidentiality",
-        "desc": "Your documents are secure with us. We maintain strict confidentiality protocols and secure handling procedures."
+        "title": "Ìgbèkẹ̀le àti Ìbínibí",
+        "desc": "Àwọn áwe rẹ yẹ pẹ̀lú wa. A pa ètò ìbínibí àti ìdárayá ìbínibí tó la."
       }
     },
     "timeline": {
-      "title": "Our Journey Through the Years",
-      "subtitle": "Key milestones that shaped ILI-Nigeria into the trusted translation partner we are today",
+      "title": "Àwọn Ọdún Ìtàn wa",
+      "subtitle": "Àwọn ohun ìkọkọ tí o ṣe àgbésokè ILI Nàìjíríà sí ìlù onítumọ̀ tí a ní ìgbèkẹ̀le.",
       "0": {
-        "title": "Foundation",
-        "desc": "ILI-Nigeria was founded with a vision to bridge communication gaps across Nigerian businesses and international partners."
+        "title": "Ilumorí",
+        "desc": "A ṣe ilumorí ILI Nàìjíríà pẹ̀lú ìfẹ́ láti faa àwọn ìdènà ìbáraẹnisọrọ̀ láàrín àwùjọ Nàìjíríà àti àwọn ọ̀kọ̀ àgbáyé."
       },
       "1": {
-        "title": "ISO Certification",
-        "desc": "Achieved ISO 17100 certification, establishing our commitment to international quality standards."
+        "title": "Ìjẹ́ ISO",
+        "desc": "A gba ìjẹ́ ISO 17100, tí ó ṣe àgbésokè àwàdá wa nípa ètò ìdíwò àgbáyé."
       },
       "2": {
-        "title": "Digital Expansion",
-        "desc": "Launched our digital platform, enabling seamless online translation services across Africa."
+        "title": "Ìgbàtinúbá Ìsèlúù",
+        "desc": "A ṣe àgbàlù wẹ́bù wa, tí yóò jẹ ìrànlọwọ́ ìtumọ̀ wẹ́bù pẹ̀lú òkè nínú Áfríkà."
       },
       "3": {
-        "title": "Regional Leader",
-        "desc": "Became West Africa's leading translation service provider, serving clients across 15+ countries."
+        "title": "Ìlú Àpá Ọ̀rùn",
+        "desc": "A jẹ ìlù ìtumọ̀ tó pọ jù nínú Ìlà-Oòrùn Áfríkà, tó ń ṣiṣẹ́ pẹ̀lú àwọn onímọ̀ nínú òkè tó ju 15 lọ."
       },
       "4": {
-        "title": "AI Integration",
-        "desc": "Integrated advanced CAT tools and AI-assisted quality assurance while maintaining human expertise."
+        "title": "Ìṣàpáàdá Ìyàngalẹ̀",
+        "desc": "A ṣàpáàdá àwọn ìrinṣẹ CAT àti ìwayélé ìdíwò pẹ̀lú ìyàngalẹ̀ láìpẹ́ ìmọ̀ ènìyàn."
       },
       "5": {
-        "title": "Global Recognition",
-        "desc": "Recognized as Nigeria's premier translation service with international partnerships and certifications."
+        "title": "Ìjẹ́ Àgbáyé",
+        "desc": "Àgbèjókòó bilẹ̀ ní ilù ìtumọ̀ ẹ̀ẹ́kẹ́ Nàìjíríà pẹ̀lú àwọn ìbáṣepọ̀ àgbáyé àti àwọn ìjẹ́."
       }
     },
     "team": {
-      "title": "Meet Our Leadership Team",
-      "subtitle": "The experienced professionals who guide our vision and ensure the highest standards of service delivery across all our operations.",
+      "title": "Ṣe Páradé Àgbà Ìpilẹ̀ Wa",
+      "subtitle": "Àwọn onímọ̀ tí won ní ìmọ̀ tí o dáwọ ìran wa àti ṣe ìdájọ́ ètò òkè iṣẹ nínú gbogbo ìṣẹ̀ wa.",
       "0": {
-        "role": "Founder & CEO",
-        "desc": "15+ years in linguistics and international business. PhD in Applied Linguistics from University of Niamey, Niger.",
-        "spec": "Strategic Leadership & Linguistics"
+        "role": "Olumorí àti Aláṣẹ Nla",
+        "desc": "Ọdún 15+ nínú èdè àti iṣẹ àgbáyé. PhD nínú èdè àti iṣẹ ti Ilé-Ìyẹ̀ Niamey, Níjè.",
+        "spec": "Ìpilẹ̀ Íbàdandun àti Èdè"
       },
       "1": {
-        "role": "Chief Operations Officer",
-        "desc": "Expert in translation project management with extensive experience in quality assurance systems.",
-        "spec": "Operations & Quality Management"
+        "role": "Olórí Ìṣẹ̀",
+        "desc": "Ìmọ̀ nínú ìdáàbò iṣẹ ìtumọ̀ pẹ̀lú ìmọ̀ púpọ̀ nínú àwọn ètò ìwayélé ìdíwò.",
+        "spec": "Ìṣẹ̀ àti Ìdáàbò Ìdíwò"
       },
       "2": {
-        "role": "Technology Director",
-        "desc": "Leading our digital transformation with cutting-edge translation technology and AI integration.",
-        "spec": "Technology & Innovation"
+        "role": "Olórí Ìyàngalẹ̀",
+        "desc": "Ń dáwọ ìṣàpáàdá ìsèlúù wa pẹ̀lú ìyàngalẹ̀ ìtumọ̀ tó yọ̀ àti ìṣàpáàdá ìyàngalẹ̀.",
+        "spec": "Ìyàngalẹ̀ àti Ìdásìkò"
       },
       "3": {
-        "role": "Head of Linguistics",
-        "desc": "Oversees linguistic quality and cultural adaptation across all African and Middle Eastern languages.",
-        "spec": "Linguistics & Cultural Adaptation"
+        "role": "Olórí Èdè",
+        "desc": "Ó dáwọ ìdíwò èdè àti ìtúnkó àwùjọ nínú gbogbo èdè Áfríkà àti Ìlà-Oòrùn.",
+        "spec": "Èdè àti Ìtúnkó Àwùjọ"
       }
     },
     "cta": {
-      "title": "Ready to Work with Nigeria's Translation Experts?",
-      "description": "Join thousands of satisfied clients who trust ILI-Nigeria for accurate, culturally-sensitive translation services. Let's help you communicate effectively across languages and cultures.",
-      "getQuote": "Get Free Quote",
-      "contact": "Contact Our Team"
+      "title": "O Ṣe ọ̀ Ṣiṣẹ́ Pẹ̀lú Àwọn Ọ̀ṇà ní Ìtumọ̀ Nàìjíríà?",
+      "description": "Darapọ̀ pẹ̀lú àwọn ẹgbẹ̀ẹ̀ ìgbèkẹ̀le tí won ní ìgbèkẹ̀le pẹ̀lú ILI Nàìjíríà fún àwọn ìtumọ̀ tó ní ìdíwò àti àyẹ àwùjọ. Jẹ kí a ṣe ìrànlọwọ́ ọ láti ṣe ìbáraẹnisọrọ̀ tó dára pẹ̀lú èdè àti àwùjọ.",
+      "getQuote": "Gba Ìdíyè Tí Ó Wúlò",
+      "contact": "Bá Àgbà wa Ní Àbísọ̀"
+    }
+  },
+
+  "servicespage": {
+    "hero": {
+      "badge": "Àwọn Ìlò Wa",
+      "title": "Àwọn Ìlò Ìtumọ̀ Tí O Ní Ìmọ̀",
+      "subtitle": "Fún Gbogbo Ìkere",
+      "description": "Láti àwọn áwe kékeré dé àwọn òpó àgbà tó ní ìpilẹ̀, a ń fúnni ní àwọn ìlò èdè tí o wúlò tí a ba la ìbáraẹnisọrọ̀ nipa òkè kárì àwùjọ àti ìlà-oòrùn."
+    },
+    "stats": {
+      "categories": "Àwọn Ẹ̀kó Ìlò",
+      "languages": "Àwọn Èdè Tí A ń Ṣàtìlẹ́yìn",
+      "projects": "Àwọn Ìṣẹ̀ Tí A ṣe Pari",
+      "delivery": "Ìfiranṣẹ́ Giga"
+    },
+    "main": {
+      "document": {
+        "title": "Ìtumọ̀ Áwe",
+        "subtitle": "Tí O Ní Ìmọ̀ • Tí a Fọwọ́ Sí • Ìdíwò",
+        "shortDesc": "Ìtumọ̀ tí o ní ìmọ̀ ti àwọn áwe òfìn, elu, iṣẹ, àti ẹ̀kọ́",
+        "description": "Àwọn ìlò ìtumọ̀ áwe wa ń bo ohun tí ó ju ìwé kékeré dé àwọn àlaye tí o ní ìyípadà. Àwọn áwe ni a mọ láti tí àwọn onítumọ̀ tí a fọwọ́ sí tó ní ìmọ̀ nínú orísun rẹ.",
+        "features": [
+          "Àwọn áwe òfìn àti ìbámu",
+          "Àwọn ìwé ilé ẹ̀jẹ̀ àti ìròyìn",
+          "Àwọn ìdánilẹ̀kọ́ àkádẹ̀mì àti àwọn ìjẹ́",
+          "Ìbáraẹnisọrọ̀ iṣẹ",
+          "Àwọn àlaye àti àwọn ìpilẹ̀ gidi",
+          "Àwọn áwe àgbésìn"
+        ],
+        "process": [
+          "Ìfiranṣẹ́ áwe àti ìmọ̀ òye",
+          "Ìṣeun onítumọ̀ tó ní ìmọ̀",
+          "Ìtumọ̀ tí o ní ìmọ̀",
+          "Àyẹwò ìdíwò ìdíwò",
+          "Àyẹwò ònímọ̀ àti ìbádeèjì",
+          "Ìfiranṣẹ́ ìkẹ̀yìn pẹ̀lú ìjẹ́"
+        ],
+        "pricing": {
+          "standard": "₦25/ọ̀rọ̀",
+          "rush": "₦35/ọ̀rọ̀",
+          "certified": "₦40/ọ̀rọ̀"
+        },
+        "turnaround": "24-72 wákàtì"
+      },
+      "localization": {
+        "title": "Ìtúnkó Àgbàlà Wẹ́bù àti Ohun Ìṣẹ̀",
+        "subtitle": "Wíwo Àgbáyé • Ìtúnkó Àwùjọ • Ìtúnkó fún SEO",
+        "shortDesc": "Ṣe àgbàlù rẹ fún àwọn ọ̀nà ìṣẹ àgbáyé",
+        "description": "Lọ ní ìkan síí ti ìtumọ̀ alainí pẹ̀lú àwọn ìlò ìtúnkó tí o ní ìgbàlẹ. A ń ṣe àgbàlù àgbàlà wẹ́bù, ohun ìṣẹ̀ fóònù, tàbí sóofitúèè fún àwọn ọ̀nà àpáta.",
+        "features": [
+          "Ìtúnkó èkó àgbàlà wẹ́bù",
+          "Ìtúnkó ohun ìṣẹ̀ fóònù",
+          "Ìtúnkó ọ̀nà ìtà-ẹ̀wé",
+          "Ìtumọ̀ àgbàlù sóofitúèè",
+          "Ìtúnkó SEO fún àwọn ọ̀nà àyé",
+          "Ìrònú àti ìtúnkó àwùjọ"
+        ],
+        "process": [
+          "Ìmọ̀ òye àgbàlà àti ìplani",
+          "Ìyọkúrò èkó àti ìbòjúwọ̀",
+          "Ìplani ìtúnkó àwùjọ",
+          "Ìtumọ̀ àti ìtúnkó",
+          "Ìṣàpáàdá gidi",
+          "Ìdánwò àti ìdíwò ìdíwò"
+        ],
+        "pricing": {
+          "starting": "₦50,000/ìṣẹ̀",
+          "enterprise": "Ìdíye àáṣà",
+          "maintenance": "₦15,000/oṣù"
+        },
+        "turnaround": "1-4 àwọ̀ọ̀"
+      },
+      "interpretation": {
+        "title": "Ìtumọ̀ Lásìkò",
+        "subtitle": "Ní Àkókò Dùn • Tí O Ní Ìmọ̀ • Tí o Ń ṣẹ̀",
+        "shortDesc": "Ìtumọ̀ ọ̀rọ̀ ní ìlù àti ìkèkè fún àwọn ìpàdé àti àwọn ìdàsílẹ̀",
+        "description": "Fi ìdènà èdè kúrò ní àkókò dùn pẹ̀lú àwọn ìlò ìtumọ̀ ọ̀rọ̀ tí o ní ìmọ̀ wa. Bí ó bá jẹ ìpàdé iṣẹ, ìpàdé àgbà, tàbí ihò òfìn.",
+        "features": [
+          "Ìtumọ̀ ọ̀rọ̀ àpápọ̀",
+          "Ìtumọ̀ ọ̀rọ̀ àtejọsọ́",
+          "Ìrànlọwọ́ ìpàdé iṣẹ",
+          "Ìtumọ̀ ọ̀rọ̀ ìpàdé",
+          "Ìrànlọwọ́ ihò òfìn",
+          "Ìtumọ̀ ọ̀rọ̀ fíídíò jìjìn"
+        ],
+        "process": [
+          "Ìbékọ̀ àti ìbòjúwọ̀ ìdàsílẹ̀",
+          "Ìṣeun onítumọ̀ ọ̀rọ̀",
+          "Ìpàdé ṭe ìdàsílẹ̀",
+          "Ìlò ìtumọ̀ ọ̀rọ̀ dùn",
+          "Ìdáàbò ìdíwò ní àkókò dùn",
+          "Ìbádeèjì lẹ́yìn ìdàsílẹ̀"
+        ],
+        "pricing": {
+          "hourly": "₦25,000/wákàtì",
+          "halfday": "₦120,000",
+          "fullday": "₦200,000"
+        },
+        "turnaround": "Ìṣeun ní ọjọ́ kanna"
+      },
+      "multimedia": {
+        "title": "Ohùn àti Ìtumọ̀ Àkòrín",
+        "subtitle": "Ohùn • Fíídíò • Èkó Ọ̀pọ̀ Ìlò",
+        "shortDesc": "Àwọn ìlò ohùn àti ìtumọ̀ àkòrín tí o ní ìmọ̀ fún èkó ọ̀pọ̀ ìlò",
+        "description": "Ṣe àgbàlù àwọn fíídíò, ìkìlọ̀, àti èkó ọ̀pọ̀ ìlù rẹ nínú èdè púpọ̀. Àwọn olùbásọrọ̀ àbínibí wa ń ṣe àwọn ohùn tí o ní ìmọ̀.",
+        "features": [
+          "Ìgbé ohùn tí o ní ìmọ̀",
+          "Ìṣẹ̀dá ìtumọ̀ fíídíò",
+          "Àwọn ìlò ìtúnkó ohùn",
+          "Ìtumọ̀ ìkìlọ̀",
+          "Ìtúnkó fíídíò ìkẹ́kọ̀ọ̀",
+          "Ìkọ̀kọ̀ àti ìtumọ̀ pódikáṣì"
+        ],
+        "process": [
+          "Àyẹwò àti ìmọ̀ òye èkó",
+          "Ìtumọ̀ ìtàn ìlò",
+          "Ìyàn ohùn tó wúlò",
+          "Ìgbé àti ìṣegun",
+          "Ìbáraẹnisọrọ̀ àti àkókò",
+          "Ìfiranṣẹ́ ìkẹ̀yìn àti àwọn òfò"
+        ],
+        "pricing": {
+          "voiceover": "₦5,000/nínú",
+          "subtitles": "₦3,000/nínú",
+          "dubbing": "₦8,000/nínú"
+        },
+        "turnaround": "3-7 ọjọ́"
+      },
+      "certified": {
+        "title": "Ìtumọ̀ Tí a Fọwọ́ Sí",
+        "subtitle": "Lórísìrísì • Tí a Fọwọ́ Sí • Tí a Gba Sí",
+        "shortDesc": "Àwọn ìtumọ̀ lórísìrísì tí a gba níbi àwọn ṣóọ̀fù àti àwọn iléko",
+        "description": "Fún àwọn idi òfìn, ẹ̀kọ́, tàbí lórísìrísì, àwọn ìtumọ̀ tí a fọwọ́ sí wa ni a gba níbi ṣóọ̀fù, ilé-ìyẹ̀, àti àwọn ajẹ́ ijọba.",
+        "features": [
+          "Àwọn ìjẹ́ tí a gba níbi ṣóọ̀fù",
+          "Àwọn áwe ìbéèrè ilé-ìyẹ̀",
+          "Àwọn áwe àgbésìn",
+          "Àwọn áwe ijọba lórísìrísì",
+          "Àwọn ìtumọ̀ tí a fọwọ́ sí",
+          "Àwọn ìlò àkólá rẹ̀"
+        ],
+        "process": [
+          "Ìyẹ̀ríyẹ̀ àwe",
+          "Ìṣeun onítumọ̀ tí a fọwọ́ sí",
+          "Ìtumọ̀ tí o ní ìmọ̀",
+          "Ìṣẹ̀dá ìjẹ́ lórísìrísì",
+          "Ìfọwọ́ sí (bí ó bá jẹ̀)",
+          "Ìfiranṣẹ́ tí a ṣe àkólá"
+        ],
+        "pricing": {
+          "standard": "₦30,000/áwe",
+          "rush": "₦45,000/áwe",
+          "notarized": "₦50,000/áwe"
+        },
+        "turnaround": "48-72 wákàtì"
+      },
+      "enterprise": {
+        "title": "Àwọn Òpó Iṣẹ́",
+        "subtitle": "Tí o ní Agbára • Àáṣà • Ìrànlọwọ́ 24/7",
+        "shortDesc": "Àwọn òpó èdè tí o ní ìgbàlẹ fún àwọn ile-iṣẹ tó tobi",
+        "description": "Àwọn òpó ìtumọ̀ àáṣà fún àwọn ile-iṣẹ tó ní àwọn ìkere èdè ní àwọn ọjọ́. O ní olórí àkáúnti àáṣà, àwọn ìlowó ìlagbára, àti ìrànlọwọ́ àkọ́kọ́.",
+        "features": [
+          "Olórí àkáúnti àáṣà",
+          "Àwọn ìlowó ìlagbára",
+          "Ìrànlọwọ́ ìṣàpáàdá API",
+          "Ìlò àkọ́kọ́",
+          "Ìrànlọwọ́ ònímọ̀ 24/7",
+          "Àwọn òpó ìṣẹ̀ àáṣà"
+        ],
+        "process": [
+          "Ìpàdé ìmọ̀ àwọn ìkere",
+          "Ìṣẹ̀dá òpó àáṣà",
+          "Ìṣeun àgbà àti ìkọ́ní",
+          "Ìṣàpáàdá àti ìbòjúwọ̀",
+          "Ìdáàbò ìṣẹ̀ ní ìsinilẹ̀",
+          "Ìdáàbò ìṣẹ̀"
+        ],
+        "pricing": {
+          "custom": "Àwọn ìdíye àáṣà",
+          "volume": "Ìlowó títí ní 40%",
+          "monthly": "Láti ₦500,000"
+        },
+        "turnaround": "Àwọn ìdèkù tí o ni agbára"
+      }
+    },
+    "pricing": {
+      "title": "Ìdíye àti Àkókò",
+      "standard": "Giga",
+      "rush": "Ìjòjú",
+      "certified": "Tí a Fọwọ́ Sí",
+      "starting": "Ìbẹ̀rẹ̀",
+      "enterprise": "Iṣẹ́",
+      "maintenance": "Ìdáàbò",
+      "hourly": "Àkókò",
+      "halfday": "Ìṣẹ̀jú",
+      "fullday": "Ọjọ́ Gbogbo",
+      "voiceover": "Ohùn",
+      "subtitles": "Ìtumọ̀",
+      "dubbing": "Ìtúnkó",
+      "notarized": "Tí a Fọwọ́ Sí",
+      "custom": "Àáṣà",
+      "volume": "Ìlagbára",
+      "monthly": "Oṣù",
+      "turnaround": "Àkókò Akọ̀kọ̀"
+    },
+    "industries": {
+      "title": "Àwọn Òpó Tí A Ṣiṣẹ́",
+      "subtitle": "Ìmọ̀ àáṣà nínú àwọn òpó pàtàkì pẹ̀lú ìmọ̀ gígùn ti ẹ̀kó èdè.",
+      "legal": {
+        "title": "Òfìn àti Àgbésìn",
+        "desc": "Àwọn áwe ihò, ìbámu, àwọn áwe àgbésìn",
+        "projects": "2,500+ ìṣẹ̀"
+      },
+      "medical": {
+        "title": "Elu àti Àìṣàn",
+        "desc": "Àwọn ìwé ilé ẹ̀jẹ̀, àwọn áwe ọ̀gùn",
+        "projects": "1,800+ ìṣẹ̀"
+      },
+      "business": {
+        "title": "Iṣẹ́ àti Owó",
+        "desc": "Àwọn ìròyìn owó, ìplani iṣẹ́, ìbámu",
+        "projects": "3,200+ ìṣẹ̀"
+      },
+      "education": {
+        "title": "Ẹ̀kọ́ àti Ẹ̀kọ́ Akádẹ̀mì",
+        "desc": "Àwọn ìwé ẹ̀kọ́, àwọn ìdánilẹ̀kọ́, ìmọ̀",
+        "projects": "4,100+ ìṣẹ̀"
+      }
+    },
+    "why": {
+      "title": "Kí Ó Ṣe Ọ̀ Yàn ILI Nàìjíríà?",
+      "subtitle": "A ń dọ ìyàngalẹ̀ tó yọ pẹ̀lú ìmọ̀ ènìyàn láti fúnni ní àwọn ìtumọ̀ tó ju ìgbèkẹ̀le wà.",
+      "speed": {
+        "title": "Ìfiranṣẹ́ Ìyara",
+        "desc": "Ìfiranṣẹ́ ní 24-48 wákàtì nínú ọ̀pọ̀lọ́pọ̀ ìṣẹ̀"
+      },
+      "quality": {
+        "title": "Ìdíwò Ìdájọ́",
+        "desc": "Oníwe ìdíwò 99.8% pẹ̀lú ìdájọ́ àtúnkò"
+      },
+      "experts": {
+        "title": "Àwọn Onítumọ̀ Òye",
+        "desc": "Àwọn ọ̀ṇà tí a fọwọ́ sí pẹ̀lú ìmọ̀ òpó"
+      },
+      "cultural": {
+        "title": "Ìdíwò Àwùjọ",
+        "desc": "Àwọn olùbásọrọ̀ àbínibí tó mọ àwọn àṣà àgbègbè"
+      }
+    },
+    "process": {
+      "title": "Àwọn Ẹ̀kó Wa"
+    },
+    "cta": {
+      "title": "O Ṣe ọ̀ Yọ Sìbẹ̀?",
+      "description": "Gba ìdíye ìwúlò fún ìṣẹ̀ ìtumọ̀ rẹ lónìí. Àgbà wa ṣe ọ́ láti ṣe ìrànlọwọ́ ọ láti ṣe ìbáraẹnisọrọ̀ nipa òkè.",
+      "quote": "Gba Ìdíye Ìwúlò",
+      "contact": "Sọ̀rọ̀ Pẹ̀lú Òye"
     }
   }
 }

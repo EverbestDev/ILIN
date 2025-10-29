@@ -1198,5 +1198,262 @@
       "getQuote": "Obtenir un Devis Gratuit",
       "contact": "Contacter Notre Équipe"
     }
+  },
+  "servicespage": {
+    "hero": {
+      "badge": "Nos Services",
+      "title": "Services de Traduction Professionnels",
+      "subtitle": "Pour Chaque Besoin",
+      "description": "Des documents simples aux solutions d'entreprise complexes, nous fournissons des services linguistiques complets qui vous aident à communiquer efficacement à travers les cultures et les frontières."
+    },
+    "stats": {
+      "categories": "Catégories de Services",
+      "languages": "Langues Supportées",
+      "projects": "Projets Réalisés",
+      "delivery": "Livraison Moyenne"
+    },
+    "main": {
+      "document": {
+        "title": "Traduction de Documents",
+        "subtitle": "Professionnel • Certifié • Précis",
+        "shortDesc": "Traduction professionnelle de documents juridiques, médicaux, commerciaux et académiques",
+        "description": "Notre service de traduction de documents couvre tout, des lettres simples aux manuels techniques complexes. Chaque document est traité par des traducteurs certifiés ayant une expertise dans votre domaine spécifique.",
+        "features": [
+          "Documents juridiques et contrats",
+          "Dossiers et rapports médicaux",
+          "Relevés de notes et certificats académiques",
+          "Correspondance commerciale",
+          "Manuels et guides techniques",
+          "Documents d'immigration"
+        ],
+        "process": [
+          "Téléchargement et analyse du document",
+          "Attribution du traducteur expert",
+          "Traduction professionnelle",
+          "Révision d'assurance qualité",
+          "Révision et retour du client",
+          "Livraison finale avec certification"
+        ],
+        "pricing": {
+          "standard": "₦25/mot",
+          "rush": "₦35/mot",
+          "certified": "₦40/mot"
+        },
+        "turnaround": "24-72 heures"
+      },
+      "localization": {
+        "title": "Localisation de Site Web et Application",
+        "subtitle": "Portée Mondiale • Adaptation Culturelle • Optimisé pour le SEO",
+        "shortDesc": "Transformez votre présence numérique pour les marchés internationaux",
+        "description": "Allez au-delà de la simple traduction avec notre service de localisation complet. Nous adaptons votre site web, application mobile ou logiciel pour des marchés spécifiques.",
+        "features": [
+          "Localisation du contenu du site web",
+          "Internationalisation d'applications mobiles",
+          "Adaptation de plateforme e-commerce",
+          "Traduction d'interface logicielle",
+          "Optimisation SEO pour les marchés locaux",
+          "Consultation et adaptation culturelle"
+        ],
+        "process": [
+          "Analyse et stratégie de plate-forme",
+          "Extraction et préparation du contenu",
+          "Planification d'adaptation culturelle",
+          "Traduction et localisation",
+          "Intégration technique",
+          "Test et assurance qualité"
+        ],
+        "pricing": {
+          "starting": "₦50,000/projet",
+          "enterprise": "Tarif personnalisé",
+          "maintenance": "₦15,000/mois"
+        },
+        "turnaround": "1-4 semaines"
+      },
+      "interpretation": {
+        "title": "Interprétation Professionnelle",
+        "subtitle": "Temps Réel • Professionnel • Transparent",
+        "shortDesc": "Interprétation sur place et à distance pour réunions et événements",
+        "description": "Brisez les barrières linguistiques en temps réel avec nos services d'interprétation professionnels. Que ce soit une réunion commerciale, une conférence ou une procédure judiciaire.",
+        "features": [
+          "Interprétation simultanée",
+          "Interprétation consécutive",
+          "Support de réunion commerciale",
+          "Interprétation de conférence",
+          "Assistance de procédure juridique",
+          "Interprétation vidéo à distance"
+        ],
+        "process": [
+          "Séance d'information et préparation",
+          "Attribution de l'interprète",
+          "Consultation pré-événement",
+          "Service d'interprétation en direct",
+          "Surveillance de qualité en temps réel",
+          "Suivi post-événement"
+        ],
+        "pricing": {
+          "hourly": "₦25,000/heure",
+          "halfday": "₦120,000",
+          "fullday": "₦200,000"
+        },
+        "turnaround": "Réservation le même jour"
+      },
+      "multimedia": {
+        "title": "Voix-Off et Sous-titrage",
+        "subtitle": "Audio • Vidéo • Contenu Multimédia",
+        "shortDesc": "Services professionnels de voix-off et de sous-titrage pour le multimédia",
+        "description": "Donnez vie à vos vidéos, documentaires et contenus multimédias en plusieurs langues. Nos locuteurs natifs fournissent des voix-off professionnelles.",
+        "features": [
+          "Enregistrement professionnel de voix-off",
+          "Création de sous-titres vidéo",
+          "Services de doublage audio",
+          "Traduction documentaire",
+          "Localisation de vidéos de formation",
+          "Transcription et traduction de podcast"
+        ],
+        "process": [
+          "Révision et analyse du contenu",
+          "Traduction de scénario",
+          "Sélection des talents vocaux",
+          "Enregistrement et production",
+          "Synchronisation et minutage",
+          "Livraison finale et formats"
+        ],
+        "pricing": {
+          "voiceover": "₦5,000/minute",
+          "subtitles": "₦3,000/minute",
+          "dubbing": "₦8,000/minute"
+        },
+        "turnaround": "3-7 jours"
+      },
+      "certified": {
+        "title": "Traduction Certifiée",
+        "subtitle": "Officiel • Notarié • Accepté par l'Ambassade",
+        "shortDesc": "Traductions officielles acceptées par les ambassades et institutions",
+        "description": "À des fins juridiques, académiques ou officielles, nos traductions certifiées sont acceptées par les ambassades, universités et agences gouvernementales.",
+        "features": [
+          "Certifications acceptées par l'ambassade",
+          "Documents de candidature universitaire",
+          "Documents d'immigration",
+          "Documents gouvernementaux officiels",
+          "Traductions notariées",
+          "Services d'apostille"
+        ],
+        "process": [
+          "Vérification du document",
+          "Attribution du traducteur certifié",
+          "Traduction professionnelle",
+          "Processus de certification officielle",
+          "Notarisation (si requis)",
+          "Livraison scellée"
+        ],
+        "pricing": {
+          "standard": "₦30,000/document",
+          "rush": "₦45,000/document",
+          "notarized": "₦50,000/document"
+        },
+        "turnaround": "48-72 heures"
+      },
+      "enterprise": {
+        "title": "Solutions Entreprise",
+        "subtitle": "Évolutif • Dédié • Support 24/7",
+        "shortDesc": "Solutions linguistiques complètes pour grandes organisations",
+        "description": "Solutions de traduction personnalisées pour les entreprises ayant des besoins linguistiques continus. Inclut gestion de compte dédiée, réductions de volume et support prioritaire.",
+        "features": [
+          "Gestionnaire de compte dédié",
+          "Réductions tarifaires de volume",
+          "Support d'intégration API",
+          "Traitement prioritaire",
+          "Support client 24/7",
+          "Solutions de flux de travail personnalisé"
+        ],
+        "process": [
+          "Consultation d'évaluation des besoins",
+          "Conception de solution personnalisée",
+          "Attribution et formation de l'équipe",
+          "Intégration et configuration",
+          "Gestion de projet continue",
+          "Suivi des performances"
+        ],
+        "pricing": {
+          "custom": "Devis personnalisés",
+          "volume": "Jusqu'à 40% de rabais",
+          "monthly": "À partir de ₦500,000"
+        },
+        "turnaround": "SLA Flexibles"
+      }
+    },
+    "pricing": {
+      "title": "Tarification et Délai",
+      "standard": "Standard",
+      "rush": "Urgent",
+      "certified": "Certifié",
+      "starting": "À partir",
+      "enterprise": "Entreprise",
+      "maintenance": "Maintenance",
+      "hourly": "Horaire",
+      "halfday": "Demi-journée",
+      "fullday": "Journée complète",
+      "voiceover": "Voix-off",
+      "subtitles": "Sous-titres",
+      "dubbing": "Doublage",
+      "notarized": "Notarié",
+      "custom": "Personnalisé",
+      "volume": "Volume",
+      "monthly": "Mensuel",
+      "turnaround": "Délai d'exécution"
+    },
+    "industries": {
+      "title": "Secteurs que Nous Servons",
+      "subtitle": "Expertise spécialisée dans les secteurs clés avec compréhension approfondie de la terminologie et des exigences.",
+      "legal": {
+        "title": "Juridique et Immigration",
+        "desc": "Documents judiciaires, contrats, documents d'immigration",
+        "projects": "2 500+ projets"
+      },
+      "medical": {
+        "title": "Médical et Santé",
+        "desc": "Dossiers médicaux, documents pharmaceutiques",
+        "projects": "1 800+ projets"
+      },
+      "business": {
+        "title": "Commerce et Finance",
+        "desc": "Rapports financiers, plans commerciaux, contrats",
+        "projects": "3 200+ projets"
+      },
+      "education": {
+        "title": "Éducation et Académie",
+        "desc": "Articles académiques, relevés de notes, recherche",
+        "projects": "4 100+ projets"
+      }
+    },
+    "why": {
+      "title": "Pourquoi Choisir ILI-Nigeria ?",
+      "subtitle": "Nous combinons la technologie de pointe avec l'expertise humaine pour offrir des traductions qui dépassent les attentes.",
+      "speed": {
+        "title": "Livraison Rapide",
+        "desc": "Livraison en 24-48 heures sur la plupart des projets"
+      },
+      "quality": {
+        "title": "Garantie de Qualité",
+        "desc": "Taux de précision de 99,8% avec garantie de remboursement"
+      },
+      "experts": {
+        "title": "Traducteurs Experts",
+        "desc": "Professionnels certifiés avec expertise sectorielle"
+      },
+      "cultural": {
+        "title": "Précision Culturelle",
+        "desc": "Locuteurs natifs qui comprennent les nuances locales"
+      }
+    },
+    "process": {
+      "title": "Notre Processus"
+    },
+    "cta": {
+      "title": "Prêt à Commencer ?",
+      "description": "Obtenez un devis gratuit pour votre projet de traduction dès aujourd'hui. Notre équipe est prête à vous aider à communiquer efficacement.",
+      "quote": "Obtenir Devis Gratuit",
+      "contact": "Parler à un Expert"
+    }
   }
 }
