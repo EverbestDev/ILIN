@@ -24,8 +24,9 @@ export default function LanguageMarquee() {
     <div className="w-screen py-3 overflow-hidden bg-green-600">
       <div
         className={`relative flex whitespace-nowrap ${
-          isRTL ? "direction-rtl" : ""
+          isRTL ? "flex-row-reverse" : ""
         }`}
+        dir={isRTL ? "rtl" : "ltr"}
       >
         {/* First set of texts */}
         <div
@@ -35,8 +36,8 @@ export default function LanguageMarquee() {
         >
           {languages.map((lang) => (
             <span
-              key={lang.code}
-              className="mx-6 text-lg font-medium text-white"
+              key={`${lang.code}-1`}
+              className="mx-6 text-lg font-medium text-white flex-shrink-0"
             >
               {lang.text}
             </span>
@@ -52,8 +53,8 @@ export default function LanguageMarquee() {
         >
           {languages.map((lang) => (
             <span
-              key={lang.code}
-              className="mx-6 text-lg font-medium text-white"
+              key={`${lang.code}-2`}
+              className="mx-6 text-lg font-medium text-white flex-shrink-0"
             >
               {lang.text}
             </span>

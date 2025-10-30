@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebookF, FaTwitter } from "react-icons/fa";
@@ -15,43 +16,61 @@ import {
   sendPasswordResetEmail,
   auth,
 } from "../../utility/firebase";
-//carousel
+
+// Helper: Check if RTL
+const isRTL = (lang) => lang === "ar";
+
 const carouselSlides = [
   {
-    title: "Our Mission",
-    text: "Breaking language barriers and building bridges of understanding to enable seamless communication across all cultures and industries.",
+    titleKey: "login.carousel.slide1.title",
+    textKey: "login.carousel.slide1.text",
   },
   {
-    title: "Our Vision",
-    text: "A connected, multilingual world. To be Africa's leading language services provider, empowering global commerce and understanding.",
+    titleKey: "login.carousel.slide2.title",
+    textKey: "login.carousel.slide2.text",
   },
   {
-    title: "Client Commitment",
-    text: "We provide professional translation and interpretation services tailored for success, ensuring accuracy and cultural sensitivity in every project.",
+    titleKey: "login.carousel.slide3.title",
+    textKey: "login.carousel.slide3.text",
   },
 ];
 
-const AuthSidebar = ({ activeSlide }) => {
+const AuthSidebar = ({ activeSlide, t }) => {
   const slide = carouselSlides[activeSlide];
+  const { i18n } = useTranslation();
+  const rtl = isRTL(i18n.language);
+
   return (
-    <div className="relative flex-col justify-between hidden min-h-full p-8 overflow-hidden text-white md:flex lg:flex lg:w-1/3 xl:w-2/5 bg-gradient-to-br from-green-700 to-green-900">
-      <div className="flex items-center gap-3">
+    <div
+      className={`relative flex-col justify-between hidden min-h-full p-8 overflow-hidden text-white md:flex lg:flex lg:w-1/3 xl:w-2/5 bg-gradient-to-br from-green-700 to-green-900 ${
+        rtl ? "flex-row-reverse" : ""
+      }`}
+    >
+      <div
+        className={`flex items-center gap-3 ${rtl ? "flex-row-reverse" : ""}`}
+      >
         <div className="flex items-center justify-center w-10 h-10 rounded-lg shadow-xl bg-white/20">
           <Globe className="w-5 h-5 text-white" />
         </div>
         <h1 className="text-xl font-bold">ILIN Portal</h1>
       </div>
-      <div className="max-w-md my-auto text-left">
+      <div className={`max-w-md my-auto ${rtl ? "text-right" : "text-left"}`}>
         <motion.div
           key={activeSlide}
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="mb-4 text-3xl font-bold">{slide.title}</h2>
-          <p className="text-xl font-light text-green-100">{slide.text}</p>
+          <h2 className="mb-4 text-3xl font-bold">{t(slide.titleKey)}</h2>
+          <p className="text-xl font-light text-green-100">
+            {t(slide.textKey)}
+          </p>
         </motion.div>
-        <div className="flex justify-start gap-2 mt-8">
+        <div
+          className={`flex justify-start gap-2 mt-8 ${
+            rtl ? "flex-row-reverse" : ""
+          }`}
+        >
           {carouselSlides.map((_, index) => (
             <div
               key={index}
@@ -62,14 +81,16 @@ const AuthSidebar = ({ activeSlide }) => {
           ))}
         </div>
       </div>
-      <p className="text-xs text-white/70">
-        Connecting cultures through language excellence.
-      </p>
+      <p className="text-xs text-white/70">{t("login.sidebar.footer")}</p>
     </div>
   );
 };
 
 export default function Login() {
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language;
+  const rtl = isRTL(currentLang);
+
   const [isSignup, setIsSignup] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -87,7 +108,10 @@ export default function Login() {
   const [rememberMe, setRememberMe] = useState(false);
 
   const navigate = useNavigate();
-  const BASE_URL = "https://ilin-backend.onrender.com" || import.meta.env.VITE_API_URL || "http://localhost:5000";
+  const BASE_URL =
+    "https://ilin-backend.onrender.com" ||
+    import.meta.env.VITE_API_URL ||
+    "http://localhost:5000";
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -138,43 +162,41 @@ export default function Login() {
 
       const profileData = await profileResponse.json();
       const { role, email: userEmail } = profileData.user;
-      await user.getIdToken(true); // Force refresh token to get new claims
+      await user.getIdToken(true);
       setLoading(false);
-      navigate(
-        role === "admin" ? "/admin/dashboard" : `/client/dashboard`
-      );
+      navigate(role === "admin" ? "/admin/dashboard" : `/client/dashboard`);
     } catch (error) {
       setLoading(false);
-      let errorMessage = "Failed to sign in. Please try again.";
+      let errorMessage = t("login.errors.signInFailed");
 
       if (error.code && error.code.startsWith("auth/")) {
         switch (error.code) {
           case "auth/invalid-credential":
           case "auth/wrong-password":
           case "auth/user-not-found":
-            errorMessage = "Invalid email or password.";
+            errorMessage = t("login.errors.invalidCredentials");
             break;
           case "auth/too-many-requests":
-            errorMessage = "Too many attempts. Try again later.";
+            errorMessage = t("login.errors.tooManyAttempts");
             break;
           case "auth/invalid-email":
-            errorMessage = "Invalid email address.";
+            errorMessage = t("login.errors.invalidEmail");
             break;
           case "auth/popup-closed-by-user":
-            errorMessage = "Sign-in cancelled.";
+            errorMessage = t("login.errors.popupClosed");
             break;
           case "auth/popup-blocked":
-            errorMessage = "Popup blocked. Please allow popups.";
+            errorMessage = t("login.errors.popupBlocked");
             break;
           case "auth/account-exists-with-different-credential":
-            errorMessage = "Account exists with a different sign-in method.";
+            errorMessage = t("login.errors.accountExists");
             break;
           default:
-            errorMessage = error.message || "Sign-in failed.";
+            errorMessage = error.message || t("login.errors.signInFailed");
             break;
         }
       } else {
-        errorMessage = error.message || "Network error. Check backend connection.";
+        errorMessage = error.message || t("login.errors.networkError");
       }
 
       console.error("Sign-In Error:", error);
@@ -188,7 +210,7 @@ export default function Login() {
     setLoading(true);
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError(t("login.errors.passwordMismatch"));
       setLoading(false);
       return;
     }
@@ -196,7 +218,11 @@ export default function Login() {
     try {
       await setPersistence(auth, browserLocalPersistence);
 
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
       const idToken = await user.getIdToken();
 
@@ -215,7 +241,9 @@ export default function Login() {
 
       if (!profileResponse.ok) {
         const data = await profileResponse.json();
-        throw new Error(data.message || `HTTP error! Status: ${profileResponse.status}`);
+        throw new Error(
+          data.message || `HTTP error! Status: ${profileResponse.status}`
+        );
       }
 
       const profileData = await profileResponse.json();
@@ -227,29 +255,32 @@ export default function Login() {
       setEmail("");
       setPassword("");
       setConfirmPassword("");
-      setSuccess("Account created. Please sign in.");
-      navigate(role === "admin" ? "/admin/dashboard" : `/client/dashboard/${userEmail}`);
+      setSuccess(t("login.messages.accountCreated"));
+      navigate(
+        role === "admin" ? "/admin/dashboard" : `/client/dashboard/${userEmail}`
+      );
     } catch (error) {
       setLoading(false);
-      let errorMessage = "Failed to register. Please try again.";
+      let errorMessage = t("login.errors.registrationFailed");
 
       if (error.code && error.code.startsWith("auth/")) {
         switch (error.code) {
           case "auth/email-already-in-use":
-            errorMessage = "This email is already registered.";
+            errorMessage = t("login.errors.emailInUse");
             break;
           case "auth/invalid-email":
-            errorMessage = "Invalid email address.";
+            errorMessage = t("login.errors.invalidEmail");
             break;
           case "auth/weak-password":
-            errorMessage = "Password is too weak. Use at least 6 characters.";
+            errorMessage = t("login.errors.weakPassword");
             break;
           default:
-            errorMessage = error.message || "Registration failed.";
+            errorMessage =
+              error.message || t("login.errors.registrationFailed");
             break;
         }
       } else {
-        errorMessage = error.message || "Network error. Check backend connection.";
+        errorMessage = error.message || t("login.errors.networkError");
       }
 
       console.error("Registration Error:", error);
@@ -265,21 +296,21 @@ export default function Login() {
 
     try {
       await sendPasswordResetEmail(auth, resetEmail);
-      setSuccess("Password reset email sent. Check your inbox.");
+      setSuccess(t("login.messages.resetEmailSent"));
       setResetEmail("");
       setShowResetPassword(false);
     } catch (error) {
-      let errorMessage = "Failed to send password reset email.";
+      let errorMessage = t("login.errors.resetFailed");
       if (error.code && error.code.startsWith("auth/")) {
         switch (error.code) {
           case "auth/invalid-email":
-            errorMessage = "Invalid email address.";
+            errorMessage = t("login.errors.invalidEmail");
             break;
           case "auth/user-not-found":
-            errorMessage = "No user found with this email.";
+            errorMessage = t("login.errors.userNotFound");
             break;
           default:
-            errorMessage = error.message || "Password reset failed.";
+            errorMessage = error.message || t("login.errors.resetFailed");
             break;
         }
       }
@@ -305,8 +336,12 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen overflow-hidden bg-gray-50">
-      <AuthSidebar activeSlide={activeSlide} />
+    <div
+      className="flex min-h-screen overflow-hidden bg-gray-50"
+      dir={rtl ? "rtl" : "ltr"}
+      style={{ direction: rtl ? "rtl" : "ltr" }}
+    >
+      <AuthSidebar activeSlide={activeSlide} t={t} />
       <div className="flex flex-col items-center justify-center w-full p-6 sm:p-12 lg:w-2/3 xl:w-3/5 bg-gray-50">
         <motion.div
           key={isSignup ? "signup" : "login"}
@@ -315,7 +350,11 @@ export default function Login() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="flex justify-center mb-8">
+          <div
+            className={`flex justify-center mb-8 ${
+              rtl ? "flex-row-reverse" : ""
+            }`}
+          >
             <button
               type="button"
               onClick={() => setIsSignup(false)}
@@ -325,7 +364,7 @@ export default function Login() {
                   : "border-transparent text-gray-500 hover:text-gray-700"
               }`}
             >
-              Sign In
+              {t("login.tabs.signIn")}
             </button>
             <button
               type="button"
@@ -336,16 +375,24 @@ export default function Login() {
                   : "border-transparent text-gray-500 hover:text-gray-700"
               }`}
             >
-              Sign Up
+              {t("login.tabs.signUp")}
             </button>
           </div>
           {error && (
-            <p className="mb-4 text-sm text-red-600" role="alert">
+            <p
+              className={`mb-4 text-sm text-red-600 ${rtl ? "text-right" : ""}`}
+              role="alert"
+            >
               {error}
             </p>
           )}
           {success && (
-            <p className="mb-4 text-sm text-green-600" role="alert">
+            <p
+              className={`mb-4 text-sm text-green-600 ${
+                rtl ? "text-right" : ""
+              }`}
+              role="alert"
+            >
               {success}
             </p>
           )}
@@ -354,17 +401,21 @@ export default function Login() {
               <div>
                 <label
                   htmlFor="name"
-                  className="block mb-1 text-sm font-medium text-gray-700"
+                  className={`block mb-1 text-sm font-medium text-gray-700 ${
+                    rtl ? "text-right" : ""
+                  }`}
                 >
-                  Full Name
+                  {t("login.form.fullName")}
                 </label>
                 <input
                   id="name"
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  placeholder="Your Name"
+                  className={`w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                    rtl ? "text-right" : ""
+                  }`}
+                  placeholder={t("login.form.yourName")}
                   required
                   disabled={loading}
                 />
@@ -373,16 +424,20 @@ export default function Login() {
             <div>
               <label
                 htmlFor="email"
-                className="block mb-1 text-sm font-medium text-gray-700"
+                className={`block mb-1 text-sm font-medium text-gray-700 ${
+                  rtl ? "text-right" : ""
+                }`}
               >
-                Email Address
+                {t("login.form.emailAddress")}
               </label>
               <input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                className={`w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                  rtl ? "text-right" : ""
+                }`}
                 placeholder="you@example.com"
                 required
                 disabled={loading}
@@ -391,16 +446,20 @@ export default function Login() {
             <div className="relative">
               <label
                 htmlFor="password"
-                className="block mb-1 text-sm font-medium text-gray-700"
+                className={`block mb-1 text-sm font-medium text-gray-700 ${
+                  rtl ? "text-right" : ""
+                }`}
               >
-                Password
+                {t("login.form.password")}
               </label>
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 pr-10 transition duration-150 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                className={`w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                  rtl ? "pr-10 text-right" : "pr-10"
+                }`}
                 placeholder="••••••••"
                 required
                 disabled={loading}
@@ -408,8 +467,14 @@ export default function Login() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 focus:outline-none"
-                aria-label={showPassword ? "Hide password" : "Show password"}
+                className={`absolute inset-y-0 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none ${
+                  rtl ? "left-3" : "right-3"
+                }`}
+                aria-label={
+                  showPassword
+                    ? t("login.a11y.hidePassword")
+                    : t("login.a11y.showPassword")
+                }
               >
                 {showPassword ? (
                   <EyeOff className="w-5 h-5 mt-6" />
@@ -422,16 +487,20 @@ export default function Login() {
               <div className="relative">
                 <label
                   htmlFor="confirmPassword"
-                  className="block mb-1 text-sm font-medium text-gray-700"
+                  className={`block mb-1 text-sm font-medium text-gray-700 ${
+                    rtl ? "text-right" : ""
+                  }`}
                 >
-                  Confirm Password
+                  {t("login.form.confirmPassword")}
                 </label>
                 <input
                   id="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full px-4 py-3 pr-10 transition duration-150 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  className={`w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                    rtl ? "pr-10 text-right" : "pr-10"
+                  }`}
                   placeholder="••••••••"
                   required
                   disabled={loading}
@@ -439,11 +508,13 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 focus:outline-none"
+                  className={`absolute inset-y-0 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none ${
+                    rtl ? "left-3" : "right-3"
+                  }`}
                   aria-label={
                     showConfirmPassword
-                      ? "Hide confirm password"
-                      : "Show confirm password"
+                      ? t("login.a11y.hideConfirmPassword")
+                      : t("login.a11y.showConfirmPassword")
                   }
                 >
                   {showConfirmPassword ? (
@@ -455,8 +526,16 @@ export default function Login() {
               </div>
             )}
             {!isSignup && (
-              <div className="flex items-center justify-between pt-2">
-                <div className="flex items-center">
+              <div
+                className={`flex items-center justify-between pt-2 ${
+                  rtl ? "flex-row-reverse" : ""
+                }`}
+              >
+                <div
+                  className={`flex items-center ${
+                    rtl ? "flex-row-reverse" : ""
+                  }`}
+                >
                   <input
                     id="remember-me"
                     type="checkbox"
@@ -467,9 +546,11 @@ export default function Login() {
                   />
                   <label
                     htmlFor="remember-me"
-                    className="block ml-2 text-sm text-gray-900"
+                    className={`block text-sm text-gray-900 ${
+                      rtl ? "mr-2" : "ml-2"
+                    }`}
                   >
-                    Remember me
+                    {t("login.form.rememberMe")}
                   </label>
                 </div>
                 <button
@@ -477,21 +558,23 @@ export default function Login() {
                   onClick={() => setShowResetPassword(true)}
                   className="text-sm font-medium text-green-600 hover:text-green-500"
                 >
-                  Forgot password?
+                  {t("login.form.forgotPassword")}
                 </button>
               </div>
             )}
             <button
               type="submit"
               disabled={loading}
-              className="flex items-center justify-center w-full gap-2 px-4 py-3 text-sm font-medium text-white transition duration-150 border border-transparent rounded-lg shadow-sm bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
+              className={`flex items-center justify-center w-full gap-2 px-4 py-3 text-sm font-medium text-white transition duration-150 border border-transparent rounded-lg shadow-sm bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 ${
+                rtl ? "flex-row-reverse" : ""
+              }`}
             >
               {loading ? (
                 <div className="w-5 h-5 border-b-2 border-white rounded-full animate-spin"></div>
               ) : isSignup ? (
-                "Create Account"
+                t("login.buttons.createAccount")
               ) : (
-                "Sign In"
+                t("login.buttons.signIn")
               )}
             </button>
           </form>
@@ -501,16 +584,22 @@ export default function Login() {
             </div>
             <div className="relative flex justify-center text-sm">
               <span className="px-2 text-gray-500 bg-white">
-                Or continue with
+                {t("login.form.orContinueWith")}
               </span>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-3 mt-6">
+          <div
+            className={`grid grid-cols-3 gap-3 mt-6 ${
+              rtl ? "flex-row-reverse" : ""
+            }`}
+          >
             <button
               type="button"
               onClick={handleGoogleSignIn}
               disabled={loading}
-              className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+              className={`flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 ${
+                rtl ? "flex-row-reverse" : ""
+              }`}
             >
               <FcGoogle size={20} />
             </button>
@@ -518,7 +607,9 @@ export default function Login() {
               type="button"
               onClick={() => setShowComingSoon(true)}
               disabled={loading}
-              className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+              className={`flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 ${
+                rtl ? "flex-row-reverse" : ""
+              }`}
             >
               <FaFacebookF size={20} className="text-blue-600" />
             </button>
@@ -526,59 +617,74 @@ export default function Login() {
               type="button"
               onClick={() => setShowComingSoon(true)}
               disabled={loading}
-              className="flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+              className={`flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 ${
+                rtl ? "flex-row-reverse" : ""
+              }`}
             >
               <FaTwitter size={20} className="text-blue-400" />
             </button>
           </div>
           {showComingSoon && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-              <div className="w-full max-w-sm p-6 bg-white rounded-lg shadow-xl">
+              <div
+                className={`w-full max-w-sm p-6 bg-white rounded-lg shadow-xl ${
+                  rtl ? "text-right" : ""
+                }`}
+              >
                 <h3 className="text-lg font-semibold text-gray-900">
-                  Coming Soon
+                  {t("login.modals.comingSoon")}
                 </h3>
                 <p className="mt-2 text-sm text-gray-600">
-                  This authentication method is not yet available. Please use
-                  Google or email/password to sign in.
+                  {t("login.modals.comingSoonDesc")}
                 </p>
                 <button
                   onClick={() => setShowComingSoon(false)}
                   className="w-full px-4 py-2 mt-4 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
                 >
-                  Close
+                  {t("login.buttons.close")}
                 </button>
               </div>
             </div>
           )}
           {showResetPassword && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-              <div className="w-full max-w-sm p-6 bg-white rounded-lg shadow-xl">
+              <div
+                className={`w-full max-w-sm p-6 bg-white rounded-lg shadow-xl ${
+                  rtl ? "text-right" : ""
+                }`}
+              >
                 <h3 className="text-lg font-semibold text-gray-900">
-                  Reset Password
+                  {t("login.modals.resetPassword")}
                 </h3>
                 <p className="mt-2 text-sm text-gray-600">
-                  Enter your email to receive a password reset link.
+                  {t("login.modals.resetPasswordDesc")}
                 </p>
                 <form onSubmit={handleResetPassword} className="mt-4 space-y-4">
                   <div>
                     <label
                       htmlFor="resetEmail"
-                      className="block mb-1 text-sm font-medium text-gray-700"
+                      className={`block mb-1 text-sm font-medium text-gray-700 ${
+                        rtl ? "text-right" : ""
+                      }`}
                     >
-                      Email Address
+                      {t("login.form.emailAddress")}
                     </label>
                     <input
                       id="resetEmail"
                       type="email"
                       value={resetEmail}
                       onChange={(e) => setResetEmail(e.target.value)}
-                      className="w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      className={`w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                        rtl ? "text-right" : ""
+                      }`}
                       placeholder="you@example.com"
                       required
                       disabled={loading}
                     />
                   </div>
-                  <div className="flex gap-2">
+                  <div
+                    className={`flex gap-2 ${rtl ? "flex-row-reverse" : ""}`}
+                  >
                     <button
                       type="submit"
                       disabled={loading}
@@ -587,7 +693,7 @@ export default function Login() {
                       {loading ? (
                         <div className="w-5 h-5 mx-auto border-b-2 border-white rounded-full animate-spin"></div>
                       ) : (
-                        "Send Reset Link"
+                        t("login.buttons.sendResetLink")
                       )}
                     </button>
                     <button
@@ -595,27 +701,31 @@ export default function Login() {
                       onClick={() => setShowResetPassword(false)}
                       className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500"
                     >
-                      Cancel
+                      {t("login.buttons.cancel")}
                     </button>
                   </div>
                 </form>
               </div>
             </div>
           )}
-          <p className="mt-8 text-xs text-center text-gray-500">
-            By continuing, you agree to our{" "}
+          <p
+            className={`mt-8 text-xs text-center text-gray-500 ${
+              rtl ? "text-right" : ""
+            }`}
+          >
+            {t("login.footer.agreement")}
             <a
               href="#"
               className="font-medium text-green-600 hover:text-green-500"
             >
-              Terms of Service
+              {t("login.footer.terms")}
             </a>
-            {" and "}
+            {" " + t("login.footer.and") + " "}
             <a
               href="#"
               className="font-medium text-green-600 hover:text-green-500"
             >
-              Privacy Policy
+              {t("login.footer.privacy")}
             </a>
             .
           </p>

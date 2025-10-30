@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   Search,
   Filter,
@@ -18,7 +19,11 @@ import {
 } from "lucide-react";
 
 export default function LanguagesPage() {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const isArabic = i18n.language === "ar";
+  const isRTL = isArabic;
+
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRegion, setSelectedRegion] = useState("All");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -571,7 +576,7 @@ export default function LanguagesPage() {
   // Animated counter for total languages
   useEffect(() => {
     let start = 0;
-    const end = languages.length + 161; //I added 161 to make it 200
+    const end = languages.length + 161;
     const duration = 1500;
     const increment = Math.ceil(end / (duration / 50));
 
@@ -601,8 +606,20 @@ export default function LanguagesPage() {
     navigate("/contact");
   };
 
+  const convertToArabicNumerals = (num) => {
+    const arabicNumerals = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
+    return String(num)
+      .split("")
+      .map((digit) => arabicNumerals[parseInt(digit)])
+      .join("");
+  };
+
+  const formatNumber = (num) => {
+    return isArabic ? convertToArabicNumerals(num) : num;
+  };
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white" dir={isRTL ? "rtl" : "ltr"}>
       {/* Hero Section */}
       <section className="px-6 py-20 pt-32 bg-gradient-to-br from-green-50 to-emerald-50 md:px-20">
         <div className="max-w-6xl mx-auto text-center">
@@ -612,39 +629,56 @@ export default function LanguagesPage() {
             transition={{ duration: 0.8 }}
           >
             <span className="inline-block px-6 py-2 mb-6 text-sm font-semibold text-green-600 bg-green-100 rounded-full">
-              Languages We Support
+              {t("languagesPage.hero.badge")}
             </span>
             <h1 className="mb-6 text-4xl font-bold text-gray-900 md:text-5xl">
-              <span className="text-green-600">{displayCount}+</span> Languages
-              <span className="block">Connecting Global Communities</span>
+              <span className="text-green-600">
+                {formatNumber(displayCount)}+
+              </span>{" "}
+              {t("languagesPage.hero.title")}
+              <span className="block">{t("languagesPage.hero.subtitle")}</span>
             </h1>
             <p className="max-w-3xl mx-auto mb-12 text-xl leading-relaxed text-gray-600">
-              From major international languages to local Nigerian dialects, our
-              certified translators provide expert linguistic services with deep
-              cultural understanding.
+              {t("languagesPage.hero.description")}
             </p>
 
             {/* Quick Stats */}
             <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
               <div className="p-6 bg-white shadow-md rounded-2xl">
                 <Globe className="w-12 h-12 mx-auto mb-3 text-green-600" />
-                <h3 className="mb-1 text-2xl font-bold text-gray-900">50+</h3>
-                <p className="text-gray-600">Languages Supported</p>
+                <h3 className="mb-1 text-2xl font-bold text-gray-900">
+                  {formatNumber(50)}+
+                </h3>
+                <p className="text-gray-600">
+                  {t("languagesPage.stats.supported")}
+                </p>
               </div>
               <div className="p-6 bg-white shadow-md rounded-2xl">
                 <Users className="w-12 h-12 mx-auto mb-3 text-blue-600" />
-                <h3 className="mb-1 text-2xl font-bold text-gray-900">3B+</h3>
-                <p className="text-gray-600">Native Speakers Covered</p>
+                <h3 className="mb-1 text-2xl font-bold text-gray-900">
+                  {formatNumber(3)}B+
+                </h3>
+                <p className="text-gray-600">
+                  {t("languagesPage.stats.speakers")}
+                </p>
               </div>
               <div className="p-6 bg-white shadow-md rounded-2xl">
                 <MapPin className="w-12 h-12 mx-auto mb-3 text-orange-600" />
-                <h3 className="mb-1 text-2xl font-bold text-gray-900">195</h3>
-                <p className="text-gray-600">Countries Reached</p>
+                <h3 className="mb-1 text-2xl font-bold text-gray-900">
+                  {formatNumber(195)}
+                </h3>
+                <p className="text-gray-600">
+                  {t("languagesPage.stats.countries")}
+                </p>
               </div>
               <div className="p-6 bg-white shadow-md rounded-2xl">
                 <Award className="w-12 h-12 mx-auto mb-3 text-purple-600" />
-                <h3 className="mb-1 text-2xl font-bold text-gray-900">15+</h3>
-                <p className="text-gray-600">Specialized Fields</p>
+                <h3 className="mb-1 text-2xl font-bold text-gray-900">
+                  {formatNumber(15)}+
+                </h3>
+                <p className="text-gray-600">
+                  {t("languagesPage.stats.fields")}
+                </p>
               </div>
             </div>
           </motion.div>
@@ -662,12 +696,10 @@ export default function LanguagesPage() {
             className="mb-16 text-center"
           >
             <h2 className="mb-6 text-3xl font-bold text-gray-900">
-              Nigerian Languages - Our Specialty
+              {t("languagesPage.nigerian.title")}
             </h2>
             <p className="max-w-2xl mx-auto text-lg text-gray-600">
-              As a Nigerian company, we have deep expertise in local languages,
-              understanding cultural nuances that make communication truly
-              effective.
+              {t("languagesPage.nigerian.description")}
             </p>
           </motion.div>
 
@@ -686,22 +718,35 @@ export default function LanguagesPage() {
                   {lang.name}
                 </h3>
                 <p className="mb-4 font-semibold text-green-600">
-                  {lang.speakers} speakers
+                  {lang.speakers} {t("languagesPage.nigerian.speakers")}
                 </p>
                 <p className="mb-6 text-gray-600">
-                  Native {lang.country} language with rich cultural heritage
+                  {t("languagesPage.nigerian.native")} {lang.country}{" "}
+                  {t("languagesPage.nigerian.language")}
                 </p>
-                <div className="flex items-center justify-center space-x-4 text-sm">
+                <div
+                  className={`flex items-center justify-center space-x-4 text-sm ${
+                    isRTL ? "flex-row-reverse" : ""
+                  }`}
+                >
                   {lang.certified && (
-                    <div className="flex items-center text-green-600">
-                      <Award className="w-4 h-4 mr-1" />
-                      Certified
+                    <div
+                      className={`flex items-center text-green-600 ${
+                        isRTL ? "flex-row-reverse" : ""
+                      }`}
+                    >
+                      <Award className={`w-4 h-4 ${isRTL ? "ml-1" : "mr-1"}`} />
+                      {t("languagesPage.certified")}
                     </div>
                   )}
                   {lang.specialized && (
-                    <div className="flex items-center text-blue-600">
-                      <Star className="w-4 h-4 mr-1" />
-                      Specialized
+                    <div
+                      className={`flex items-center text-blue-600 ${
+                        isRTL ? "flex-row-reverse" : ""
+                      }`}
+                    >
+                      <Star className={`w-4 h-4 ${isRTL ? "ml-1" : "mr-1"}`} />
+                      {t("languagesPage.specialized")}
                     </div>
                   )}
                 </div>
@@ -711,8 +756,7 @@ export default function LanguagesPage() {
 
           <div className="text-center">
             <p className="mb-6 text-gray-600">
-              We also support other major African languages including Swahili,
-              Amharic, Akan, Zulu, and more.
+              {t("languagesPage.nigerian.other")}
             </p>
           </div>
         </div>
@@ -729,11 +773,10 @@ export default function LanguagesPage() {
             className="mb-16 text-center"
           >
             <h2 className="mb-6 text-3xl font-bold text-gray-900">
-              Most Requested Languages
+              {t("languagesPage.popular.title")}
             </h2>
             <p className="max-w-2xl mx-auto text-lg text-gray-600">
-              The languages most frequently requested by our clients across
-              various industries and sectors.
+              {t("languagesPage.popular.description")}
             </p>
           </motion.div>
 
@@ -770,39 +813,61 @@ export default function LanguagesPage() {
             className="mb-16 text-center"
           >
             <h2 className="mb-6 text-3xl font-bold text-gray-900">
-              Complete Language Directory
+              {t("languagesPage.directory.title")}
             </h2>
             <p className="max-w-2xl mx-auto text-lg text-gray-600">
-              Explore our complete language offerings with detailed information
-              about each language we support.
+              {t("languagesPage.directory.description")}
             </p>
           </motion.div>
 
           {/* Search and Filter Controls */}
-          <div className="flex flex-col gap-6 mb-12 md:flex-row">
+          <div
+            className={`flex flex-col gap-6 mb-12 md:flex-row ${
+              isRTL ? "flex-row-reverse" : ""
+            }`}
+          >
             {/* Search */}
             <div className="relative flex-1">
-              <Search className="absolute w-5 h-5 text-gray-400 transform -translate-y-1/2 left-4 top-1/2" />
+              <Search
+                className={`absolute w-5 h-5 text-gray-400 transform -translate-y-1/2 top-1/2 ${
+                  isRTL ? "right-4" : "left-4"
+                }`}
+              />
               <input
                 type="text"
-                placeholder="Search languages or countries..."
+                placeholder={t("languagesPage.search.placeholder")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full py-4 pl-12 pr-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className={`w-full py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                  isRTL ? "pr-12 pl-4 text-right" : "pl-12 pr-4"
+                }`}
+                dir={isRTL ? "rtl" : "ltr"}
               />
             </div>
 
             {/* Region Filter */}
             <div className="relative">
-              <Filter className="absolute w-5 h-5 text-gray-400 transform -translate-y-1/2 left-4 top-1/2" />
+              <Filter
+                className={`absolute w-5 h-5 text-gray-400 transform -translate-y-1/2 top-1/2 ${
+                  isRTL ? "right-4" : "left-4"
+                }`}
+              />
               <select
                 value={selectedRegion}
                 onChange={(e) => setSelectedRegion(e.target.value)}
-                className="pl-12 pr-8 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none bg-white min-w-[160px]"
+                className={`py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none bg-white min-w-[160px] ${
+                  isRTL ? "pr-12 pl-4 text-right" : "pl-12 pr-8"
+                }`}
+                dir={isRTL ? "rtl" : "ltr"}
               >
                 {regions.map((region) => (
                   <option key={region} value={region}>
-                    {region} Languages
+                    {t(
+                      `languagesPage.regions.${region
+                        .toLowerCase()
+                        .replace(" ", "_")}`
+                    )}{" "}
+                    {t("languagesPage.languages")}
                   </option>
                 ))}
               </select>
@@ -813,11 +878,14 @@ export default function LanguagesPage() {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-6 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none bg-white min-w-[140px]"
+                className={`px-6 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent appearance-none bg-white min-w-[140px] ${
+                  isRTL ? "text-right" : ""
+                }`}
+                dir={isRTL ? "rtl" : "ltr"}
               >
                 {categories.map((category) => (
                   <option key={category} value={category}>
-                    {category}
+                    {t(`languagesPage.categories.${category.toLowerCase()}`)}
                   </option>
                 ))}
               </select>
@@ -827,14 +895,33 @@ export default function LanguagesPage() {
           {/* Results Count */}
           <div className="mb-8">
             <p className="text-gray-600">
-              Showing{" "}
+              {t("languagesPage.results.showing")}{" "}
               <span className="font-semibold text-gray-900">
-                {filteredLanguages.length}
+                {formatNumber(filteredLanguages.length)}
               </span>{" "}
-              languages
-              {searchTerm && <span> matching "{searchTerm}"</span>}
-              {selectedRegion !== "All" && <span> in {selectedRegion}</span>}
-              {selectedCategory !== "All" && <span> ({selectedCategory})</span>}
+              {t("languagesPage.results.languages")}
+              {searchTerm && (
+                <span>
+                  {" "}
+                  {t("languagesPage.results.matching")} "{searchTerm}"
+                </span>
+              )}
+              {selectedRegion !== "All" && (
+                <span>
+                  {" "}
+                  {t("languagesPage.results.in")} {selectedRegion}
+                </span>
+              )}
+              {selectedCategory !== "All" && (
+                <span>
+                  {" "}
+                  (
+                  {t(
+                    `languagesPage.categories.${selectedCategory.toLowerCase()}`
+                  )}
+                  )
+                </span>
+              )}
             </p>
           </div>
 
@@ -852,9 +939,19 @@ export default function LanguagesPage() {
                     : "border-gray-200"
                 }`}
               >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center">
-                    <span className="mr-4 text-3xl">{lang.flag}</span>
+                <div
+                  className={`flex items-start justify-between mb-4 ${
+                    isRTL ? "flex-row-reverse" : ""
+                  }`}
+                >
+                  <div
+                    className={`flex items-center ${
+                      isRTL ? "flex-row-reverse" : ""
+                    }`}
+                  >
+                    <span className={`text-3xl ${isRTL ? "ml-4" : "mr-4"}`}>
+                      {lang.flag}
+                    </span>
                     <div>
                       <h3 className="text-lg font-bold text-gray-900">
                         {lang.name}
@@ -862,7 +959,11 @@ export default function LanguagesPage() {
                       <p className="text-sm text-gray-600">{lang.country}</p>
                     </div>
                   </div>
-                  <div className="flex flex-col items-end">
+                  <div
+                    className={`flex flex-col items-end ${
+                      isRTL ? "items-start" : ""
+                    }`}
+                  >
                     {lang.popular && (
                       <Star className="w-4 h-4 mb-1 text-yellow-500 fill-current" />
                     )}
@@ -876,14 +977,26 @@ export default function LanguagesPage() {
                 </div>
 
                 <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Speakers:</span>
+                  <div
+                    className={`flex justify-between ${
+                      isRTL ? "flex-row-reverse" : ""
+                    }`}
+                  >
+                    <span className="text-gray-600">
+                      {t("languagesPage.details.speakers")}:
+                    </span>
                     <span className="font-semibold text-gray-900">
                       {lang.speakers}
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Difficulty:</span>
+                  <div
+                    className={`flex justify-between ${
+                      isRTL ? "flex-row-reverse" : ""
+                    }`}
+                  >
+                    <span className="text-gray-600">
+                      {t("languagesPage.details.difficulty")}:
+                    </span>
                     <span
                       className={`font-semibold ${
                         lang.difficulty === "Easy"
@@ -895,11 +1008,19 @@ export default function LanguagesPage() {
                           : "text-red-600"
                       }`}
                     >
-                      {lang.difficulty}
+                      {t(
+                        `languagesPage.difficulty.${lang.difficulty.toLowerCase()}`
+                      )}
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Script:</span>
+                  <div
+                    className={`flex justify-between ${
+                      isRTL ? "flex-row-reverse" : ""
+                    }`}
+                  >
+                    <span className="text-gray-600">
+                      {t("languagesPage.details.script")}:
+                    </span>
                     <span className="font-semibold text-gray-900">
                       {lang.script}
                     </span>
@@ -907,9 +1028,15 @@ export default function LanguagesPage() {
                 </div>
 
                 {lang.region === "African" && (
-                  <div className="flex items-center px-3 py-1 mt-4 text-xs text-green-600 bg-green-100 rounded-full">
-                    <CheckCircle className="w-3 h-3 mr-1" />
-                    Local Expertise Available
+                  <div
+                    className={`flex items-center px-3 py-1 mt-4 text-xs text-green-600 bg-green-100 rounded-full ${
+                      isRTL ? "flex-row-reverse" : ""
+                    }`}
+                  >
+                    <CheckCircle
+                      className={`w-3 h-3 ${isRTL ? "ml-1" : "mr-1"}`}
+                    />
+                    {t("languagesPage.localExpertise")}
                   </div>
                 )}
               </motion.div>
@@ -920,10 +1047,10 @@ export default function LanguagesPage() {
             <div className="py-16 text-center">
               <Globe className="w-16 h-16 mx-auto mb-4 text-gray-400" />
               <h3 className="mb-2 text-xl font-semibold text-gray-600">
-                No languages found
+                {t("languagesPage.noResults.title")}
               </h3>
               <p className="text-gray-500">
-                Try adjusting your search or filter criteria
+                {t("languagesPage.noResults.description")}
               </p>
             </div>
           )}
@@ -941,11 +1068,10 @@ export default function LanguagesPage() {
             className="mb-16 text-center"
           >
             <h2 className="mb-6 text-3xl font-bold text-gray-900">
-              What Makes Our Language Services Special
+              {t("languagesPage.features.title")}
             </h2>
             <p className="max-w-2xl mx-auto text-lg text-gray-600">
-              Beyond just translation, we provide comprehensive language
-              solutions with cultural expertise and industry specialization.
+              {t("languagesPage.features.description")}
             </p>
           </motion.div>
 
@@ -955,11 +1081,10 @@ export default function LanguagesPage() {
                 <Users className="w-8 h-8 text-green-600" />
               </div>
               <h3 className="mb-3 text-xl font-bold text-gray-900">
-                Native Speakers
+                {t("languagesPage.features.speakers.title")}
               </h3>
               <p className="text-gray-600">
-                All translations done by certified native speakers with cultural
-                expertise
+                {t("languagesPage.features.speakers.desc")}
               </p>
             </div>
 
@@ -968,10 +1093,10 @@ export default function LanguagesPage() {
                 <Award className="w-8 h-8 text-blue-600" />
               </div>
               <h3 className="mb-3 text-xl font-bold text-gray-900">
-                Certified Quality
+                {t("languagesPage.features.certified.title")}
               </h3>
               <p className="text-gray-600">
-                ISO 17100 certified processes ensuring accuracy and reliability
+                {t("languagesPage.features.certified.desc")}
               </p>
             </div>
 
@@ -980,11 +1105,10 @@ export default function LanguagesPage() {
                 <Target className="w-8 h-8 text-purple-600" />
               </div>
               <h3 className="mb-3 text-xl font-bold text-gray-900">
-                Industry Specialization
+                {t("languagesPage.features.specialization.title")}
               </h3>
               <p className="text-gray-600">
-                Specialized translators for legal, medical, technical, and
-                business content
+                {t("languagesPage.features.specialization.desc")}
               </p>
             </div>
 
@@ -993,11 +1117,10 @@ export default function LanguagesPage() {
                 <Zap className="w-8 h-8 text-orange-600" />
               </div>
               <h3 className="mb-3 text-xl font-bold text-gray-900">
-                Fast Turnaround
+                {t("languagesPage.features.turnaround.title")}
               </h3>
               <p className="text-gray-600">
-                Quick delivery without compromising quality - most projects
-                completed within 48 hours
+                {t("languagesPage.features.turnaround.desc")}
               </p>
             </div>
           </div>
@@ -1014,30 +1137,36 @@ export default function LanguagesPage() {
             viewport={{ once: true }}
           >
             <h2 className="mb-6 text-3xl font-bold text-white">
-              Don't See Your Language Listed?
+              {t("languagesPage.cta.title")}
             </h2>
             <p className="mb-8 text-xl leading-relaxed text-green-100">
-              We're constantly expanding our language capabilities. If you need
-              a language not shown here, contact us - we likely have qualified
-              translators available or can source them quickly for your project.
+              {t("languagesPage.cta.description")}
             </p>
-            <div className="flex flex-col justify-center gap-6 sm:flex-row">
+            <div
+              className={`flex flex-col justify-center gap-6 sm:flex-row ${
+                isRTL ? "flex-row-reverse" : ""
+              }`}
+            >
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleGetQuote}
-                className="inline-flex items-center px-8 py-4 font-semibold text-green-600 transition-colors bg-white shadow-lg rounded-xl hover:bg-gray-100"
+                className={`inline-flex items-center px-8 py-4 font-semibold text-green-600 transition-colors bg-white shadow-lg rounded-xl hover:bg-gray-100 ${
+                  isRTL ? "flex-row-reverse" : ""
+                }`}
               >
-                Request Your Language
-                <ArrowRight className="w-5 h-5 ml-2" />
+                {t("languagesPage.cta.request")}
+                <ArrowRight className={`w-5 h-5 ${isRTL ? "mr-2" : "ml-2"}`} />
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleContact}
-                className="inline-flex items-center px-8 py-4 font-semibold text-white transition-colors bg-transparent border-2 border-orange-500 rounded-xl hover:bg-orange-500"
+                className={`inline-flex items-center px-8 py-4 font-semibold text-white transition-colors bg-transparent border-2 border-orange-500 rounded-xl hover:bg-orange-500 ${
+                  isRTL ? "flex-row-reverse" : ""
+                }`}
               >
-                Speak with Expert
+                {t("languagesPage.cta.expert")}
               </motion.button>
             </div>
           </motion.div>

@@ -1,6 +1,6 @@
 // src/components/Nav.jsx
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { Globe } from "lucide-react";
@@ -11,6 +11,7 @@ export default function Navbar() {
   const [langOpen, setLangOpen] = useState(false);
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const languages = [
     { code: "en", flag: "🇬🇧", label: t("language.en") },
@@ -49,21 +50,30 @@ export default function Navbar() {
         </div>
 
         {/* Nav Links */}
-        <div className="hidden md:flex items-center space-x-8 rtl:space-x-reverse font-medium text-gray-700">
-          {["home", "about", "services", "languages", "contact"].map((key) => (
-            <Link
-              key={key}
-              to={key === "home" ? "/" : `/${key}`}
-              className="transition-colors duration-200 hover:text-green-600 focus:text-green-600 focus:outline-none"
-              onClick={handleLinkClick}
-            >
-              {t(`nav.${key}`)}
-            </Link>
-          ))}
+        <div className="hidden md:flex items-center gap-8 font-medium text-gray-700">
+          {["home", "about", "services", "languages", "contact"].map((key) => {
+            const path = key === "home" ? "/" : `/${key}`;
+            const isActive = location.pathname === path;
+
+            return (
+              <Link
+                key={key}
+                to={path}
+                className={`transition-colors duration-200 focus:outline-none ${
+                  isActive
+                    ? "text-green-600 font-semibold"
+                    : "text-gray-700 hover:text-green-600 focus:text-green-600"
+                }`}
+                onClick={handleLinkClick}
+              >
+                {t(`nav.${key}`)}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Buttons + Language */}
-        <div className="hidden md:flex items-center space-x-4 rtl:space-x-reverse">
+        <div className="hidden md:flex items-center gap-4 rtl:space-x-reverse">
           <motion.button
             whileTap={{ scale: 0.9, opacity: 0.8 }}
             whileHover={{ scale: 1.05 }}

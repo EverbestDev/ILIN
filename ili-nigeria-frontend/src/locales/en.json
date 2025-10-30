@@ -9,6 +9,7 @@
     "getQuote": "Get Quote"
   },
   "language": {
+    "title": "Language",
     "en": "English",
     "fr": "Français",
     "ar": "العربية",
@@ -1447,5 +1448,318 @@
       "quote": "Get Free Quote",
       "contact": "Talk to Expert"
     }
-  }
+  },
+
+  "languagesPage": {
+    "hero": {
+      "badge": "Languages We Support",
+      "title": "Languages",
+      "subtitle": "Connecting Global Communities",
+      "description": "From major international languages to local Nigerian dialects, our certified translators provide expert linguistic services with deep cultural understanding."
+    },
+    "stats": {
+      "supported": "Languages Supported",
+      "speakers": "Native Speakers Covered",
+      "countries": "Countries Reached",
+      "fields": "Specialized Fields"
+    },
+    "nigerian": {
+      "title": "Nigerian Languages - Our Specialty",
+      "description": "As a Nigerian company, we have deep expertise in local languages, understanding cultural nuances that make communication truly effective.",
+      "speakers": "speakers",
+      "native": "Native",
+      "language": "language with rich cultural heritage",
+      "other": "We also support other major African languages including Swahili, Amharic, Akan, Zulu, and more."
+    },
+    "certified": "Certified",
+    "specialized": "Specialized",
+    "popular": {
+      "title": "Most Requested Languages",
+      "description": "The languages most frequently requested by our clients across various industries and sectors."
+    },
+    "directory": {
+      "title": "Complete Language Directory",
+      "description": "Explore our complete language offerings with detailed information about each language we support."
+    },
+    "search": {
+      "placeholder": "Search languages or countries..."
+    },
+    "regions": {
+      "all": "All",
+      "african": "African",
+      "european": "European",
+      "asian": "Asian",
+      "middle_eastern": "Middle Eastern",
+      "americas": "Americas"
+    },
+    "languages": "Languages",
+    "categories": {
+      "all": "All",
+      "popular": "Popular",
+      "certified": "Certified",
+      "specialized": "Specialized"
+    },
+    "results": {
+      "showing": "Showing",
+      "languages": "languages",
+      "matching": "matching",
+      "in": "in"
+    },
+    "details": {
+      "speakers": "Speakers",
+      "difficulty": "Difficulty",
+      "script": "Script"
+    },
+    "difficulty": {
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Hard",
+      "very hard": "Very Hard"
+    },
+    "localExpertise": "Local Expertise Available",
+    "noResults": {
+      "title": "No languages found",
+      "description": "Try adjusting your search or filter criteria"
+    },
+    "features": {
+      "title": "What Makes Our Language Services Special",
+      "description": "Beyond just translation, we provide comprehensive language solutions with cultural expertise and industry specialization.",
+      "speakers": {
+        "title": "Native Speakers",
+        "desc": "All translations done by certified native speakers with cultural expertise"
+      },
+      "certified": {
+        "title": "Certified Quality",
+        "desc": "ISO 17100 certified processes ensuring accuracy and reliability"
+      },
+      "specialization": {
+        "title": "Industry Specialization",
+        "desc": "Specialized translators for legal, medical, technical, and business content"
+      },
+      "turnaround": {
+        "title": "Fast Turnaround",
+        "desc": "Quick delivery without compromising quality - most projects completed within 48 hours"
+      }
+    },
+    "cta": {
+      "title": "Don't See Your Language Listed?",
+      "description": "We're constantly expanding our language capabilities. If you need a language not shown here, contact us - we likely have qualified translators available or can source them quickly for your project.",
+      "request": "Request Your Language",
+      "expert": "Speak with Expert"
+    }
+  },
+  "contactpage": {
+    "hero": {
+      "badge": "Get In Touch",
+      "heading1": "Let's Start Your",
+      "heading2": "Translation Journey",
+      "description": "Ready to break language barriers? Our expert team is here to help you communicate effectively across cultures. Get in touch and let's discuss your project.",
+      "tabs": {
+        "form": "Contact Form",
+        "direct": "Direct Contact",
+        "offices": "Our Offices"
+      }
+    },
+    "methods": {
+      "whatsapp": {
+        "title": "WhatsApp Chat",
+        "desc": "Get instant responses for quick questions and updates",
+        "contact": "+234 810 906 7382",
+        "availability": "24/7 Available",
+        "response": "Instant response"
+      },
+      "phone": {
+        "title": "Phone Support",
+        "desc": "Speak directly with our translation experts",
+        "contact": "+234 810 906 7382",
+        "availability": "Mon-Fri 8AM-6PM",
+        "response": "Immediate assistance"
+      },
+      "email": {
+        "title": "Email Support",
+        "desc": "Detailed discussions about your translation project",
+        "contact": "official.intlng@gmail.com",
+        "availability": "24/7 Monitored",
+        "response": "Within 2 hours"
+      }
+    },
+    "form": {
+      "heading": "Send Us a Message",
+      "namePlaceholder": "Full Name *",
+      "emailPlaceholder": "Email Address *",
+      "phonePlaceholder": "Phone Number",
+      "companyPlaceholder": "Company Name",
+      "serviceSelect": "Select a Service",
+      "urgencyStandard": "Standard (48-72 hours)",
+      "urgencyRush": "Rush (24-48 hours)",
+      "urgencyUrgent": "Urgent (Same day)",
+      "messagePlaceholder": "Tell us about your project...",
+      "sending": "Sending...",
+      "sendButton": "Send Message",
+      "successMessage": "Inquiry submitted successfully",
+      "errorMessage": "Failed to submit inquiry",
+      "catchError": "Something went wrong. Try again later.",
+      "whatToExpect": "What to Expect",
+      "freeConsultation": "Free Consultation",
+      "consultationDesc": "Get expert advice on your translation needs at no cost. We'll help you choose the right service for your project."
+    },
+    "support": {
+      "quickResponse": {
+        "title": "Quick Response",
+        "desc": "Average 2-hour response time"
+      },
+      "secure": {
+        "title": "Secure Communication",
+        "desc": "End-to-end encrypted conversations"
+      },
+      "expert": {
+        "title": "Expert Consultation",
+        "desc": "Direct access to senior linguists"
+      },
+      "flexible": {
+        "title": "Flexible Scheduling",
+        "desc": "Book calls at your convenience"
+      }
+    },
+    "direct": {
+      "heading": "Choose Your Preferred Contact Method",
+      "description": "Get in touch through your preferred channel. Our team is ready to assist you with expert translation services.",
+      "available": "Available:",
+      "response": "Response:"
+    },
+    "services": {
+      "option1": "Document Translation",
+      "option2": "Website Localization",
+      "option3": "Live Interpretation",
+      "option4": "Certified Translation",
+      "option5": "Voiceover & Subtitling",
+      "option6": "Enterprise Solutions",
+      "option7": "Other - Please specify"
+    },
+    "offices": {
+      "heading": "Visit Our Offices",
+      "description": "Meet our team in person at any of our conveniently located offices across Nigeria. We're always happy to discuss your translation needs face-to-face.",
+      "addressLabel": "Address",
+      "hoursLabel": "Business Hours",
+      "mainOffice": "Main Office",
+      "scheduleNote": "Schedule a meeting in advance for personalized consultation",
+      "lagos": {
+        "city": "Lagos",
+        "address": "Victoria Island Business District",
+        "fullAddress": "Plot 1234, Ahmadu Bello Way, Victoria Island, Lagos State",
+        "hours": "Mon-Fri: 8AM-6PM, Sat: 9AM-2PM",
+        "phone": "+234 810 906 7382",
+        "email": "official.intlng@gmail.com"
+      },
+      "abuja": {
+        "city": "Abuja",
+        "address": "Central Business District",
+        "fullAddress": "Suite 456, Central Business District, Abuja FCT",
+        "hours": "Mon-Fri: 9AM-5PM",
+        "phone": "+234 810 906 7382",
+        "email": "official.intlng@gmail.com"
+      },
+      "portharcourt": {
+        "city": "Port Harcourt",
+        "address": "GRA Phase 2",
+        "fullAddress": "No. 78 Aba Road, GRA Phase 2, Port Harcourt, Rivers State",
+        "hours": "Mon-Fri: 9AM-5PM",
+        "phone": "+234 810 906 7382",
+        "email": "official.intlng@gmail.com"
+      }
+    },
+    "cta": {
+      "heading": "Ready to Start Your Project?",
+      "description": "Don't wait - get your free quote today and join thousands of satisfied clients who trust ILI-Nigeria for their translation needs.",
+      "quoteButton": "Get Free Quote",
+      "messageButton": "Send Message"
+    },
+    "validation": {
+      "nameRequired": "Name is required.",
+      "emailRequired": "Email is required.",
+      "emailInvalid": "Enter a valid email.",
+      "messageRequired": "Message is required.",
+      "serviceRequired": "Please select a service."
+    }
+  },
+  
+    "login": {
+      "carousel": {
+        "slide1": {
+          "title": "Our Mission",
+          "text": "Breaking language barriers and building bridges of understanding to enable seamless communication across all cultures and industries."
+        },
+        "slide2": {
+          "title": "Our Vision",
+          "text": "A connected, multilingual world. To be Africa's leading language services provider, empowering global commerce and understanding."
+        },
+        "slide3": {
+          "title": "Client Commitment",
+          "text": "We provide professional translation and interpretation services tailored for success, ensuring accuracy and cultural sensitivity in every project."
+        }
+      },
+      "sidebar": {
+        "footer": "Connecting cultures through language excellence."
+      },
+      "tabs": {
+        "signIn": "Sign In",
+        "signUp": "Sign Up"
+      },
+      "form": {
+        "fullName": "Full Name",
+        "yourName": "Your Name",
+        "emailAddress": "Email Address",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "rememberMe": "Remember me",
+        "forgotPassword": "Forgot password?",
+        "orContinueWith": "Or continue with"
+      },
+      "buttons": {
+        "signIn": "Sign In",
+        "createAccount": "Create Account",
+        "sendResetLink": "Send Reset Link",
+        "cancel": "Cancel",
+        "close": "Close"
+      },
+      "errors": {
+        "signInFailed": "Failed to sign in. Please try again.",
+        "invalidCredentials": "Invalid email or password.",
+        "tooManyAttempts": "Too many attempts. Try again later.",
+        "invalidEmail": "Invalid email address.",
+        "popupClosed": "Sign-in cancelled.",
+        "popupBlocked": "Popup blocked. Please allow popups.",
+        "accountExists": "Account exists with a different sign-in method.",
+        "networkError": "Network error. Check backend connection.",
+        "passwordMismatch": "Passwords do not match",
+        "registrationFailed": "Failed to register. Please try again.",
+        "emailInUse": "This email is already registered.",
+        "weakPassword": "Password is too weak. Use at least 6 characters.",
+        "resetFailed": "Failed to send password reset email.",
+        "userNotFound": "No user found with this email."
+      },
+      "messages": {
+        "accountCreated": "Account created. Please sign in.",
+        "resetEmailSent": "Password reset email sent. Check your inbox."
+      },
+      "a11y": {
+        "showPassword": "Show password",
+        "hidePassword": "Hide password",
+        "showConfirmPassword": "Show confirm password",
+        "hideConfirmPassword": "Hide confirm password"
+      },
+      "modals": {
+        "comingSoon": "Coming Soon",
+        "comingSoonDesc": "This authentication method is not yet available. Please use Google or email/password to sign in.",
+        "resetPassword": "Reset Password",
+        "resetPasswordDesc": "Enter your email to receive a password reset link."
+      },
+      "footer": {
+        "agreement": "By continuing, you agree to our ",
+        "terms": "Terms of Service",
+        "and": "and",
+        "privacy": "Privacy Policy"
+      }
+    }
+
 }

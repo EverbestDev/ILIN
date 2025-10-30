@@ -9,6 +9,7 @@
     "getQuote": "Gba Iye Owo"
   },
   "language": {
+    "title": "Ede",
     "en": "Èdè Gẹ̀ẹ́sì",
     "fr": "Èdè Faransé",
     "ar": "Èdè Lárúbáwá",
@@ -1184,7 +1185,6 @@
       "contact": "Bá Àgbà wa Ní Àbísọ̀"
     }
   },
-
   "servicespage": {
     "hero": {
       "badge": "Àwọn Ìlò Wa",
@@ -1440,6 +1440,317 @@
       "description": "Gba ìdíye ìwúlò fún ìṣẹ̀ ìtumọ̀ rẹ lónìí. Àgbà wa ṣe ọ́ láti ṣe ìrànlọwọ́ ọ láti ṣe ìbáraẹnisọrọ̀ nipa òkè.",
       "quote": "Gba Ìdíye Ìwúlò",
       "contact": "Sọ̀rọ̀ Pẹ̀lú Òye"
+    }
+  },
+
+  "languagesPage": {
+    "hero": {
+      "badge": "Àwọn Èdè Tí A ń Ṣàtìlẹ́yìn",
+      "title": "Àwọn Èdè",
+      "subtitle": "Ìsọ̀kan Àwọn Àgbà Àgbáyé",
+      "description": "Láti àwọn èdè àgbáyé pàtàkì dé àwọn èdè ilẹ̀ Nàìjíríà àbínibí, àwọn onítumọ̀ wa tí a fọwọ́ sí ń ṣe àwọn ìlò èdè tó ní ìmọ̀ pẹ̀lú ìmọ̀ àṣà gígùn."
+    },
+    "stats": {
+      "supported": "Àwọn Èdè Tí A ń Ṣàtìlẹ́yìn",
+      "speakers": "Àwọn Olùbásọrọ̀ Àbínibí",
+      "countries": "Àwọn Orílẹ̀-Èdè Tí A Dé",
+      "fields": "Àwọn Òpó Tí o Ní Ìmọ̀"
+    },
+    "nigerian": {
+      "title": "Àwọn Èdè Nàìjíríà - Ohun Tí A ní Ìmọ̀",
+      "description": "Bi ile-iṣẹ Nàìjíríà, a ní ìmọ̀ gígùn nípa àwọn èdè ilẹ̀, ìmọ̀ nípa àwọn àṣà àgbègbè tí o ṣe ìbáraẹnisọrọ̀ tó dára.",
+      "speakers": "àwọn olùbásọrọ̀",
+      "native": "Èdè àbínibí",
+      "language": "pẹ̀lú orísun àṣà tí o ní ìyalẹ̀nu",
+      "other": "A tún ń ṣàtìlẹ́yìn àwọn èdè Áfríkà tó pọ, pẹ̀lú Èdè Swahili, Amharic, Akan, Zulu, àti ìyẹn bẹ́ẹ̀."
+    },
+    "certified": "Tí a Fọwọ́ Sí",
+    "specialized": "Tí o Ní Ìmọ̀",
+    "popular": {
+      "title": "Àwọn Èdè Tí Won Máa ń Béèrè Jùlọ",
+      "description": "Àwọn èdè tí àwọn ònímọ̀ wa máa ń béèrè nítorí ọ̀pọ̀lọ́pọ̀ àwọn òpó àti àwọn ilé ìṣẹ."
+    },
+    "directory": {
+      "title": "Akójọ Gbogbo Àwọn Èdè",
+      "description": "Ṣàwárí àwọn ìlò èdè tí a ní pẹ̀lú ìmọ̀ àpapọ̀ nípa gbogbo èdè tí a ń ṣàtìlẹ́yìn."
+    },
+    "search": {
+      "placeholder": "Ṣàwárí àwọn èdè tàbí àwọn orílẹ̀-èdè..."
+    },
+    "regions": {
+      "all": "Gbogbo",
+      "african": "Áfríkà",
+      "european": "Yúróòpù",
+      "asian": "Ásíà",
+      "middle_eastern": "Àárín Gbùngbùn Ìlà-Oòrùn",
+      "americas": "Amẹ́ríkà"
+    },
+    "languages": "Àwọn Èdè",
+    "categories": {
+      "all": "Gbogbo",
+      "popular": "Tí Won Máa ń Béèrè",
+      "certified": "Tí a Fọwọ́ Sí",
+      "specialized": "Tí o Ní Ìmọ̀"
+    },
+    "results": {
+      "showing": "Wòó ń fihàn",
+      "languages": "àwọn èdè",
+      "matching": "tó bá",
+      "in": "nínú"
+    },
+    "details": {
+      "speakers": "Àwọn Olùbásọrọ̀",
+      "difficulty": "Ìṣẹ̀lẹ̀",
+      "script": "Ìtàn"
+    },
+    "difficulty": {
+      "easy": "Ìrọrùn",
+      "medium": "Àrin",
+      "hard": "Ìṣẹ̀lẹ̀",
+      "very hard": "Ìṣẹ̀lẹ̀ Púpọ̀"
+    },
+    "localExpertise": "Ìmọ̀ Agbègbè Tí O Wà",
+    "noResults": {
+      "title": "Kò sí èdè tí a rí",
+      "description": "Ǹ gbé àwọn àyẹ̀wò àti ìṣẹ̀dá àwọn ìpilẹ̀ rẹ tún."
+    },
+    "features": {
+      "title": "Ohun Tí ó Jẹ Àwọn Ìlò Èdè wa Àáṣà",
+      "description": "Kálúkù ti ìtumọ̀ alainí, a ń fúnni ní àwọn òpó èdè tí o ní ìgbàlẹ pẹ̀lú ìmọ̀ àṣà àti ìmọ̀ òpó.",
+      "speakers": {
+        "title": "Àwọn Olùbásọrọ̀ Àbínibí",
+        "desc": "Gbogbo ìtumọ̀ ṣe nípa àwọn olùbásọrọ̀ àbínibí tí a fọwọ́ sí pẹ̀lú ìmọ̀ àṣà"
+      },
+      "certified": {
+        "title": "Ìdíwò Tí a Fọwọ́ Sí",
+        "desc": "Àwọn ẹ̀kó tí a fọwọ́ sí ISO 17100 tí ó ṣe ìdájọ́ ìdíwò àti ìgbèkẹ̀le"
+      },
+      "specialization": {
+        "title": "Ìmọ̀ Òpó",
+        "desc": "Àwọn onítumọ̀ tí o ní ìmọ̀ fún àwọn èkó òfìn, elu, gidi, àti iṣẹ"
+      },
+      "turnaround": {
+        "title": "Àkókò Ìyara",
+        "desc": "Ìfiranṣẹ́ ìyara láìbá ìdíwò - ọ̀pọ̀lọ́pọ̀ àwọn ìṣẹ̀ ṣe pari nínú 48 wákàtì"
+      }
+    },
+    "cta": {
+      "title": "O kò rí èdè rẹ nínú àkójọ?",
+      "description": "A ń gbooro agbára èdè wa ní ọjọ́. Bí o bá nílò èdè tí kò sí níhìn, bá wa sọ̀rọ̀ - a lè ní àwọn onítumọ̀ tó kún fún ìṣẹ̀.",
+      "request": "Béèrè Èdè Rẹ",
+      "expert": "Sọ̀rọ̀ Pẹ̀lú Òye"
+    }
+  },
+  "contactpage": {
+    "hero": {
+      "badge": "Kọ Wa",
+      "heading1": "Ẹ jẹ Ìbẹ̀rẹ̀ Ọ̀nà",
+      "heading2": "Ìtumọ̀ Rẹ",
+      "description": "Ṣé o ṣẹ̀tọ̀ lati ṣe agbara ìdènà ède? Àwùjọ àyípadà wa wà nìbí láti ṛanlo fun ọ láti bá ṛìnkúnrin níyèraye àti ìmọ̀ ìdàsílẹ̀. Kọ wa àti ẹ jẹ ìbáraẹnisọrọ̀ nípa iṣẹ́ rẹ.",
+      "tabs": {
+        "form": "Fọ́ọ̀mù Ìkọ̀sílẹ̀",
+        "direct": "Ìkọ̀sílẹ̀ Taara",
+        "offices": "Àwùjọ Ìṣẹ́ Wa"
+      }
+    },
+    "methods": {
+      "whatsapp": {
+        "title": "WhatsApp Ìbáraẹnisọrọ̀",
+        "desc": "Gba àwọn ìsedara ìwájú fun àwọn ìbẹ̀rẹ̀ àti ìtúnbẹ̀ ìjẹ́ ẹ̀",
+        "contact": "+234 810 906 7382",
+        "availability": "Wà Ní gbogbo àkókò",
+        "response": "Ìsedara ìwájú"
+      },
+      "phone": {
+        "title": "Ìrànlọwọ́ Ẹ̀kọ̀ọ́",
+        "desc": "Sọrọ̀ taara pẹ̀lú àwọn onimoye ìtumọ̀ wa",
+        "contact": "+234 810 906 7382",
+        "availability": "Ọ̀sẹ̀ Kẹta - Ọ̀sẹ̀ Karìrinrin 8AM-6PM",
+        "response": "Ìrànlọwọ́ taara"
+      },
+      "email": {
+        "title": "Ìrànlọwọ́ Ímeèlì",
+        "desc": "Àwọn ìjìròyọ pinpin nípa iṣẹ́ ìtumọ̀ rẹ",
+        "contact": "official.intlng@gmail.com",
+        "availability": "Ìtọ́jú gbogbo àkókò",
+        "response": "Ní àkótán 2 wákàti"
+      }
+    },
+    "form": {
+      "heading": "Rán Ìfitíranṣẹ́ Wá",
+      "namePlaceholder": "Orúkọ Kì í *",
+      "emailPlaceholder": "Àdírẹ́ṣi Ímeèlì *",
+      "phonePlaceholder": "Nọ́ọ̀mbà Ẹ̀kọ̀ọ́",
+      "companyPlaceholder": "Orúkọ Ìlù Ṣiṣẹ́",
+      "serviceSelect": "Yàn Ìṣẹ́",
+      "urgencyStandard": "Lapapọ̀ (48-72 wákàti)",
+      "urgencyRush": "Ìjẹ́ Ẹ̀ (24-48 wákàti)",
+      "urgencyUrgent": "Ìbájẹ́ (Ọjọ́ Kanna)",
+      "messagePlaceholder": "Sọ fún wa nípa iṣẹ́ rẹ...",
+      "sending": "Nrán...",
+      "sendButton": "Rán Ìfitíranṣẹ́",
+      "successMessage": "Ìbẹ̀rẹ̀ tí a gbéléwò déwọ̀",
+      "errorMessage": "Kò ní ìmọ̀ láti gbéléwò ìbẹ̀rẹ̀",
+      "catchError": "Ohun nkan lo ṣẹlẹ̀. Jẹ́ kí ó ṣẹ̀tọ̀ lẹ́ẹ̀kan sì.",
+      "whatToExpect": "Ohun Tó Máa Ṣẹlẹ̀",
+      "freeConsultation": "Ìwòórán Àfẹ́fẹ́",
+      "consultationDesc": "Gba ìmọ̀ onímọ̀ láyè nípa àwọn ìlò ìtumọ̀ rẹ. A ó ṛanlo fun ọ láti yàn ìṣẹ́ tó ṭẹ̀ fún iṣẹ́ rẹ."
+    },
+    "support": {
+      "quickResponse": {
+        "title": "Ìsedara Ìwájú",
+        "desc": "Iye ìsedara: ìtàn-ún 2 wákàti"
+      },
+      "secure": {
+        "title": "Ìbáraẹnisọrọ̀ Tí o Nígbàláyé",
+        "desc": "Àwọn ìbáraẹnisọrọ̀ tí o pípa nínú ọ̀wọ̀"
+      },
+      "expert": {
+        "title": "Ìwòórán Onímọ̀",
+        "desc": "Àgbà ìkọ̀ọ́ àwùjọ ìtumọ̀"
+      },
+      "flexible": {
+        "title": "Ìṣẹ́ Tó Lọ́wọ́",
+        "desc": "Ṣẹ̀ àwọn kọ̀ọ̀kan ní àkókò tó ba fẹ́"
+      }
+    },
+    "direct": {
+      "heading": "Yàn Ọ̀nà Ìkọ̀sílẹ̀ Tó ba fẹ́",
+      "description": "Kọ wa nípa ìkannal tó ba dáàbò sí ọ. Àwùjọ wa ṣẹ̀tọ̀ láti ṛanlo fun ọ pẹ̀lú ìṣẹ́ ìtumọ̀ onímọ̀.",
+      "available": "Wa Ní:",
+      "response": "Ìsedara:"
+    },
+    "services": {
+      "option1": "Ìtumọ̀ Àwọn Ìwé",
+      "option2": "Ìtún àdéhùn Àgbá Íntẹ́nẹ̀ẹ̀ti",
+      "option3": "Ìtumọ̀ Ìwájú",
+      "option4": "Ìtumọ̀ Tí a Fọwọ́ sí i",
+      "option5": "Ìmúdárí àti Ìtumọ̀ Ọ̀rọ̀",
+      "option6": "Àwọn Ìṣẹ́ Ilé Iṣẹ́",
+      "option7": "Míì - Jẹ́ kí o sọ nipa a"
+    },
+    "offices": {
+      "heading": "Wo Àwùjọ Ìṣẹ́ Wa",
+      "description": "Pàdé àwùjọ wa ní ojú ní ọ̀kan nínú àwọn ìṣẹ́ wa tí o wà ní ibi tó dára nínú Nàìjíríà. A dùn láti jìròyọ nípa àwọn ìlò ìtumọ̀ rẹ.",
+      "addressLabel": "Àdírẹ́ṣi",
+      "hoursLabel": "Àkókò Ìṣẹ́",
+      "mainOffice": "Àwùjọ Ìṣẹ́ Ìpilẹ̀",
+      "scheduleNote": "Ṣeto àkọlé tẹ́ẹ̀lẹ̀ fún ìwòórán ẹnìkan pẹ̀lú ara rẹ",
+      "lagos": {
+        "city": "Èkó",
+        "address": "Ìgbó Iṣẹ́ Erékúsú Fíkítóríà",
+        "fullAddress": "Ẹ̀kọ́ 1234, Ọ̀nà Àjúmọ̀d̀é Bèllò, Erékúsú Fíkítóríà, Ìpinlẹ̀ Èkó",
+        "hours": "Ọ̀sẹ̀ Kẹta - Ọ̀sẹ̀ Karìrinrin: 8AM-6PM, Ọ̀jọ́ Àbámẹ́ta: 9AM-2PM",
+        "phone": "+234 810 906 7382",
+        "email": "official.intlng@gmail.com"
+      },
+      "abuja": {
+        "city": "Àbúja",
+        "address": "Ìgbó Iṣẹ́ Ìrinájẹ̀",
+        "fullAddress": "Yàre 456, Ìgbó Iṣẹ́ Ìrinájẹ̀, Àbúja FCT",
+        "hours": "Ọ̀sẹ̀ Kẹta - Ọ̀sẹ̀ Karìrinrin: 9AM-5PM",
+        "phone": "+234 810 906 7382",
+        "email": "official.intlng@gmail.com"
+      },
+      "portharcourt": {
+        "city": "Ẹ̀kó Ìgbó",
+        "address": "GRA Ìpele 2",
+        "fullAddress": "Nọ́ọ̀mbà 78 Ọ̀nà Àbà, GRA Ìpele 2, Ẹ̀kó Ìgbó, Ìpinlẹ̀ Rívà",
+        "hours": "Ọ̀sẹ̀ Kẹta - Ọ̀sẹ̀ Karìrinrin: 9AM-5PM",
+        "phone": "+234 810 906 7382",
+        "email": "official.intlng@gmail.com"
+      }
+    },
+    "cta": {
+      "heading": "Ṣé o ṣẹ̀tọ̀ láti Bẹ̀rẹ̀ Iṣẹ́ rẹ?",
+      "description": "Má ṣubú - gba ìnye iṣẹ́ àfẹ́fẹ́ lóní àti darapọ̀ pẹ̀lú ẹgbẹ́ tó ju ìwọ lọ tí wọ̀n gbẹ́kẹ̀lẹ̀ ILI-Nigeria fún àwọn ìlò ìtumọ̀ wọn.",
+      "quoteButton": "Gba Ìnye Iṣẹ́ Àfẹ́fẹ́",
+      "messageButton": "Rán Ìfitíranṣẹ́"
+    },
+    "validation": {
+      "nameRequired": "Orúkọ nílò.",
+      "emailRequired": "Ímeèlì nílò.",
+      "emailInvalid": "Tẹ àdírẹ́ṣi ímeèlì tó dúró pẹ̀lú ẹrọ.",
+      "messageRequired": "Ìfitíranṣẹ́ nílò.",
+      "serviceRequired": "Jẹ́ kí o yàn ìṣẹ́."
+    }
+  },
+  "login": {
+    "carousel": {
+      "slide1": {
+        "title": "Iṣẹ́ Wa",
+        "text": "Gbadura ièkú ède àti kòkò ìmọ̀ rò láti ṣe àyèjiṣe àbáraẹnisọrọ̀ pẹ̀lú ìdàsílẹ̀ àti àwùjọ gbogbo."
+      },
+      "slide2": {
+        "title": "Ìrètí Wa",
+        "text": "Ayé tí ó ṣatúnwò àti èdè púpọ̀. Àwùjọ ìtumọ̀ tó ṣẹ̀tọ̀ ju lójú Áfríkà, agbara ìṣélò àgbáyé àti ìmọ̀."
+      },
+      "slide3": {
+        "title": "Ìgbẹ́kẹ̀lẹ̀ Fún Onímọ̀",
+        "text": "A ṣe ìrànwọ́ ìtumọ̀ àti ìtumọ̀ ọ̀rọ̀ onímọ̀ tí a ṣe àyèjọ fún àgbà, tí ó ṣe ìdání ìdíwò àti ìmọ̀ ìdàsílẹ̀ nínú iṣẹ́ kọ̀ọ̀kan."
+      }
+    },
+    "sidebar": {
+      "footer": "Ìfowọpamọ àwùjọ nípa ìyọ ède."
+    },
+    "tabs": {
+      "signIn": "Wọle",
+      "signUp": "Forúkọsílẹ̀"
+    },
+    "form": {
+      "fullName": "Orúkọ Kì í",
+      "yourName": "Orúkọ Rẹ",
+      "emailAddress": "Àdírẹ́ṣi Ímeèlì",
+      "password": "Ọ̀rọ̀ Ìkọ́",
+      "confirmPassword": "Ìgbẹ́kẹ̀lẹ̀ Ọ̀rọ̀ Ìkọ́",
+      "rememberMe": "Rántí mi",
+      "forgotPassword": "Ọ̀rọ̀ ìkọ́ nu?",
+      "orContinueWith": "Tàbí ṣẹ̀tọ̀ pẹ̀lú"
+    },
+    "buttons": {
+      "signIn": "Wọle",
+      "createAccount": "Ṣẹ̀ Àkóńṭu",
+      "sendResetLink": "Rán Ìkupá Tún Ìṣètún",
+      "cancel": "Fágílẹ̀",
+      "close": "Páàdé"
+    },
+    "errors": {
+      "signInFailed": "Wọle kò ṣe. Jẹ́ kí o ṣẹ̀tọ̀ lẹ́ẹ̀kan sì.",
+      "invalidCredentials": "Ímeèlì tàbí ọ̀rọ̀ ìkọ́ tí ko dúró pẹ̀lú.",
+      "tooManyAttempts": "Ìgbìyanju púpọ̀. Ṣẹ̀tọ̀ lẹ́ẹ̀kan sì.",
+      "invalidEmail": "Àdírẹ́ṣi ímeèlì tí ko dúró.",
+      "popupClosed": "Wọle kúkú kúrú.",
+      "popupBlocked": "Árapá tí a fún. Jẹ́ kí a lọ.",
+      "accountExists": "Àkóńṭu wà pẹ̀lú ọ̀nà míì.",
+      "networkError": "Àṣiṣe nítì tẹ́ńpílẹ̀. Wo àgbasọ̀rọ̀ ẹrọ.",
+      "passwordMismatch": "Àwọn ọ̀rọ̀ ìkọ́ kò bá ara wọn",
+      "registrationFailed": "Fófórúkọsílẹ̀ kò ṣe. Jẹ́ kí o ṣẹ̀tọ̀ lẹ́ẹ̀kan sì.",
+      "emailInUse": "Ímeèlì yìí ti ṣe ìforúkọsílẹ̀ tẹ́lẹ̀.",
+      "weakPassword": "Ọ̀rọ̀ ìkọ́ kéré jùlọ. Lò àwọn àlamọ̀ mẹ́rìn lágídi.",
+      "resetFailed": "Ṣe àṣiṣe ìrán ímeèlì.",
+      "userNotFound": "A kò rí onímọ̀ pẹ̀lú ímeèlì yìí."
+    },
+    "messages": {
+      "accountCreated": "Àkóńṭu ti ṣẹ̀. Jẹ́ kí o wọle.",
+      "resetEmailSent": "Ímeèlì ti rán. Wo àṣàkọ̀ rẹ."
+    },
+    "a11y": {
+      "showPassword": "Fí ọ̀rọ̀ ìkọ́ hàn",
+      "hidePassword": "Fi ọ̀rọ̀ ìkọ́ pamọ̀",
+      "showConfirmPassword": "Fí ìgbẹ́kẹ̀lẹ̀ hàn",
+      "hideConfirmPassword": "Fi ìgbẹ́kẹ̀lẹ̀ pamọ̀"
+    },
+    "modals": {
+      "comingSoon": "Á ti díẹ̀",
+      "comingSoonDesc": "Ọ̀nà yìí ko sí fún bayi. Lo Google tàbí ímeèlì/ọ̀rọ̀ ìkọ́.",
+      "resetPassword": "Tún Ọ̀rọ̀ Ìkọ́",
+      "resetPasswordDesc": "Tẹ ímeèlì rẹ láti gbà ìkupá tún."
+    },
+    "footer": {
+      "agreement": "Nípa ṣẹ̀tọ̀, o gba ",
+      "terms": "Àwọn Òfin Ìṣe",
+      "and": "àti",
+      "privacy": "Òfin Ìkokò"
     }
   }
 }

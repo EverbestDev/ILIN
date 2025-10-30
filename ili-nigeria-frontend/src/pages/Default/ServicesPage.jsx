@@ -293,7 +293,7 @@ export default function ServicesPage() {
             {/* Service Header */}
             <div
               className={`flex flex-col items-start gap-8 mb-12 lg:flex-row ${
-                isRTL ? "flex-row-reverse" : ""
+                isRTL ? "flex-col md:flex-row-reverse" : ""
               }`}
             >
               <div className="flex-1">

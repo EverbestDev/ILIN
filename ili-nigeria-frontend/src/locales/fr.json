@@ -9,6 +9,7 @@
     "getQuote": "Obtenir un devis"
   },
   "language": {
+    "title": "Langue",
     "en": "Anglais",
     "fr": "Français",
     "ar": "Arabe",
@@ -1455,5 +1456,317 @@
       "quote": "Obtenir Devis Gratuit",
       "contact": "Parler à un Expert"
     }
-  }
+  },
+
+  "languagesPage": {
+    "hero": {
+      "badge": "Langues Que Nous Supportons",
+      "title": "Langues",
+      "subtitle": "Connecter Les Communautés Mondiales",
+      "description": "Des langues internationales majeures aux dialectes nigérians locaux, nos traducteurs certifiés fournissent des services linguistiques experts avec une compréhension culturelle approfondie."
+    },
+    "stats": {
+      "supported": "Langues Supportées",
+      "speakers": "Locuteurs Natifs Atteints",
+      "countries": "Pays Atteints",
+      "fields": "Domaines Spécialisés"
+    },
+    "nigerian": {
+      "title": "Langues Nigérianes - Notre Spécialité",
+      "description": "En tant que société nigériane, nous avons une expertise approfondie des langues locales, comprenant les nuances culturelles qui rendent la communication véritablement efficace.",
+      "speakers": "locuteurs",
+      "native": "Langue maternelle",
+      "language": "avec un riche patrimoine culturel",
+      "other": "Nous supportons également d'autres langues africaines majeures, notamment le swahili, l'amharique, l'akan, le zoulou, et plus encore."
+    },
+    "certified": "Certifié",
+    "specialized": "Spécialisé",
+    "popular": {
+      "title": "Langues Les Plus Demandées",
+      "description": "Les langues les plus fréquemment demandées par nos clients dans diverses industries et secteurs."
+    },
+    "directory": {
+      "title": "Annuaire Complet Des Langues",
+      "description": "Explorez nos offres linguistiques complètes avec des informations détaillées sur chaque langue que nous supportons."
+    },
+    "search": {
+      "placeholder": "Rechercher des langues ou des pays..."
+    },
+    "regions": {
+      "all": "Toutes",
+      "african": "Africaines",
+      "european": "Européennes",
+      "asian": "Asiatiques",
+      "middle_eastern": "Moyen-Orientales",
+      "americas": "Américaines"
+    },
+    "languages": "Langues",
+    "categories": {
+      "all": "Toutes",
+      "popular": "Populaires",
+      "certified": "Certifiées",
+      "specialized": "Spécialisées"
+    },
+    "results": {
+      "showing": "Affichage",
+      "languages": "langues",
+      "matching": "correspondant à",
+      "in": "en"
+    },
+    "details": {
+      "speakers": "Locuteurs",
+      "difficulty": "Difficulté",
+      "script": "Script"
+    },
+    "difficulty": {
+      "easy": "Facile",
+      "medium": "Moyen",
+      "hard": "Difficile",
+      "very hard": "Très Difficile"
+    },
+    "localExpertise": "Expertise Locale Disponible",
+    "noResults": {
+      "title": "Aucune langue trouvée",
+      "description": "Essayez d'ajuster vos critères de recherche ou de filtre"
+    },
+    "features": {
+      "title": "Ce Qui Rend Nos Services Linguistiques Spéciaux",
+      "description": "Au-delà de la simple traduction, nous fournissons des solutions linguistiques complètes avec expertise culturelle et spécialisation industrielle.",
+      "speakers": {
+        "title": "Locuteurs Natifs",
+        "desc": "Toutes les traductions effectuées par des locuteurs natifs certifiés ayant une expertise culturelle"
+      },
+      "certified": {
+        "title": "Qualité Certifiée",
+        "desc": "Processus certifiés ISO 17100 garantissant l'exactitude et la fiabilité"
+      },
+      "specialization": {
+        "title": "Spécialisation Industrielle",
+        "desc": "Traducteurs spécialisés pour contenu juridique, médical, technique et commercial"
+      },
+      "turnaround": {
+        "title": "Délai Rapide",
+        "desc": "Livraison rapide sans compromettre la qualité - la plupart des projets complétés en 48 heures"
+      }
+    },
+    "cta": {
+      "title": "Vous Ne Voyez Pas Votre Langue Listée ?",
+      "description": "Nous étendons constamment nos capacités linguistiques. Si vous avez besoin d'une langue non affichée ici, contactez-nous - nous avons probablement des traducteurs qualifiés disponibles.",
+      "request": "Demander Votre Langue",
+      "expert": "Parler Avec Un Expert"
+    }
+  },
+  "contactpage": {
+    "hero": {
+      "badge": "Prenez Contact",
+      "heading1": "Commençons Votre",
+      "heading2": "Parcours de Traduction",
+      "description": "Prêt à franchir les barrières linguistiques ? Notre équipe d'experts est là pour vous aider à communiquer efficacement d'une culture à l'autre. Contactez-nous et discutons de votre projet.",
+      "tabs": {
+        "form": "Formulaire de Contact",
+        "direct": "Contact Direct",
+        "offices": "Nos Bureaux"
+      }
+    },
+    "methods": {
+      "whatsapp": {
+        "title": "Chat WhatsApp",
+        "desc": "Obtenez des réponses instantanées pour les questions et mises à jour rapides",
+        "contact": "+234 810 906 7382",
+        "availability": "Disponible 24h/24, 7j/7",
+        "response": "Réponse instantanée"
+      },
+      "phone": {
+        "title": "Support Téléphonique",
+        "desc": "Parlez directement avec nos experts en traduction",
+        "contact": "+234 810 906 7382",
+        "availability": "Lun-Ven 8h00-18h00",
+        "response": "Assistance immédiate"
+      },
+      "email": {
+        "title": "Support par Email",
+        "desc": "Discussions détaillées sur votre projet de traduction",
+        "contact": "official.intlng@gmail.com",
+        "availability": "Suivi 24h/24, 7j/7",
+        "response": "Dans les 2 heures"
+      }
+    },
+    "form": {
+      "heading": "Envoyez-nous un Message",
+      "namePlaceholder": "Nom Complet *",
+      "emailPlaceholder": "Adresse Email *",
+      "phonePlaceholder": "Numéro de Téléphone",
+      "companyPlaceholder": "Nom de l'Entreprise",
+      "serviceSelect": "Sélectionnez un Service",
+      "urgencyStandard": "Standard (48-72 heures)",
+      "urgencyRush": "Express (24-48 heures)",
+      "urgencyUrgent": "Urgent (Même jour)",
+      "messagePlaceholder": "Parlez-nous de votre projet...",
+      "sending": "Envoi en cours...",
+      "sendButton": "Envoyer le Message",
+      "successMessage": "Demande soumise avec succès",
+      "errorMessage": "Impossible de soumettre la demande",
+      "catchError": "Une erreur s'est produite. Veuillez réessayer plus tard.",
+      "whatToExpect": "À Quoi S'attendre",
+      "freeConsultation": "Consultation Gratuite",
+      "consultationDesc": "Obtenez gratuitement des conseils d'experts sur vos besoins de traduction. Nous vous aiderons à choisir le service adapté à votre projet."
+    },
+    "support": {
+      "quickResponse": {
+        "title": "Réponse Rapide",
+        "desc": "Temps de réponse moyen de 2 heures"
+      },
+      "secure": {
+        "title": "Communication Sécurisée",
+        "desc": "Conversations chiffrées de bout en bout"
+      },
+      "expert": {
+        "title": "Consultation d'Experts",
+        "desc": "Accès direct aux linguistes seniors"
+      },
+      "flexible": {
+        "title": "Planification Flexible",
+        "desc": "Réservez des appels à votre convenance"
+      }
+    },
+    "direct": {
+      "heading": "Choisissez Votre Méthode de Contact Préférée",
+      "description": "Contactez-nous par le canal de votre choix. Notre équipe est prête à vous aider avec des services de traduction d'experts.",
+      "available": "Disponible:",
+      "response": "Réponse:"
+    },
+    "services": {
+      "option1": "Traduction de Documents",
+      "option2": "Localisation de Sites Web",
+      "option3": "Interprétation en Direct",
+      "option4": "Traduction Certifiée",
+      "option5": "Doublage et Sous-titrage",
+      "option6": "Solutions Entreprises",
+      "option7": "Autre - Veuillez préciser"
+    },
+    "offices": {
+      "heading": "Visitez Nos Bureaux",
+      "description": "Rencontrez notre équipe en personne dans l'un de nos bureaux stratégiquement situés au Nigeria. Nous serions ravis de discuter de vos besoins de traduction face à face.",
+      "addressLabel": "Adresse",
+      "hoursLabel": "Heures d'Ouverture",
+      "mainOffice": "Bureau Principal",
+      "scheduleNote": "Planifiez une réunion à l'avance pour une consultation personnalisée",
+      "lagos": {
+        "city": "Lagos",
+        "address": "District Commercial de Victoria Island",
+        "fullAddress": "Plot 1234, Ahmadu Bello Way, Victoria Island, État de Lagos",
+        "hours": "Lun-Ven: 8h00-18h00, Sam: 9h00-14h00",
+        "phone": "+234 810 906 7382",
+        "email": "official.intlng@gmail.com"
+      },
+      "abuja": {
+        "city": "Abuja",
+        "address": "District Commercial Central",
+        "fullAddress": "Suite 456, District Commercial Central, Abuja FCT",
+        "hours": "Lun-Ven: 9h00-17h00",
+        "phone": "+234 810 906 7382",
+        "email": "official.intlng@gmail.com"
+      },
+      "portharcourt": {
+        "city": "Port Harcourt",
+        "address": "GRA Phase 2",
+        "fullAddress": "No. 78 Aba Road, GRA Phase 2, Port Harcourt, État de Rivers",
+        "hours": "Lun-Ven: 9h00-17h00",
+        "phone": "+234 810 906 7382",
+        "email": "official.intlng@gmail.com"
+      }
+    },
+    "cta": {
+      "heading": "Prêt à Démarrer Votre Projet?",
+      "description": "N'attendez pas - obtenez votre devis gratuit dès aujourd'hui et rejoignez des milliers de clients satisfaits qui font confiance à ILI-Nigeria pour leurs besoins de traduction.",
+      "quoteButton": "Obtenir un Devis Gratuit",
+      "messageButton": "Envoyer un Message"
+    },
+    "validation": {
+      "nameRequired": "Le nom est requis.",
+      "emailRequired": "L'email est requis.",
+      "emailInvalid": "Entrez une adresse email valide.",
+      "messageRequired": "Le message est requis.",
+      "serviceRequired": "Veuillez sélectionner un service."
+    }
+  },
+    "login": {
+      "carousel": {
+        "slide1": {
+          "title": "Notre Mission",
+          "text": "Briser les barrières linguistiques et construire des ponts de compréhension pour permettre une communication transparente dans toutes les cultures et industries."
+        },
+        "slide2": {
+          "title": "Notre Vision",
+          "text": "Un monde connecté et multilingue. Être le principal prestataire de services linguistiques en Afrique, habilitant le commerce et la compréhension mondiaux."
+        },
+        "slide3": {
+          "title": "Engagement envers le Client",
+          "text": "Nous fournissons des services professionnels de traduction et d'interprétation adaptés au succès, en assurant la précision et la sensibilité culturelle dans chaque projet."
+        }
+      },
+      "sidebar": {
+        "footer": "Connecter les cultures par l'excellence linguistique."
+      },
+      "tabs": {
+        "signIn": "Se Connecter",
+        "signUp": "S'Inscrire"
+      },
+      "form": {
+        "fullName": "Nom Complet",
+        "yourName": "Votre Nom",
+        "emailAddress": "Adresse Email",
+        "password": "Mot de Passe",
+        "confirmPassword": "Confirmer le Mot de Passe",
+        "rememberMe": "Se souvenir de moi",
+        "forgotPassword": "Mot de passe oublié?",
+        "orContinueWith": "Ou continuer avec"
+      },
+      "buttons": {
+        "signIn": "Se Connecter",
+        "createAccount": "Créer un Compte",
+        "sendResetLink": "Envoyer le Lien de Réinitialisation",
+        "cancel": "Annuler",
+        "close": "Fermer"
+      },
+      "errors": {
+        "signInFailed": "Échec de la connexion. Veuillez réessayer.",
+        "invalidCredentials": "Email ou mot de passe invalide.",
+        "tooManyAttempts": "Trop de tentatives. Réessayez plus tard.",
+        "invalidEmail": "Adresse email invalide.",
+        "popupClosed": "Connexion annulée.",
+        "popupBlocked": "Fenêtre contextuelle bloquée. Veuillez autoriser les fenêtres.",
+        "accountExists": "Le compte existe avec une autre méthode de connexion.",
+        "networkError": "Erreur réseau. Vérifiez la connexion du serveur.",
+        "passwordMismatch": "Les mots de passe ne correspondent pas",
+        "registrationFailed": "Échec de l'inscription. Veuillez réessayer.",
+        "emailInUse": "Cet email est déjà enregistré.",
+        "weakPassword": "Le mot de passe est trop faible. Utilisez au moins 6 caractères.",
+        "resetFailed": "Échec de l'envoi du email de réinitialisation.",
+        "userNotFound": "Aucun utilisateur trouvé avec cet email."
+      },
+      "messages": {
+        "accountCreated": "Compte créé. Veuillez vous connecter.",
+        "resetEmailSent": "Email de réinitialisation envoyé. Vérifiez votre boîte de réception."
+      },
+      "a11y": {
+        "showPassword": "Afficher le mot de passe",
+        "hidePassword": "Masquer le mot de passe",
+        "showConfirmPassword": "Afficher le mot de passe de confirmation",
+        "hideConfirmPassword": "Masquer le mot de passe de confirmation"
+      },
+      "modals": {
+        "comingSoon": "À Bientôt",
+        "comingSoonDesc": "Cette méthode d'authentification n'est pas encore disponible. Veuillez utiliser Google ou email/mot de passe pour vous connecter.",
+        "resetPassword": "Réinitialiser le Mot de Passe",
+        "resetPasswordDesc": "Entrez votre email pour recevoir un lien de réinitialisation."
+      },
+      "footer": {
+        "agreement": "En continuant, vous acceptez nos ",
+        "terms": "Conditions d'Utilisation",
+        "and": "et",
+        "privacy": "Politique de Confidentialité"
+      }
+    }
+  
 }
