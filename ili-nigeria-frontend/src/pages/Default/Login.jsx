@@ -41,14 +41,8 @@ const AuthSidebar = ({ activeSlide, t }) => {
   const rtl = isRTL(i18n.language);
 
   return (
-    <div
-      className={`relative flex-col justify-between hidden min-h-full p-8 overflow-hidden text-white md:flex lg:flex lg:w-1/3 xl:w-2/5 bg-gradient-to-br from-green-700 to-green-900 ${
-        rtl ? "flex-row-reverse" : ""
-      }`}
-    >
-      <div
-        className={`flex items-center gap-3 ${rtl ? "flex-row-reverse" : ""}`}
-      >
+    <div className="relative flex flex-col justify-between hidden min-h-full p-8 overflow-hidden text-white md:flex lg:flex lg:w-1/3 xl:w-2/5 bg-gradient-to-br from-green-700 to-green-900">
+      <div className="flex items-center gap-3">
         <div className="flex items-center justify-center w-10 h-10 rounded-lg shadow-xl bg-white/20">
           <Globe className="w-5 h-5 text-white" />
         </div>
@@ -66,11 +60,7 @@ const AuthSidebar = ({ activeSlide, t }) => {
             {t(slide.textKey)}
           </p>
         </motion.div>
-        <div
-          className={`flex justify-start gap-2 mt-8 ${
-            rtl ? "flex-row-reverse" : ""
-          }`}
-        >
+        <div className="flex justify-start gap-2 mt-8">
           {carouselSlides.map((_, index) => (
             <div
               key={index}
@@ -438,7 +428,7 @@ export default function Login() {
                 className={`w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
                   rtl ? "text-right" : ""
                 }`}
-                placeholder="you@example.com"
+                placeholder={t("login.form.emailPlaceholder")}
                 required
                 disabled={loading}
               />
@@ -677,7 +667,7 @@ export default function Login() {
                       className={`w-full px-4 py-3 transition duration-150 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
                         rtl ? "text-right" : ""
                       }`}
-                      placeholder="you@example.com"
+                      placeholder={t("login.form.emailPlaceholder")}
                       required
                       disabled={loading}
                     />

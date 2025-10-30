@@ -1682,84 +1682,88 @@
       "serviceRequired": "Please select a service."
     }
   },
-  
-    "login": {
-      "carousel": {
-        "slide1": {
-          "title": "Our Mission",
-          "text": "Breaking language barriers and building bridges of understanding to enable seamless communication across all cultures and industries."
-        },
-        "slide2": {
-          "title": "Our Vision",
-          "text": "A connected, multilingual world. To be Africa's leading language services provider, empowering global commerce and understanding."
-        },
-        "slide3": {
-          "title": "Client Commitment",
-          "text": "We provide professional translation and interpretation services tailored for success, ensuring accuracy and cultural sensitivity in every project."
-        }
-      },
-      "sidebar": {
-        "footer": "Connecting cultures through language excellence."
-      },
-      "tabs": {
-        "signIn": "Sign In",
-        "signUp": "Sign Up"
-      },
-      "form": {
-        "fullName": "Full Name",
-        "yourName": "Your Name",
-        "emailAddress": "Email Address",
-        "password": "Password",
-        "confirmPassword": "Confirm Password",
-        "rememberMe": "Remember me",
-        "forgotPassword": "Forgot password?",
-        "orContinueWith": "Or continue with"
-      },
-      "buttons": {
-        "signIn": "Sign In",
-        "createAccount": "Create Account",
-        "sendResetLink": "Send Reset Link",
-        "cancel": "Cancel",
-        "close": "Close"
-      },
-      "errors": {
-        "signInFailed": "Failed to sign in. Please try again.",
-        "invalidCredentials": "Invalid email or password.",
-        "tooManyAttempts": "Too many attempts. Try again later.",
-        "invalidEmail": "Invalid email address.",
-        "popupClosed": "Sign-in cancelled.",
-        "popupBlocked": "Popup blocked. Please allow popups.",
-        "accountExists": "Account exists with a different sign-in method.",
-        "networkError": "Network error. Check backend connection.",
-        "passwordMismatch": "Passwords do not match",
-        "registrationFailed": "Failed to register. Please try again.",
-        "emailInUse": "This email is already registered.",
-        "weakPassword": "Password is too weak. Use at least 6 characters.",
-        "resetFailed": "Failed to send password reset email.",
-        "userNotFound": "No user found with this email."
-      },
-      "messages": {
-        "accountCreated": "Account created. Please sign in.",
-        "resetEmailSent": "Password reset email sent. Check your inbox."
-      },
-      "a11y": {
-        "showPassword": "Show password",
-        "hidePassword": "Hide password",
-        "showConfirmPassword": "Show confirm password",
-        "hideConfirmPassword": "Hide confirm password"
-      },
-      "modals": {
-        "comingSoon": "Coming Soon",
-        "comingSoonDesc": "This authentication method is not yet available. Please use Google or email/password to sign in.",
-        "resetPassword": "Reset Password",
-        "resetPasswordDesc": "Enter your email to receive a password reset link."
-      },
-      "footer": {
-        "agreement": "By continuing, you agree to our ",
-        "terms": "Terms of Service",
-        "and": "and",
-        "privacy": "Privacy Policy"
-      }
-    }
 
+  "login": {
+    "carousel": {
+      "slide1": {
+        "title": "Our Mission",
+        "text": "Breaking language barriers and building bridges of understanding to enable seamless communication across all cultures and industries."
+      },
+      "slide2": {
+        "title": "Our Vision",
+        "text": "A connected, multilingual world. To be Africa's leading language services provider, empowering global commerce and understanding."
+      },
+      "slide3": {
+        "title": "Client Commitment",
+        "text": "We provide professional translation and interpretation services tailored for success, ensuring accuracy and cultural sensitivity in every project."
+      }
+    },
+    "sidebar": {
+      "footer": "Connecting cultures through language excellence."
+    },
+    "tabs": {
+      "signIn": "Sign In",
+      "signUp": "Sign Up"
+    },
+    "form": {
+      "fullName": "Full Name",
+      "yourName": "Your Name",
+      "emailAddress": "Email Address",
+      "emailPlaceholder": "you@example.com",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "orContinueWith": "Or continue with"
+    },
+    "buttons": {
+      "signIn": "Sign In",
+      "createAccount": "Create Account",
+      "sendResetLink": "Send Reset Link",
+      "cancel": "Cancel",
+      "close": "Close"
+    },
+    "errors": {
+      "signInFailed": "Failed to sign in. Please try again.",
+      "invalidCredentials": "Invalid email or password.",
+      "tooManyAttempts": "Too many attempts. Try again later.",
+      "invalidEmail": "Invalid email address.",
+      "popupClosed": "Sign-in cancelled.",
+      "popupBlocked": "Popup blocked. Please allow popups.",
+      "accountExists": "Account exists with a different sign-in method.",
+      "networkError": "Network error. Check backend connection.",
+      "passwordMismatch": "Passwords do not match",
+      "registrationFailed": "Failed to register. Please try again.",
+      "emailInUse": "This email is already registered.",
+      "weakPassword": "Password is too weak. Use at least 6 characters.",
+      "resetFailed": "Failed to send password reset email.",
+      "userNotFound": "No user found with this email."
+    },
+    "messages": {
+      "accountCreated": "Account created. Please sign in.",
+      "resetEmailSent": "Password reset email sent. Check your inbox."
+    },
+    "a11y": {
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "showConfirmPassword": "Show confirm password",
+      "hideConfirmPassword": "Hide confirm password"
+    },
+    "modals": {
+      "comingSoon": "Coming Soon",
+      "comingSoonDesc": "This authentication method is not yet available. Please use Google or email/password to sign in.",
+      "resetPassword": "Reset Password",
+      "resetPasswordDesc": "Enter your email to receive a password reset link."
+    },
+    "footer": {
+      "agreement": "By continuing, you agree to our ",
+      "terms": "Terms of Service",
+      "and": "and",
+      "privacy": "Privacy Policy"
+    }
+  },
+  "auth": {
+    "goBack": "Go Back to Home",
+    "translationServices": "Translation Services"
+  }
 }

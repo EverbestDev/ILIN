@@ -1679,11 +1679,11 @@
     "carousel": {
       "slide1": {
         "title": "Iṣẹ́ Wa",
-        "text": "Gbadura ièkú ède àti kòkò ìmọ̀ rò láti ṣe àyèjiṣe àbáraẹnisọrọ̀ pẹ̀lú ìdàsílẹ̀ àti àwùjọ gbogbo."
+        "text": "Fífọ̀ ìdènà ède àti kòkò ìmọ̀ láti ṣe àyèjiṣe ìbáraẹnisọrọ̀ tó dádúró pẹ̀lú gbogbo ìdàsílẹ̀ àti iṣẹ́."
       },
       "slide2": {
         "title": "Ìrètí Wa",
-        "text": "Ayé tí ó ṣatúnwò àti èdè púpọ̀. Àwùjọ ìtumọ̀ tó ṣẹ̀tọ̀ ju lójú Áfríkà, agbara ìṣélò àgbáyé àti ìmọ̀."
+        "text": "Ayé tí o ṣatúnwò àti èdè púpọ̀. Jẹ́ àwùjọ ìtumọ̀ tó ṣẹ̀tọ̀ ju lójú Áfríkà, tí a ń agbara àṣoṣo àgbáyé àti ìmọ̀."
       },
       "slide3": {
         "title": "Ìgbẹ́kẹ̀lẹ̀ Fún Onímọ̀",
@@ -1701,33 +1701,34 @@
       "fullName": "Orúkọ Kì í",
       "yourName": "Orúkọ Rẹ",
       "emailAddress": "Àdírẹ́ṣi Ímeèlì",
+      "emailPlaceholder": "ọ@àpẹẹrẹ.com",
       "password": "Ọ̀rọ̀ Ìkọ́",
       "confirmPassword": "Ìgbẹ́kẹ̀lẹ̀ Ọ̀rọ̀ Ìkọ́",
       "rememberMe": "Rántí mi",
-      "forgotPassword": "Ọ̀rọ̀ ìkọ́ nu?",
+      "forgotPassword": "Ọ̀rọ̀ ìkọ́ ti padà?",
       "orContinueWith": "Tàbí ṣẹ̀tọ̀ pẹ̀lú"
     },
     "buttons": {
       "signIn": "Wọle",
       "createAccount": "Ṣẹ̀ Àkóńṭu",
-      "sendResetLink": "Rán Ìkupá Tún Ìṣètún",
+      "sendResetLink": "Rán Ìkupá Tún",
       "cancel": "Fágílẹ̀",
       "close": "Páàdé"
     },
     "errors": {
       "signInFailed": "Wọle kò ṣe. Jẹ́ kí o ṣẹ̀tọ̀ lẹ́ẹ̀kan sì.",
-      "invalidCredentials": "Ímeèlì tàbí ọ̀rọ̀ ìkọ́ tí ko dúró pẹ̀lú.",
+      "invalidCredentials": "Ímeèlì tàbí ọ̀rọ̀ ìkọ́ tí ko tọ́.",
       "tooManyAttempts": "Ìgbìyanju púpọ̀. Ṣẹ̀tọ̀ lẹ́ẹ̀kan sì.",
-      "invalidEmail": "Àdírẹ́ṣi ímeèlì tí ko dúró.",
-      "popupClosed": "Wọle kúkú kúrú.",
-      "popupBlocked": "Árapá tí a fún. Jẹ́ kí a lọ.",
-      "accountExists": "Àkóńṭu wà pẹ̀lú ọ̀nà míì.",
-      "networkError": "Àṣiṣe nítì tẹ́ńpílẹ̀. Wo àgbasọ̀rọ̀ ẹrọ.",
-      "passwordMismatch": "Àwọn ọ̀rọ̀ ìkọ́ kò bá ara wọn",
+      "invalidEmail": "Àdírẹ́ṣi ímeèlì tí ko tọ́.",
+      "popupClosed": "Wọle ti kúrú.",
+      "popupBlocked": "Árapá tí a fún. Jẹ́ kí a máa lọ.",
+      "accountExists": "Àkóńṭu wà pẹ̀lú ọ̀nà míìrán.",
+      "networkError": "Àṣiṣe nítì tẹ́ńpílẹ̀. Ṣayẹ̀wò àgbasọ̀rọ̀ ẹrọ.",
+      "passwordMismatch": "Àwọn ọ̀rọ̀ ìkọ́ kò bá ara wọn.",
       "registrationFailed": "Fófórúkọsílẹ̀ kò ṣe. Jẹ́ kí o ṣẹ̀tọ̀ lẹ́ẹ̀kan sì.",
       "emailInUse": "Ímeèlì yìí ti ṣe ìforúkọsílẹ̀ tẹ́lẹ̀.",
-      "weakPassword": "Ọ̀rọ̀ ìkọ́ kéré jùlọ. Lò àwọn àlamọ̀ mẹ́rìn lágídi.",
-      "resetFailed": "Ṣe àṣiṣe ìrán ímeèlì.",
+      "weakPassword": "Ọ̀rọ̀ ìkọ́ kéré jùlọ. Lò àwọn àlamọ̀ mẹ́rin lágídi.",
+      "resetFailed": "Ṣe àṣiṣe ìrán ímeèlì tún.",
       "userNotFound": "A kò rí onímọ̀ pẹ̀lú ímeèlì yìí."
     },
     "messages": {
@@ -1752,5 +1753,9 @@
       "and": "àti",
       "privacy": "Òfin Ìkokò"
     }
+  },
+  "auth": {
+    "goBack": "Padà sí Ilé",
+    "translationServices": "Ìṣẹ́ Ìtumọ̀"
   }
 }

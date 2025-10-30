@@ -1690,83 +1690,87 @@
       "serviceRequired": "Veuillez sélectionner un service."
     }
   },
-    "login": {
-      "carousel": {
-        "slide1": {
-          "title": "Notre Mission",
-          "text": "Briser les barrières linguistiques et construire des ponts de compréhension pour permettre une communication transparente dans toutes les cultures et industries."
-        },
-        "slide2": {
-          "title": "Notre Vision",
-          "text": "Un monde connecté et multilingue. Être le principal prestataire de services linguistiques en Afrique, habilitant le commerce et la compréhension mondiaux."
-        },
-        "slide3": {
-          "title": "Engagement envers le Client",
-          "text": "Nous fournissons des services professionnels de traduction et d'interprétation adaptés au succès, en assurant la précision et la sensibilité culturelle dans chaque projet."
-        }
+  "login": {
+    "carousel": {
+      "slide1": {
+        "title": "Notre Mission",
+        "text": "Briser les barrières linguistiques et construire des ponts de compréhension pour permettre une communication transparente dans toutes les cultures et industries."
       },
-      "sidebar": {
-        "footer": "Connecter les cultures par l'excellence linguistique."
+      "slide2": {
+        "title": "Notre Vision",
+        "text": "Un monde connecté et multilingue. Être le principal prestataire de services linguistiques en Afrique, habilitant le commerce et la compréhension mondiaux."
       },
-      "tabs": {
-        "signIn": "Se Connecter",
-        "signUp": "S'Inscrire"
-      },
-      "form": {
-        "fullName": "Nom Complet",
-        "yourName": "Votre Nom",
-        "emailAddress": "Adresse Email",
-        "password": "Mot de Passe",
-        "confirmPassword": "Confirmer le Mot de Passe",
-        "rememberMe": "Se souvenir de moi",
-        "forgotPassword": "Mot de passe oublié?",
-        "orContinueWith": "Ou continuer avec"
-      },
-      "buttons": {
-        "signIn": "Se Connecter",
-        "createAccount": "Créer un Compte",
-        "sendResetLink": "Envoyer le Lien de Réinitialisation",
-        "cancel": "Annuler",
-        "close": "Fermer"
-      },
-      "errors": {
-        "signInFailed": "Échec de la connexion. Veuillez réessayer.",
-        "invalidCredentials": "Email ou mot de passe invalide.",
-        "tooManyAttempts": "Trop de tentatives. Réessayez plus tard.",
-        "invalidEmail": "Adresse email invalide.",
-        "popupClosed": "Connexion annulée.",
-        "popupBlocked": "Fenêtre contextuelle bloquée. Veuillez autoriser les fenêtres.",
-        "accountExists": "Le compte existe avec une autre méthode de connexion.",
-        "networkError": "Erreur réseau. Vérifiez la connexion du serveur.",
-        "passwordMismatch": "Les mots de passe ne correspondent pas",
-        "registrationFailed": "Échec de l'inscription. Veuillez réessayer.",
-        "emailInUse": "Cet email est déjà enregistré.",
-        "weakPassword": "Le mot de passe est trop faible. Utilisez au moins 6 caractères.",
-        "resetFailed": "Échec de l'envoi du email de réinitialisation.",
-        "userNotFound": "Aucun utilisateur trouvé avec cet email."
-      },
-      "messages": {
-        "accountCreated": "Compte créé. Veuillez vous connecter.",
-        "resetEmailSent": "Email de réinitialisation envoyé. Vérifiez votre boîte de réception."
-      },
-      "a11y": {
-        "showPassword": "Afficher le mot de passe",
-        "hidePassword": "Masquer le mot de passe",
-        "showConfirmPassword": "Afficher le mot de passe de confirmation",
-        "hideConfirmPassword": "Masquer le mot de passe de confirmation"
-      },
-      "modals": {
-        "comingSoon": "À Bientôt",
-        "comingSoonDesc": "Cette méthode d'authentification n'est pas encore disponible. Veuillez utiliser Google ou email/mot de passe pour vous connecter.",
-        "resetPassword": "Réinitialiser le Mot de Passe",
-        "resetPasswordDesc": "Entrez votre email pour recevoir un lien de réinitialisation."
-      },
-      "footer": {
-        "agreement": "En continuant, vous acceptez nos ",
-        "terms": "Conditions d'Utilisation",
-        "and": "et",
-        "privacy": "Politique de Confidentialité"
+      "slide3": {
+        "title": "Engagement envers le Client",
+        "text": "Nous fournissons des services professionnels de traduction et d'interprétation adaptés au succès, en assurant la précision et la sensibilité culturelle dans chaque projet."
       }
+    },
+    "sidebar": {
+      "footer": "Connecter les cultures par l'excellence linguistique."
+    },
+    "tabs": {
+      "signIn": "Se Connecter",
+      "signUp": "S'Inscrire"
+    },
+    "form": {
+      "fullName": "Nom Complet",
+      "yourName": "Votre Nom",
+      "emailAddress": "Adresse Email",
+      "emailPlaceholder": "vous@exemple.com",
+      "password": "Mot de Passe",
+      "confirmPassword": "Confirmer le Mot de Passe",
+      "rememberMe": "Se souvenir de moi",
+      "forgotPassword": "Mot de passe oublié?",
+      "orContinueWith": "Ou continuer avec"
+    },
+    "buttons": {
+      "signIn": "Se Connecter",
+      "createAccount": "Créer un Compte",
+      "sendResetLink": "Envoyer le Lien de Réinitialisation",
+      "cancel": "Annuler",
+      "close": "Fermer"
+    },
+    "errors": {
+      "signInFailed": "Échec de la connexion. Veuillez réessayer.",
+      "invalidCredentials": "Email ou mot de passe invalide.",
+      "tooManyAttempts": "Trop de tentatives. Réessayez plus tard.",
+      "invalidEmail": "Adresse email invalide.",
+      "popupClosed": "Connexion annulée.",
+      "popupBlocked": "Fenêtre contextuelle bloquée. Veuillez autoriser les fenêtres.",
+      "accountExists": "Le compte existe avec une autre méthode de connexion.",
+      "networkError": "Erreur réseau. Vérifiez la connexion du serveur.",
+      "passwordMismatch": "Les mots de passe ne correspondent pas",
+      "registrationFailed": "Échec de l'inscription. Veuillez réessayer.",
+      "emailInUse": "Cet email est déjà enregistré.",
+      "weakPassword": "Le mot de passe est trop faible. Utilisez au moins 6 caractères.",
+      "resetFailed": "Échec de l'envoi du email de réinitialisation.",
+      "userNotFound": "Aucun utilisateur trouvé avec cet email."
+    },
+    "messages": {
+      "accountCreated": "Compte créé. Veuillez vous connecter.",
+      "resetEmailSent": "Email de réinitialisation envoyé. Vérifiez votre boîte de réception."
+    },
+    "a11y": {
+      "showPassword": "Afficher le mot de passe",
+      "hidePassword": "Masquer le mot de passe",
+      "showConfirmPassword": "Afficher le mot de passe de confirmation",
+      "hideConfirmPassword": "Masquer le mot de passe de confirmation"
+    },
+    "modals": {
+      "comingSoon": "À Bientôt",
+      "comingSoonDesc": "Cette méthode d'authentification n'est pas encore disponible. Veuillez utiliser Google ou email/mot de passe pour vous connecter.",
+      "resetPassword": "Réinitialiser le Mot de Passe",
+      "resetPasswordDesc": "Entrez votre email pour recevoir un lien de réinitialisation."
+    },
+    "footer": {
+      "agreement": "En continuant, vous acceptez nos ",
+      "terms": "Conditions d'Utilisation",
+      "and": "et",
+      "privacy": "Politique de Confidentialité"
     }
-  
+  },
+  "auth": {
+    "goBack": "Retour à l'Accueil",
+    "translationServices": "Services de Traduction"
+  }
 }

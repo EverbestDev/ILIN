@@ -1,37 +1,52 @@
 import { useRTL } from "../hooks/useRTL";
+import { useTranslation } from "react-i18next";
 import React from "react";
-import { ArrowLeft, Heart } from "lucide-react";
+import { ArrowLeft, ArrowRight, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const AuthLayout = ({ children }) => {
   const dir = useRTL();
+  const { t, i18n } = useTranslation();
   const currentYear = new Date().getFullYear();
 
+  // RTL check: if language is "ar", use ArrowRight; otherwise use ArrowLeft
+  const isRTL = i18n.language === "ar";
+  const ArrowIcon = isRTL ? ArrowRight : ArrowLeft;
+
   return (
-    // Set min-h-screen to ensure layout covers full viewport height
-    <div dir={dir} className="flex flex-col min-h-screen bg-gray-50">
+    <div
+      dir={dir}
+      style={{ direction: dir === "rtl" ? "rtl" : "ltr" }}
+      className="flex flex-col min-h-screen bg-gray-50"
+    >
       {/* HEADER (NAV) - Contains the "Go Back" button */}
-      <header className="px-6 py-4 bg-white border-b border-gray-100 shadow-sm">
-        <div className="flex items-center justify-between">
+      <header className="bg-white shadow-sm">
+        <nav className=" mx-auto px-6 py-4 flex items-center">
           {/* Go Back Link (Placed in the navigation area) */}
           <Link
             to="/"
-            className="flex items-center gap-1 text-sm font-medium text-gray-600 transition-colors hover:text-green-600"
+            className={`flex items-center gap-2 text-gray-700 hover:text-green-600 transition-colors ${
+              isRTL ? "flex-row-reverse" : ""
+            }`}
           >
-            <ArrowLeft className="w-4 h-4" />
-            Go Back to Home
+            <ArrowIcon className="w-5 h-5" />
+            <span className="font-medium">{t("auth.goBack")}</span>
           </Link>
-        </div>
+        </nav>
       </header>
 
       {/* MAIN CONTENT AREA - Children (Login.jsx) fill the remaining height */}
-      <main className="flex flex-col flex-grow">{children}</main>
+      <main className="flex-1">{children}</main>
 
       {/* FOOTER */}
-      <footer className="py-4 text-center border-t border-gray-100 bg-white/50">
-        <p className="text-xs text-gray-600">
-          © {currentYear} ILIN. Translation Services.
-        </p>
+      <footer className="bg-white border-t border-gray-200">
+        <div className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-center gap-2 text-sm text-gray-600">
+          <span>©</span>
+          <span>{currentYear}</span>
+          <span>ILIN.</span>
+          <span>{t("auth.translationServices")}</span>
+          
+        </div>
       </footer>
     </div>
   );
