@@ -474,12 +474,12 @@ export default function QuotePage() {
 
       const data = await res.json();
 
-      if (res.ok) {
+      if (data.success) {
         console.log("Quote submitted:", data);
         setShowSuccessModal(true);
       } else {
         console.error("Failed:", data.message);
-        alert(t("quotepage.submit.failed"));
+        alert(data.message || t("quotepage.submit.failed"));
       }
     } catch (error) {
       console.error("Error submitting quote:", error);
