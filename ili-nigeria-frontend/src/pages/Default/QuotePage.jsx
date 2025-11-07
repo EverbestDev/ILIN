@@ -51,6 +51,8 @@ export default function QuotePage() {
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(1);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false); // <--- added
+  const [errorModalMessage, setErrorModalMessage] = useState(""); // <--- added
   const [validationErrors, setValidationErrors] = useState({});
   const [formData, setFormData] = useState({
     // Project Details
@@ -507,100 +509,104 @@ export default function QuotePage() {
         setShowSuccessModal(true);
       } else {
         console.error("Failed:", data.message);
-        alert("Failed to submit quote. Please try again.");
+        // show error modal instead of alert
+        setErrorModalMessage(
+          data.message || "Failed to submit quote. Please try again."
+        );
+        setShowErrorModal(true);
       }
     } catch (error) {
       console.error("Error submitting quote:", error);
-      alert("Something went wrong. Please try again later.");
+      // show error modal instead of alert
+      setErrorModalMessage(
+        error?.message || "Something went wrong. Please try again later."
+      );
+      setShowErrorModal(true);
     } finally {
       setIsSubmitting(false); // Stop loading
     }
   };
 
-  const SuccessModal = () => (
+  // Reusable modal shell (subtle backdrop + blur)
+  const ModalShell = ({ children, onClose }) => (
     <AnimatePresence>
-      s
-      {showSuccessModal && (
-        <>
-          {/* Backdrop */}
+      <>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+          className="fixed inset-0 z-50 backdrop-blur-sm bg-white/20"
+        />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black bg-opacity-50"
-            onClick={() => setShowSuccessModal(false)}
-          />
-
-          {/* Modal */}
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-md p-8 bg-white shadow-2xl pointer-events-auto rounded-3xl"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="text-center">
-                <div className="flex items-center justify-center w-20 h-20 mx-auto mb-6 bg-green-100 rounded-full">
-                  <CheckCircle className="w-10 h-10 text-green-600" />
-                </div>
-                <h3 className="mb-4 text-2xl font-bold text-gray-900">
-                  Quote Request Sent!
-                </h3>
-                <p className="mb-6 text-gray-600">
-                  Thank you for your request. We'll send you a detailed quote
-                  within 30 minutes to {formData.email}.
-                </p>
-                <div className="space-y-3">
-                  <button
-                    onClick={handleReturnHome}
-                    className="w-full px-6 py-3 font-semibold text-white transition-colors bg-green-600 rounded-xl hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                  >
-                    Return to Home
-                  </button>
-                  <button
-                    onClick={handleSubmitAnother}
-                    className="w-full px-6 py-3 font-semibold text-gray-600 transition-colors bg-gray-100 rounded-xl hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                  >
-                    Submit Another Quote
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </>
-      )}
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            onClick={(e) => e.stopPropagation()}
+            className="pointer-events-auto w-full max-w-md p-8 bg-white shadow-2xl rounded-3xl"
+          >
+            {children}
+          </motion.div>
+        </div>
+      </>
     </AnimatePresence>
   );
 
-  const handleReturnHome = async () => {
-    setShowSuccessModal(false);
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    navigate("/");
-  };
+  const SuccessModal = () =>
+    showSuccessModal ? (
+      <ModalShell onClose={() => setShowSuccessModal(false)}>
+        <div className="text-center">
+          <div className="flex items-center justify-center w-20 h-20 mx-auto mb-6 bg-green-100 rounded-full">
+            <CheckCircle className="w-10 h-10 text-green-600" />
+          </div>
+          <h3 className="mb-4 text-2xl font-bold text-gray-900">
+            Quote Request Sent!
+          </h3>
+          <p className="mb-6 text-gray-600">
+            Thank you for your request. We'll send you a detailed quote within
+            30 minutes to {formData.email}.
+          </p>
+          <div className="space-y-3">
+            <button
+              onClick={handleReturnHome}
+              className="w-full px-6 py-3 font-semibold text-white transition-colors bg-green-600 rounded-xl hover:bg-green-700"
+            >
+              Return to Home
+            </button>
+            <button
+              onClick={handleSubmitAnother}
+              className="w-full px-6 py-3 font-semibold text-gray-600 transition-colors bg-gray-100 rounded-xl hover:bg-gray-200"
+            >
+              Submit Another Quote
+            </button>
+          </div>
+        </div>
+      </ModalShell>
+    ) : null;
 
-  const handleSubmitAnother = () => {
-    setShowSuccessModal(false);
-    setFormData({
-      service: "",
-      sourceLanguage: "",
-      targetLanguages: [],
-      urgency: "standard",
-      certification: false,
-      documents: [],
-      wordCount: "",
-      pageCount: "",
-      name: "",
-      email: "",
-      phone: "",
-      company: "",
-      specialInstructions: "",
-      industry: "",
-      glossary: false,
-    });
-    setValidationErrors({});
-    setActiveStep(1);
-  };
+  const ErrorModal = () =>
+    showErrorModal ? (
+      <ModalShell onClose={() => setShowErrorModal(false)}>
+        <div className="text-center">
+          <div className="flex items-center justify-center w-20 h-20 mx-auto mb-6 bg-red-100 rounded-full">
+            <AlertCircle className="w-10 h-10 text-red-600" />
+          </div>
+          <h3 className="mb-4 text-2xl font-bold text-gray-900">
+            Submission Error
+          </h3>
+          <p className="mb-6 text-gray-600">{errorModalMessage}</p>
+          <div className="space-y-3">
+            <button
+              onClick={() => setShowErrorModal(false)}
+              className="w-full px-6 py-3 font-semibold text-white transition-colors bg-red-600 rounded-xl hover:bg-red-700"
+            >
+              Dismiss
+            </button>
+          </div>
+        </div>
+      </ModalShell>
+    ) : null;
 
   // Keyboard navigation
   useEffect(() => {
@@ -622,7 +628,8 @@ export default function QuotePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50">
-      <SuccessModal />
+      {SuccessModal()}
+      {ErrorModal()}
 
       {/* Hero Section with Glassmorphism */}
       <section className="relative px-6 py-2 pt-32 overflow-hidden md:py-20 md:px-20">
