@@ -52,6 +52,8 @@ export default function QuotePage() {
   const [activeStep, setActiveStep] = useState(1);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [formData, setFormData] = useState({
     // Project Details
     service: "",
@@ -283,7 +285,6 @@ export default function QuotePage() {
     const maxFiles = 10;
     const maxSizePerFile = 10 * 1024 * 1024; // 10MB
     const maxTotalSize = 50 * 1024 * 1024; // 50MB total
-
     const currentSize = formData.documents.reduce(
       (sum, doc) => sum + doc.size,
       0
@@ -292,21 +293,19 @@ export default function QuotePage() {
       0,
       maxFiles - formData.documents.length
     );
-
     const validFiles = [];
     let totalNewSize = 0;
+    const errors = [];
 
     for (const file of newFiles) {
       if (file.size > maxSizePerFile) {
-        alert(`File "${file.name}" is too large. Maximum size is 10MB.`);
+        errors.push(`File "${file.name}" is too large. Maximum size is 10MB.`);
         continue;
       }
-
       if (currentSize + totalNewSize + file.size > maxTotalSize) {
-        alert("Total file size would exceed 50MB limit.");
+        errors.push("Total file size would exceed 50MB limit.");
         break;
       }
-
       validFiles.push({
         id: Date.now() + Math.random(),
         file: file,
@@ -317,14 +316,20 @@ export default function QuotePage() {
       totalNewSize += file.size;
     }
 
-    setFormData((prev) => ({
-      ...prev,
-      documents: [...prev.documents, ...validFiles],
-    }));
+    if (errors.length > 0) {
+      setErrorMessage(errors.join("\n"));
+      setShowErrorModal(true);
+    }
 
-    // Clear validation error if files are uploaded
     if (validFiles.length > 0) {
-      setValidationErrors((prev) => ({ ...prev, documents: undefined }));
+      setFormData((prev) => ({
+        ...prev,
+        documents: [...prev.documents, ...validFiles],
+      }));
+      // Clear validation error if files are uploaded
+      if (validFiles.length > 0) {
+        setValidationErrors((prev) => ({ ...prev, documents: undefined }));
+      }
     }
   };
 
@@ -335,7 +340,7 @@ export default function QuotePage() {
     }));
   };
 
-  // FIXED: Cost calculation with proper memoization
+  //Cost calculation with proper memoization
   const estimatedCost = useMemo(() => {
     const service = services.find((s) => s.id === formData.service);
     if (!service || (!debouncedWordCount && !debouncedPageCount)) return null;
@@ -376,7 +381,7 @@ export default function QuotePage() {
     urgencyOptions,
   ]);
 
-  // FIXED: handleInputChange function
+  //handleInputChange function
   const handleInputChange = useCallback(
     (name, value) => {
       setFormData((prev) => ({
@@ -444,6 +449,51 @@ export default function QuotePage() {
     if (activeStep > 1) setActiveStep(activeStep - 1);
   };
 
+  const ErrorModal = () => (
+    <AnimatePresence>
+      {showErrorModal && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 backdrop-blur-sm bg-opacity-50"
+            onClick={() => setShowErrorModal(false)}
+          />
+          {/* Modal */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-md p-8 bg-white shadow-2xl pointer-events-auto rounded-3xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="text-center">
+                <div className="flex items-center justify-center w-20 h-20 mx-auto mb-6 bg-red-100 rounded-full">
+                  <AlertCircle className="w-10 h-10 text-red-600" />
+                </div>
+                <h3 className="mb-4 text-2xl font-bold text-gray-900">Error</h3>
+                <p className="mb-6 text-gray-600 whitespace-pre-line">
+                  {errorMessage}
+                </p>
+                <div className="space-y-3">
+                  <button
+                    onClick={() => setShowErrorModal(false)}
+                    className="w-full px-6 py-3 font-semibold text-white transition-colors bg-red-600 rounded-xl hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -507,19 +557,22 @@ export default function QuotePage() {
         setShowSuccessModal(true);
       } else {
         console.error("Failed:", data.message);
-        alert("Failed to submit quote. Please try again.");
+        setErrorMessage(
+          data.message || "Failed to submit quote. Please try again."
+        );
+        setShowErrorModal(true);
       }
     } catch (error) {
       console.error("Error submitting quote:", error);
-      alert("Something went wrong. Please try again later.");
+      setErrorMessage("Something went wrong. Please try again later.");
+      setShowErrorModal(true);
     } finally {
-      setIsSubmitting(false); // Stop loading
+      setIsSubmitting(false);
     }
   };
 
   const SuccessModal = () => (
     <AnimatePresence>
-      s
       {showSuccessModal && (
         <>
           {/* Backdrop */}
@@ -527,7 +580,7 @@ export default function QuotePage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black bg-opacity-50"
+            className="fixed inset-0 z-50 0 bg-opacity-50 backdrop-blur-sm"
             onClick={() => setShowSuccessModal(false)}
           />
 
@@ -623,6 +676,7 @@ export default function QuotePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50">
       <SuccessModal />
+      <ErrorModal />
 
       {/* Hero Section with Glassmorphism */}
       <section className="relative px-6 py-2 pt-32 overflow-hidden md:py-20 md:px-20">
