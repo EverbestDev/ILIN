@@ -71,7 +71,19 @@ const quoteSchema = new mongoose.Schema(
     service: {
       type: String,
       required: true,
-      enum: ["translation", "interpretation", "localization", "transcription"],
+      enum: [
+        "translation",
+        "interpretation",
+        "localization",
+        "transcription",
+        "document",
+        "multimedia",
+        "website",
+        "certified",
+        "subtitling",
+        "voiceover",
+        "other",
+      ],
       lowercase: true,
     },
     sourceLanguage: {
