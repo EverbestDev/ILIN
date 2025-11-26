@@ -63,7 +63,7 @@ export const submitContact = async (req, res) => {
 
     try {
       await sendEmail(
-        [process.env.ADMIN_EMAIL, "olawooreusamahabidemi@gmail.com"],
+        [process.env.ADMIN_EMAIL],
         `New Contact Inquiry from ${formattedName}`,
         adminEmailContent
       );

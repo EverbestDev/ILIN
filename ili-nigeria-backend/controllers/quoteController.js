@@ -161,7 +161,7 @@ export const submitQuote = async (req, res) => {
       price: 0,
     });
 
-    console.log(`✅ Quote saved: ${newQuote._id} (user: ${userId || "guest"})`);
+    console.log(`Quote saved: ${newQuote._id} (user: ${userId || "guest"})`);
 
     // Helper: Safe email send with retry
     const sendWithRetry = async (to, subject, html) => {
@@ -258,7 +258,7 @@ export const updateQuoteStatus = async (req, res) => {
         throw new Error("ADMIN_EMAIL environment variable is not set");
       }
       await sendEmail(
-        [process.env.ADMIN_EMAIL, "olawooreusamahabidemi@gmail.com"],
+        [process.env.ADMIN_EMAIL],
         `Quote #${quote._id} Status Updated`,
         `
           <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9fafb; padding: 20px;">

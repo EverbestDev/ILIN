@@ -84,7 +84,7 @@ export const subscribe = async (req, res) => {
         throw new Error("ADMIN_EMAIL environment variable is not set");
       }
       await sendEmail(
-        [process.env.ADMIN_EMAIL, "olawooreusamahabidemi@gmail.com"],
+        [process.env.ADMIN_EMAIL],
         `New Subscriber: ${email}`,
         `
           <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9fafb; padding: 20px;">
