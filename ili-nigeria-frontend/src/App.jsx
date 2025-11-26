@@ -26,6 +26,7 @@ import ContactPage from "./pages/Default/ContactPage";
 import LanguagesPage from "./pages/Default/LangauagesPage";
 import ServicesPage from "./pages/Default/ServicesPage";
 import QuotePage from "./pages/Default/QuotePage";
+import VerifySubscription from "./pages/Default/VerifySubscription";
 import Login from "./pages/Default/Login";
 
 // Admin Pages
@@ -134,6 +135,14 @@ function App() {
                 element={
                   <DefaultLayout>
                     <QuotePage />
+                  </DefaultLayout>
+                }
+              />
+              <Route
+                path="/verify-subscribe"
+                element={
+                  <DefaultLayout>
+                    <VerifySubscription />
                   </DefaultLayout>
                 }
               />

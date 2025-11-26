@@ -995,6 +995,10 @@
       "subscribe": "Subscribe",
       "subscribing": "Subscribing...",
       "success": "Thanks for subscribing!",
+      "verifySent": "Please check your email and click the verification link to complete your subscription.",
+      "verifiedSuccess": "Thank you for confirming! You’re now subscribed.",
+      "verifiedError": "Verification failed or the link has expired. Please try again.",
+      "close": "Close",
       "errorEmpty": "Please enter an email address",
       "errorInvalid": "Please enter a valid email address",
       "errorFail": "Failed to subscribe",
@@ -1761,6 +1765,11 @@
       "and": "and",
       "privacy": "Privacy Policy"
     }
+  },
+  "cookie": {
+    "message": "We use cookies to improve your experience. By continuing, you agree to our use of cookies.",
+    "learnMore": "Learn more",
+    "accept": "Accept"
   },
   "auth": {
     "goBack": "Go Back to Home",

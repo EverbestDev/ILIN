@@ -307,7 +307,7 @@ const ClientDashboard = () => {
       {/* Notification Toast */}
       {notification && (
         <div
-          className={`fixed top-6 right-6 z-50 px-6 py-4 rounded-xl shadow-lg border animate-slide-in ${
+          className={`fixed top-6 right-6 app-toaster px-6 py-4 rounded-xl shadow-lg border animate-slide-in ${
             notification.type === "success"
               ? "bg-green-50 border-green-200 text-green-800"
               : "bg-red-50 border-red-200 text-red-800"

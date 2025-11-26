@@ -21,7 +21,8 @@ import {
 export default function Footer() {
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  const [showSubscribeModal, setShowSubscribeModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const quickLinks = [
@@ -68,17 +69,19 @@ export default function Footer() {
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
-    setMessage("");
+    // message state deprecated - using modalMessage instead
     setIsLoading(true);
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email || email.trim() === "") {
-      setMessage(t("footer.newsletter.errorEmpty"));
+      setModalMessage(t("footer.newsletter.errorEmpty"));
+      setShowSubscribeModal(true);
       setIsLoading(false);
       return;
     }
     if (!emailRegex.test(email)) {
-      setMessage(t("footer.newsletter.errorInvalid"));
+      setModalMessage(t("footer.newsletter.errorInvalid"));
+      setShowSubscribeModal(true);
       setIsLoading(false);
       return;
     }
@@ -96,20 +99,27 @@ export default function Footer() {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage(t("footer.newsletter.success"));
+        // Show verification instructions, since we implemented double opt-in
+        const verifyMsg = t("footer.newsletter.verifySent");
+        setModalMessage(verifyMsg);
+        setShowSubscribeModal(true);
         setEmail("");
       } else {
-        setMessage(`${data.message || t("footer.newsletter.errorFail")}`);
+        const errorMsg = `${data.message || t("footer.newsletter.errorFail")}`;
+        setModalMessage(errorMsg);
+        setShowSubscribeModal(true);
       }
     } catch (error) {
-      setMessage(t("footer.newsletter.errorTry"));
+      setModalMessage(t("footer.newsletter.errorTry"));
+      setShowSubscribeModal(true);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <footer className="overflow-hidden bg-gradient-to-br from-green-600 via-green-700 to-green-800 rounded-t-xl md:rounded-t-none">
+    <>
+      <footer className="overflow-hidden bg-gradient-to-br from-green-600 via-green-700 to-green-800 rounded-t-xl md:rounded-t-none">
       {/* Newsletter Section */}
       <div className="relative px-6 py-16 bg-gradient-to-r from-green-700 to-green-600 md:px-20">
         <div className="absolute inset-0 bg-black opacity-10"></div>
@@ -148,18 +158,7 @@ export default function Footer() {
                   : t("footer.newsletter.subscribe")}
               </button>
             </div>
-            {message && (
-              <p
-                className={`mt-6 text-lg font-medium ${
-                  message.includes("✅") ||
-                  message.includes(t("footer.newsletter.success"))
-                    ? "text-green-200"
-                    : "text-red-300"
-                }`}
-              >
-                {message}
-              </p>
-            )}
+            {/* Inline message replaced by modal; keep message variable in case needed */}
             <p className="mt-6 text-sm text-green-200">
               {t("footer.newsletter.privacy")}
             </p>
@@ -459,5 +458,51 @@ export default function Footer() {
         </div>
       </div>
     </footer>
+      {/* Subscribe Modal */}
+      {showSubscribeModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setShowSubscribeModal(false)}
+          />
+          <div className="relative z-10 w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+            <button
+              aria-label="Close"
+              className="absolute p-2 text-gray-500 rounded-full top-3 right-3 hover:bg-gray-100"
+              onClick={() => setShowSubscribeModal(false)}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+            <div className="flex flex-col gap-4">
+              <h3 className="text-lg font-bold text-gray-900">{t("footer.newsletter.title")}</h3>
+              <p className={`text-base ${modalMessage.includes(t("footer.newsletter.success")) ? 'text-green-600' : 'text-red-600'}`}>
+                {modalMessage}
+              </p>
+              <div className="flex justify-end">
+                <button
+                  className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700"
+                  onClick={() => setShowSubscribeModal(false)}
+                >
+                  {t("footer.newsletter.close") || "Close"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

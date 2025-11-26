@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
@@ -48,6 +49,7 @@ function useDebounce(value, delay) {
 }
 
 export default function QuotePage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(1);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -167,28 +169,15 @@ export default function QuotePage() {
     { id: "urgent", name: "Urgent (Same day)", multiplier: 2.5 },
   ];
 
-  const steps = [
-    {
-      number: 1,
-      title: "Service & Languages",
-      description: "Choose your service and language pair",
-    },
-    {
-      number: 2,
-      title: "Upload Documents",
-      description: "Upload files or provide word count",
-    },
-    {
-      number: 3,
-      title: "Project Details",
-      description: "Specify requirements and timeline",
-    },
-    {
-      number: 4,
-      title: "Contact Information",
-      description: "Your details for quote delivery",
-    },
-  ];
+  const steps = useMemo(
+    () => [
+      { number: 1, title: t("quotepage.steps.1.title"), description: t("quotepage.steps.1.desc") },
+      { number: 2, title: t("quotepage.steps.2.title"), description: t("quotepage.steps.2.desc") },
+      { number: 3, title: t("quotepage.steps.3.title"), description: t("quotepage.steps.3.desc") },
+      { number: 4, title: t("quotepage.steps.4.title"), description: t("quotepage.steps.4.desc") },
+    ],
+    [t]
+  );
 
   const quickBenefits = [
     {

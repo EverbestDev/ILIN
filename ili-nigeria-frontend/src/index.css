@@ -73,3 +73,9 @@ body {
     animation-duration: 45s; /* Slower on mobile */
   }
 }
+
+/* App utility classes */
+.app-toaster {
+  z-index: 9999;
+  pointer-events: auto;
+}
