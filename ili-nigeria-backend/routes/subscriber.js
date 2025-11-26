@@ -5,12 +5,15 @@ import {
   getAllSubscribers,
   deleteSubscriber,
   resendWelcomeEmail,
+  verifySubscription,
 } from "../controllers/subscriberController.js";
 
 const router = express.Router();
 
 // Public: Subscribe via footer
 router.post("/", subscribe);
+// Verify subscription
+router.get("/verify/:token", verifySubscription);
 
 // Admin: Get all subscribers
 router.get("/", protect, restrictTo("admin"), getAllSubscribers);

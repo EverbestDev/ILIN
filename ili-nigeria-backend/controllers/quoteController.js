@@ -161,7 +161,7 @@ export const submitQuote = async (req, res) => {
       price: 0,
     });
 
-    console.log(`Quote saved: ${newQuote._id} (user: ${userId || "guest"})`);
+    console.log(`✅ Quote saved: ${newQuote._id} (user: ${userId || "guest"})`);
 
     // Helper: Safe email send with retry
     const sendWithRetry = async (to, subject, html) => {
