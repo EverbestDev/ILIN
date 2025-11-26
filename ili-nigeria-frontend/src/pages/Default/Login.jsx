@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
@@ -704,19 +705,19 @@ export default function Login() {
             }`}
           >
             {t("login.footer.agreement")}
-            <a
-              href="#"
-              className="font-medium text-green-600 hover:text-green-500"
-            >
-              {t("login.footer.terms")}
-            </a>
+              <Link
+                to="/terms"
+                className="font-medium text-green-600 hover:text-green-500"
+              >
+                {t("login.footer.terms")}
+              </Link>
             {" " + t("login.footer.and") + " "}
-            <a
-              href="#"
-              className="font-medium text-green-600 hover:text-green-500"
-            >
-              {t("login.footer.privacy")}
-            </a>
+              <Link
+                to="/privacy"
+                className="font-medium text-green-600 hover:text-green-500"
+              >
+                {t("login.footer.privacy")}
+              </Link>
             .
           </p>
         </motion.div>

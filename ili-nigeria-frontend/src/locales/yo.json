@@ -1763,187 +1763,137 @@
     "translationServices": "Ìṣẹ́ Ìtumọ̀"
   },
 
-  "quotepage": {
-    "hero": {
-      "badge": "Ẹbọ Itumọ̀",
-      "title": "Itumọ̀ Ìwé Tuntun",
-      "subtitle": "Itumọ̀ Ni Ipó Iseju Aaya",
-      "description": "Gba iye itumọ̀ ti dára fún iṣẹ itumọ̀ rẹ. Eto itumọ̀ wa ń pese iye itumọ̀ ní ìpó akoko pẹ̀lú iye ti o han gbangba ati aidiyonu ti o fihanda."
-    },
-    "benefits": {
-      "instant": {
-        "title": "Iye Itumọ̀ Ní Ìpó Akoko",
-        "desc": "Gba iye itumọ̀ ni akoko dáadáa bí o ṣe ń pupo fọọmu"
+ "cookie": {
+    "title": "A Bọ̀wọ̀ Fún Ìpamọ́ Rẹ",
+    "message": "A ń lo kuki láti mu ìrírí rẹ dára sí i, láti ṣe àgbéyẹ̀wò lílò ojú-òpó, àti láti mu àwọn iṣẹ́ wa dára sí i. Nípa tẹ̀síwájú, o gba ìlò kuki wa.",
+    "accept": "Gba Gbogbo"
+  },
+  "legal": {
+    "privacy": {
+      "badge": "Òfin",
+      "title": "Ètò Àbínibí",
+      "lastUpdated": "Ìmúdójúìwọ̀n ìkẹyìn: Oṣù Kọkànlá 2024",
+      "intro": "A bọ̀wọ̀ fún àbínibí rẹ, a sì ti pinnu láti dáàbò bo àwọn àlàyé tí o bá yàtọ̀. Ètò yìí ṣàlàyé bí a ṣe máa kó àwọn àlàyé, lílo wọn, àti bí a ṣe máa dáàbò bo wọn nígbà tí o bá lo àwọn iṣẹ́ wa.",
+      "collect": {
+        "title": "Àwọn Àlàyé Tí A Kó",
+        "description": "A máa kó àwọn àlàyé tí o fúnwa tààrà àti data tí a ṣe látara lílò iṣẹ́ wa:",
+        "items": [
+          "Àlàyé ìbánisọ̀rọ̀ (orúkọ, ímeèlì, nọ́mbà fóònù)",
+          "Àlàyé àkọ́kọ́ àti ìwé àpèjúwe",
+          "Àlàyé ìsanwó àti owó àgbéròyìn",
+          "Àwọn ìfẹ́ràn ìbánisọ̀rọ̀ àti ètò èdè",
+          "Data lílò àti ìtàn ìbáṣepọ̀ pẹ̀lú ojú-òpó wa",
+          "Àlàyé ẹ̀rọ àti irúfẹ́ ìwáfà"
+        ]
       },
-      "secure": {
-        "title": "Ifiranṣẹ Tó Dákẹ̀",
-        "desc": "Awọn iwe rẹ ní ìrọrùn tó tó, a ṣe itẹkawe pẹ̀lú àṣọ eniyan"
+      "usage": {
+        "title": "Bí A Ṣe Ń Lo Àlàyé Rẹ",
+        "description": "A ń lo àwọn àlàyé tí a kó fún àwọn ète wọ̀nyí:",
+        "items": [
+          "Pípèsè àti ìmúdára àwọn iṣẹ́ wa",
+          "Ṣíṣe àwọn ìsanwó àti ìṣàkóso àkọ́kọ́ rẹ",
+          "Ránsẹ́ àwọn ìmúdójúìwọ̀n pàtàkì àti àkíyèsí",
+          "Ṣíṣe àdáni ìrírí rẹ dábọ́ lórí àwọn ìfẹ́ràn",
+          "Ṣíṣe àgbéyẹ̀wò àwọn ìlànà lílò láti mu ojú-òpó wa dára sí i",
+          "Dídánilójú ààbò àti ìdíwọ́ èké"
+        ]
       },
-      "fast": {
-        "title": "Idelọ Yara",
-        "desc": "Iye itumọ̀ tó pẹ ti a firanṣẹ sí iṣẹ rẹ ni orisun ọgọ̀ ní ìṣẹjú mẹtàléta"
+      "sharing": {
+        "title": "Pínpín Data àti Ààbò",
+        "description": "A kì í ta àlàyé àdáni rẹ sí àwọn ẹni kẹta. A lè pin data pẹ̀lú àwọn olùpèsè iṣẹ́ tí a gbẹ́kẹ̀lé nìkan, tí wọ́n bá wa ṣiṣẹ́ ojú-òpó wa, nípa àdéhùn àṣírí líle. A ń lo àwọn ìlànà ààbò tó wọ́pọ̀ nínú ilé-iṣẹ́ láti dáàbò bo àlàyé rẹ kúrò lọ́wọ́ wíwọlé aláṣẹ."
+      },
+      "rights": {
+        "title": "Àwọn Ẹ̀tọ́ Rẹ",
+        "description": "O ní àwọn ẹ̀tọ́ wọ̀nyí nípa data àdáni rẹ:",
+        "items": [
+          "Wíwọlé àti àtúnyẹ̀wò àlàyé tí a ni nípa rẹ",
+          "Bíbéèrè àtúnṣe sí data tí kò tọ́ tàbí tí kò pé",
+          "Bíbéèrè ìparẹ́ àlàyé àdáni rẹ",
+          "Jáde kúrò nínú àwọn ìbánisọ̀rọ̀ títa nígbàkúgbà",
+          "Gbígbé data rẹ jáde ní ọ̀nà tí o lè gbé lọ"
+        ]
+      },
+      "contact": {
+        "title": "Àwọn Ìbéèrè?",
+        "description": "Tí o bá ní àwọn ìbéèrè nípa Ètò Àbínibí yìí tàbí bí a ṣe ń ṣàkóso data rẹ, jọ̀wọ́ pe ẹgbẹ́ àtìlẹ́yìn wa. A wà níbí láti ṣèrànwọ́ àti láti dánilójú pé a dáàbò bo àbínibí rẹ."
       }
     },
-    "steps": {
-      "1": {
-        "title": "Iṣẹ ati Ede",
-        "desc": "Yan iṣẹ rẹ ati ede tí o fẹ́"
+    "terms": {
+      "badge": "Òfin",
+      "title": "Àwọn Òfin Iṣẹ́",
+      "lastUpdated": "Ìmúdójúìwọ̀n ìkẹyìn: Oṣù Kọkànlá 2024",
+      "intro": "Nípa wíwọlé tàbí lílo àwọn iṣẹ́ wa, o gba láti tẹ̀lé Àwọn Òfin Iṣẹ́ wọ̀nyí. Jọ̀wọ́ kà wọ́n dáradára. Tí o kò bá gba apa kankan nínú àwọn òfin wọ̀nyí, o kò lè lo àwọn iṣẹ́ wa.",
+      "services": {
+        "title": "Àwọn Iṣẹ́ Wa",
+        "description": "A ń pèsè ìkẹ́kọ̀ọ́ èdè àti àwọn iṣẹ́ ìtumọ̀ látara ojú-òpó wa. A ní ẹ̀tọ́ láti ṣe àtúnṣe, dádúró, tàbí dáwọ́ dúró apa kankan ti iṣẹ́ wa nígbàkúgbà pẹ̀lú ìkíyèsí tó tọ́. A ń gbìyànjú láti ní wíwà gíga ṣùgbọ́n a kò lè ṣe ìlérí iṣẹ́ aláìdádúró."
       },
-      "2": {
-        "title": "Tu Awọn Iwe",
-        "desc": "Tu awọn faili tàbí sọ́rọ̀ iye ọ̀rọ̀"
+      "responsibilities": {
+        "title": "Àwọn Ojúṣe Olùlo",
+        "description": "Nígbà tí o bá ń lo àwọn iṣẹ́ wa, o gba láti:",
+        "items": [
+          "Pèsè àlàyé tó tọ́ àti pé",
+          "Tọ́jú àbínibí àwọn ìwé-ẹ̀rí àkọ́kọ́ rẹ",
+          "Lo àwọn iṣẹ́ fún àwọn ète òfin nìkan",
+          "Bọ̀wọ̀ fún àwọn ẹ̀tọ́ ohun-ìní ọgbọ́n",
+          "Má ṣe gbìyànjú láti dẹ́kun tàbí dá iṣẹ́ rú",
+          "Tẹ̀lé gbogbo àwọn òfin àti ìlànà tó wà lọ́wọ́"
+        ]
       },
-      "3": {
-        "title": "Alaye Iṣẹ",
-        "desc": "Sọ̀rọ̀ nípa awọn ìpilẹ̀ ati akoko"
+      "payment": {
+        "title": "Ìsanwó àti Owó Àgbéròyìn",
+        "description": "Ìsanwó jẹ́ dandan fún àwọn iṣẹ́ ìdásílẹ̀. Gbogbo owó kò lè dà padà àyàfi tí a bá sọ ní ìlànà ìdápadà wa. A gba ọ̀pọ̀lọpọ̀ ọ̀nà ìsanwó, a sì ń lo àwọn alásán ìsanwó tó dáàbò bò. Àwọn idiyele lè yípadà pẹ̀lú ìkíyèsí tó tọ́ sí àwọn alábàápín tó wà tẹ́lẹ̀."
       },
-      "4": {
-        "title": "Alaye Ijẹwo",
-        "desc": "Alaye ijẹwo rẹ láti túbọ̀ iye itumọ̀"
+      "cancellation": {
+        "title": "Ètò Ìfagílé",
+        "description": "O lè fagílé ìforúkọsílẹ̀ rẹ nígbàkúgbà látara ètò àkọ́kọ́ rẹ. Àwọn ìfagílé máa ń bẹ̀rẹ̀ ní òpin àkókò owó àgbéròyìn lọ́wọ́lọ́wọ́. A kò ń dá owó padà fún àkókò owó àgbéròyìn apá àyàfi tí òfin bá béèrè rẹ̀."
+      },
+      "intellectual": {
+        "title": "Ohun-ìní Ọgbọ́n",
+        "description": "Gbogbo akoonu, àwọn ẹ̀yà, àti iṣẹ́ṣiṣẹ́ àwọn iṣẹ́ wa jẹ́ ti wa, a sì ti dáàbò bo wọ́n pẹ̀lú òfin ẹ̀dà àwòkọ, àmì iṣòwò, àti àwọn òfin ohun-ìní ọgbọ́n míràn. O kò lè tún ṣe, pín, tàbí ṣẹ̀dá iṣẹ́ àjọpín láìní àṣẹ kíkọ̀ kedere lọ́wọ́ wa."
+      },
+      "contact": {
+        "title": "O Nílò Ìrànlọ́wọ́?",
+        "description": "Tí o bá ní àwọn ìbéèrè nípa Àwọn Òfin Iṣẹ́ wọ̀nyí tàbí nílò ìṣàlàyé lórí ojúami kankan, jọ̀wọ́ pe ẹgbẹ́ àtìlẹ́yìn wa. A ti pinnu sí ìhàn kedere àti ṣíṣe ìrànlọ́wọ́ fún ọ láti mọ àwọn ẹ̀tọ́ àti àwọn ojúṣe rẹ."
+      }
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "A Kò Rí Ojú-ìwé Náà",
+      "message": "Yàtọ̀! Ojú-ìwé tí o ń wá kò sí.",
+      "suggestion": "Ó lè jẹ́ pé wọ́n ti gbé e lọ tàbí pàrẹ́ rẹ̀, tàbí bóyá wọ́n kọ URL náà ní àṣìṣe.",
+      "popularPages": "Àwọn Ojú-ìwé Olókìkí",
+      "helpText": "Ṣé o ṣì kò rí ohun tí o ń wá?",
+      "contactUs": "Kàn sí wa",
+      "buttons": {
+        "goBack": "Padà Sẹ́yìn",
+        "goHome": "Lọ Sí Ojú-ìwé Àkọ́kọ́"
+      },
+      "links": {
+        "home": "Ojú-ìwé Àkọ́kọ́",
+        "services": "Àwọn Iṣẹ́ Wa",
+        "contact": "Kàn Sí Wa",
+        "quote": "Gba Ìdíyelé"
       }
     },
-    "services": {
-      "document": "Itumọ̀ Ìwe",
-      "localization": "Inawo Oju-ìpadà",
-      "interpretation": "Itumọ̀ Ní Ìpó Àgbá",
-      "multimedia": "Ohùn ati Ìrítún Àkọ̀",
-      "certified": "Itumọ̀ Tí a Ìdánilójú",
-      "enterprise": "Ìlò Ilé-iṣẹ"
-    },
-    "form": {
-      "step1": {
-        "heading": "Yan Iṣẹ Rẹ",
-        "subheading": "Yan irú itumọ̀-iṣẹ tí o nílò"
+    "noInternet": {
+      "title": "Kò Sí Ìsopọ̀ Íntánẹ́ẹ̀tì",
+      "message": "O wà láìsí ìsopọ̀ báyìí",
+      "suggestion": "Jọ̀wọ́ ṣàyẹ̀wò ìsopọ̀ íntánẹ́ẹ̀tì rẹ kí o sì gbìyànjú lẹ́ẹ̀kan sí i.",
+      "lastChecked": "Ìgbà tí a ṣàyẹ̀wò tẹ́lẹ̀",
+      "buttons": {
+        "retry": "Gbìyànjú Ìsopọ̀ Lẹ́ẹ̀kansi"
       },
-      "sourceLanguage": "Ede Ìrìnájẹ́",
-      "targetLanguages": "Awọn Ede Ìgbé",
-      "selectSource": "Yan ede ìrìnájẹ́",
-      "addTarget": "Ṣafikun ede ìgbé...",
-      "selectLanguages": "Yan awọn ede kan-kan láti kóoru àkójọ ìgbé rẹ",
-      "step2": {
-        "heading": "Tu Awọn Iwe",
-        "subheading": "Tu awọn faili rẹ tàbí sọ́rọ̀ iye ọ̀rọ̀/ìwé láti rí iye itumọ̀ tó dára"
-      },
-      "dropFiles": "Tu awọn faili níbí tàbí tẹ láti rìlára",
-      "supportedFormats": "Irú faili tí a gbà: PDF, DOC, DOCX, TXT, RTF, ODT (Àkó méjì sán jù fúnra rẹ)",
-      "filesRemaining": "awọn faili tó kù",
-      "fileSizeLimit": "Àpẹ̀rẹ́ ìwo lapapọ̀: 50MB",
-      "chooseFiles": "Yan Awọn Faili",
-      "uploadedFiles": "Awọn Faili Tí a Tu",
-      "total": "Lapapọ̀:",
-      "noFiles": "Aiwe tí a tu",
-      "manualCount": "Tàbí sọ́rọ̀ iye ọ̀rọ̀/ìwé fúnrá-ara",
-      "wordCount": "Iye Ọ̀rọ̀",
-      "pageCount": "Iye Ìwé",
-      "example": "àpẹ̀rẹ́",
-      "estimateNote": "A ṣẹ́ iṣiro àwọn ọ̀rọ̀ 250 fúnra ìwé kọ̀ọ̀kan",
-      "step3": {
-        "heading": "Alaye Iṣẹ",
-        "subheading": "Sọ̀rọ̀ nípa akoko àti awọn ìpilẹ̀ àkànṣọ̀"
-      },
-      "urgencyLevel": "Ẹbọ Asigbona",
-      "industry": "Àlà Iṣẹ",
-      "selectIndustry": "Yan àlà iṣẹ rẹ",
-      "certifiedTranslation": "Itumọ̀ Tí a Ìdánilójú",
-      "certifiedNote": "+30% fún awọn iwe ìjọba",
-      "customGlossary": "Atilẹyin Ẹkó Ọ̀rọ̀ Àbereẹ",
-      "glossaryNote": "Tún àmọ́-ọ̀rọ̀ dọ́gba pẹ̀pẹ̀",
-      "specialInstructions": "Awọn Ìtọnisọna Àkànṣọ̀",
-      "placeholder": "Enìkan kínì-kínì, ètò-ara tàbí ìtọnisọna àkànṣọ̀...",
-      "charactersRemaining": "awọn aṣiṣi tó kù",
-      "step4": {
-        "heading": "Alaye Ijẹwo",
-        "subheading": "Kílí ni a lọ túbọ̀ iye itumọ̀ tí o pẹ rẹ?"
-      },
-      "fullName": "Orúkọ Gbogbòkúnrin",
-      "emailAddress": "Adirẹ́si Imeili",
-      "phone": "Nọ́mba Foonu (Ò bá jẹ́ ohun tí o fẹ́)",
-      "company": "Orúkọ Ilé-iṣẹ (Ò bá jẹ́ ohun tí o fẹ́)",
-      "whatHappensNext": "Kínì yoo ṣẹlẹ̀ títí ó gbọ́?",
-      "nextSteps": [
-        "Iye itumọ̀ tó pẹ ti a firanṣẹ nípa imeili ni orisun ọgọ̀-ẹta ní ìṣẹjú",
-        "Ero ọ̀rọ̀ kan-kọ̀ọ̀kan tí o fẹ́ kí o tó ba ó ni iṣẹ rẹ",
-        "Ibẹ̀rẹ̀ iṣẹ nígbàkúnrin tí a bá gbádùn"
-      ]
-    },
-    "urgency": {
-      "standard": "Wáwú (Ọ̀sẹ 48-72)",
-      "rush": "Asigbona (Ọ̀sẹ 24-48)",
-      "urgent": "Asigbona-pẹ́ẹ́ (Ọ́jọ́ kan)"
-    },
-    "industries": {
-      "legal": "Ofin & Ìwọ̀n",
-      "medical": "Ìtanna & Ise Ilewo",
-      "business": "Iṣẹ-Aje & Owo",
-      "education": "Eko",
-      "technology": "Ero-eko Ìmọ̀",
-      "government": "Ijoba",
-      "tourism": "Irin-Ajo",
-      "religious": "Esin",
-      "marketing": "Iwe-ìran",
-      "other": "Miiran"
-    },
-    "pricing": {
-      "baseRate": "Iye Ipilẹ̀:",
-      "urgencyFee": "Ere Asigbona:",
-      "certification": "Ìdánilójú (30%):",
-      "additionalLanguages": "Awọn Ede Elo:",
-      "estimatedTotal": "Lapapọ̀ Tí a Ṣewo",
-      "finalQuote": "Iye itumọ̀ ìkẹyìn lè yatọ ±10%",
-      "projectSummary": "Akopọ Iṣẹ",
-      "service": "Iṣẹ:",
-      "from": "Lati:",
-      "to": "Si:",
-      "more": "diẹ sii",
-      "volume": "Iroko:",
-      "words": "awọn ọ̀rọ̀",
-      "pages": "awọn ìwé",
-      "files": "Awọn Faili:",
-      "uploaded": "tí a tu",
-      "timeline": "Akoko:",
-      "addOns": "Awọn Afikun:",
-      "certified": "Tuntun",
-      "glossary": "Ẹkó Ọ̀rọ̀",
-      "projectDetails": "Alaye iṣẹ yoo han níbí bí o ṣe ń pupo fọọmu",
-      "qualityGuaranteed": "Didara Tí a Ṣeṣere",
-      "accuracyGuarantee": "Gbogbo awọn iye itumọ̀ ní àgbára didara àti atunṣe tí o ọ̀fẹ́",
-      "accuracyRate": "Opin Didara",
-      "happyClients": "Awọn Olòmìnípín Tí o Dun"
-    },
-    "validation": {
-      "service": "Jọ̀wọ́ yan iṣẹ",
-      "sourceLanguage": "Jọ̀wọ́ yan ede ìrìnájẹ́",
-      "targetLanguages": "Jọ̀wọ́ yan ede ìgbé kan ti o kere ju",
-      "documents": "Jọ̀wọ́ tu awọn faili tàbí sọ́rọ̀ iye ọ̀rọ̀/ìwé",
-      "name": "Orúkọ nílò",
-      "email": "Imeili nílò",
-      "emailValid": "Jọ̀wọ́ tẹ imeili tó tọ́"
-    },
-    "errors": {
-      "fileTooLarge": "Faili \"{{name}}\" pẹ́ ju. Àkó iwọ̀n: 10MB.",
-      "totalSizeExceeded": "Lapapọ̀ iwọ̀n awọn faili yoo lọ ju èdè 50MB.",
-      "submitFailed": "Gbigbe iye itumọ̀ ṣiṣe. Jọ̀wọ́ gbèyìn.",
-      "networkError": "Ohun kan ṣẹlẹ̀. Jọ̀wọ́ gbèyìn láàrin àkòkò."
-    },
-    "modal": {
-      "success": {
-        "title": "Ibeere Iye Itumọ̀ ti a Firanṣẹ!",
-        "message": "E dalẹ fún ibeere rẹ. A lo firanṣẹ iye itumọ̀ tó pẹ fún ọ ni orisun ọgọ̀-ẹta ní ìṣẹjú si {{email}}.",
-        "home": "Pada si Ilẹ̀",
-        "another": "Firanṣẹ Ibeere Mìíràn"
-      },
-      "failure": {
-        "title": "Firanṣẹ Ṣiṣe",
-        "close": "Paṣi",
-        "retry": "Gbèyìn"
+      "tips": {
+        "title": "Àwọn Ìmọ̀ràn Àtúnṣe",
+        "items": [
+          "Ṣàyẹ̀wò bóyá Wi-Fi tàbí data alágbèéká rẹ ti wà",
+          "Gbìyànjú láti tún ẹ̀rọ ìdarí tàbí móọ̀dẹ́ẹ̀mù rẹ bẹ̀rẹ̀",
+          "Súnmọ́ ẹ̀rọ ìdarí Wi-Fi rẹ fún àmì tó dára jùlọ",
+          "Ṣàyẹ̀wò bóyá àwọn ẹ̀rọ míràn lè sopọ̀ mọ́ íntánẹ́ẹ̀tì",
+          "Kàn sí olùpèsè iṣẹ́ íntánẹ́ẹ̀tì rẹ tí ìṣòro náà bá tẹ̀síwájú"
+        ]
       }
-    },
-    "buttons": {
-      "previous": "Àtijọ́",
-      "next": "Igbesẹ Atejọ́",
-      "submit": "Gba Iye Itumọ̀ Mi",
-      "processing": "Iṣẹ-ojọ́...",
-      "sending": "Firanṣẹ..."
     }
   }
 }

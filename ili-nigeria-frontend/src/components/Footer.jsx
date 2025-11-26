@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import {
   Globe,
   Mail,
@@ -430,15 +431,15 @@ export default function Footer() {
 
             {/* Legal Links */}
             <div className="flex flex-wrap items-center gap-8">
-              <button className="text-lg font-semibold text-green-100 transition-colors hover:text-white">
+              <Link to="/privacy" className="text-lg font-semibold text-green-100 transition-colors hover:text-white">
                 {t("footer.legal.privacy")}
-              </button>
+              </Link>
               <span className="text-2xl text-green-400">•</span>
-              <button className="text-lg font-semibold text-green-100 transition-colors hover:text-white">
+              <Link to="/terms" className="text-lg font-semibold text-green-100 transition-colors hover:text-white">
                 {t("footer.legal.terms")}
-              </button>
+              </Link>
               <span className="text-2xl text-green-400">•</span>
-              <button className="text-lg font-semibold text-green-100 transition-colors hover:text-white">
+              <button onClick={() => { window.localStorage.removeItem('ilin_cookie_accepted'); window.location.reload(); }} className="text-lg font-semibold text-green-100 transition-colors hover:text-white">
                 {t("footer.legal.cookies")}
               </button>
             </div>

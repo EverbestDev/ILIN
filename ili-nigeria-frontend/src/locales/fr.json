@@ -1777,190 +1777,140 @@
     "goBack": "Retour à l'Accueil",
     "translationServices": "Services de Traduction"
   },
-
-  
-    "quotepage": {
-      "hero": {
-        "badge": "Obtenir Votre Devis",
-        "title": "Traduction Professionnelle",
-        "subtitle": "Devis en Minutes",
-        "description": "Obtenez une tarification précise pour votre projet de traduction. Notre système de devis intelligent fournit des estimations instantanées avec une tarification transparente et aucuns frais cachés."
-      },
-      "benefits": {
-        "instant": {
-          "title": "Estimation Instantanée",
-          "desc": "Obtenez les tarifs en temps réel au fur et à mesure que vous complétez le formulaire"
-        },
-        "secure": {
-          "title": "Téléchargement Sécurisé",
-          "desc": "Vos documents sont chiffrés et traités avec une confidentialité complète"
-        },
-        "fast": {
-          "title": "Réponse Rapide",
-          "desc": "Devis détaillé livré à votre boîte de réception dans les 30 minutes"
-        }
-      },
-      "steps": {
-        "1": {
-          "title": "Service et Langues",
-          "desc": "Choisissez votre service et paire de langues"
-        },
-        "2": {
-          "title": "Télécharger les Documents",
-          "desc": "Téléchargez les fichiers ou indiquez le nombre de mots"
-        },
-        "3": {
-          "title": "Détails du Projet",
-          "desc": "Spécifiez les exigences et le calendrier"
-        },
-        "4": {
-          "title": "Informations de Contact",
-          "desc": "Vos coordonnées pour la livraison du devis"
-        }
-      },
-      "services": {
-        "document": "Traduction de Documents",
-        "localization": "Localisation de Sites Web",
-        "interpretation": "Interprétation en Direct",
-        "multimedia": "Voix-off et Sous-titrage",
-        "certified": "Traduction Certifiée",
-        "enterprise": "Solutions d'Entreprise"
-      },
-      "form": {
-        "step1": {
-          "heading": "Choisissez Votre Service",
-          "subheading": "Sélectionnez le type de service de traduction dont vous avez besoin"
-        },
-        "sourceLanguage": "Langue Source",
-        "targetLanguages": "Langues Cibles",
-        "selectSource": "Sélectionnez la langue source",
-        "addTarget": "Ajouter une langue cible...",
-        "selectLanguages": "Sélectionnez les langues une par une pour construire votre liste cible",
-        "step2": {
-          "heading": "Télécharger les Documents",
-          "subheading": "Téléchargez vos fichiers ou indiquez le nombre de mots/pages pour une tarification précise"
-        },
-        "dropFiles": "Déposez les fichiers ici ou cliquez pour parcourir",
-        "supportedFormats": "Formats supportés: PDF, DOC, DOCX, TXT, RTF, ODT (Max 10MB chacun)",
-        "filesRemaining": "fichiers restants",
-        "fileSizeLimit": "Limite de taille totale: 50MB",
-        "chooseFiles": "Choisir les Fichiers",
-        "uploadedFiles": "Fichiers Téléchargés",
-        "total": "Total:",
-        "noFiles": "Aucun fichier téléchargé",
-        "manualCount": "Ou indiquez le nombre de mots/pages manuellement",
-        "wordCount": "Nombre de Mots",
-        "pageCount": "Nombre de Pages",
-        "example": "ex.",
-        "estimateNote": "Nous estimons 250 mots par page pour le calcul",
-        "step3": {
-          "heading": "Exigences du Projet",
-          "subheading": "Spécifiez votre calendrier et vos exigences spéciales"
-        },
-        "urgencyLevel": "Niveau d'Urgence",
-        "industry": "Industrie",
-        "selectIndustry": "Sélectionnez votre secteur",
-        "certifiedTranslation": "Traduction Certifiée",
-        "certifiedNote": "+30% pour les documents officiels",
-        "customGlossary": "Support de Glossaire Personnalisé",
-        "glossaryNote": "Maintenir une terminologie cohérente",
-        "specialInstructions": "Instructions Spéciales",
-        "placeholder": "Toute exigence spécifique, guide de style ou instruction spéciale...",
-        "charactersRemaining": "caractères restants",
-        "step4": {
-          "heading": "Informations de Contact",
-          "subheading": "Où souhaitez-vous que nous envoyions votre devis détaillé?"
-        },
-        "fullName": "Nom Complet",
-        "emailAddress": "Adresse Email",
-        "phone": "Numéro de Téléphone (Optionnel)",
-        "company": "Nom de l'Entreprise (Optionnel)",
-        "whatHappensNext": "Que se passe-t-il ensuite?",
-        "nextSteps": [
-          "Devis détaillé envoyé par email dans les 30 minutes",
-          "Appel de consultation personnelle si nécessaire",
-          "Lancement du projet une fois approuvé"
+"cookie": {
+    "title": "Nous Respectons Votre Vie Privée",
+    "message": "Nous utilisons des cookies pour améliorer votre expérience, analyser l'utilisation du site et améliorer nos services. En continuant, vous consentez à notre utilisation des cookies.",
+    "accept": "Tout Accepter"
+  },
+  "legal": {
+    "privacy": {
+      "badge": "Juridique",
+      "title": "Politique de Confidentialité",
+      "lastUpdated": "Dernière mise à jour : novembre 2024",
+      "intro": "Nous respectons votre vie privée et nous nous engageons à protéger vos informations personnelles. Cette politique explique comment nous collectons, utilisons et protégeons vos données lorsque vous utilisez nos services.",
+      "collect": {
+        "title": "Informations Que Nous Collectons",
+        "description": "Nous collectons les informations que vous nous fournissez directement et les données générées par votre utilisation de nos services :",
+        "items": [
+          "Informations de contact (nom, email, numéro de téléphone)",
+          "Identifiants de compte et informations de profil",
+          "Informations de paiement et de facturation",
+          "Préférences de communication et paramètres de langue",
+          "Données d'utilisation et historique d'interaction avec notre plateforme",
+          "Informations sur l'appareil et type de navigateur"
         ]
       },
-      "urgency": {
-        "standard": "Standard (48-72 heures)",
-        "rush": "Urgent (24-48 heures)",
-        "urgent": "Très Urgent (Même jour)"
+      "usage": {
+        "title": "Comment Nous Utilisons Vos Informations",
+        "description": "Nous utilisons les informations collectées aux fins suivantes :",
+        "items": [
+          "Fournir et améliorer nos services",
+          "Traiter les paiements et gérer votre compte",
+          "Communiquer des mises à jour et notifications importantes",
+          "Personnaliser votre expérience en fonction de vos préférences",
+          "Analyser les modèles d'utilisation pour améliorer notre plateforme",
+          "Assurer la sécurité et prévenir la fraude"
+        ]
       },
-      "industries": {
-        "legal": "Légal & Immigration",
-        "medical": "Médical & Santé",
-        "business": "Affaires & Finance",
-        "education": "Éducation",
-        "technology": "Technologie",
-        "government": "Gouvernement",
-        "tourism": "Tourisme",
-        "religious": "Religieux",
-        "marketing": "Marketing",
-        "other": "Autre"
+      "sharing": {
+        "title": "Partage des Données et Sécurité",
+        "description": "Nous ne vendons pas vos informations personnelles à des tiers. Nous pouvons partager des données uniquement avec des prestataires de services de confiance qui nous aident à exploiter notre plateforme, et uniquement dans le cadre d'accords de confidentialité stricts. Nous mettons en œuvre des mesures de sécurité conformes aux normes de l'industrie pour protéger vos informations contre tout accès non autorisé."
       },
-      "pricing": {
-        "baseRate": "Prix de Base:",
-        "urgencyFee": "Frais d'Urgence:",
-        "certification": "Certification (30%):",
-        "additionalLanguages": "Langues Supplémentaires:",
-        "estimatedTotal": "Total Estimé",
-        "finalQuote": "Le devis final peut varier ±10%",
-        "projectSummary": "Résumé du Projet",
-        "service": "Service:",
-        "from": "De:",
-        "to": "Vers:",
-        "more": "plus",
-        "volume": "Volume:",
-        "words": "mots",
-        "pages": "pages",
-        "files": "Fichiers:",
-        "uploaded": "téléchargés",
-        "timeline": "Calendrier:",
-        "addOns": "Suppléments:",
-        "certified": "Certifié",
-        "glossary": "Glossaire",
-        "projectDetails": "Les détails du projet apparaîtront ici au fur et à mesure que vous remplissez le formulaire",
-        "qualityGuaranteed": "Qualité Garantie",
-        "accuracyGuarantee": "Tous les devis incluent notre garantie de précision et des révisions gratuites",
-        "accuracyRate": "Taux de Précision",
-        "happyClients": "Clients Satisfaits"
+      "rights": {
+        "title": "Vos Droits",
+        "description": "Vous disposez des droits suivants concernant vos données personnelles :",
+        "items": [
+          "Accéder et consulter les informations que nous détenons sur vous",
+          "Demander la correction de données inexactes ou incomplètes",
+          "Demander la suppression de vos informations personnelles",
+          "Vous désinscrire des communications marketing à tout moment",
+          "Exporter vos données dans un format portable"
+        ]
       },
-      "validation": {
-        "service": "Veuillez sélectionner un service",
-        "sourceLanguage": "Veuillez sélectionner la langue source",
-        "targetLanguages": "Veuillez sélectionner au moins une langue cible",
-        "documents": "Veuillez télécharger des fichiers ou indiquer le nombre de mots/pages",
-        "name": "Le nom est requis",
-        "email": "L'email est requis",
-        "emailValid": "Veuillez entrer un email valide"
+      "contact": {
+        "title": "Des Questions ?",
+        "description": "Si vous avez des questions concernant cette Politique de Confidentialité ou la manière dont nous traitons vos données, veuillez contacter notre équipe d'assistance. Nous sommes là pour vous aider et garantir la protection de votre vie privée."
+      }
+    },
+    "terms": {
+      "badge": "Juridique",
+      "title": "Conditions d'Utilisation",
+      "lastUpdated": "Dernière mise à jour : novembre 2024",
+      "intro": "En accédant ou en utilisant nos services, vous acceptez d'être lié par ces Conditions d'Utilisation. Veuillez les lire attentivement. Si vous n'acceptez pas une partie de ces conditions, vous ne pouvez pas utiliser nos services.",
+      "services": {
+        "title": "Nos Services",
+        "description": "Nous fournissons des services d'apprentissage des langues et de traduction via notre plateforme. Nous nous réservons le droit de modifier, suspendre ou interrompre toute partie de nos services à tout moment avec un préavis raisonnable. Nous nous efforçons de maintenir une haute disponibilité mais ne pouvons garantir un service ininterrompu."
       },
-      "errors": {
-        "fileTooLarge": "Le fichier \"{{name}}\" est trop volumineux. La taille maximale est 10MB.",
-        "totalSizeExceeded": "La taille totale des fichiers dépasserait la limite de 50MB.",
-        "submitFailed": "Échec de la soumission du devis. Veuillez réessayer.",
-        "networkError": "Une erreur est survenue. Veuillez réessayer plus tard."
+      "responsibilities": {
+        "title": "Responsabilités de l'Utilisateur",
+        "description": "En utilisant nos services, vous acceptez de :",
+        "items": [
+          "Fournir des informations exactes et complètes",
+          "Maintenir la confidentialité de vos identifiants de compte",
+          "Utiliser les services uniquement à des fins légales",
+          "Respecter les droits de propriété intellectuelle",
+          "Ne pas tenter d'interférer avec ou de perturber le service",
+          "Respecter toutes les lois et réglementations applicables"
+        ]
       },
-      "modal": {
-        "success": {
-          "title": "Demande de Devis Envoyée!",
-          "message": "Merci pour votre demande. Nous vous enverrons un devis détaillé dans les 30 minutes à {{email}}.",
-          "home": "Retour à l'Accueil",
-          "another": "Soumettre un Autre Devis"
-        },
-        "failure": {
-          "title": "Soumission Échouée",
-          "close": "Fermer",
-          "retry": "Réessayer"
-        }
+      "payment": {
+        "title": "Paiement et Facturation",
+        "description": "Le paiement est requis pour les services premium. Tous les frais sont non remboursables sauf indication contraire dans notre politique de remboursement. Nous acceptons divers modes de paiement et utilisons des processeurs de paiement sécurisés. Les prix peuvent changer avec un préavis raisonnable aux abonnés existants."
       },
-      "buttons": {
-        "previous": "Précédent",
-        "next": "Étape Suivante",
-        "submit": "Obtenir Mon Devis",
-        "processing": "Traitement...",
-        "sending": "Envoi..."
+      "cancellation": {
+        "title": "Politique d'Annulation",
+        "description": "Vous pouvez annuler votre abonnement à tout moment via les paramètres de votre compte. Les annulations prennent effet à la fin de la période de facturation en cours. Aucun remboursement n'est fourni pour les périodes de facturation partielles sauf si requis par la loi."
+      },
+      "intellectual": {
+        "title": "Propriété Intellectuelle",
+        "description": "Tout le contenu, les fonctionnalités et les fonctions de nos services nous appartiennent et sont protégés par le droit d'auteur, les marques déposées et d'autres lois sur la propriété intellectuelle. Vous ne pouvez pas reproduire, distribuer ou créer des œuvres dérivées sans notre autorisation écrite expresse."
+      },
+      "contact": {
+        "title": "Besoin d'Aide ?",
+        "description": "Si vous avez des questions concernant ces Conditions d'Utilisation ou avez besoin d'éclaircissements sur un point, veuillez contacter notre équipe d'assistance. Nous nous engageons à la transparence et à vous aider à comprendre vos droits et obligations."
       }
     }
+  },
+   "errors": {
+    "notFound": {
+      "title": "Page Introuvable",
+      "message": "Oups ! La page que vous recherchez n'existe pas.",
+      "suggestion": "Elle a peut-être été déplacée ou supprimée, ou l'URL a peut-être été mal saisie.",
+      "popularPages": "Pages Populaires",
+      "helpText": "Vous ne trouvez toujours pas ce que vous cherchez ?",
+      "contactUs": "Contactez-nous",
+      "buttons": {
+        "goBack": "Retour",
+        "goHome": "Aller à l'Accueil"
+      },
+      "links": {
+        "home": "Page d'Accueil",
+        "services": "Nos Services",
+        "contact": "Contactez-Nous",
+        "quote": "Obtenir un Devis"
+      }
+    },
+    "noInternet": {
+      "title": "Pas de Connexion Internet",
+      "message": "Vous êtes actuellement hors ligne",
+      "suggestion": "Veuillez vérifier votre connexion internet et réessayer.",
+      "lastChecked": "Dernière vérification",
+      "buttons": {
+        "retry": "Réessayer la Connexion"
+      },
+      "tips": {
+        "title": "Conseils de Dépannage",
+        "items": [
+          "Vérifiez si votre Wi-Fi ou vos données mobiles sont activés",
+          "Essayez de redémarrer votre routeur ou modem",
+          "Rapprochez-vous de votre routeur Wi-Fi pour un meilleur signal",
+          "Vérifiez si d'autres appareils peuvent se connecter à Internet",
+          "Contactez votre fournisseur d'accès Internet si le problème persiste"
+        ]
+      }
+    }
+  }
+  
+   
   
 }

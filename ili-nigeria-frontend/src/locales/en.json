@@ -1766,199 +1766,145 @@
       "privacy": "Privacy Policy"
     }
   },
-  "cookie": {
-    "message": "We use cookies to improve your experience. By continuing, you agree to our use of cookies.",
-    "learnMore": "Learn more",
-    "accept": "Accept"
-  },
+
   "auth": {
     "goBack": "Go Back to Home",
     "translationServices": "Translation Services"
   },
-  
-    "quotepage": {
-      "hero": {
-        "badge": "Get Your Quote",
-        "title": "Professional Translation",
-        "subtitle": "Quote in Minutes",
-        "description": "Get accurate pricing for your translation project. Our intelligent quote system provides instant estimates with transparent pricing and no hidden fees."
-      },
-      "benefits": {
-        "instant": {
-          "title": "Instant Estimate",
-          "desc": "Get pricing in real-time as you complete the form"
-        },
-        "secure": {
-          "title": "Secure Upload",
-          "desc": "Your documents are encrypted and handled with complete confidentiality"
-        },
-        "fast": {
-          "title": "Fast Response",
-          "desc": "Detailed quote delivered to your inbox within 30 minutes"
-        }
-      },
-      "steps": {
-        "1": {
-          "title": "Service & Languages",
-          "desc": "Choose your service and language pair"
-        },
-        "2": {
-          "title": "Upload Documents",
-          "desc": "Upload files or provide word count"
-        },
-        "3": {
-          "title": "Project Details",
-          "desc": "Specify requirements and timeline"
-        },
-        "4": {
-          "title": "Contact Information",
-          "desc": "Your details for quote delivery"
-        }
-      },
-      "services": {
-        "document": "Document Translation",
-        "localization": "Website Localization",
-        "interpretation": "Live Interpretation",
-        "multimedia": "Voiceover & Subtitling",
-        "certified": "Certified Translation",
-        "enterprise": "Enterprise Solutions"
-      },
-      "form": {
-        "step1": {
-          "heading": "Choose Your Service",
-          "subheading": "Select the type of translation service you need"
-        },
-        "sourceLanguage": "Source Language",
-        "targetLanguages": "Target Languages",
-        "selectSource": "Select source language",
-        "addTarget": "Add target language...",
-        "selectLanguages": "Select languages one by one to build your target list",
-        "step2": {
-          "heading": "Upload Documents",
-          "subheading": "Upload your files or provide word/page count for accurate pricing"
-        },
-        "dropFiles": "Drop files here or click to browse",
-        "supportedFormats": "Supported formats: PDF, DOC, DOCX, TXT, RTF, ODT (Max 10MB each)",
-        "filesRemaining": "files remaining files",
-        "fileSizeLimit": "Total size limit: 50MB",
-        "chooseFiles": "Choose Files",
-        "uploadedFiles": "Uploaded Files",
-        "total": "Total:",
-        "noFiles": "No files uploaded",
-        "manualCount": "Or provide word/page count manually",
-        "wordCount": "Word Count",
-        "pageCount": "Page Count",
-        "example": "e.g.",
-        "estimateNote": "We estimate 250 words per page for calculation purposes",
-        "step3": {
-          "heading": "Project Requirements",
-          "subheading": "Specify your timeline and special requirements"
-        },
-        "urgencyLevel": "Urgency Level",
-        "industry": "Industry",
-        "selectIndustry": "Select your industry",
-        "certifiedTranslation": "Certified Translation",
-        "certifiedNote": "+30% for official documents",
-        "customGlossary": "Custom Glossary Support",
-        "glossaryNote": "Maintain consistent terminology",
-        "specialInstructions": "Special Instructions",
-        "placeholder": "Any specific requirements, style guides, or special instructions...",
-        "charactersRemaining": "characters remaining",
-        "step4": {
-          "heading": "Contact Information",
-          "subheading": "Where should we send your detailed quote?"
-        },
-        "fullName": "Full Name",
-        "emailAddress": "Email Address",
-        "phone": "Phone Number (Optional)",
-        "company": "Company Name (Optional)",
-        "whatHappensNext": "What happens next?",
-        "nextSteps": [
-          "Detailed quote emailed within 30 minutes",
-          "Personal consultation call if needed",
-          "Project kickoff once approved"
+"cookie": {
+    "title": "We Value Your Privacy",
+    "message": "We use cookies to enhance your experience, analyze site usage, and improve our services. By continuing, you consent to our use of cookies.",
+    "accept": "Accept All"
+  },
+  "legal": {
+    "privacy": {
+      "badge": "Legal",
+      "title": "Privacy Policy",
+      "lastUpdated": "Last updated: November 2024",
+      "intro": "We respect your privacy and are committed to protecting your personal information. This policy explains how we collect, use, and safeguard your data when you use our services.",
+      "collect": {
+        "title": "Information We Collect",
+        "description": "We collect information that you provide directly to us and data generated through your use of our services:",
+        "items": [
+          "Contact information (name, email, phone number)",
+          "Account credentials and profile information",
+          "Payment and billing information",
+          "Communication preferences and language settings",
+          "Usage data and interaction history with our platform",
+          "Device information and browser type"
         ]
       },
-      "urgency": {
-        "standard": "Standard (48-72 hours)",
-        "rush": "Rush (24-48 hours)",
-        "urgent": "Urgent (Same day)"
+      "usage": {
+        "title": "How We Use Your Information",
+        "description": "We use the collected information for the following purposes:",
+        "items": [
+          "Providing and improving our services",
+          "Processing payments and managing your account",
+          "Communicating important updates and notifications",
+          "Personalizing your experience based on preferences",
+          "Analyzing usage patterns to enhance our platform",
+          "Ensuring security and preventing fraud"
+        ]
       },
-      "industries": {
-        "legal": "Legal & Immigration",
-        "medical": "Medical & Healthcare",
-        "business": "Business & Finance",
-        "education": "Education",
-        "technology": "Technology",
-        "government": "Government",
-        "tourism": "Tourism",
-        "religious": "Religious",
-        "marketing": "Marketing",
-        "other": "Other"
+      "sharing": {
+        "title": "Data Sharing and Security",
+        "description": "We do not sell your personal information to third parties. We may share data only with trusted service providers who help us operate our platform, and only under strict confidentiality agreements. We implement industry-standard security measures to protect your information from unauthorized access."
       },
-      "pricing": {
-        "baseRate": "Base Price:",
-        "urgencyFee": "Urgency Fee:",
-        "certification": "Certification (30%):",
-        "additionalLanguages": "Additional Languages:",
-        "estimatedTotal": "Estimated Total",
-        "finalQuote": "Final quote may vary ±10%",
-        "projectSummary": "Project Summary",
-        "service": "Service:",
-        "from": "From:",
-        "to": "To:",
-        "more": "more",
-        "volume": "Volume:",
-        "words": "words",
-        "pages": "pages",
-        "files": "Files:",
-        "uploaded": "uploaded",
-        "timeline": "Timeline:",
-        "addOns": "Add-ons:",
-        "certified": "Certified",
-        "glossary": "Glossary",
-        "projectDetails": "Project details will appear here as you complete the form",
-        "qualityGuaranteed": "Quality Guaranteed",
-        "accuracyGuarantee": "All quotes include our accuracy guarantee and free revisions",
-        "accuracyRate": "Accuracy Rate",
-        "happyClients": "Happy Clients"
+      "rights": {
+        "title": "Your Rights",
+        "description": "You have the following rights regarding your personal data:",
+        "items": [
+          "Access and review the information we hold about you",
+          "Request corrections to inaccurate or incomplete data",
+          "Request deletion of your personal information",
+          "Opt-out of marketing communications at any time",
+          "Export your data in a portable format"
+        ]
       },
-      "validation": {
-        "service": "Please select a service",
-        "sourceLanguage": "Please select source language",
-        "targetLanguages": "Please select at least one target language",
-        "documents": "Please upload files or provide word/page count",
-        "name": "Name is required",
-        "email": "Email is required",
-        "emailValid": "Please enter a valid email"
+      "contact": {
+        "title": "Questions?",
+        "description": "If you have any questions about this Privacy Policy or how we handle your data, please contact our support team. We're here to help and ensure your privacy is protected."
+      }
+    },
+    "terms": {
+      "badge": "Legal",
+      "title": "Terms of Service",
+      "lastUpdated": "Last updated: November 2024",
+      "intro": "By accessing or using our services, you agree to be bound by these Terms of Service. Please read them carefully. If you do not agree with any part of these terms, you may not use our services.",
+      "services": {
+        "title": "Our Services",
+        "description": "We provide language learning and translation services through our platform. We reserve the right to modify, suspend, or discontinue any part of our services at any time with reasonable notice. We strive to maintain high availability but cannot guarantee uninterrupted service."
       },
-      "errors": {
-        "fileTooLarge": "File \"{{name}}\" is too large. Maximum size is 10MB.",
-        "totalSizeExceeded": "Total file size would exceed 50MB limit.",
-        "submitFailed": "Failed to submit quote. Please try again.",
-        "networkError": "Something went wrong. Please try again later."
+      "responsibilities": {
+        "title": "User Responsibilities",
+        "description": "When using our services, you agree to:",
+        "items": [
+          "Provide accurate and complete information",
+          "Maintain the confidentiality of your account credentials",
+          "Use the services only for lawful purposes",
+          "Respect intellectual property rights",
+          "Not attempt to interfere with or disrupt the service",
+          "Comply with all applicable laws and regulations"
+        ]
       },
-      "modal": {
-        "success": {
-          "title": "Quote Request Sent!",
-          "message": "Thank you for your request. We'll send you a detailed quote within 30 minutes to {{email}}.",
-          "home": "Return to Home",
-          "another": "Submit Another Quote"
-        },
-        "failure": {
-          "title": "Submission Failed",
-          "close": "Close",
-          "retry": "Try Again"
-        }
+      "payment": {
+        "title": "Payment and Billing",
+        "description": "Payment is required for premium services. All fees are non-refundable unless otherwise stated in our refund policy. We accept various payment methods and use secure payment processors. Prices may change with reasonable notice to existing subscribers."
       },
-      "buttons": {
-        "previous": "Previous",
-        "next": "Next Step",
-        "submit": "Get My Quote",
-        "processing": "Processing...",
-        "sending": "Sending..."
+      "cancellation": {
+        "title": "Cancellation Policy",
+        "description": "You may cancel your subscription at any time through your account settings. Cancellations take effect at the end of the current billing period. No refunds are provided for partial billing periods unless required by law."
+      },
+      "intellectual": {
+        "title": "Intellectual Property",
+        "description": "All content, features, and functionality of our services are owned by us and are protected by copyright, trademark, and other intellectual property laws. You may not reproduce, distribute, or create derivative works without our express written permission."
+      },
+      "contact": {
+        "title": "Need Help?",
+        "description": "If you have questions about these Terms of Service or need clarification on any point, please contact our support team. We're committed to transparency and helping you understand your rights and obligations."
       }
     }
+  },
+  
+"errors": {
+    "notFound": {
+      "title": "Page Not Found",
+      "message": "Oops! The page you're looking for doesn't exist.",
+      "suggestion": "It might have been moved or deleted, or perhaps the URL was mistyped.",
+      "popularPages": "Popular Pages",
+      "helpText": "Still can't find what you're looking for?",
+      "contactUs": "Contact us",
+      "buttons": {
+        "goBack": "Go Back",
+        "goHome": "Go to Homepage"
+      },
+      "links": {
+        "home": "Homepage",
+        "services": "Our Services",
+        "contact": "Contact Us",
+        "quote": "Get a Quote"
+      }
+    },
+    "noInternet": {
+      "title": "No Internet Connection",
+      "message": "You're currently offline",
+      "suggestion": "Please check your internet connection and try again.",
+      "lastChecked": "Last checked",
+      "buttons": {
+        "retry": "Retry Connection"
+      },
+      "tips": {
+        "title": "Troubleshooting Tips",
+        "items": [
+          "Check if your Wi-Fi or mobile data is turned on",
+          "Try restarting your router or modem",
+          "Move closer to your Wi-Fi router for better signal",
+          "Check if other devices can connect to the internet",
+          "Contact your internet service provider if the problem persists"
+        ]
+      }
+    }
+  }
   
   
 }

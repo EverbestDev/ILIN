@@ -1,7 +1,7 @@
 import { useRTL } from "../hooks/useRTL";
 import Nav from "../components/Nav";
 import Footer from "../components/Footer";
-import CookieConsent from "../components/CookieConsent";
+
 
 const DefaultLayout = ({ children }) => {
   const dir = useRTL();
@@ -10,7 +10,6 @@ const DefaultLayout = ({ children }) => {
       <Nav />
       <main>{children}</main>
       <Footer />
-      <CookieConsent />
     </div>
   );
 };
