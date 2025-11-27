@@ -1581,6 +1581,8 @@
       }
     },
     "form": {
+      "serviceHeading": "Yan Iṣẹ rẹ",
+      "serviceDescription": "Yan iru iṣẹ itumọ ti o nilo",
       "heading": "Rán Ìfitíranṣẹ́ Wá",
       "namePlaceholder": "Orúkọ Kì í *",
       "emailPlaceholder": "Àdírẹ́ṣi Ímeèlì *",
@@ -1617,6 +1619,42 @@
         "title": "Ìṣẹ́ Tó Lọ́wọ́",
         "desc": "Ṣẹ̀ àwọn kọ̀ọ̀kan ní àkókò tó ba fẹ́"
       }
+    },
+    "estimate": {
+      "title": "Iṣiro Iye",
+      "howCalculated": "Bawo ni a ṣe ṣe iṣiro eyi?",
+      "estimatedTotal": "Lapapọ ti a ṣe iṣiro",
+      "finalNote": "Iye ipari le yato ±10%",
+      "basePrice": "Iye ipilẹ:",
+      "urgencyLabel": "Iṣẹlẹ",
+      "certificationLabel": "Ijẹrisi (30%):",
+      "languagesLabel": "Awọn ede afikun:",
+      "howCalcTooltip": "Iṣiro: Iye ipilẹ × Ọrọ/Oju-iwe × Iṣẹlẹ × Ijẹrisi × Awọn ede"
+    },
+    "summary": {
+      "title": "Atọka Ise agbese",
+      "serviceLabel": "Iṣẹ:",
+      "fromLabel": "Lati:",
+      "toLabel": "Si:",
+      "volumeLabel": "Iwọn:",
+      "filesLabel": "Awọn faili:",
+      "timelineLabel": "Akoko:",
+      "addonsLabel": "Awọn afikun:",
+      "uploaded": "{{count}} ti gbe",
+      "words": "ọrọ",
+      "pages": "oju-iwe",
+      "certified": "Ti fọwọsi",
+      "glossary": "Glossary",
+      "more": "+{{count}} siwaju",
+      "quoteDestination": "Nibo ni a yẹ ki a fi ipolongo alaye ranṣẹ si?",
+      "emptyEstimate": "Pari fọọmu lati wo iṣiro rẹ",
+      "estimatesUpdate": "Awọn iṣiro nṣe imudojuiwọn laifọwọyi bi o ṣe nkọ"
+    },
+    "next": {
+      "whatHappensNext": "Kini yoo ṣẹlẹ nigbamii?",
+      "detailedQuote": "A fi ipolowo alaye ranṣẹ ni iṣẹju 30",
+      "consultation": "Ipe ijumọsọrọ ti ara ẹni ti o ba jẹ dandan",
+      "kickoff": "Bẹrẹ iṣẹ́ lẹ́yìn tí a fọwọsi"
     },
     "direct": {
       "heading": "Yàn Ọ̀nà Ìkọ̀sílẹ̀ Tó ba fẹ́",
@@ -1678,6 +1716,81 @@
       "messageRequired": "Ìfitíranṣẹ́ nílò.",
       "serviceRequired": "Jẹ́ kí o yàn ìṣẹ́."
     }
+  },
+  "quotepage": {
+    "hero": {
+      "badge": "Gba Ipolongo Rẹ",
+      "heading1": "Itumọ Ọjọgbọn",
+      "heading2": "Ipolongo ni iṣẹju diẹ",
+      "description": "Gba idiyele to pe fun iṣẹ itumọ rẹ. Eto ìpọlówọ wa nṣe iṣiro iyara pẹlu idiyele kedere ati ko si owó ìkọkọ."
+    },
+    "quickBenefits": {
+      "instantEstimate": {"title": "Iṣiro lẹsẹkẹsẹ", "desc": "Gba idiyele ni akoko gidi bi o ṣe n kun fọọmu"},
+      "secureUpload": {"title": "Fifiranṣẹ Aabo", "desc": "Awọn iwe rẹ ni imudọgba ati tọju ni aṣiri"},
+      "fastResponse": {"title": "Idahun yiyara", "desc": "A fi ìpòpọ alaye ranṣẹ si adirẹsi imeeli rẹ laarin iṣẹju 30"}
+    },
+    "steps": {
+      "1": {"title": "Alaye Ise agbese", "desc": "Yan iṣẹ ati awọn ede"},
+      "2": {"title": "Awọn iwe & Iwọn", "desc": "Fi awọn faili ranṣẹ tabi sọ nọmba ọrọ/tabi oju-iwe"},
+      "3": {"title": "Awọn ibeere afikun", "desc": "Fi awọn ilana, glossary, tabi ile-iṣẹ kun"},
+      "4": {"title": "Alaye olubasọrọ", "desc": "Pese alaye olubasọrọ rẹ ki o si fi ranṣẹ"}
+    },
+    "services": {
+      "document": {"name": "Itumọ iwe", "unit": "ọrọ", "desc": "Itumọ eniyan fun awọn iwe"},
+      "localization": {"name": "Atunṣe Ojú-ọ̀rọ Ayelujara", "unit": "iṣẹ akanṣe", "desc": "Atunṣe fun oju opo wẹẹbu ati awọn ohun elo"},
+      "interpretation": {"name": "Itumọ laaye", "unit": "wákàtí", "desc": "Itumọ lori aaye ati latọna jijin"},
+      "multimedia": {"name": "Ohùn & Awọn akọle fidio", "unit": "iṣẹ akanṣe", "desc": "Ohùn ati subtitles fun multimedia"},
+      "certified": {"name": "Itumọ ti a fọwọsi", "unit": "ọrọ", "desc": "Itumọ ti a fọwọsi ati notarized"},
+      "enterprise": {"name": "Solusan Ile-iṣẹ", "unit": "iṣẹ akanṣe", "desc": "Iṣẹ akanṣe fun awọn ẹgbẹ nla"}
+    },
+    "languages": {"list": ["Gẹẹsi","Sipenishi","Faranse","Jaman","Italian","Pọtugali","Rashia","Ṣaina","Japani","Koria","Ede Arabiki","Hindi","Yorùbá","Igbo","Hausa","Swahili","Dutch","Polish","Turkish","Persian"]},
+    "industries": {"list": ["Ofin & Iranwọ ìrìnàjò","Ilera & Iṣeto Sọfitiwia","Iṣowo & Isuna","Ẹ̀kọ́","Imọ-ẹrọ","Ijọba","Irin-ajo","Ẹ̀sìn","Titaja","Miiran"]},
+    "industrySelectPlaceholder": "Yan ile-iṣẹ rẹ",
+    "form": {
+      "serviceSelect": "Yan Iṣẹ kan",
+      "sourceLanguage": "Yan ede orisun",
+      "addTargetLanguage": "Fi ede ibi-afẹde kun...",
+      "targetLanguagesHelp": "Yan awọn ede ọkan-nipasẹ-ọkan lati kọ atokọ ibi-afẹde rẹ",
+      "uploadTitle": "Firanṣẹ Awọn iwe",
+      "uploadDescription": "Fa & ju awọn faili silẹ tabi gbe wọn soke. Awọn fọọmu ti a gba: PDF, Word, Excel, Aworan. Max 10MB fun faili.",
+      "uploadDropOrClick": "Fọwọsi awọn faili nibi tabi tẹ lati kiri",
+      "uploadSupported": "Awọn fọọmù ti a ṣe atilẹyin: PDF, DOC, DOCX, TXT, RTF, ODT (Max 10MB fun kọọkan)",
+      "uploadChooseFiles": "Yan Awọn faili",
+      "uploadMaxFilesRemaining": "Maximum {{remaining}} awọn faili siwaju • Iwọn apapọ: 50MB",
+      "wordCount": "Iye Ọrọ",
+      "pageCount": "Iye Oju-iwe",
+      "name": "Orukọ kikun",
+      "email": "Adirẹsi ìmeèlì",
+      "phone": "Nọmba foonu",
+      "company": "Orukọ ile-iṣẹ",
+      "companyPlaceholder": "Orukọ ile-iṣẹ (Aṣayan)",
+      "targetLanguagesLabel": "Àwọn èdè ibi-afẹde",
+      "specialInstructions": "Awọn ilana pataki",
+      "glossary": "Pẹ̀lú glossary",
+      "submitButton": "Fi Ìbéèrè Ipolongo Ránṣẹ",
+      "nextButton": "Tẹle",
+      "prevButton": "Ṣaaju",
+      "startingFrom": "Bẹrẹ lati ₦{{amount}}/{{unit}}",
+      "sending": "Nran...",
+      "successTitle": "Ìbéèrè ipolongo ti ranṣẹ!",
+      "successMessage": "A dúpẹ fun ìbéèrè rẹ. A o fi ìpòpọ alaye ranṣẹ si {{email}} laarin iṣẹju 30.",
+      "submitAnother": "Fi ìbéèrè míì ránṣẹ",
+      "returnHome": "Padà sí Ilé",
+      "errorTitle": "Aṣiṣe",
+      "submitFailed": "Kò ṣaṣeyọri lati fi ipolongo ranṣẹ. Jọwọ gbiyanju lẹẹkansi.",
+      "submitCatchError": "Nkankan ṣẹlẹ. Jọwọ tun gbiyanju lẹẹkansi nigbamii.",
+      "fileTooLarge": "Faili \"{{name}}\" ti tobi ju. Iwọn to pọju ni 10MB.",
+      "fileSizeLimitExceeded": "Iwọn apapọ awọn faili yoo kọja opin 50MB.",
+      "unknownType": "Iru aimọ",
+      "anySpecificPlaceholder": "Eyikeyi ibeere pataki, itọsọna aza, tabi awọn ilana pataki...",
+      "fullNamePlaceholder": "Tẹ orukọ kikun rẹ sii",
+      "phonePlaceholderOptional": "Nọmba foonu (Aṣayan)",
+      "notSelected": "Ko yan",
+      "standardPricing": "Iṣiro boṣewa",
+      "close": "Tẹ́lẹ̀"
+    },
+    "urgency": {"standard": "Boṣewa (48-72 wákàtí)", "rush": "Yara (24-48 wákàtí)", "urgent": "Péẹlẹ (Ọjọ kanna)"},
+    "validation": {"service": "Jọwọ yan iṣẹ kan", "sourceLanguage": "Jọwọ yan ede orisun", "targetLanguages": "Jọwọ yan o kere ju ede ibi-afẹde kan", "documents": "Jọwọ gbe awọn faili jade tabi pese iye ọrọ/ oju-iwe", "name": "Orukọ jẹ dandan", "email": "Imeeli jẹ dandan", "emailValid": "Jọwọ tẹ imeeli kan to wulo"}
   },
   "login": {
     "carousel": {
@@ -1894,6 +2007,110 @@
           "Kàn sí olùpèsè iṣẹ́ íntánẹ́ẹ̀tì rẹ tí ìṣòro náà bá tẹ̀síwájú"
         ]
       }
+    }
+  }
+  ,
+  "quotepage": {
+    "hero": {
+      "badge": "Gba Ìdíye",
+      "heading1": "Ìtumọ̀ Ọjọgbọn",
+      "heading2": "Ìdíyelé Ní ìsẹju",
+      "description": "Gba iye to pe fun iṣẹ ìtumọ̀ rẹ. Eto wa n funni ni iṣiro lẹsẹkẹsẹ pẹlu owo ti ko ni aṣiri."
+    },
+    "quickBenefits": {
+      "instantEstimate": {"title": "Ìṣirò lẹsẹkẹsẹ", "desc": "Gba iye to pe nigbakugba ti o ba n kọ fọọmu"},
+      "secureUpload": {"title": "Gbigbe faili to ni aabo", "desc": "Awọn faili rẹ ti ni idii ati ki a tọju wọn ni ìkọkọ"},
+      "fastResponse": {"title": "Ìdáhùn yara", "desc": "A fi alaye iwe iye ranṣẹ si apo-iwọle rẹ laarin iṣẹju 30"}
+    },
+    "steps": {
+      "1": {"title": "Alaye iṣẹ", "desc": "Yan iṣẹ ati awọn ede"},
+      "2": {"title": "Awọn iwe & Iwọn", "desc": "Gbe awọn faili si ẹrọ tabi pese iye ọrọ/tẹlẹ"},
+      "3": {"title": "Awọn ibeere afikun", "desc": "Fi awọn ilana, ìtànkálẹ̀ tabi ile-iṣẹ kun"},
+      "4": {"title": "Alaye olubasọrọ", "desc": "Pese alaye olubasọrọ rẹ ki o fi ranṣẹ"}
+    },
+    "services": {
+      "document": {"name": "Ìtumọ̀ Ẹ̀rọ", "unit": "ọrọ", "desc": "Ìtumọ̀ eniyan fun awọn iwe"},
+      "localization": {"name": "Ìṣapilẹ̀ òjú-ọrun & App", "unit": "ise agbese", "desc": "Ìṣapilẹ̀ fun awọn oju opo wẹẹbu ati awọn ohun elo"},
+      "interpretation": {"name": "Itumọ ni akoko gidi", "unit": "wákàtí", "desc": "Itumọ lori aaye ati latọna"},
+      "multimedia": {"name": "Ohùn & Onigbọwọ Subtitles", "unit": "ise agbese", "desc": "Ohùn ati iṣẹ ipilẹ fun multimedia"},
+      "certified": {"name": "Ìtumọ̀ Tí A Fọwọ́sí", "unit": "ọrọ", "desc": "Ìtumọ̀ ti a fọwọsi ati ti a jẹrisi"},
+      "enterprise": {"name": "Awọn Solusan Ile-iṣẹ", "unit": "ise agbese", "desc": "Awọn solusan adani fun awọn ẹgbẹ nla"}
+    },
+    "languages": {"list": ["English","Spanish","French","German","Italian","Portuguese","Russian","Chinese","Japanese","Korean","Arabic","Hindi","Yoruba","Igbo","Hausa","Swahili","Dutch","Polish","Turkish","Persian"]},
+    "industries": {"list": ["Juridique & Immigration","Médical & Santé","Affaires & Finance","Éducation","Technologie","Gouvernement","Tourisme","Religieux","Marketing","Autre"]},
+    "industrySelectPlaceholder": "Yan ile-iṣẹ rẹ",
+    "form": {
+      "serviceSelect": "Yan iṣẹ",
+      "sourceLanguage": "Yan ede orisun",
+      "addTargetLanguage": "Fi ede ibi-afẹde kun...",
+      "targetLanguagesHelp": "Yan awọn ede ti o fẹ lati kọ ọkan nipa ọkan",
+      "uploadTitle": "Gbe awọn iwe silẹ",
+      "uploadDescription": "Fa & ju awọn faili silẹ tabi gbe kalẹ. Awọn ọna kika ti a gba: PDF, Word, Excel, Aworan. Max 10MB fun faili.",
+      "uploadDropOrClick": "Ju awọn faili si ibi yii tabi tẹ lati wa",
+      "uploadSupported": "Awọn ọna kika ti a gba: PDF, DOC, DOCX, TXT, RTF, ODT (Max 10MB fun faili)",
+      "uploadChooseFiles": "Yan awọn faili",
+      "uploadMaxFilesRemaining": "Maximum {{remaining}} awọn faili to ku • Iwọn to pọju: 50MB",
+      "wordCount": "Iwọn ọrọ",
+      "pageCount": "Iwọn oju-iwe",
+      "name": "Orukọ pipe",
+      "email": "Adirẹsi imeeli",
+      "phone": "Nọmba foonu",
+      "company": "Orukọ ile-iṣẹ",
+      "companyPlaceholder": "Ile-iṣẹ (Aṣayan)",
+      "targetLanguagesLabel": "Awọn ede ibi-afẹde",
+      "specialInstructions": "Awọn ilana pataki",
+      "glossary": "Fi ìtànkálẹ̀ kun",
+      "submitButton": "Firanṣẹ ibeere iye",
+      "nextButton": "Tẹle",
+      "prevButton": "Atẹle",
+      "startingFrom": "Bẹrẹ lati ₦{{amount}}/{{unit}}",
+      "sending": "N firanṣẹ...",
+      "successTitle": "Ìbéèrè ìdíye ti ranṣẹ!",
+      "successMessage": "O ṣeun fun ibeere rẹ. A yoo fi iwe iye ranṣẹ si {{email}} laarin iṣẹju 30.",
+      "submitAnother": "Firanṣẹ ìbéèrè miiran",
+      "returnHome": "Pada si ile",
+      "errorTitle": "Aṣiṣe",
+      "submitFailed": "Ko ṣee ṣe lati fi ibeere ranṣẹ. Jọwọ ṣe akọsilẹ lẹẹkansi.",
+      "submitCatchError": "Aṣiṣe kan ṣẹlẹ. Jọwọ gbiyanju lẹẹkansi nigbamii.",
+      "fileTooLarge": "Faili \"{{name}}\" tobi ju. Iwọn to pọju jẹ 10MB.",
+      "fileSizeLimitExceeded": "Iwọn lapapọ awọn faili yoo kọja opin 50MB.",
+      "unknownType": "Iru aimọ",
+      "anySpecificPlaceholder": "Awọn ibeere pato, itọsọna aṣa tabi awọn ilana pataki...",
+      "fullNamePlaceholder": "Tẹ orukọ pipe rẹ sii",
+      "phonePlaceholderOptional": "Nọmba foonu (Aṣayan)",
+      "notSelected": "Ko yan",
+      "standardPricing": "Iye deede",
+      "close": "Pa"
+    },
+    "urgency": {"standard": "Deede (48-72 wakati)", "rush": "Ẹlẹsẹkẹsẹ (24-48 wakati)", "urgent": "Pátá (Ọjọ kan naa)"},
+    "validation": {"service": "Jọwọ yan iṣẹ kan", "sourceLanguage": "Jọwọ yan ede orisun", "targetLanguages": "Jọwọ yan o kere ju ede ibi-afẹde kan", "documents": "Jọwọ gbe awọn faili tabi pese iye ọrọ/tẹlẹ", "name": "Orukọ ni a beere", "email": "Imeeli ni a beere", "emailValid": "Jọwọ tẹ imeeli to wulo"},
+    "summary": {
+      "title": "Akojọ iṣẹ",
+      "serviceLabel": "Iṣẹ :",
+      "fromLabel": "Lati :",
+      "toLabel": "Si :",
+      "volumeLabel": "Iwọn :",
+      "filesLabel": "Awọn faili :",
+      "timelineLabel": "Akoko :",
+      "addonsLabel": "Awọn aṣayan :",
+      "uploaded": "{{count}} ti gbe soke",
+      "words": "ọrọ",
+      "pages": "oju-iwe",
+      "certified": "Tí a fọwọ́sí",
+      "glossary": "Ìtànkálẹ̀",
+      "more": "+{{count}} siwaju",
+      "quoteDestination": "Nibo ni a fẹ́ fi ibeere iye ranṣẹ si ọ?",
+      "emptyEstimate": "Pari fọọmu lati rii iṣiro rẹ",
+      "projectDetailsPlaceholder": "Àwọn alaye iṣẹ yoo hàn níbí bí o ṣe pari fọọmu",
+      "estimatesUpdate": "Ìṣirò ń yí padà laifọwọyi bí o ṣe kọ"
+    },
+    "trust": {
+      "qualityTitle": "Didara Ti a Dájú",
+      "qualityDesc": "Gbogbo ìbéèrè iye ni iṣeduro deede wa ati atunṣe ọfẹ",
+      "accuracyValue": "99.8%",
+      "accuracyLabel": "Iwọn Didara",
+      "happyClientsValue": "5,000+",
+      "happyClientsLabel": "Àwọn Oníbàárà Inù-dídùn"
     }
   }
 }

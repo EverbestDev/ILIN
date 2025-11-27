@@ -1583,6 +1583,8 @@
       }
     },
     "form": {
+      "serviceHeading": "اختر خدمتك",
+      "serviceDescription": "اختر نوع خدمة الترجمة التي تحتاجها",
       "heading": "أرسل لنا رسالة",
       "namePlaceholder": "الاسم الكامل *",
       "emailPlaceholder": "عنوان البريد الإلكتروني *",
@@ -1619,6 +1621,42 @@
         "title": "جدولة مرنة",
         "desc": "احجز المكالمات في وقتك المناسب"
       }
+    },
+    "estimate": {
+      "title": "تقدير السعر",
+      "howCalculated": "كيف يتم الحساب؟",
+      "estimatedTotal": "المجموع المقدر",
+      "finalNote": "قد يختلف السعر النهائي ±10%",
+      "basePrice": "السعر الأساسي:",
+      "urgencyLabel": "الاستعجال",
+      "certificationLabel": "شهادة (30%):",
+      "languagesLabel": "لغات إضافية:",
+      "howCalcTooltip": "الحساب: سعر الوحدة × عدد الكلمات/الصفحات × الاستعجال × الشهادة × عدد اللغات"
+    },
+    "summary": {
+      "title": "ملخص المشروع",
+      "serviceLabel": "الخدمة:",
+      "fromLabel": "من:",
+      "toLabel": "إلى:",
+      "volumeLabel": "الحجم:",
+      "filesLabel": "الملفات:",
+      "timelineLabel": "الجدول الزمني:",
+      "addonsLabel": "الإضافات:",
+      "uploaded": "تم تحميل {{count}}",
+      "words": "كلمات",
+      "pages": "صفحات",
+      "certified": "معتمد",
+      "glossary": "مسرد المصطلحات",
+      "more": "+{{count}} إضافية",
+      "quoteDestination": "أين نرسل عرض السعر المفصل الخاص بك؟",
+      "emptyEstimate": "أكمل النموذج لرؤية تقديرك",
+      "estimatesUpdate": "التقديرات تتحدث تلقائيًا أثناء الكتابة"
+    },
+    "next": {
+      "whatHappensNext": "ماذا يحدث بعد ذلك؟",
+      "detailedQuote": "يتم إرسال عرض سعر مفصل خلال 30 دقيقة",
+      "consultation": "مكالمة استشارية شخصية إذا لزم الأمر",
+      "kickoff": "بدء المشروع بعد الموافقة"
     },
     "direct": {
       "heading": "اختر طريقة اتصالك المفضلة",
@@ -1680,6 +1718,81 @@
       "messageRequired": "الرسالة مطلوبة.",
       "serviceRequired": "يرجى تحديد خدمة."
     }
+  },
+  "quotepage": {
+    "hero": {
+      "badge": "احصل على عرض سعر",
+      "heading1": "خدمات ترجمة احترافية",
+      "heading2": "عرض سعر خلال دقائق",
+      "description": "احصل على تسعير دقيق لمشروع الترجمة الخاص بك. يوفر نظامنا الذكي تقديرات فورية وتسعيرا شفافًا بدون رسوم مخفية."
+    },
+    "quickBenefits": {
+      "instantEstimate": {"title": "تقدير فوري", "desc": "الحصول على تسعير في الوقت الفعلي أثناء ملء النموذج"},
+      "secureUpload": {"title": "رفع آمن", "desc": "يتم تشفير مستنداتك ومعالجتها بسرية تامة"},
+      "fastResponse": {"title": "استجابة سريعة", "desc": "سيصلك عرض سعر مفصل في بريدك خلال 30 دقيقة"}
+    },
+    "steps": {
+      "1": {"title": "تفاصيل المشروع", "desc": "اختر خدمتك واللغات"},
+      "2": {"title": "الوثائق والحجم", "desc": "حمّل الملفات أو قدم عدد الكلمات/الصفحات"},
+      "3": {"title": "متطلبات إضافية", "desc": "أضف التعليمات أو المصطلحات أو معلومات الصناعة"},
+      "4": {"title": "معلومات الاتصال", "desc": "قدم تفاصيل الاتصال وأرسل"}
+    },
+    "services": {
+      "document": {"name": "ترجمة المستندات", "unit": "كلمة", "desc": "ترجمة بشرية للمستندات"},
+      "localization": {"name": "ترجمة مواقع الويب", "unit": "مشروع", "desc": "التوطين للمواقع والتطبيقات"},
+      "interpretation": {"name": "الترجمة الفورية", "unit": "ساعة", "desc": "الترجمة الحية داخل الموقع وعن بُعد"},
+      "multimedia": {"name": "الدبلجة والترجمة المصاحبة", "unit": "مشروع", "desc": "دبلجة وترجمة للفيديو والصوت"},
+      "certified": {"name": "ترجمة معتمدة", "unit": "كلمة", "desc": "ترجمات معتمدة وموثقة"},
+      "enterprise": {"name": "حلول المؤسسات", "unit": "مشروع", "desc": "حلول مخصصة للفرق الكبيرة"}
+    },
+    "languages": {"list": ["الإنجليزية","الإسبانية","الفرنسية","الألمانية","الإيطالية","البرتغالية","الروسية","الصينية","اليابانية","الكورية","العربية","الهندية","اليوروبا","الإيغبو","الهوسا","السواحيلية","الهولندية","البولندية","التركية","الفارسية"]},
+    "industries": {"list": ["القانون والهجرة","الطبية والرعاية الصحية","الأعمال والمالية","التعليم","التكنولوجيا","الحكومة","السياحة","الدينية","التسويق","أخرى"]},
+    "industrySelectPlaceholder": "اختر صناعتك",
+    "form": {
+      "serviceSelect": "اختر خدمة",
+      "sourceLanguage": "اختر لغة المصدر",
+      "addTargetLanguage": "أضف لغة المستهدفة...",
+      "targetLanguagesHelp": "حدد اللغات واحدًا تلو الآخر لبناء قائمة اللغات المستهدفة",
+      "uploadTitle": "تحميل المستندات",
+      "uploadDescription": "اسحب الملفات وأفلتها أو قم بتحميلها. الصيغ المقبولة: PDF, Word, Excel, صور. الحد الأقصى 10 ميجابايت لكل ملف.",
+      "uploadDropOrClick": "اسحب الملفات هنا أو انقر للتصفح",
+      "uploadSupported": "الصيغ المدعومة: PDF، DOC، DOCX، TXT، RTF، ODT (الحد الأقصى 10 ميجابايت لكل ملف)",
+      "uploadChooseFiles": "اختر الملفات",
+      "uploadMaxFilesRemaining": "الحد الأقصى {{remaining}} ملفات إضافية • الحد الكلي للحجم: 50MB",
+      "wordCount": "عدد الكلمات",
+      "pageCount": "عدد الصفحات",
+      "name": "الاسم الكامل",
+      "email": "البريد الإلكتروني",
+      "phone": "رقم الهاتف",
+      "company": "اسم الشركة",
+      "companyPlaceholder": "اسم الشركة (اختياري)",
+      "targetLanguagesLabel": "اللغات المستهدفة",
+      "specialInstructions": "تعليمات خاصة",
+      "glossary": "تضمين قاموس مصطلحات",
+      "submitButton": "إرسال طلب عرض السعر",
+      "nextButton": "التالي",
+      "prevButton": "السابق",
+      "startingFrom": "بدءًا من ₦{{amount}}/{{unit}}",
+      "sending": "جاري الإرسال...",
+      "successTitle": "تم إرسال طلب عرض السعر!",
+      "successMessage": "شكرًا لطلبك. سنرسل لك عرض سعر مفصل خلال 30 دقيقة على {{email}}.",
+      "submitAnother": "أرسل طلبًا آخر",
+      "returnHome": "العودة للصفحة الرئيسية",
+      "errorTitle": "خطأ",
+      "submitFailed": "فشل في إرسال طلب عرض السعر. يرجى المحاولة مرة أخرى.",
+      "submitCatchError": "حدث خطأ ما. يرجى المحاولة مرة أخرى لاحقًا.",
+      "fileTooLarge": "الملف \"{{name}}\" كبير جدًا. الحد الأقصى هو 10MB.",
+      "fileSizeLimitExceeded": "إجمالي حجم الملفات سيتجاوز الحد الأقصى 50MB.",
+      "unknownType": "نوع غير معروف",
+      "anySpecificPlaceholder": "أي متطلبات محددة، أدلة النمط أو تعليمات خاصة...",
+      "fullNamePlaceholder": "أدخل اسمك الكامل",
+      "phonePlaceholderOptional": "رقم الهاتف (اختياري)",
+      "notSelected": "غير محدد",
+      "standardPricing": "التسعير القياسي",
+      "close": "إغلاق"
+    },
+    "urgency": {"standard": "عادي (48-72 ساعة)", "rush": "عاجل (24-48 ساعة)", "urgent": "طارئ (نفس اليوم)"},
+    "validation": {"service": "يرجى اختيار خدمة", "sourceLanguage": "يرجى اختيار لغة المصدر", "targetLanguages": "يرجى اختيار لغة واحدة على الأقل", "documents": "يرجى تحميل ملفات أو تقديم عدد الكلمات/الصفحات", "name": "الاسم مطلوب", "email": "البريد الإلكتروني مطلوب", "emailValid": "يرجى إدخال بريد إلكتروني صالح"}
   },
   "login": {
     "carousel": {
@@ -1895,6 +2008,110 @@
           "اتصل بمزود خدمة الإنترنت إذا استمرت المشكلة"
         ]
       }
+    }
+  }
+  ,
+  "quotepage": {
+    "hero": {
+      "badge": "احصل على عرض سعر",
+      "heading1": "ترجمة احترافية",
+      "heading2": "عروض سريعة في دقائق",
+      "description": "احصل على سعر دقيق لمشروع الترجمة الخاص بك. يوفر نظامنا الذكي تقديرات فورية مع تسعير شفاف وبدون رسوم مخفية."
+    },
+    "quickBenefits": {
+      "instantEstimate": {"title": "تقدير فوري", "desc": "احصل على سعر لحظي أثناء تعبئة النموذج"},
+      "secureUpload": {"title": "تحميل آمن", "desc": "يتم تشفير ملفاتك ومعالجتها بسرية"},
+      "fastResponse": {"title": "استجابة سريعة", "desc": "إرسال عروض تفصيلية إلى بريدك الإلكتروني خلال 30 دقيقة"}
+    },
+    "steps": {
+      "1": {"title": "تفاصيل المشروع", "desc": "اختر خدمتك واللغات"},
+      "2": {"title": "الملفات والحجم", "desc": "قم بتحميل الملفات أو قدم عدد الكلمات/الصفحات"},
+      "3": {"title": "المتطلبات الإضافية", "desc": "أضف تعليمات، أو مسرد، أو اختر الصناعة"},
+      "4": {"title": "معلومات الاتصال", "desc": "قدم بيانات الاتصال الخاصة بك وقدم الطلب"}
+    },
+    "services": {
+      "document": {"name": "ترجمة المستندات", "unit": "كلمة", "desc": "ترجمة بشرية للمستندات"},
+      "localization": {"name": "تحسين المواقع والتطبيقات", "unit": "مشروع", "desc": "تحسين للمواقع والتطبيقات"},
+      "interpretation": {"name": "تفسير حي", "unit": "ساعة", "desc": "التفسير في الموقع وعن بعد"},
+      "multimedia": {"name": "دبلجة وترجمة نصية", "unit": "مشروع", "desc": "خدمات الدبلجة والترجمة النصية للوسائط"},
+      "certified": {"name": "ترجمة معتمدة", "unit": "كلمة", "desc": "ترجمات معتمدة وموثقة"},
+      "enterprise": {"name": "حلول المؤسسات", "unit": "مشروع", "desc": "حلول مخصصة للفرق الكبيرة"}
+    },
+    "languages": {"list": ["English","Spanish","French","German","Italian","Portuguese","Russian","Chinese","Japanese","Korean","Arabic","Hindi","Yoruba","Igbo","Hausa","Swahili","Dutch","Polish","Turkish","Persian"]},
+    "industries": {"list": ["القانون والهجرة","الطب والرعاية الصحية","الأعمال والمالية","التعليم","التقنية","الحكومة","السياحة","الديني","التسويق","أخرى"]},
+    "industrySelectPlaceholder": "اختر صناعتك",
+    "form": {
+      "serviceSelect": "اختر خدمة",
+      "sourceLanguage": "اختر لغة المصدر",
+      "addTargetLanguage": "أضف لغة الهدف...",
+      "targetLanguagesHelp": "اختر اللغات واحدة تلو الأخرى لبناء قائمة الهدف",
+      "uploadTitle": "تحميل المستندات",
+      "uploadDescription": "اسحب الملفات وأسقطها أو قم بتحميلها. الصيغ المقبولة: PDF، Word، Excel، صور. الحد الأقصى 10MB لكل ملف.",
+      "uploadDropOrClick": "أسقط الملفات هنا أو انقر للتصفح",
+      "uploadSupported": "الصيغ المدعومة: PDF، DOC، DOCX، TXT، RTF، ODT (الحد الأقصى 10MB لكل ملف)",
+      "uploadChooseFiles": "اختر الملفات",
+      "uploadMaxFilesRemaining": "الحد الأقصى {{remaining}} من الملفات المتبقية • الحد الإجمالي: 50MB",
+      "wordCount": "عدد الكلمات",
+      "pageCount": "عدد الصفحات",
+      "name": "الاسم الكامل",
+      "email": "عنوان البريد الإلكتروني",
+      "phone": "رقم الهاتف",
+      "company": "اسم الشركة",
+      "companyPlaceholder": "الشركة (اختياري)",
+      "targetLanguagesLabel": "لغات الهدف",
+      "specialInstructions": "تعليمات خاصة",
+      "glossary": "إضافة مسرد",
+      "submitButton": "إرسال طلب عرض السعر",
+      "nextButton": "التالي",
+      "prevButton": "السابق",
+      "startingFrom": "البدء من ₦{{amount}}/{{unit}}",
+      "sending": "جارٍ الإرسال...",
+      "successTitle": "تم إرسال طلب عرض السعر!",
+      "successMessage": "شكرًا لطلبك. سنرسل عرضًا تفصيليًا إلى {{email}} خلال 30 دقيقة.",
+      "submitAnother": "إرسال طلب آخر",
+      "returnHome": "العودة للصفحة الرئيسية",
+      "errorTitle": "خطأ",
+      "submitFailed": "فشل إرسال طلب عرض السعر. يرجى المحاولة مرة أخرى.",
+      "submitCatchError": "حدث خطأ. يرجى المحاولة مرة أخرى لاحقًا.",
+      "fileTooLarge": "الملف \"{{name}}\" كبير جدًا. الحد الأقصى المسموح به هو 10MB.",
+      "fileSizeLimitExceeded": "سيؤدي حجم الملفات الإجمالي إلى تجاوز حد 50MB.",
+      "unknownType": "نوع غير معروف",
+      "anySpecificPlaceholder": "متطلبات محددة، أدلة الأسلوب أو تعليمات خاصة...",
+      "fullNamePlaceholder": "أدخل اسمك الكامل",
+      "phonePlaceholderOptional": "رقم الهاتف (اختياري)",
+      "notSelected": "لم يتم التحديد",
+      "standardPricing": "التسعير القياسي",
+      "close": "إغلاق"
+    },
+    "urgency": {"standard": "قياسي (48-72 ساعة)", "rush": "عاجل (24-48 ساعة)", "urgent": "طارئ (نفس اليوم)"},
+    "validation": {"service": "يرجى اختيار خدمة", "sourceLanguage": "يرجى اختيار لغة المصدر", "targetLanguages": "يرجى اختيار لغة هدف واحدة على الأقل", "documents": "يرجى تحميل الملفات أو تقديم عدد الكلمات/الصفحات", "name": "الاسم مطلوب", "email": "البريد الإلكتروني مطلوب", "emailValid": "يرجى إدخال بريد إلكتروني صالح"},
+    "summary": {
+      "title": "ملخص المشروع",
+      "serviceLabel": "الخدمة:",
+      "fromLabel": "من:",
+      "toLabel": "إلى:",
+      "volumeLabel": "الحجم:",
+      "filesLabel": "الملفات:",
+      "timelineLabel": "المدة:",
+      "addonsLabel": "الإضافات:",
+      "uploaded": "{{count}} تم رفعه",
+      "words": "كلمات",
+      "pages": "صفحات",
+      "certified": "معتمد",
+      "glossary": "مسرد",
+      "more": "+{{count}} المزيد",
+      "quoteDestination": "أين نرسل عرض السعر التفصيلي الخاص بك؟",
+      "emptyEstimate": "أكمل النموذج لعرض تقديرك",
+      "projectDetailsPlaceholder": "ستظهر تفاصيل المشروع هنا أثناء تعبئة النموذج",
+      "estimatesUpdate": "يتم تحديث التقديرات تلقائيًا أثناء الكتابة"
+    },
+    "trust": {
+      "qualityTitle": "جودة مضمونة",
+      "qualityDesc": "جميع العروض تتضمن ضمان الدقة والتعديلات المجانية",
+      "accuracyValue": "٩٩٫٨٪",
+      "accuracyLabel": "معدل الدقة",
+      "happyClientsValue": "٥٠٠٠+",
+      "happyClientsLabel": "عملاء راضون"
     }
   }
 }

@@ -134,10 +134,11 @@
       },
       "description": "Our certified translators don't just speak languages - they understand industries. From technical jargon to cultural nuances, we deliver translations that work in your specific field."
     },
-    "popular": {
-      "title": "Most Requested Industries",
-      "badge": "Popular"
-    },
+      "popular": {
+        "title": "Most Requested Industries",
+        "badge": "Popular",
+        "industrySelectPlaceholder": "Select your industry"
+      },
     "stats": {
       "projectsLabel": "Projects",
       "accuracyLabel": "Accuracy",
@@ -1588,6 +1589,8 @@
       }
     },
     "form": {
+      "serviceHeading": "Choose Your Service",
+      "serviceDescription": "Select the type of translation service you need",
       "heading": "Send Us a Message",
       "namePlaceholder": "Full Name *",
       "emailPlaceholder": "Email Address *",
@@ -1686,6 +1689,96 @@
       "serviceRequired": "Please select a service."
     }
   },
+  "quotepage": {
+    "hero": {
+      "badge": "Get Your Quote",
+      "heading1": "Professional Translation",
+      "heading2": "Quote in Minutes",
+      "description": "Get accurate pricing for your translation project. Our intelligent quote system provides instant estimates with transparent pricing and no hidden fees."
+    },
+    "quickBenefits": {
+      "instantEstimate": {"title": "Instant Estimate", "desc": "Get pricing in real-time as you complete the form"},
+      "secureUpload": {"title": "Secure Upload", "desc": "Your documents are encrypted and handled with confidentiality"},
+      "fastResponse": {"title": "Fast Response", "desc": "Detailed quote delivered to your inbox within 30 minutes"}
+    },
+    "steps": {
+      "1": {"title": "Project Details", "desc": "Choose your service and languages"},
+      "2": {"title": "Documents & Size", "desc": "Upload files or provide word/page count"},
+      "3": {"title": "Additional Requirements", "desc": "Add instructions, glossary, or industry info"},
+      "4": {"title": "Contact Details", "desc": "Provide your contact details and submit"}
+    },
+    "services": {
+      "document": {"name": "Document Translation", "unit": "word", "desc": "Human translation for documents"},
+      "localization": {"name": "Website Localization", "unit": "project", "desc": "Localization for web and app content"},
+      "interpretation": {"name": "Live Interpretation", "unit": "hour", "desc": "On-site and remote interpretation"},
+      "multimedia": {"name": "Voiceover & Subtitling", "unit": "project", "desc": "Voiceover and subtitles for multimedia"},
+      "certified": {"name": "Certified Translation", "unit": "word", "desc": "Certified and notarized translations"},
+      "enterprise": {"name": "Enterprise Solutions", "unit": "project", "desc": "Custom solutions for large teams"}
+    },
+    "languages": {
+      "list": ["English","Spanish","French","German","Italian","Portuguese","Russian","Chinese","Japanese","Korean","Arabic","Hindi","Yoruba","Igbo","Hausa","Swahili","Dutch","Polish","Turkish","Persian"]
+    },
+    "industries": {
+      "list": ["Legal & Immigration","Medical & Healthcare","Business & Finance","Education","Technology","Government","Tourism","Religious","Marketing","Other"]
+    },
+    "form": {
+      "serviceSelect": "Select a Service",
+      "sourceLanguage": "Select source language",
+      "addTargetLanguage": "Add target language...",
+      "targetLanguagesHelp": "Select languages one by one to build your target list",
+      "uploadTitle": "Upload Documents",
+      "uploadDescription": "Drag & drop files or upload. Accepted formats: PDF, Word, Excel, Images. Max 10MB per file.",
+      "uploadDropOrClick": "Drop files here or click to browse",
+      "uploadSupported": "Supported formats: PDF, DOC, DOCX, TXT, RTF, ODT (Max 10MB each)",
+      "uploadChooseFiles": "Choose Files",
+      "uploadMaxFilesRemaining": "Maximum {{remaining}} more files • Total size limit: 50MB",
+      "wordCount": "Word Count",
+      "pageCount": "Page Count",
+      "name": "Full Name",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "company": "Company Name",
+      "companyPlaceholder": "Company Name (Optional)",
+      "targetLanguagesLabel": "Target Languages",
+      "specialInstructions": "Special Instructions",
+      "glossary": "Include glossary",
+      "submitButton": "Submit Quote Request",
+      "nextButton": "Next",
+      "prevButton": "Previous",
+      "startingFrom": "Starting from ₦{{amount}}/{{unit}}",
+      "sending": "Sending...",
+      "successTitle": "Quote Request Sent!",
+      "successMessage": "Thank you for your request. We'll send you a detailed quote within 30 minutes to {{email}}.",
+      "submitAnother": "Submit Another Quote",
+      "returnHome": "Return to Home",
+      "errorTitle": "Error",
+      "submitFailed": "Failed to submit quote. Please try again.",
+      "submitCatchError": "Something went wrong. Please try again later.",
+      "fileTooLarge": "File \"{{name}}\" is too large. Maximum size is 10MB.",
+      "fileSizeLimitExceeded": "Total file size would exceed 50MB limit.",
+      "unknownType": "Unknown type",
+      "anySpecificPlaceholder": "Any specific requirements, style guides, or special instructions...",
+      "fullNamePlaceholder": "Enter your full name",
+      "phonePlaceholderOptional": "Phone Number (Optional)",
+      "notSelected": "Not selected",
+      "standardPricing": "Standard pricing",
+      "close": "Close"
+    },
+    "urgency": {
+      "standard": "Standard (48-72 hours)",
+      "rush": "Rush (24-48 hours)",
+      "urgent": "Urgent (Same day)"
+    },
+    "validation": {
+      "service": "Please select a service",
+      "sourceLanguage": "Please select source language",
+      "targetLanguages": "Please select at least one target language",
+      "documents": "Please upload files or provide word/page count",
+      "name": "Name is required",
+      "email": "Email is required",
+      "emailValid": "Please enter a valid email"
+    }
+  },
 
   "login": {
     "carousel": {
@@ -1701,6 +1794,50 @@
         "title": "Client Commitment",
         "text": "We provide professional translation and interpretation services tailored for success, ensuring accuracy and cultural sensitivity in every project."
       }
+    },
+    "estimate": {
+      "title": "Price Estimate",
+      "howCalculated": "How is this calculated?",
+      "estimatedTotal": "Estimated Total",
+      "finalNote": "Final quote may vary ±10%",
+      "basePrice": "Base Price:",
+      "urgencyLabel": "Urgency",
+      "certificationLabel": "Certification (30%):",
+      "languagesLabel": "Additional Languages:",
+      "howCalcTooltip": "Calculation: Base rate × Words/Pages × Urgency × Certification × Languages"
+    },
+    "summary": {
+      "title": "Project Summary",
+      "serviceLabel": "Service:",
+      "fromLabel": "From:",
+      "toLabel": "To:",
+      "volumeLabel": "Volume:",
+      "filesLabel": "Files:",
+      "timelineLabel": "Timeline:",
+      "addonsLabel": "Add-ons:",
+      "uploaded": "{{count}} uploaded",
+      "words": "words",
+      "pages": "pages",
+      "certified": "Certified",
+      "glossary": "Glossary",
+      "more": "+{{count}} more",
+      "quoteDestination": "Where should we send your detailed quote?",
+      "emptyEstimate": "Complete the form to see your estimate",
+      "estimatesUpdate": "Estimates update automatically as you type"
+    },
+    "trust": {
+      "qualityTitle": "Quality Guaranteed",
+      "qualityDesc": "All quotes include our accuracy guarantee and free revisions",
+      "accuracyValue": "99.8%",
+      "accuracyLabel": "Accuracy Rate",
+      "happyClientsValue": "5,000+",
+      "happyClientsLabel": "Happy Clients"
+    },
+    "next": {
+      "whatHappensNext": "What happens next?",
+      "detailedQuote": "Detailed quote emailed within 30 minutes",
+      "consultation": "Personal consultation call if needed",
+      "kickoff": "Project kickoff once approved"
     },
     "sidebar": {
       "footer": "Connecting cultures through language excellence."
@@ -1905,6 +2042,109 @@
       }
     }
   }
-  
+  ,
+  "quotepage": {
+    "hero": {
+      "badge": "Get a Quote",
+      "heading1": "Professional Translation",
+      "heading2": "Quick Quotes in Minutes",
+      "description": "Get an accurate price for your translation project. Our smart system provides instant estimates with transparent pricing and no hidden fees."
+    },
+    "quickBenefits": {
+      "instantEstimate": {"title": "Instant Estimate", "desc": "Get real-time pricing as you fill out the form"},
+      "secureUpload": {"title": "Secure Uploads", "desc": "Your documents are encrypted and handled confidentially"},
+      "fastResponse": {"title": "Fast Response", "desc": "Detailed quotes delivered to your inbox within 30 minutes"}
+    },
+    "steps": {
+      "1": {"title": "Project Details", "desc": "Choose your service and languages"},
+      "2": {"title": "Documents & Size", "desc": "Upload files or provide word/page counts"},
+      "3": {"title": "Additional Requirements", "desc": "Add instructions, glossaries, or choose industry"},
+      "4": {"title": "Contact Details", "desc": "Provide your contact info and submit"}
+    },
+    "services": {
+      "document": {"name": "Document Translation", "unit": "word", "desc": "Human translation for documents"},
+      "localization": {"name": "Website & App Localization", "unit": "project", "desc": "Localization for websites and applications"},
+      "interpretation": {"name": "Live Interpreting", "unit": "hour", "desc": "On-site and remote interpreting"},
+      "multimedia": {"name": "Voiceover & Subtitling", "unit": "project", "desc": "Voiceover and subtitle services for multimedia"},
+      "certified": {"name": "Certified Translation", "unit": "word", "desc": "Certified and notarized translations"},
+      "enterprise": {"name": "Enterprise Solutions", "unit": "project", "desc": "Custom solutions for large teams"}
+    },
+    "languages": {"list": ["English","Spanish","French","German","Italian","Portuguese","Russian","Chinese","Japanese","Korean","Arabic","Hindi","Yoruba","Igbo","Hausa","Swahili","Dutch","Polish","Turkish","Persian"]},
+    "industries": {"list": ["Legal & Immigration","Medical & Healthcare","Business & Finance","Education","Technology","Government","Tourism","Religious","Marketing","Other"]},
+    "industrySelectPlaceholder": "Select your industry",
+    "form": {
+      "serviceSelect": "Choose a service",
+      "sourceLanguage": "Select source language",
+      "addTargetLanguage": "Add a target language...",
+      "targetLanguagesHelp": "Select languages one by one to build your target list",
+      "uploadTitle": "Upload documents",
+      "uploadDescription": "Drag & drop files or upload. Accepted formats: PDF, Word, Excel, Images. Max 10MB per file.",
+      "uploadDropOrClick": "Drop files here or click to browse",
+      "uploadSupported": "Supported formats: PDF, DOC, DOCX, TXT, RTF, ODT (Max 10MB per file)",
+      "uploadChooseFiles": "Choose files",
+      "uploadMaxFilesRemaining": "Maximum {{remaining}} files remaining • Total limit: 50MB",
+      "wordCount": "Word count",
+      "pageCount": "Page count",
+      "name": "Full name",
+      "email": "Email address",
+      "phone": "Phone number",
+      "company": "Company name",
+      "companyPlaceholder": "Company (Optional)",
+      "targetLanguagesLabel": "Target languages",
+      "specialInstructions": "Special instructions",
+      "glossary": "Include glossary",
+      "submitButton": "Send quote request",
+      "nextButton": "Next",
+      "prevButton": "Previous",
+      "startingFrom": "Starting from ₦{{amount}}/{{unit}}",
+      "sending": "Sending...",
+      "successTitle": "Quote request sent!",
+      "successMessage": "Thanks for your request. We'll send a detailed quote to {{email}} within 30 minutes.",
+      "submitAnother": "Submit another quote",
+      "returnHome": "Return home",
+      "errorTitle": "Error",
+      "submitFailed": "Failed to submit quote. Please try again.",
+      "submitCatchError": "An error occurred. Please try again later.",
+      "fileTooLarge": "The file \"{{name}}\" is too large. Maximum allowed size is 10MB.",
+      "fileSizeLimitExceeded": "Total file size would exceed the 50MB limit.",
+      "unknownType": "Unknown type",
+      "anySpecificPlaceholder": "Specific requirements, style guides or special instructions...",
+      "fullNamePlaceholder": "Enter your full name",
+      "phonePlaceholderOptional": "Phone number (Optional)",
+      "notSelected": "Not selected",
+      "standardPricing": "Standard pricing",
+      "close": "Close"
+    },
+    "urgency": {"standard": "Standard (48-72 hours)", "rush": "Rush (24-48 hours)", "urgent": "Urgent (Same day)"},
+    "validation": {"service": "Please select a service", "sourceLanguage": "Please select a source language", "targetLanguages": "Please select at least one target language", "documents": "Please upload files or provide word/pages count", "name": "Name is required", "email": "Email is required", "emailValid": "Please enter a valid email"},
+    "summary": {
+      "title": "Project summary",
+      "serviceLabel": "Service:",
+      "fromLabel": "From:",
+      "toLabel": "To:",
+      "volumeLabel": "Volume:",
+      "filesLabel": "Files:",
+      "timelineLabel": "Timeline:",
+      "addonsLabel": "Add-ons:",
+      "uploaded": "{{count}} uploaded",
+      "words": "words",
+      "pages": "pages",
+      "certified": "Certified",
+      "glossary": "Glossary",
+      "more": "+{{count}} more",
+      "quoteDestination": "Where should we send your detailed quote?",
+      "emptyEstimate": "Complete the form to see your estimate",
+      "projectDetailsPlaceholder": "Project details will appear here as you complete the form",
+      "estimatesUpdate": "Estimates update automatically as you type"
+    },
+    "trust": {
+      "qualityTitle": "Quality Guaranteed",
+      "qualityDesc": "All quotes include our accuracy guarantee and free revisions",
+      "accuracyValue": "99.8%",
+      "accuracyLabel": "Accuracy Rate",
+      "happyClientsValue": "5,000+",
+      "happyClientsLabel": "Happy Clients"
+    }
+  }
   
 }

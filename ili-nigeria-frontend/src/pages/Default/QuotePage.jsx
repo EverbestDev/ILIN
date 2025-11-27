@@ -49,7 +49,28 @@ function useDebounce(value, delay) {
 }
 
 export default function QuotePage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language;
+  const isRTL = (lang) => lang === "ar";
+  const rtl = isRTL(currentLang);
+
+  // Helper: Convert English numerals to Arabic
+  const toArabicNumerals = (num) => {
+    const arabicNumerals = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
+    return String(num).replace(/\d/g, (digit) => arabicNumerals[digit]);
+  };
+
+  const formatNumber = (value) => {
+    if (value === null || value === undefined) return "0";
+    const formatted = String(value);
+    return rtl ? toArabicNumerals(formatted) : formatted;
+  };
+
+  const formatCurrency = (amount) => {
+    if (amount === null || amount === undefined) return "0";
+    const formatted = Number(amount).toLocaleString();
+    return rtl ? toArabicNumerals(formatted) : formatted;
+  };
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(1);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -91,43 +112,49 @@ export default function QuotePage() {
   const services = [
     {
       id: "document",
-      name: "Document Translation",
+      name: t("quotepage.services.document.name"),
+      unit: t("quotepage.services.document.unit"),
       icon: <FileText className="w-6 h-6" />,
       baseRate: 25,
     },
     {
       id: "localization",
-      name: "Website Localization",
+      name: t("quotepage.services.localization.name"),
+      unit: t("quotepage.services.localization.unit") || "project",
       icon: <Globe className="w-6 h-6" />,
       baseRate: 50,
     },
     {
       id: "interpretation",
-      name: "Live Interpretation",
+      name: t("quotepage.services.interpretation.name"),
+      unit: t("quotepage.services.interpretation.unit") || "hour",
       icon: <MessageCircle className="w-6 h-6" />,
       baseRate: 200,
     },
     {
       id: "multimedia",
-      name: "Voiceover & Subtitling",
+      name: t("quotepage.services.multimedia.name"),
+      unit: t("quotepage.services.multimedia.unit") || "project",
       icon: <Eye className="w-6 h-6" />,
       baseRate: 150,
     },
     {
       id: "certified",
-      name: "Certified Translation",
+      name: t("quotepage.services.certified.name"),
+      unit: t("quotepage.services.certified.unit"),
       icon: <Award className="w-6 h-6" />,
       baseRate: 40,
     },
     {
       id: "enterprise",
-      name: "Enterprise Solutions",
+      name: t("quotepage.services.enterprise.name"),
+      unit: t("quotepage.services.enterprise.unit") || "project",
       icon: <Users className="w-6 h-6" />,
       baseRate: 0,
     },
   ];
 
-  const languages = [
+  const languages = t("quotepage.languages.list", { returnObjects: true }) || [
     "English",
     "Spanish",
     "French",
@@ -150,7 +177,7 @@ export default function QuotePage() {
     "Persian",
   ];
 
-  const industries = [
+  const industries = t("quotepage.industries.list", { returnObjects: true }) || [
     "Legal & Immigration",
     "Medical & Healthcare",
     "Business & Finance",
@@ -164,9 +191,9 @@ export default function QuotePage() {
   ];
 
   const urgencyOptions = [
-    { id: "standard", name: "Standard (48-72 hours)", multiplier: 1 },
-    { id: "rush", name: "Rush (24-48 hours)", multiplier: 1.5 },
-    { id: "urgent", name: "Urgent (Same day)", multiplier: 2.5 },
+    { id: "standard", name: t("quotepage.urgency.standard"), multiplier: 1 },
+    { id: "rush", name: t("quotepage.urgency.rush"), multiplier: 1.5 },
+    { id: "urgent", name: t("quotepage.urgency.urgent"), multiplier: 2.5 },
   ];
 
   const steps = useMemo(
@@ -182,19 +209,18 @@ export default function QuotePage() {
   const quickBenefits = [
     {
       icon: <Clock className="w-8 h-8 text-green-600" />,
-      title: "Instant Estimate",
-      description: "Get pricing in real-time as you complete the form",
+      title: t("quotepage.quickBenefits.instantEstimate.title"),
+      description: t("quotepage.quickBenefits.instantEstimate.desc"),
     },
     {
       icon: <Shield className="w-8 h-8 text-blue-600" />,
-      title: "Secure Upload",
-      description:
-        "Your documents are encrypted and handled with complete confidentiality",
+      title: t("quotepage.quickBenefits.secureUpload.title"),
+      description: t("quotepage.quickBenefits.secureUpload.desc"),
     },
     {
       icon: <Zap className="w-8 h-8 text-amber-600" />,
-      title: "Fast Response",
-      description: "Detailed quote delivered to your inbox within 30 minutes",
+      title: t("quotepage.quickBenefits.fastResponse.title"),
+      description: t("quotepage.quickBenefits.fastResponse.desc"),
     },
   ];
 
@@ -216,11 +242,11 @@ export default function QuotePage() {
 
     switch (stepNumber) {
       case 1:
-        if (!formData.service) errors.service = "Please select a service";
+        if (!formData.service) errors.service = t("quotepage.validation.service");
         if (!formData.sourceLanguage)
-          errors.sourceLanguage = "Please select source language";
+          errors.sourceLanguage = t("quotepage.validation.sourceLanguage");
         if (formData.targetLanguages.length === 0)
-          errors.targetLanguages = "Please select at least one target language";
+          errors.targetLanguages = t("quotepage.validation.targetLanguages");
         break;
 
       case 2:
@@ -229,7 +255,7 @@ export default function QuotePage() {
           !formData.wordCount &&
           !formData.pageCount
         ) {
-          errors.documents = "Please upload files or provide word/page count";
+          errors.documents = t("quotepage.validation.documents");
         }
         break;
 
@@ -238,10 +264,10 @@ export default function QuotePage() {
         break;
 
       case 4:
-        if (!formData.name.trim()) errors.name = "Name is required";
-        if (!formData.email.trim()) errors.email = "Email is required";
+        if (!formData.name.trim()) errors.name = t("quotepage.validation.name");
+        if (!formData.email.trim()) errors.email = t("quotepage.validation.email");
         if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
-          errors.email = "Please enter a valid email";
+          errors.email = t("quotepage.validation.emailValid");
         }
         break;
     }
@@ -288,11 +314,11 @@ export default function QuotePage() {
 
     for (const file of newFiles) {
       if (file.size > maxSizePerFile) {
-        errors.push(`File "${file.name}" is too large. Maximum size is 10MB.`);
+        errors.push(t("quotepage.form.fileTooLarge", { name: file.name }));
         continue;
       }
       if (currentSize + totalNewSize + file.size > maxTotalSize) {
-        errors.push("Total file size would exceed 50MB limit.");
+        errors.push(t("quotepage.form.fileSizeLimitExceeded"));
         break;
       }
       validFiles.push({
@@ -463,7 +489,7 @@ export default function QuotePage() {
                 <div className="flex items-center justify-center w-20 h-20 mx-auto mb-6 bg-red-100 rounded-full">
                   <AlertCircle className="w-10 h-10 text-red-600" />
                 </div>
-                <h3 className="mb-4 text-2xl font-bold text-gray-900">Error</h3>
+                <h3 className="mb-4 text-2xl font-bold text-gray-900">{t("quotepage.form.errorTitle")}</h3>
                 <p className="mb-6 text-gray-600 whitespace-pre-line">
                   {errorMessage}
                 </p>
@@ -472,7 +498,7 @@ export default function QuotePage() {
                     onClick={() => setShowErrorModal(false)}
                     className="w-full px-6 py-3 font-semibold text-white transition-colors bg-red-600 rounded-xl hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                   >
-                    Close
+                    {t("quotepage.form.close")}
                   </button>
                 </div>
               </div>
@@ -547,13 +573,13 @@ export default function QuotePage() {
       } else {
         console.error("Failed:", data.message);
         setErrorMessage(
-          data.message || "Failed to submit quote. Please try again."
+          data.message || t("quotepage.form.submitFailed")
         );
         setShowErrorModal(true);
       }
     } catch (error) {
       console.error("Error submitting quote:", error);
-      setErrorMessage("Something went wrong. Please try again later.");
+      setErrorMessage(t("quotepage.form.submitCatchError"));
       setShowErrorModal(true);
     } finally {
       setIsSubmitting(false);
@@ -587,24 +613,23 @@ export default function QuotePage() {
                   <CheckCircle className="w-10 h-10 text-green-600" />
                 </div>
                 <h3 className="mb-4 text-2xl font-bold text-gray-900">
-                  Quote Request Sent!
+                  {t("quotepage.form.successTitle")}
                 </h3>
                 <p className="mb-6 text-gray-600">
-                  Thank you for your request. We'll send you a detailed quote
-                  within 30 minutes to {formData.email}.
+                  {t("quotepage.form.successMessage", { email: formData.email })}
                 </p>
                 <div className="space-y-3">
                   <button
                     onClick={handleReturnHome}
                     className="w-full px-6 py-3 font-semibold text-white transition-colors bg-green-600 rounded-xl hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                  >
-                    Return to Home
+                    >
+                    {t("quotepage.form.returnHome")}
                   </button>
                   <button
                     onClick={handleSubmitAnother}
                     className="w-full px-6 py-3 font-semibold text-gray-600 transition-colors bg-gray-100 rounded-xl hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                  >
-                    Submit Another Quote
+                    >
+                    {t("quotepage.form.submitAnother")}
                   </button>
                 </div>
               </div>
@@ -663,7 +688,7 @@ export default function QuotePage() {
   }, [activeStep]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50" dir={rtl ? "rtl" : "ltr"} style={{ direction: rtl ? "rtl" : "ltr" }}>
       <SuccessModal />
       <ErrorModal />
 
@@ -683,18 +708,16 @@ export default function QuotePage() {
             className="mb-16 text-center"
           >
             <span className="inline-block px-6 py-2 mb-6 text-sm font-semibold text-green-600 border border-green-200 rounded-full shadow-sm bg-white/80 backdrop-blur-sm">
-              Get Your Quote
+              {t("quotepage.hero.badge")}
             </span>
             <h1 className="mb-6 text-4xl font-bold text-gray-900 md:text-5xl">
-              Professional Translation
+              {t("quotepage.hero.heading1")}
               <span className="block text-transparent bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text">
-                Quote in Minutes
+                {t("quotepage.hero.heading2")}
               </span>
             </h1>
             <p className="max-w-3xl mx-auto mb-12 text-sm leading-relaxed text-gray-600 md:text-xl">
-              Get accurate pricing for your translation project. Our intelligent
-              quote system provides instant estimates with transparent pricing
-              and no hidden fees.
+              {t("quotepage.hero.description")}
             </p>
 
             {/* Quick Benefits */}
@@ -808,10 +831,10 @@ export default function QuotePage() {
                     <div className="space-y-8">
                       <div>
                         <h2 className="mb-2 text-2xl font-bold text-gray-900">
-                          Choose Your Service
+                          {t("quotepage.form.serviceHeading")}
                         </h2>
                         <p className="mb-6 text-gray-600">
-                          Select the type of translation service you need
+                          {t("quotepage.form.serviceDescription")}
                         </p>
 
                         {validationErrors.service && (
@@ -849,13 +872,16 @@ export default function QuotePage() {
                                 </h3>
                               </div>
                               <p className="text-sm text-gray-600">
-                                Starting from ₦{service.baseRate}
-                                {service.id === "document" ||
-                                service.id === "certified"
-                                  ? "/word"
-                                  : service.id === "interpretation"
-                                  ? "/hour"
-                                  : "/project"}
+                                {t("quotepage.form.startingFrom", {
+                                  amount: formatCurrency(service.baseRate),
+                                  unit:
+                                    service.unit ||
+                                    (service.id === "document" || service.id === "certified"
+                                      ? t("quotepage.services.document.unit")
+                                      : service.id === "interpretation"
+                                      ? t("quotepage.services.interpretation.unit")
+                                      : t("quotepage.services.enterprise.unit") || "project"),
+                                })}
                               </p>
                             </div>
                           ))}
@@ -865,7 +891,7 @@ export default function QuotePage() {
                       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                         <div>
                           <label className="block mb-3 text-sm font-semibold text-gray-900">
-                            Source Language
+                            {t("quotepage.form.sourceLanguage")}
                           </label>
                           {validationErrors.sourceLanguage && (
                             <div className="flex items-center p-2 mb-2 text-red-800 bg-red-100 border border-red-200 rounded">
@@ -885,7 +911,7 @@ export default function QuotePage() {
                                 : "border-gray-300"
                             }`}
                           >
-                            <option value="">Select source language</option>
+                            <option value="">{t("quotepage.form.sourceLanguage")}</option>
                             {languages.map((lang) => (
                               <option key={lang} value={lang}>
                                 {lang}
@@ -896,7 +922,7 @@ export default function QuotePage() {
 
                         <div>
                           <label className="block mb-3 text-sm font-semibold text-gray-900">
-                            Target Languages
+                            {t("quotepage.form.targetLanguagesLabel")}
                           </label>
                           {validationErrors.targetLanguages && (
                             <div className="flex items-center p-2 mb-2 text-red-800 bg-red-100 border border-red-200 rounded">
@@ -941,7 +967,7 @@ export default function QuotePage() {
                                 : "border-gray-300"
                             }`}
                           >
-                            <option value="">Add target language...</option>
+                            <option value="">{t("quotepage.form.addTargetLanguage")}</option>
                             {languages
                               .filter(
                                 (lang) =>
@@ -955,8 +981,7 @@ export default function QuotePage() {
                               ))}
                           </select>
                           <p className="mt-2 text-xs text-gray-500">
-                            Select languages one by one to build your target
-                            list
+                            {t("quotepage.form.targetLanguagesHelp")}
                           </p>
                         </div>
                       </div>
@@ -968,11 +993,10 @@ export default function QuotePage() {
                     <div className="space-y-8">
                       <div>
                         <h2 className="mb-2 text-2xl font-bold text-gray-900">
-                          Upload Documents
+                          {t("quotepage.form.uploadTitle")}
                         </h2>
                         <p className="mb-6 text-gray-600">
-                          Upload your files or provide word/page count for
-                          accurate pricing
+                          {t("quotepage.form.uploadDescription")}
                         </p>
 
                         {validationErrors.documents && (
@@ -1005,19 +1029,19 @@ export default function QuotePage() {
 
                           <Upload className="w-16 h-16 mx-auto mb-4 text-gray-400" />
                           <h3 className="mb-2 text-lg font-semibold text-gray-900">
-                            Drop files here or click to browse
+                            {t("quotepage.form.uploadDropOrClick")}
                           </h3>
                           <p className="mb-4 text-gray-600">
-                            Supported formats: PDF, DOC, DOCX, TXT, RTF, ODT
-                            (Max 10MB each)
+                            {t("quotepage.form.uploadSupported")}
                           </p>
                           <p className="mb-4 text-sm text-gray-500">
-                            Maximum {10 - formData.documents.length} more files
-                            • Total size limit: 50MB
+                            {t("quotepage.form.uploadMaxFilesRemaining", {
+                              remaining: rtl ? toArabicNumerals(10 - formData.documents.length) : 10 - formData.documents.length,
+                            })}
                           </p>
                           <div className="inline-flex items-center px-6 py-3 text-white transition-colors bg-green-600 rounded-xl hover:bg-green-700">
                             <Upload className="w-5 h-5 mr-2" />
-                            Choose Files
+                            {t("quotepage.form.uploadChooseFiles")}
                           </div>
                         </div>
 
@@ -1074,7 +1098,7 @@ export default function QuotePage() {
                                       </p>
                                       <p className="text-sm text-gray-600">
                                         {(doc.size / 1024 / 1024).toFixed(2)} MB
-                                        • {doc.type || "Unknown type"}
+                                        • {doc.type || t("quotepage.form.unknownType")}
                                       </p>
                                     </div>
                                   </div>
@@ -1170,7 +1194,7 @@ export default function QuotePage() {
                                       ? `+${Math.round(
                                           (option.multiplier - 1) * 100
                                         )}% fee`
-                                      : "Standard pricing"}
+                                      : t("quotepage.form.standardPricing")}
                                   </p>
                                 </div>
                               ))}
@@ -1188,7 +1212,7 @@ export default function QuotePage() {
                                 onChange={handleFormInputChange}
                                 className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
                               >
-                                <option value="">Select your industry</option>
+                                <option value="">{t("quotepage.industrySelectPlaceholder")}</option>
                                 {industries.map((industry) => (
                                   <option key={industry} value={industry}>
                                     {industry}
@@ -1244,7 +1268,7 @@ export default function QuotePage() {
                               name="specialInstructions"
                               value={formData.specialInstructions}
                               onChange={handleFormInputChange}
-                              placeholder="Any specific requirements, style guides, or special instructions..."
+                              placeholder={t("quotepage.form.anySpecificPlaceholder")}
                               rows="4"
                               maxLength="500"
                               className="w-full p-4 border border-gray-300 resize-none rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -1269,7 +1293,7 @@ export default function QuotePage() {
                           Contact Information
                         </h2>
                         <p className="mb-6 text-gray-600">
-                          Where should we send your detailed quote?
+                          {t("quotepage.summary.quoteDestination")}
                         </p>
 
                         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -1290,7 +1314,7 @@ export default function QuotePage() {
                               name="name"
                               value={formData.name}
                               onChange={handleFormInputChange}
-                              placeholder="Enter your full name"
+                              placeholder={t("quotepage.form.fullNamePlaceholder")}
                               required
                               className={`w-full p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent ${
                                 validationErrors.name
@@ -1332,7 +1356,7 @@ export default function QuotePage() {
                             name="phone"
                             value={formData.phone}
                             onChange={handleFormInputChange}
-                            placeholder="Phone Number (Optional)"
+                            placeholder={t("quotepage.form.phonePlaceholderOptional")}
                             className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
                           />
                           <input
@@ -1340,27 +1364,27 @@ export default function QuotePage() {
                             name="company"
                             value={formData.company}
                             onChange={handleFormInputChange}
-                            placeholder="Company Name (Optional)"
+                            placeholder={t("quotepage.form.companyPlaceholder")}
                             className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
                           />
                         </div>
 
                         <div className="p-6 mt-8 border border-green-200 bg-green-50 rounded-2xl">
                           <h4 className="mb-2 font-semibold text-green-800">
-                            What happens next?
+                            {t("quotepage.next.whatHappensNext")}
                           </h4>
                           <ul className="space-y-2 text-sm text-green-700">
                             <li className="flex items-center">
                               <CheckCircle className="w-4 h-4 mr-2" />
-                              Detailed quote emailed within 30 minutes
+                              {t("quotepage.next.detailedQuote")}
                             </li>
                             <li className="flex items-center">
                               <CheckCircle className="w-4 h-4 mr-2" />
-                              Personal consultation call if needed
+                              {t("quotepage.next.consultation")}
                             </li>
                             <li className="flex items-center">
                               <CheckCircle className="w-4 h-4 mr-2" />
-                              Project kickoff once approved
+                              {t("quotepage.next.kickoff")}
                             </li>
                           </ul>
                         </div>
@@ -1381,7 +1405,7 @@ export default function QuotePage() {
                       }`}
                     >
                       <ArrowLeft className="w-5 h-5 mr-2" />
-                      Previous
+                      {t("quotepage.form.prevButton")}
                       {activeStep > 1 && (
                         <span className="ml-2 text-xs text-gray-500">
                           (Ctrl+←)
@@ -1395,7 +1419,7 @@ export default function QuotePage() {
                         onClick={nextStep}
                         className="flex items-center justify-center w-full px-8 py-3 font-semibold text-white transition-all duration-300 bg-green-600 rounded-xl hover:bg-green-700 hover:shadow-lg md:w-auto"
                       >
-                        Next Step
+                        {t("quotepage.form.nextButton")}
                         <ArrowRight className="w-5 h-5 ml-2" />
                         <span className="ml-2 text-xs text-green-200">
                           (Ctrl+→)
@@ -1416,12 +1440,12 @@ export default function QuotePage() {
                         {isSubmitting ? (
                           <>
                             <div className="w-5 h-5 mr-2 border-2 border-white rounded-full border-t-transparent animate-spin"></div>
-                            Processing...
+                            {t("quotepage.form.sending")}
                           </>
                         ) : (
                           <>
                             <Send className="w-5 h-5 mr-2" />
-                            Get My Quote
+                            {t("quotepage.form.submitButton")}
                           </>
                         )}
                       </motion.button>
@@ -1447,15 +1471,15 @@ export default function QuotePage() {
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-gray-900">
-                        Price Estimate
+                        {t("quotepage.estimate.title")}
                       </h3>
                       {estimatedCost && (
                         <button
                           className="flex items-center text-sm text-gray-500 hover:text-gray-700"
-                          title="Calculation: Base rate × Words/Pages × Urgency × Certification × Languages"
+                          title={t("quotepage.estimate.howCalcTooltip")}
                         >
                           <Info className="w-4 h-4 mr-1" />
-                          How is this calculated?
+                          {t("quotepage.estimate.howCalculated")}
                         </button>
                       )}
                     </div>
@@ -1466,63 +1490,49 @@ export default function QuotePage() {
                       <div className="p-4 border border-green-200 bg-green-50 rounded-xl">
                         <div className="text-center">
                           <p className="mb-1 text-sm font-medium text-green-600">
-                            Estimated Total
+                            {t("quotepage.estimate.estimatedTotal")}
                           </p>
                           <p className="text-3xl font-bold text-green-800">
-                            ₦{estimatedCost.totalAmount.toLocaleString()}
+                            ₦{formatCurrency(estimatedCost.totalAmount)}
                           </p>
-                          <p className="mt-1 text-xs text-green-600">
-                            Final quote may vary ±10%
+                            <p className="mt-1 text-xs text-green-600">
+                            {t("quotepage.estimate.finalNote")}
                           </p>
                         </div>
                       </div>
 
                       <div className="space-y-3">
                         <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Base Price:</span>
-                          <span className="font-semibold">
-                            ₦{estimatedCost.baseAmount.toLocaleString()}
+                          <span className="text-gray-600">{t("quotepage.estimate.basePrice")}</span>
+                            <span className="font-semibold">
+                            ₦{formatCurrency(estimatedCost.baseAmount)}
                           </span>
                         </div>
                         {estimatedCost.urgencyMultiplier > 1 && (
                           <div className="flex justify-between text-sm">
                             <span className="text-gray-600">
-                              Urgency (
-                              {Math.round(
-                                (estimatedCost.urgencyMultiplier - 1) * 100
-                              )}
-                              %):
-                            </span>
+                                {t("quotepage.estimate.urgencyLabel")} (
+                                {rtl ? toArabicNumerals(Math.round((estimatedCost.urgencyMultiplier - 1) * 100)) : Math.round((estimatedCost.urgencyMultiplier - 1) * 100)}
+                                %):
+                              </span>
                             <span className="font-semibold">
-                              +₦
-                              {Math.round(
-                                estimatedCost.baseAmount *
-                                  (estimatedCost.urgencyMultiplier - 1)
-                              ).toLocaleString()}
+                              +₦{formatCurrency(Math.round(estimatedCost.baseAmount * (estimatedCost.urgencyMultiplier - 1)))}
                             </span>
                           </div>
                         )}
                         {estimatedCost.certificationMultiplier > 1 && (
                           <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">
-                              Certification (30%):
-                            </span>
+                            <span className="text-gray-600">{t("quotepage.estimate.certificationLabel")}</span>
                             <span className="font-semibold">
-                              +₦
-                              {Math.round(
-                                estimatedCost.baseAmount *
-                                  (estimatedCost.certificationMultiplier - 1)
-                              ).toLocaleString()}
+                              +₦{formatCurrency(Math.round(estimatedCost.baseAmount * (estimatedCost.certificationMultiplier - 1)))}
                             </span>
                           </div>
                         )}
                         {estimatedCost.languageMultiplier > 1 && (
                           <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">
-                              Additional Languages:
-                            </span>
+                            <span className="text-gray-600">{t("quotepage.estimate.languagesLabel")}</span>
                             <span className="font-semibold">
-                              ×{estimatedCost.languageMultiplier}
+                              ×{rtl ? toArabicNumerals(estimatedCost.languageMultiplier) : estimatedCost.languageMultiplier}
                             </span>
                           </div>
                         )}
@@ -1531,12 +1541,8 @@ export default function QuotePage() {
                   ) : (
                     <div className="py-8 text-center">
                       <DollarSign className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                      <p className="text-gray-600">
-                        Complete the form to see your estimate
-                      </p>
-                      <p className="mt-2 text-sm text-gray-500">
-                        Estimates update automatically as you type
-                      </p>
+                      <p className="text-gray-600">{t("quotepage.summary.emptyEstimate")}</p>
+                      <p className="mt-2 text-sm text-gray-500">{t("quotepage.summary.estimatesUpdate")}</p>
                     </div>
                   )}
                 </motion.div>
@@ -1549,23 +1555,23 @@ export default function QuotePage() {
                   className="p-8 bg-white border border-gray-100 shadow-2xl rounded-3xl"
                 >
                   <h3 className="mb-6 text-xl font-bold text-gray-900">
-                    Project Summary
+                    {t("quotepage.summary.title")}
                   </h3>
 
                   <div className="space-y-4">
                     {formData.service && (
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Service:</span>
+                        <span className="text-gray-600">{t("quotepage.summary.serviceLabel")}</span>
                         <span className="font-semibold text-right">
                           {services.find((s) => s.id === formData.service)
-                            ?.name || "Not selected"}
+                            ?.name || t("quotepage.form.notSelected")}
                         </span>
                       </div>
                     )}
 
                     {formData.sourceLanguage && (
                       <div className="flex justify-between">
-                        <span className="text-gray-600">From:</span>
+                        <span className="text-gray-600">{t("quotepage.summary.fromLabel")}</span>
                         <span className="font-semibold">
                           {formData.sourceLanguage}
                         </span>
@@ -1574,58 +1580,56 @@ export default function QuotePage() {
 
                     {formData.targetLanguages.length > 0 && (
                       <div className="flex justify-between">
-                        <span className="text-gray-600">To:</span>
-                        <span className="font-semibold text-right">
+                        <span className="text-gray-600">{t("quotepage.summary.toLabel")}</span>
+                          <span className="font-semibold text-right">
                           {formData.targetLanguages.slice(0, 2).join(", ")}
                           {formData.targetLanguages.length > 2 &&
-                            ` +${formData.targetLanguages.length - 2} more`}
+                            ` ${t("quotepage.summary.more", { count: formatNumber(formData.targetLanguages.length - 2) })}`}
                         </span>
                       </div>
                     )}
 
                     {(formData.wordCount || formData.pageCount) && (
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Volume:</span>
-                        <span className="font-semibold">
+                        <span className="text-gray-600">{t("quotepage.summary.volumeLabel")}</span>
+                          <span className="font-semibold">
                           {formData.wordCount
-                            ? `${formData.wordCount} words`
-                            : `${formData.pageCount} pages`}
+                            ? `${rtl ? toArabicNumerals(formData.wordCount) : formData.wordCount} ${t("quotepage.summary.words")}`
+                            : `${rtl ? toArabicNumerals(formData.pageCount) : formData.pageCount} ${t("quotepage.summary.pages")}`}
                         </span>
                       </div>
                     )}
 
                     {formData.documents.length > 0 && (
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Files:</span>
-                        <span className="font-semibold">
-                          {formData.documents.length} uploaded
+                        <span className="text-gray-600">{t("quotepage.summary.filesLabel")}</span>
+                          <span className="font-semibold">
+                          {t("quotepage.summary.uploaded", { count: rtl ? toArabicNumerals(formData.documents.length) : formData.documents.length })}
                         </span>
                       </div>
                     )}
 
                     {formData.urgency && (
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Timeline:</span>
-                        <span className="font-semibold text-right">
-                          {urgencyOptions
-                            .find((u) => u.id === formData.urgency)
-                            ?.name.split(" ")[0] || "Standard"}
+                        <span className="text-gray-600">{t("quotepage.summary.timelineLabel")}</span>
+                          <span className="font-semibold text-right">
+                          {urgencyOptions.find((u) => u.id === formData.urgency)?.name || t("quotepage.urgency.standard")}
                         </span>
                       </div>
                     )}
 
                     {(formData.certification || formData.glossary) && (
                       <div className="pt-2 border-t border-gray-200">
-                        <span className="text-sm text-gray-600">Add-ons:</span>
+                        <span className="text-sm text-gray-600">{t("quotepage.summary.addonsLabel")}</span>
                         <div className="flex flex-wrap gap-1 mt-1">
                           {formData.certification && (
                             <span className="px-2 py-1 text-xs text-green-700 bg-green-100 rounded-full">
-                              Certified
-                            </span>
+                                {t("quotepage.summary.certified")}
+                              </span>
                           )}
                           {formData.glossary && (
                             <span className="px-2 py-1 text-xs text-blue-700 bg-blue-100 rounded-full">
-                              Glossary
+                              {t("quotepage.summary.glossary")}
                             </span>
                           )}
                         </div>
@@ -1637,8 +1641,7 @@ export default function QuotePage() {
                     <div className="py-8 text-center">
                       <FileText className="w-16 h-16 mx-auto mb-4 text-gray-300" />
                       <p className="text-gray-600">
-                        Project details will appear here as you complete the
-                        form
+                        {t("quotepage.summary.projectDetailsPlaceholder")}
                       </p>
                     </div>
                   )}
@@ -1654,24 +1657,23 @@ export default function QuotePage() {
                   <div className="text-center">
                     <Award className="w-12 h-12 mx-auto mb-4 text-blue-600" />
                     <h4 className="mb-2 font-bold text-gray-900">
-                      Quality Guaranteed
+                      {t("quotepage.trust.qualityTitle")}
                     </h4>
                     <p className="mb-4 text-sm text-gray-600">
-                      All quotes include our accuracy guarantee and free
-                      revisions
+                      {t("quotepage.trust.qualityDesc")}
                     </p>
                     <div className="grid grid-cols-2 gap-4 text-center">
                       <div>
                         <p className="text-2xl font-bold text-blue-600">
-                          99.8%
+                          {t("quotepage.trust.accuracyValue")}
                         </p>
-                        <p className="text-xs text-gray-600">Accuracy Rate</p>
+                        <p className="text-xs text-gray-600">{t("quotepage.trust.accuracyLabel")}</p>
                       </div>
                       <div>
                         <p className="text-2xl font-bold text-green-600">
-                          5,000+
+                          {t("quotepage.trust.happyClientsValue")}
                         </p>
-                        <p className="text-xs text-gray-600">Happy Clients</p>
+                        <p className="text-xs text-gray-600">{t("quotepage.trust.happyClientsLabel")}</p>
                       </div>
                     </div>
                   </div>
