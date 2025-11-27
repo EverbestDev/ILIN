@@ -4,7 +4,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { Globe } from "lucide-react";
-import logo from "../assets/ILIN.jpg";
+import logo from "../assets/ILIN.png";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
