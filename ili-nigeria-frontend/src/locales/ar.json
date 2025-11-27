@@ -2105,6 +2105,23 @@
       "projectDetailsPlaceholder": "ستظهر تفاصيل المشروع هنا أثناء تعبئة النموذج",
       "estimatesUpdate": "يتم تحديث التقديرات تلقائيًا أثناء الكتابة"
     },
+    "estimate": {
+      "title": "عرض السعر للمشروع",
+      "howCalculated": "كيف يتم الحساب",
+      "estimatedTotal": "مجموع التقدير",
+      "finalNote": "قد يختلف السعر النهائي ±10%",
+      "basePrice": "السعر الأساسي:",
+      "urgencyLabel": "عجلة",
+      "certificationLabel": "شهادة (30%):",
+      "languagesLabel": "لغات إضافية:",
+      "howCalcTooltip": "الحساب: السعر الأساسي × كلمات/صفحات × العجلة × الشهادة × اللغات"
+    },
+    "next": {
+      "whatHappensNext": "ماذا سيحدث بعد ذلك؟",
+      "detailedQuote": "عرض مفصل سيوفر خلال 30 دقيقة",
+      "consultation": "مكالمة استشارية إذا لزم الأمر",
+      "kickoff": "بدء المشروع بمجرد الموافقة"
+    },
     "trust": {
       "qualityTitle": "جودة مضمونة",
       "qualityDesc": "جميع العروض تتضمن ضمان الدقة والتعديلات المجانية",

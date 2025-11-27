@@ -1825,6 +1825,23 @@
       "emptyEstimate": "Complete the form to see your estimate",
       "estimatesUpdate": "Estimates update automatically as you type"
     },
+    "estimate": {
+      "title": "Project quote",
+      "howCalculated": "How it's calculated",
+      "estimatedTotal": "Estimated total",
+      "finalNote": "Final quote may vary ±10%",
+      "basePrice": "Base price:",
+      "urgencyLabel": "Urgency",
+      "certificationLabel": "Certification (30%):",
+      "languagesLabel": "Additional languages:",
+      "howCalcTooltip": "Calculation: Base Rate × Words/Pages × Urgency × Certification × Languages"
+    },
+    "next": {
+      "whatHappensNext": "What happens next?",
+      "detailedQuote": "Detailed quote delivered within 30 minutes",
+      "consultation": "Consultation call if required",
+      "kickoff": "Project kickoff once approved"
+    },
     "trust": {
       "qualityTitle": "Quality Guaranteed",
       "qualityDesc": "All quotes include our accuracy guarantee and free revisions",

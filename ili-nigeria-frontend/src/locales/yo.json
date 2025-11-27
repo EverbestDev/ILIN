@@ -2104,6 +2104,23 @@
       "projectDetailsPlaceholder": "Àwọn alaye iṣẹ yoo hàn níbí bí o ṣe pari fọọmu",
       "estimatesUpdate": "Ìṣirò ń yí padà laifọwọyi bí o ṣe kọ"
     },
+    "estimate": {
+      "title": "Ìdíyelé iṣẹ",
+      "howCalculated": "Bá a ṣe ṣàṣẹ̀yẹ̀",
+      "estimatedTotal": "Apapọ iṣiro",
+      "finalNote": "Iye ikẹhin le yato ±10%",
+      "basePrice": "Iye ipilẹ:",
+      "urgencyLabel": "Ìfẹsẹ̀",
+      "certificationLabel": "Ìjẹrisi (30%):",
+      "languagesLabel": "Àwọn ede afikun:",
+      "howCalcTooltip": "Ìṣirò: Iye ipilẹ × Ọ̀rọ̀/Ojú-iwe × Ìfẹsẹ̀ × Ìjẹrisi × Àwọn ede"
+    },
+    "next": {
+      "whatHappensNext": "Kí ni yó ṣẹlẹ ní títẹ̀sí ?",
+      "detailedQuote": "Ìdíyelé apejuwe ti a fi ranṣẹ́ ní iṣẹju 30",
+      "consultation": "Pe ìmọ̀ràn tí o bá jẹ dandan",
+      "kickoff": "Bẹrẹ iṣẹ́ lẹ́yìn ìfọwọ́sowọ́pọ̀"
+    },
     "trust": {
       "qualityTitle": "Didara Ti a Dájú",
       "qualityDesc": "Gbogbo ìbéèrè iye ni iṣeduro deede wa ati atunṣe ọfẹ",
