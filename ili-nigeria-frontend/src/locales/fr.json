@@ -1859,6 +1859,7 @@
     },
     "buttons": {
       "signIn": "Se Connecter",
+      "signInWithGoogle": "Se connecter avec Google pour lier",
       "createAccount": "Créer un Compte",
       "sendResetLink": "Envoyer le Lien de Réinitialisation",
       "cancel": "Annuler",
@@ -1882,7 +1883,8 @@
     },
     "messages": {
       "accountCreated": "Compte créé. Veuillez vous connecter.",
-      "resetEmailSent": "Email de réinitialisation envoyé. Vérifiez votre boîte de réception."
+      "resetEmailSent": "Email de réinitialisation envoyé. Vérifiez votre boîte de réception.",
+      "linkInstructions": "Connectez-vous avec un fournisseur existant pour lier les comptes."
     },
     "a11y": {
       "showPassword": "Afficher le mot de passe",
@@ -1894,7 +1896,9 @@
       "comingSoon": "À Bientôt",
       "comingSoonDesc": "Cette méthode d'authentification n'est pas encore disponible. Veuillez utiliser Google ou email/mot de passe pour vous connecter.",
       "resetPassword": "Réinitialiser le Mot de Passe",
-      "resetPasswordDesc": "Entrez votre email pour recevoir un lien de réinitialisation."
+      "resetPasswordDesc": "Entrez votre email pour recevoir un lien de réinitialisation.",
+      "loggingIn": "Connexion en cours...",
+      "resolveAccountTitle": "Résoudre le conflit de compte"
     },
     "footer": {
       "agreement": "En continuant, vous acceptez nos ",

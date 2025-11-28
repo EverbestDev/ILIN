@@ -1827,6 +1827,7 @@
     },
     "buttons": {
       "signIn": "Wọle",
+      "signInWithGoogle": "Wọlé pẹ̀lú Google láti so pọ̀",
       "createAccount": "Ṣẹ̀ Àkóńṭu",
       "sendResetLink": "Rán Ìkupá Tún",
       "cancel": "Fágílẹ̀",
@@ -1850,7 +1851,8 @@
     },
     "messages": {
       "accountCreated": "Àkóńṭu ti ṣẹ̀. Jẹ́ kí o wọle.",
-      "resetEmailSent": "Ímeèlì ti rán. Wo àṣàkọ̀ rẹ."
+      "resetEmailSent": "Ímeèlì ti rán. Wo àṣàkọ̀ rẹ.",
+      "linkInstructions": "Wọlé pẹ̀lú oníṣàkóso tó wà láti so àwọn akọọlẹ pọ̀."
     },
     "a11y": {
       "showPassword": "Fí ọ̀rọ̀ ìkọ́ hàn",
@@ -1862,7 +1864,9 @@
       "comingSoon": "Á ti díẹ̀",
       "comingSoonDesc": "Ọ̀nà yìí ko sí fún bayi. Lo Google tàbí ímeèlì/ọ̀rọ̀ ìkọ́.",
       "resetPassword": "Tún Ọ̀rọ̀ Ìkọ́",
-      "resetPasswordDesc": "Tẹ ímeèlì rẹ láti gbà ìkupá tún."
+      "resetPasswordDesc": "Tẹ ímeèlì rẹ láti gbà ìkupá tún.",
+      "loggingIn": "A ń wọlé...",
+      "resolveAccountTitle": "Yanjú ìṣòro akọọlẹ"
     },
     "footer": {
       "agreement": "Nípa ṣẹ̀tọ̀, o gba ",

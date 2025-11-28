@@ -7,11 +7,13 @@ import {
   AlertCircle,
   Loader2,
 } from "lucide-react";
-import { auth } from "../../utility/firebase";
+import { auth, googleProvider, facebookProvider } from "../../utility/firebase";
 import {
   updatePassword,
   EmailAuthProvider,
   reauthenticateWithCredential,
+  linkWithPopup,
+  unlink,
 } from "firebase/auth";
 
 const API_URL =
@@ -45,6 +47,7 @@ const ClientSettings = () => {
     newPassword: "",
     confirmPassword: "",
   });
+  const [linkedProviders, setLinkedProviders] = useState([]);
 
   const getAuthHeaders = async () => {
     const user = auth.currentUser;
@@ -82,6 +85,13 @@ const ClientSettings = () => {
 
         if (data.preferences) {
           setPreferences(data.preferences);
+        }
+        // initialize linked providers
+        try {
+          const providers = auth.currentUser?.providerData?.map((p) => p.providerId) || [];
+          setLinkedProviders(providers);
+        } catch (e) {
+          setLinkedProviders([]);
         }
       } catch (err) {
         console.error("Fetch user settings error:", err);
@@ -187,6 +197,39 @@ const ClientSettings = () => {
       }
     } finally {
       setPasswordLoading(false);
+    }
+  };
+
+  const refreshProviders = () => {
+    const providers = auth.currentUser?.providerData?.map((p) => p.providerId) || [];
+    setLinkedProviders(providers);
+  };
+
+  const handleLink = async (provider) => {
+    try {
+      setLoading(true);
+      await linkWithPopup(auth.currentUser, provider);
+      refreshProviders();
+      showNotification("Account linked successfully", "success");
+    } catch (err) {
+      console.error("Link provider error:", err);
+      showNotification("Failed to link provider", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUnlink = async (providerId) => {
+    try {
+      setLoading(true);
+      await unlink(auth.currentUser, providerId);
+      refreshProviders();
+      showNotification("Provider unlinked", "success");
+    } catch (err) {
+      console.error("Unlink error:", err);
+      showNotification("Failed to unlink provider", "error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -491,6 +534,49 @@ const ClientSettings = () => {
                     )}
                     Update Password
                   </button>
+                </div>
+                <div className="p-4 border border-gray-200 sm:p-6 bg-white rounded-xl">
+                  <h3 className="mb-3 text-lg font-semibold">Connected Accounts</h3>
+                  <p className="mb-4 text-sm text-gray-600">Link or unlink social providers for easier sign-in.</p>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleLink(googleProvider)}
+                        disabled={linkedProviders.includes("google.com") || loading}
+                        className={`px-3 py-2 rounded-lg border ${linkedProviders.includes("google.com") ? "bg-gray-100" : "bg-white hover:bg-gray-50"}`}
+                      >
+                        {linkedProviders.includes("google.com") ? "Google linked" : "Link Google"}
+                      </button>
+                      {linkedProviders.includes("google.com") && (
+                        <button
+                          onClick={() => handleUnlink("google.com")}
+                          disabled={loading}
+                          className="px-3 py-2 text-sm text-red-600 bg-red-50 rounded-lg"
+                        >
+                          Unlink
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleLink(facebookProvider)}
+                        disabled={linkedProviders.includes("facebook.com") || loading}
+                        className={`px-3 py-2 rounded-lg border ${linkedProviders.includes("facebook.com") ? "bg-gray-100" : "bg-white hover:bg-gray-50"}`}
+                      >
+                        {linkedProviders.includes("facebook.com") ? "Facebook linked" : "Link Facebook"}
+                      </button>
+                      {linkedProviders.includes("facebook.com") && (
+                        <button
+                          onClick={() => handleUnlink("facebook.com")}
+                          disabled={loading}
+                          className="px-3 py-2 text-sm text-red-600 bg-red-50 rounded-lg"
+                        >
+                          Unlink
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

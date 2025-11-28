@@ -11,12 +11,16 @@ import {
   createUserWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
+  FacebookAuthProvider,
+  fetchSignInMethodsForEmail,
+  linkWithCredential,
   setPersistence,
   browserLocalPersistence,
   browserSessionPersistence,
   sendPasswordResetEmail,
   auth,
 } from "../../utility/firebase";
+import { linkWithPopup } from "firebase/auth";
 
 // Helper: Check if RTL
 const isRTL = (lang) => lang === "ar";
@@ -87,6 +91,11 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [pendingCredential, setPendingCredential] = useState(null);
+  const [pendingEmail, setPendingEmail] = useState(null);
+  const [pendingMethods, setPendingMethods] = useState([]);
+  const [resolvePassword, setResolvePassword] = useState("");
+  const [resolvingPassword, setResolvingPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showComingSoon, setShowComingSoon] = useState(false);
@@ -153,6 +162,19 @@ export default function Login() {
 
       const profileData = await profileResponse.json();
       const { role, email: userEmail } = profileData.user;
+      // If there is a pending OAuth credential from a previous failed
+      // sign-in attempt (account-exists-with-different-credential), try
+      // to link it to the now-signed-in user.
+      if (pendingCredential && auth.currentUser) {
+        try {
+          await linkWithCredential(auth.currentUser, pendingCredential);
+          setPendingCredential(null);
+          setPendingEmail(null);
+          setPendingMethods([]);
+        } catch (linkError) {
+          console.error("Error linking pending credential:", linkError);
+        }
+      }
       await user.getIdToken(true);
       setLoading(false);
       navigate(role === "admin" ? "/admin/dashboard" : `/client/dashboard`);
@@ -161,30 +183,68 @@ export default function Login() {
       let errorMessage = t("login.errors.signInFailed");
 
       if (error.code && error.code.startsWith("auth/")) {
-        switch (error.code) {
-          case "auth/invalid-credential":
-          case "auth/wrong-password":
-          case "auth/user-not-found":
-            errorMessage = t("login.errors.invalidCredentials");
-            break;
-          case "auth/too-many-requests":
-            errorMessage = t("login.errors.tooManyAttempts");
-            break;
-          case "auth/invalid-email":
-            errorMessage = t("login.errors.invalidEmail");
-            break;
-          case "auth/popup-closed-by-user":
-            errorMessage = t("login.errors.popupClosed");
-            break;
-          case "auth/popup-blocked":
-            errorMessage = t("login.errors.popupBlocked");
-            break;
-          case "auth/account-exists-with-different-credential":
+        // Special handling for account-exists-with-different-credential
+        if (error.code === "auth/account-exists-with-different-credential") {
+          const emailFromError = error.customData?.email || error.email || null;
+          let pendingCred = null;
+          try {
+            pendingCred =
+              FacebookAuthProvider?.credentialFromError?.(error) || null;
+          } catch (e) {
+            pendingCred = null;
+          }
+
+          try {
+            const methods = emailFromError
+              ? await fetchSignInMethodsForEmail(auth, emailFromError)
+              : [];
+            setPendingCredential(pendingCred);
+            setPendingEmail(emailFromError);
+            setPendingMethods(methods || []);
+
+            const providerNames = (methods || []).map((m) => {
+              switch (m) {
+                case "password":
+                  return t("login.methods.password");
+                case "google.com":
+                  return "Google";
+                case "facebook.com":
+                  return "Facebook";
+                default:
+                  return m;
+              }
+            });
+
+            errorMessage =
+              t("login.errors.accountExists") +
+              ` ${emailFromError} (${providerNames.join(", ")})`;
+          } catch (fetchErr) {
+            console.error("Error fetching sign-in methods:", fetchErr);
             errorMessage = t("login.errors.accountExists");
-            break;
-          default:
-            errorMessage = error.message || t("login.errors.signInFailed");
-            break;
+          }
+        } else {
+          switch (error.code) {
+            case "auth/invalid-credential":
+            case "auth/wrong-password":
+            case "auth/user-not-found":
+              errorMessage = t("login.errors.invalidCredentials");
+              break;
+            case "auth/too-many-requests":
+              errorMessage = t("login.errors.tooManyAttempts");
+              break;
+            case "auth/invalid-email":
+              errorMessage = t("login.errors.invalidEmail");
+              break;
+            case "auth/popup-closed-by-user":
+              errorMessage = t("login.errors.popupClosed");
+              break;
+            case "auth/popup-blocked":
+              errorMessage = t("login.errors.popupBlocked");
+              break;
+            default:
+              errorMessage = error.message || t("login.errors.signInFailed");
+              break;
+          }
         }
       } else {
         errorMessage = error.message || t("login.errors.networkError");
@@ -326,6 +386,66 @@ export default function Login() {
     await handleSignIn(provider);
   };
 
+  const handleFacebookSignIn = async () => {
+    const provider = new FacebookAuthProvider();
+    await handleSignIn(provider);
+  };
+
+  const handleResolveWithPassword = async () => {
+    if (!pendingEmail || !pendingCredential) return;
+    setResolvingPassword(true);
+    setError("");
+    try {
+      // Sign in with email/password to obtain the existing user
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        pendingEmail,
+        resolvePassword
+      );
+
+      // Link pending credential
+      await linkWithCredential(userCredential.user, pendingCredential);
+
+      // Clear pending state and navigate after refreshing token/profile
+      setPendingCredential(null);
+      setPendingEmail(null);
+      setPendingMethods([]);
+
+      const idToken = await auth.currentUser.getIdToken();
+      const profileResponse = await fetch(
+        `${BASE_URL}/api/auth/set-claims-and-get-profile`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${idToken}`,
+          },
+          body: JSON.stringify({
+            name: auth.currentUser.displayName || pendingEmail.split("@")[0],
+            role: "client",
+          }),
+          credentials: "include",
+        }
+      );
+      if (!profileResponse.ok) throw new Error("Failed to set profile");
+
+      // success — navigate based on role
+      const profileData = await profileResponse.json();
+      const { role } = profileData.user;
+      await auth.currentUser.getIdToken(true);
+      setResolvingPassword(false);
+      navigate(role === "admin" ? "/admin/dashboard" : "/client/dashboard");
+    } catch (err) {
+      console.error("Resolve with password error:", err);
+      setError(
+        err.code === "auth/wrong-password"
+          ? t("login.errors.invalidCredentials")
+          : err.message || t("login.errors.signInFailed")
+      );
+      setResolvingPassword(false);
+    }
+  };
+
   return (
     <div
       className="flex min-h-screen overflow-hidden bg-gray-50"
@@ -376,6 +496,24 @@ export default function Login() {
             >
               {error}
             </p>
+          )}
+          {pendingMethods && pendingMethods.length > 0 && (
+            <div className="mb-4 p-3 text-sm bg-yellow-50 border border-yellow-200 rounded">
+              <p className="text-yellow-800">
+                {t("login.errors.accountExists")} {pendingEmail} — {pendingMethods.join(", ")}. {t("login.messages.linkInstructions")}
+              </p>
+              {pendingMethods.includes("google.com") && (
+                <div className="mt-2">
+                  <button
+                    type="button"
+                    onClick={handleGoogleSignIn}
+                    className="px-3 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700"
+                  >
+                    {t("login.buttons.signInWithGoogle") || "Sign in with Google to link"}
+                  </button>
+                </div>
+              )}
+            </div>
           )}
           {success && (
             <p
@@ -560,13 +698,7 @@ export default function Login() {
                 rtl ? "flex-row-reverse" : ""
               }`}
             >
-              {loading ? (
-                <div className="w-5 h-5 border-b-2 border-white rounded-full animate-spin"></div>
-              ) : isSignup ? (
-                t("login.buttons.createAccount")
-              ) : (
-                t("login.buttons.signIn")
-              )}
+              {isSignup ? t("login.buttons.createAccount") : t("login.buttons.signIn")}
             </button>
           </form>
           <div className="relative mt-6">
@@ -596,7 +728,7 @@ export default function Login() {
             </button>
             <button
               type="button"
-              onClick={() => setShowComingSoon(true)}
+              onClick={handleFacebookSignIn}
               disabled={loading}
               className={`flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 ${
                 rtl ? "flex-row-reverse" : ""
@@ -696,6 +828,58 @@ export default function Login() {
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+          )}
+          {/* Loading modal */}
+          {loading && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+              <div className="flex flex-col items-center justify-center gap-4 p-6 bg-white rounded-lg shadow-xl w-full max-w-xs">
+                <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin" />
+                <p className="text-sm font-medium text-gray-800">{t("login.modals.loggingIn") || "Logging you in..."}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Pending password resolution modal */}
+          {pendingMethods && pendingMethods.includes("password") && pendingEmail && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+              <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-xl">
+                <h3 className="mb-2 text-lg font-semibold">{t("login.modals.resolveAccountTitle") || "Account exists"}</h3>
+                <p className="mb-4 text-sm text-gray-600">{t("login.messages.providePassword") || `Enter the password for ${pendingEmail} to link your account.`}</p>
+                <input
+                  type="password"
+                  value={resolvePassword}
+                  onChange={(e) => setResolvePassword(e.target.value)}
+                  placeholder={t("login.form.password")}
+                  className="w-full px-4 py-2 mb-3 border rounded-lg"
+                />
+                <div className="flex items-center justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPendingCredential(null);
+                      setPendingEmail(null);
+                      setPendingMethods([]);
+                    }}
+                    className="px-4 py-2 text-sm bg-gray-200 rounded-lg"
+                    disabled={resolvingPassword}
+                  >
+                    {t("login.buttons.cancel")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleResolveWithPassword}
+                    className="px-4 py-2 text-sm text-white bg-green-600 rounded-lg"
+                    disabled={resolvingPassword}
+                  >
+                    {resolvingPassword ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      t("login.buttons.signIn")
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           )}

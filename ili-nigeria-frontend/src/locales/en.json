@@ -8,6 +8,8 @@
     "login": "Login",
     "getQuote": "Get Quote"
   },
+      
+      
   "language": {
     "title": "Language",
     "en": "English",
@@ -1795,67 +1797,6 @@
         "text": "We provide professional translation and interpretation services tailored for success, ensuring accuracy and cultural sensitivity in every project."
       }
     },
-    "estimate": {
-      "title": "Price Estimate",
-      "howCalculated": "How is this calculated?",
-      "estimatedTotal": "Estimated Total",
-      "finalNote": "Final quote may vary ±10%",
-      "basePrice": "Base Price:",
-      "urgencyLabel": "Urgency",
-      "certificationLabel": "Certification (30%):",
-      "languagesLabel": "Additional Languages:",
-      "howCalcTooltip": "Calculation: Base rate × Words/Pages × Urgency × Certification × Languages"
-    },
-    "summary": {
-      "title": "Project Summary",
-      "serviceLabel": "Service:",
-      "fromLabel": "From:",
-      "toLabel": "To:",
-      "volumeLabel": "Volume:",
-      "filesLabel": "Files:",
-      "timelineLabel": "Timeline:",
-      "addonsLabel": "Add-ons:",
-      "uploaded": "{{count}} uploaded",
-      "words": "words",
-      "pages": "pages",
-      "certified": "Certified",
-      "glossary": "Glossary",
-      "more": "+{{count}} more",
-      "quoteDestination": "Where should we send your detailed quote?",
-      "emptyEstimate": "Complete the form to see your estimate",
-      "estimatesUpdate": "Estimates update automatically as you type"
-    },
-    "estimate": {
-      "title": "Project quote",
-      "howCalculated": "How it's calculated",
-      "estimatedTotal": "Estimated total",
-      "finalNote": "Final quote may vary ±10%",
-      "basePrice": "Base price:",
-      "urgencyLabel": "Urgency",
-      "certificationLabel": "Certification (30%):",
-      "languagesLabel": "Additional languages:",
-      "howCalcTooltip": "Calculation: Base Rate × Words/Pages × Urgency × Certification × Languages"
-    },
-    "next": {
-      "whatHappensNext": "What happens next?",
-      "detailedQuote": "Detailed quote delivered within 30 minutes",
-      "consultation": "Consultation call if required",
-      "kickoff": "Project kickoff once approved"
-    },
-    "trust": {
-      "qualityTitle": "Quality Guaranteed",
-      "qualityDesc": "All quotes include our accuracy guarantee and free revisions",
-      "accuracyValue": "99.8%",
-      "accuracyLabel": "Accuracy Rate",
-      "happyClientsValue": "5,000+",
-      "happyClientsLabel": "Happy Clients"
-    },
-    "next": {
-      "whatHappensNext": "What happens next?",
-      "detailedQuote": "Detailed quote emailed within 30 minutes",
-      "consultation": "Personal consultation call if needed",
-      "kickoff": "Project kickoff once approved"
-    },
     "sidebar": {
       "footer": "Connecting cultures through language excellence."
     },
@@ -1879,7 +1820,8 @@
       "createAccount": "Create Account",
       "sendResetLink": "Send Reset Link",
       "cancel": "Cancel",
-      "close": "Close"
+      "close": "Close",
+      "signInWithGoogle": "Sign in with Google to link"
     },
     "errors": {
       "signInFailed": "Failed to sign in. Please try again.",
@@ -1908,10 +1850,13 @@
       "hideConfirmPassword": "Hide confirm password"
     },
     "modals": {
+       "loggingIn": "Logging you in...",
+      "resolveAccountTitle": "Resolve account conflict",
       "comingSoon": "Coming Soon",
       "comingSoonDesc": "This authentication method is not yet available. Please use Google or email/password to sign in.",
       "resetPassword": "Reset Password",
-      "resetPasswordDesc": "Enter your email to receive a password reset link."
+      "resetPasswordDesc": "Enter your email to receive a password reset link.",
+      "linkInstructions": "Sign in with an existing provider to link accounts."
     },
     "footer": {
       "agreement": "By continuing, you agree to our ",

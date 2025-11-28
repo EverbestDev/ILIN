@@ -7,6 +7,9 @@ import {
   onAuthStateChanged,
   signInWithPopup,
   GoogleAuthProvider,
+  FacebookAuthProvider,
+  fetchSignInMethodsForEmail,
+  linkWithCredential,
   setPersistence,
   browserLocalPersistence,
   browserSessionPersistence,
@@ -26,11 +29,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
+export const facebookProvider = new FacebookAuthProvider();
 
 export {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
+  FacebookAuthProvider,
+  fetchSignInMethodsForEmail,
+  linkWithCredential,
   signOut,
   onAuthStateChanged,
   signInWithPopup,
