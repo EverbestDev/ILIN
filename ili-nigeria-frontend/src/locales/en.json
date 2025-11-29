@@ -1899,6 +1899,7 @@
       "close": "Close",
       "signInWithGoogle": "Sign in with Google to link",
       "checkProviders": "Check providers",
+      "openInBrowser": "Open in browser",
       "signInWithPassword": "Sign in with Email/Password"
     },
     "errors": {
@@ -1925,7 +1926,8 @@
       "linkSuccess": "Account linked successfully.",
       "provideEmailToCheck": "We couldn't determine the email from the provider error. Enter the email to check which sign-in methods exist for this account.",
       "linkPendingDescription": "This Facebook sign-in will be linked to your existing account automatically after you sign in with the listed provider.",
-      "providerNotAvailable": "We couldn't detect which sign-in methods are linked to this email. Try the suggested options to sign in and link accounts."
+      "providerNotAvailable": "We couldn't detect which sign-in methods are linked to this email. Try the suggested options to sign in and link accounts.",
+      "openInBrowser": "It looks like your browser may block popups; we will open the sign-in flow in a new window or tab to complete authentication."
     },
     "a11y": {
       "showPassword": "Show password",
@@ -1941,7 +1943,8 @@
       "comingSoonDesc": "This authentication method is not yet available. Please use Google or email/password to sign in.",
       "resetPassword": "Reset Password",
       "resetPasswordDesc": "Enter your email to receive a password reset link.",
-      "linkInstructions": "Sign in with an existing provider to link accounts."
+      "linkInstructions": "Sign in with an existing provider to link accounts.",
+      "openInBrowserTitle": "Complete sign-in"
     },
     "linkPendingTitle": "Link Facebook Account",
     "linkSuccessTitle": "Account Linked",

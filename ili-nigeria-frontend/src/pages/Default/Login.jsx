@@ -10,6 +10,8 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   GoogleAuthProvider,
   FacebookAuthProvider,
   fetchSignInMethodsForEmail,
@@ -117,6 +119,7 @@ export default function Login() {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorModalMessage, setErrorModalMessage] = useState("");
   const [showLinkSuccessModal, setShowLinkSuccessModal] = useState(false);
+  const [showOpenInBrowserModal, setShowOpenInBrowserModal] = useState(false);
   const [linkedProvider, setLinkedProvider] = useState("");
 
   const navigate = useNavigate();
@@ -132,7 +135,84 @@ export default function Login() {
     return () => clearInterval(timer);
   }, []);
 
+  // On page load, handle OAuth redirect results (used for mobile and in-app fallback)
+  useEffect(() => {
+    const handleRedirectResult = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result && result.user) {
+          if (IS_DEBUG) console.info('Redirect result received:', result);
+          await processSignedInUser(result.user);
+        }
+      } catch (err) {
+        if (IS_DEBUG) console.error('getRedirectResult error:', err);
+        setErrorModalMessage(err.message || t("login.errors.signInFailed"));
+        setShowErrorModal(true);
+      }
+    };
+
+    handleRedirectResult();
+  }, []);
+
   // Removed diagnostic log for production
+
+  const detectInAppBrowser = (ua) => {
+    const s = ua || (typeof navigator !== 'undefined' && navigator.userAgent) || '';
+    return /FBAN|FBAV|FB_IAB|Instagram|wv|WebView|OPR|Twitter|Line/gi.test(s);
+  };
+
+  const isMobileDevice = () => {
+    const s = (typeof navigator !== 'undefined' && navigator.userAgent) || '';
+    return /Android|iPhone|iPad|iPod/i.test(s);
+  };
+
+  const processSignedInUser = async (user) => {
+    try {
+      setLoading(true);
+      const idToken = await user.getIdToken();
+      const profileResponse = await fetch(
+        `${BASE_URL}/api/auth/set-claims-and-get-profile`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${idToken}`,
+          },
+          body: JSON.stringify({
+            name: name || user.displayName || (user.email || "").split("@")[0],
+            role: "client",
+          }),
+          credentials: "include",
+        }
+      );
+      if (!profileResponse.ok) {
+        const data = await profileResponse.json();
+        throw new Error(data.message || `HTTP error! Status: ${profileResponse.status}`);
+      }
+      const profileData = await profileResponse.json();
+      const { role } = profileData.user;
+      if (pendingCredential && auth.currentUser) {
+        try {
+          await linkWithCredential(auth.currentUser, pendingCredential);
+          setPendingCredential(null);
+          setPendingEmail(null);
+          setPendingMethods([]);
+          setNotification({ message: t("login.messages.linkSuccess") || "Account linked successfully", type: "success" });
+          setShowLinkSuccessModal(true);
+        } catch (linkError) {
+          console.error("Error linking pending credential:", linkError);
+        }
+      }
+      await user.getIdToken(true);
+      setLoading(false);
+      navigate(role === "admin" ? "/admin/dashboard" : `/client/dashboard`);
+    } catch (e) {
+      console.error('Processing signed-in user failed:', e);
+      setLoading(false);
+      setErrorModalMessage(t("login.errors.signInFailed"));
+      setShowErrorModal(true);
+    }
+  };
 
   const handleSignIn = async (provider) => {
     setError("");
@@ -152,67 +232,63 @@ export default function Login() {
       );
 
       const userCredential = provider
-        ? await signInWithPopup(auth, provider).catch((error) => {
-            if (IS_DEBUG) {
-              console.error("Social SignIn Error:", error);
-              try { console.info('error.customData:', error?.customData); } catch (e) {}
-              try { console.info('error._tokenResponse:', error?._tokenResponse); } catch (e) {}
-              try { console.info('error.email:', error?.email); } catch (e) {}
-              console.info('User agent:', navigator.userAgent);
+        ? await (async () => {
+            // If we're on mobile or an in-app browser, use redirect rather than popup
+              if (detectInAppBrowser(navigator.userAgent) || isMobileDevice()) {
+              if (IS_DEBUG) console.info('Mobile or in-app browser detected, using redirect for provider:', provider?.providerId || provider);
+              // Show a UI hint briefly — allow the modal / UX to inform the user
+              setShowOpenInBrowserModal(true);
+                if (import.meta.env.VITE_ENABLE_TELEMETRY === 'true') {
+                  try {
+                    fetch(`${BASE_URL}/api/telemetry`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ event: 'auth_fallback_redirect', providerId: provider?.providerId || null, userAgent: navigator.userAgent }),
+                    });
+                  } catch (e) { /* don't disrupt the flow */ }
+                }
+              await signInWithRedirect(auth, provider);
+              return null; // redirect — no immediate user credential
             }
-            throw error;
-          })
+            try {
+              return await signInWithPopup(auth, provider);
+            } catch (error) {
+              if (IS_DEBUG) {
+                console.error("Social SignIn Error:", error);
+                try { console.info('error.customData:', error?.customData); } catch (e) {}
+                try { console.info('error._tokenResponse:', error?._tokenResponse); } catch (e) {}
+                try { console.info('error.email:', error?.email); } catch (e) {}
+                console.info('User agent:', navigator.userAgent);
+              }
+              // Fallback to redirect for popup-blocked/closed on desktop or any other untrusted environment
+              if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/popup-blocked') {
+                if (IS_DEBUG) console.info('Fallback to redirect after popup error:', error.code);
+                setShowOpenInBrowserModal(true);
+                if (import.meta.env.VITE_ENABLE_TELEMETRY === 'true') {
+                  try {
+                    fetch(`${BASE_URL}/api/telemetry`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ event: 'auth_popup_closed_redirect', providerId: provider?.providerId || null, userAgent: navigator.userAgent, errorCode: error?.code }),
+                    });
+                  } catch (e) { /* ignore */ }
+                }
+                await signInWithRedirect(auth, provider);
+                return null;
+              }
+              throw error;
+            }
+          })()
         : await signInWithEmailAndPassword(auth, email, password);
+      if (!userCredential) {
+        // We redirected the flow (mobile/in-app) and will resume on redirect result
+        setLoading(false);
+        return;
+      }
       const user = userCredential.user;
       const idToken = await user.getIdToken();
 
-      const profileResponse = await fetch(
-        `${BASE_URL}/api/auth/set-claims-and-get-profile`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${idToken}`,
-          },
-          body: JSON.stringify({
-            name: name || user.displayName || email.split("@")[0],
-            role: "client",
-          }),
-          credentials: "include",
-        }
-      );
-
-      if (!profileResponse.ok) {
-        const data = await profileResponse.json();
-        throw new Error(
-          data.message || `HTTP error! Status: ${profileResponse.status}`
-        );
-      }
-
-      const profileData = await profileResponse.json();
-      const { role, email: userEmail } = profileData.user;
-      // If there is a pending OAuth credential from a previous failed
-      // sign-in attempt (account-exists-with-different-credential), try
-      // to link it to the now-signed-in user.
-      if (pendingCredential && auth.currentUser) {
-        try {
-          // Removed diagnostic log for production
-          await linkWithCredential(auth.currentUser, pendingCredential);
-          setPendingCredential(null);
-          setPendingEmail(null);
-          setPendingMethods([]);
-          setNotification({
-            message:
-              t("login.messages.linkSuccess") || "Account linked successfully",
-            type: "success",
-          });
-        } catch (linkError) {
-          console.error("Error linking pending credential:", linkError);
-        }
-      }
-      await user.getIdToken(true);
-      setLoading(false);
-      navigate(role === "admin" ? "/admin/dashboard" : `/client/dashboard`);
+      await processSignedInUser(user);
     } catch (error) {
       setLoading(false);
       // Removed diagnostic log for production
@@ -1157,6 +1233,37 @@ export default function Login() {
                     className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700"
                   >
                     {t("login.buttons.close") || "Close"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Open-in-browser / redirect fallback modal */}
+          {showOpenInBrowserModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+              <div className={`w-full max-w-sm p-6 bg-white rounded-lg shadow-xl ${rtl ? "text-right" : ""}`}>
+                <h3 className="mb-2 text-lg font-semibold">{t("login.modals.openInBrowserTitle") || "Complete sign in"}</h3>
+                <p className="mb-4 text-sm text-gray-700">{t("login.messages.openInBrowser") || "We detected that your browser may block popups. We'll open the sign-in flow in a new window or tab to complete authentication."}</p>
+                <div className="flex items-center justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      try { setShowOpenInBrowserModal(false); } catch (e) {}
+                    }}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300"
+                  >
+                    {t("login.buttons.cancel") || "Cancel"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      // Open in default browser tab as helpful fallback
+                      try { window.open(window.location.href, '_blank'); } catch (e) { }
+                    }}
+                    className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700"
+                  >
+                    {t("login.buttons.openInBrowser") || "Open in browser"}
                   </button>
                 </div>
               </div>
