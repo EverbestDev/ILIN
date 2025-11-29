@@ -51,7 +51,7 @@ export const setClaimsAndGetProfile = async (req, res) => {
 
 export const getProfile = async (req, res) => {
   try {
-    const user = req.user; 
+    const user = req.user;
     if (!user) {
       return res.status(401).json({ message: "Unauthorized" });
     }

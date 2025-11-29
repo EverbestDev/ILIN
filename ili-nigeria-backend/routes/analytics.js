@@ -1,7 +1,10 @@
 // routes/analytics.js
 import express from "express";
 import { protect, restrictTo } from "../middleware/auth.js";
-import { getAdminAnalytics, logEvent } from "../controllers/analyticsController.js";
+import {
+  getAdminAnalytics,
+  logEvent,
+} from "../controllers/analyticsController.js";
 
 const router = express.Router();
 

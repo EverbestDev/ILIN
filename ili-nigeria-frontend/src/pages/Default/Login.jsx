@@ -133,7 +133,12 @@ export default function Login() {
   }, []);
 
   // Detect mobile browsers (simplistic approach) - used to select redirect vs popup flow
-  const isMobile = typeof navigator !== "undefined" && /Mobi|Android|iPhone|iPad|iPod|IEMobile|Opera Mini|CriOS/i.test(navigator.userAgent) || (typeof window !== 'undefined' && window.innerWidth <= 768);
+  const isMobile =
+    (typeof navigator !== "undefined" &&
+      /Mobi|Android|iPhone|iPad|iPod|IEMobile|Opera Mini|CriOS/i.test(
+        navigator.userAgent
+      )) ||
+    (typeof window !== "undefined" && window.innerWidth <= 768);
 
   // Telemetry helper - send sign-in failure events to backend for diagnostics
   const logSignInTelemetry = async (providerId, error) => {
@@ -183,7 +188,9 @@ export default function Login() {
 
           if (!profileResponse.ok) {
             const data = await profileResponse.json();
-            throw new Error(data.message || `HTTP error! Status: ${profileResponse.status}`);
+            throw new Error(
+              data.message || `HTTP error! Status: ${profileResponse.status}`
+            );
           }
 
           const profileData = await profileResponse.json();
@@ -248,7 +255,11 @@ export default function Login() {
           throw popupErr;
         }
       } else {
-        userCredential = await signInWithEmailAndPassword(auth, email, password);
+        userCredential = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
       }
       const user = userCredential.user;
       const idToken = await user.getIdToken();
@@ -379,7 +390,10 @@ export default function Login() {
               errorMessage = t("login.errors.popupClosed");
               break;
             case "auth/popup-blocked":
-              errorMessage = t("login.errors.popupBlocked") + " " + (t("login.messages.openInBrowser") || "");
+              errorMessage =
+                t("login.errors.popupBlocked") +
+                " " +
+                (t("login.messages.openInBrowser") || "");
               break;
             default:
               errorMessage = error.message || t("login.errors.signInFailed");
@@ -394,7 +408,10 @@ export default function Login() {
       setError(errorMessage);
       try {
         // Fire-and-forget telemetry; we don't await in case it slows the UI
-        logSignInTelemetry(provider?.providerId || provider || "email/password", error);
+        logSignInTelemetry(
+          provider?.providerId || provider || "email/password",
+          error
+        );
       } catch (e) {
         console.error("Telemetry send failed:", e);
       }
@@ -1240,9 +1257,19 @@ export default function Login() {
           {/* Password reset sent confirmation modal */}
           {showResetSentModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-              <div className={`w-full max-w-sm p-6 bg-white rounded-lg shadow-xl ${rtl ? "text-right" : ""}`}>
-                <h3 className="mb-2 text-lg font-semibold">{t("login.modals.resetSentTitle") || "Password reset email sent"}</h3>
-                <p className="mb-4 text-sm text-gray-700">{t("login.messages.resetEmailSent") || "We sent a password reset link to your email. Please check your inbox."}</p>
+              <div
+                className={`w-full max-w-sm p-6 bg-white rounded-lg shadow-xl ${
+                  rtl ? "text-right" : ""
+                }`}
+              >
+                <h3 className="mb-2 text-lg font-semibold">
+                  {t("login.modals.resetSentTitle") ||
+                    "Password reset email sent"}
+                </h3>
+                <p className="mb-4 text-sm text-gray-700">
+                  {t("login.messages.resetEmailSent") ||
+                    "We sent a password reset link to your email. Please check your inbox."}
+                </p>
                 <div className="flex items-center justify-end gap-2">
                   <button
                     type="button"

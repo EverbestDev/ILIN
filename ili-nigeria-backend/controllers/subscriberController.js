@@ -62,7 +62,9 @@ export const subscribe = async (req, res) => {
     await PendingSubscriber.create({ email, token, expiresAt });
 
     // Send verification email with link to verify
-    const verifyUrl = `${process.env.FRONTEND_URL || "https://ilin-nigeria.vercel.app"}/verify-subscribe?token=${token}`;
+    const verifyUrl = `${
+      process.env.FRONTEND_URL || "https://ilin-nigeria.vercel.app"
+    }/verify-subscribe?token=${token}`;
     try {
       await sendEmail(
         email,
@@ -222,7 +224,9 @@ export const verifySubscription = async (req, res) => {
       if (!process.env.ADMIN_EMAIL) {
         throw new Error("ADMIN_EMAIL environment variable is not set");
       }
-      const adminEmails = process.env.ADMIN_EMAIL.split(",").map((e) => e.trim());
+      const adminEmails = process.env.ADMIN_EMAIL.split(",").map((e) =>
+        e.trim()
+      );
       await sendEmail(
         adminEmails,
         `New Subscriber: ${subscriber.email}`,
@@ -244,7 +248,10 @@ export const verifySubscription = async (req, res) => {
       );
       console.log("Admin notification sent for new verified subscriber");
     } catch (err) {
-      console.error("Failed to send admin notification after verification:", err);
+      console.error(
+        "Failed to send admin notification after verification:",
+        err
+      );
     }
 
     return res.json({ message: "Subscription verified and saved" });
