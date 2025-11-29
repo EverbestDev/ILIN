@@ -27,6 +27,8 @@ import { linkWithPopup } from "firebase/auth";
 // Helper: Check if RTL
 const isRTL = (lang) => lang === "ar";
 
+const IS_DEBUG = true; // Set to false to disable temporary debug logs
+
 const carouselSlides = [
   {
     titleKey: "login.carousel.slide1.title",
@@ -150,7 +152,16 @@ export default function Login() {
       );
 
       const userCredential = provider
-        ? await signInWithPopup(auth, provider)
+        ? await signInWithPopup(auth, provider).catch((error) => {
+            if (IS_DEBUG) {
+              console.error("Social SignIn Error:", error);
+              try { console.info('error.customData:', error?.customData); } catch (e) {}
+              try { console.info('error._tokenResponse:', error?._tokenResponse); } catch (e) {}
+              try { console.info('error.email:', error?.email); } catch (e) {}
+              console.info('User agent:', navigator.userAgent);
+            }
+            throw error;
+          })
         : await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       const idToken = await user.getIdToken();
