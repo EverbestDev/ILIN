@@ -21,6 +21,7 @@ import {
   auth,
 } from "../../utility/firebase";
 import Spinner from "../../components/UI/Spinner";
+import Notification from "../../components/UI/Notification";
 import { linkWithPopup } from "firebase/auth";
 
 // Helper: Check if RTL
@@ -95,6 +96,9 @@ export default function Login() {
   const [pendingCredential, setPendingCredential] = useState(null);
   const [pendingEmail, setPendingEmail] = useState(null);
   const [pendingMethods, setPendingMethods] = useState([]);
+  const [notification, setNotification] = useState(null);
+  const [accountExistsNoEmail, setAccountExistsNoEmail] = useState(false);
+  const [resolveEmailForMethods, setResolveEmailForMethods] = useState("");
   const [resolvePassword, setResolvePassword] = useState("");
   const [resolvingPassword, setResolvingPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -107,6 +111,10 @@ export default function Login() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [resetEmail, setResetEmail] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorModalMessage, setErrorModalMessage] = useState("");
+  const [showLinkSuccessModal, setShowLinkSuccessModal] = useState(false);
+  const [linkedProvider, setLinkedProvider] = useState("");
 
   const navigate = useNavigate();
   const BASE_URL =
@@ -121,10 +129,22 @@ export default function Login() {
     return () => clearInterval(timer);
   }, []);
 
+  // Diagnostics: Log relevant state changes so we can see modal triggers
+  useEffect(() => {
+    console.info("Login state change: pendingMethods=", pendingMethods, "pendingEmail=", pendingEmail, "accountExistsNoEmail=", accountExistsNoEmail);
+  }, [pendingMethods, pendingEmail, accountExistsNoEmail]);
+
   const handleSignIn = async (provider) => {
     setError("");
     setSuccess("");
     setLoading(true);
+    console.info("handleSignIn invoked, provider:", provider?.providerId || provider || 'email/password');
+    try {
+      console.info('auth.app.options at sign-in start:', auth?.app?.options || null);
+      console.info('auth.currentUser at sign-in start:', { uid: auth?.currentUser?.uid, email: auth?.currentUser?.email });
+    } catch (e) {
+      console.info('failed to log auth runtime info', e);
+    }
 
     try {
       await setPersistence(
@@ -168,12 +188,16 @@ export default function Login() {
       // to link it to the now-signed-in user.
       if (pendingCredential && auth.currentUser) {
         try {
+          console.info('Attempting to link pending credential to current user:', { uid: auth.currentUser?.uid, email: auth.currentUser?.email });
+          console.info('Pending credential provider info:', { providerId: pendingCredential?._delegate?.providerId || pendingCredential?.providerId, hasAccessToken: !!pendingCredential?.accessToken });
           await linkWithCredential(auth.currentUser, pendingCredential);
           setPendingCredential(null);
           setPendingEmail(null);
           setPendingMethods([]);
+          setNotification({ message: t("login.messages.linkSuccess") || "Account linked successfully", type: "success" });
         } catch (linkError) {
           console.error("Error linking pending credential:", linkError);
+          try { console.info('linkWithCredential error details:', { code: linkError?.code, message: linkError?.message, customData: linkError?.customData }); } catch (e) { console.info('failed to log link error details', e); }
         }
       }
       await user.getIdToken(true);
@@ -181,12 +205,27 @@ export default function Login() {
       navigate(role === "admin" ? "/admin/dashboard" : `/client/dashboard`);
     } catch (error) {
       setLoading(false);
+      // Debug: log full error object for diagnosing why `email` might be missing
+      console.info("handleSignIn - auth error:", error);
+      try {
+        console.info('error.customData:', error?.customData);
+        console.info('_tokenResponse (if present):', error?._tokenResponse);
+      } catch (e) {
+        console.info('failed to log error.customData or _tokenResponse', e);
+      }
       let errorMessage = t("login.errors.signInFailed");
 
       if (error.code && error.code.startsWith("auth/")) {
         // Special handling for account-exists-with-different-credential
         if (error.code === "auth/account-exists-with-different-credential") {
-          const emailFromError = error.customData?.email || error.email || null;
+          const emailFromError =
+            error.customData?.email ||
+            error.email ||
+            // Some providers embed email in the message string—try to parse it
+            (error.message && /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.exec(error.message)
+              ? /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.exec(error.message)[0]
+              : null) ||
+            null;
           let pendingCred = null;
           try {
             pendingCred =
@@ -195,13 +234,31 @@ export default function Login() {
             pendingCred = null;
           }
 
-          try {
+            try {
             const methods = emailFromError
               ? await fetchSignInMethodsForEmail(auth, emailFromError)
               : [];
-            setPendingCredential(pendingCred);
-            setPendingEmail(emailFromError);
-            setPendingMethods(methods || []);
+            console.info("fetchSignInMethodsForEmail resolved: methods=", methods);
+            // Diagnostics: show char codes for the email to reveal hidden characters
+            try {
+              const codes = emailFromError ? Array.from(emailFromError).map(c => c.charCodeAt(0)) : null;
+              console.info('emailFromError codes:', codes);
+            } catch (e) {
+              console.info('failed to compute emailFromError codes:', e);
+            }
+            console.info("Fetched sign-in methods for:", emailFromError, methods);
+              setPendingCredential(pendingCred);
+              setPendingEmail(emailFromError);
+              setPendingMethods(methods || []);
+              console.info("setPendingCredential, pendingEmail, pendingMethods:", pendingCred, emailFromError, methods);
+              console.info("pendingMethods length:", methods?.length);
+
+            // If we couldn't extract the email from the error object, ask the user to provide one
+            if (!emailFromError) {
+              setAccountExistsNoEmail(true);
+            }
+            // Clear top-line error; the banner/modal will handle messaging
+            setError("");
 
             const providerNames = (methods || []).map((m) => {
               switch (m) {
@@ -216,9 +273,10 @@ export default function Login() {
               }
             });
 
-            errorMessage =
-              t("login.errors.accountExists") +
-              ` ${emailFromError} (${providerNames.join(", ")})`;
+            // Prefer banner messaging; if we have no email, show generic message
+            errorMessage = emailFromError
+              ? t("login.errors.accountExists") + ` ${emailFromError} (${providerNames.join(", ")})`
+              : t("login.errors.accountExists");
           } catch (fetchErr) {
             console.error("Error fetching sign-in methods:", fetchErr);
             errorMessage = t("login.errors.accountExists");
@@ -397,6 +455,7 @@ export default function Login() {
     setResolvingPassword(true);
     setError("");
     try {
+      console.info('handleResolveWithPassword attempting sign-in with email:', pendingEmail);
       // Sign in with email/password to obtain the existing user
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -435,6 +494,7 @@ export default function Login() {
       const { role } = profileData.user;
       await auth.currentUser.getIdToken(true);
       setResolvingPassword(false);
+      setNotification({ message: t("login.messages.linkSuccess") || "Account linked successfully", type: "success" });
       navigate(role === "admin" ? "/admin/dashboard" : "/client/dashboard");
     } catch (err) {
       console.error("Resolve with password error:", err);
@@ -444,6 +504,23 @@ export default function Login() {
           : err.message || t("login.errors.signInFailed")
       );
       setResolvingPassword(false);
+    }
+  };
+
+  const handleCheckProvidersByEmail = async () => {
+    setError("");
+    if (!resolveEmailForMethods) {
+      setError(t("login.errors.invalidEmail"));
+      return;
+    }
+    try {
+      const methods = await fetchSignInMethodsForEmail(auth, resolveEmailForMethods);
+      setPendingEmail(resolveEmailForMethods);
+      setPendingMethods(methods || []);
+      setAccountExistsNoEmail(false);
+    } catch (e) {
+      console.error("Failed to fetch sign-in methods by email:", e);
+      setError(t("login.errors.fetchMethodsFailed") || "Failed to fetch providers for the supplied email");
     }
   };
 
@@ -490,7 +567,7 @@ export default function Login() {
               {t("login.tabs.signUp")}
             </button>
           </div>
-          {error && (
+          {error && !pendingEmail && (
             <p
               className={`mb-4 text-sm text-red-600 ${rtl ? "text-right" : ""}`}
               role="alert"
@@ -498,10 +575,34 @@ export default function Login() {
               {error}
             </p>
           )}
+          {/* Central notification */}
+          <Notification notification={notification} onClose={() => setNotification(null)} />
+
+          {/* Fallback modal when an email is detected but no providers were returned */}
+          {pendingEmail && pendingMethods && pendingMethods.length === 0 && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+              <div className={`w-full max-w-md p-6 bg-white rounded-lg shadow-xl ${rtl ? "text-right" : ""}`}>
+                <h3 className="mb-2 text-lg font-semibold">{t("login.modals.resolveAccountTitle") || "Account exists"}</h3>
+                <p className="mb-4 text-sm text-gray-600">{t("login.messages.providerNotAvailable") || `We detected an account with email ${pendingEmail}, but we couldn't detect which sign-in methods are linked. Please try the methods below to sign in and link accounts.`}</p>
+                <div className="space-y-2 mb-4">
+                  {/* Quick Google sign-in */}
+                  <button type="button" onClick={handleGoogleSignIn} className="w-full px-3 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700">{t("login.buttons.signInWithGoogle") || "Sign in with Google to link"}</button>
+                  {/* Resolve with password - show the password modal we already use */}
+                  <button type="button" onClick={() => { setPendingMethods(["password"]); }} className="w-full px-3 py-2 text-sm text-white bg-green-600 rounded hover:bg-green-700">{t("login.buttons.signInWithPassword") || "Sign in with Email/Password"}</button>
+                  <button type="button" onClick={() => { setResolveEmailForMethods(pendingEmail); handleCheckProvidersByEmail(); }} className="w-full px-3 py-2 text-sm bg-gray-200 rounded">{t("login.buttons.checkProviders") || "Check providers"}</button>
+                </div>
+                <div className="flex items-center justify-end gap-2">
+                  <button type="button" onClick={() => { setPendingCredential(null); setPendingEmail(null); setPendingMethods([]); }} className="px-3 py-2 bg-gray-200 rounded">{t("login.buttons.cancel")}</button>
+                </div>
+              </div>
+            </div>
+          )}
+      {/* Banner above the login card for visibility */}
           {pendingMethods && pendingMethods.length > 0 && (
-            <div className="mb-4 p-3 text-sm bg-yellow-50 border border-yellow-200 rounded">
+        <div className="w-full flex items-center justify-center p-4">
+          <div className="w-full max-w-sm p-3 text-sm bg-yellow-50 border border-yellow-200 rounded">
               <p className="text-yellow-800">
-                {t("login.errors.accountExists")} {pendingEmail} — {pendingMethods.join(", ")}. {t("login.messages.linkInstructions")}
+                {t("login.errors.accountExists")} {pendingEmail}{pendingMethods && pendingMethods.length > 0 ? ` — ${pendingMethods.join(", ")}` : ""}. {t("login.messages.linkInstructions")}
               </p>
               {pendingMethods.includes("google.com") && (
                 <div className="mt-2">
@@ -514,6 +615,34 @@ export default function Login() {
                   </button>
                 </div>
               )}
+              </div>
+        </div>
+      )}
+
+          {/* Modal for providers (prominent) */}
+          {pendingMethods && pendingMethods.length > 0 && pendingEmail && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+              <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-xl">
+                <h3 className="mb-2 text-lg font-semibold">{t("login.modals.resolveAccountTitle") || "Account exists"}</h3>
+                <p className="mb-4 text-sm text-gray-600">{t("login.errors.accountExists")} {pendingEmail}</p>
+                <div className="mb-4 space-y-2">
+                  <p className="text-sm text-gray-700">{t("login.messages.linkInstructions")}</p>
+                  <ul className="mt-2 list-disc list-inside text-sm text-gray-600">
+                    {pendingMethods.map((m) => (
+                      <li key={m}>{m}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="flex items-center justify-end gap-2">
+                  {pendingMethods.includes("google.com") && (
+                    <button type="button" onClick={handleGoogleSignIn} className="px-3 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700">{t("login.buttons.signInWithGoogle")}</button>
+                  )}
+                  {pendingMethods.includes("password") && (
+                    <button type="button" onClick={() => { /* we already show the password modal by default */ }} className="px-3 py-2 text-sm text-white bg-green-600 rounded hover:bg-green-700">{t("login.buttons.signIn")}</button>
+                  )}
+                  <button type="button" onClick={() => { setPendingCredential(null); setPendingEmail(null); setPendingMethods([]); }} className="px-3 py-2 text-sm bg-gray-200 rounded">{t("login.buttons.cancel")}</button>
+                </div>
+              </div>
             </div>
           )}
           {success && (
@@ -724,6 +853,7 @@ export default function Login() {
               className={`flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 ${
                 rtl ? "flex-row-reverse" : ""
               }`}
+              aria-label="Sign in with Google"
             >
               <FcGoogle size={20} />
             </button>
@@ -734,6 +864,7 @@ export default function Login() {
               className={`flex items-center justify-center gap-2 py-3 transition duration-150 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 ${
                 rtl ? "flex-row-reverse" : ""
               }`}
+              aria-label="Sign in with Facebook"
             >
               <FaFacebookF size={20} className="text-blue-600" />
             </button>
@@ -767,6 +898,38 @@ export default function Login() {
                 >
                   {t("login.buttons.close")}
                 </button>
+              </div>
+            </div>
+          )}
+          {accountExistsNoEmail && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+              <div className={`w-full max-w-sm p-6 bg-white rounded-lg shadow-xl ${rtl ? "text-right" : ""}`}>
+                <h3 className="text-lg font-semibold text-gray-900">{t("login.modals.resolveAccountTitle") || "Account exists"}</h3>
+                <p className="mt-2 text-sm text-gray-600">{t("login.messages.provideEmailToCheck") || "We couldn't determine the email from the provider error. Enter the email to check which sign-in methods exist for this account."}</p>
+                <div className="mt-4">
+                  <label className="block mb-1 text-sm text-gray-700">{t("login.form.emailAddress")}</label>
+                  <input
+                    value={resolveEmailForMethods}
+                    onChange={(e) => setResolveEmailForMethods(e.target.value)}
+                    className="w-full px-4 py-3 border rounded-lg"
+                  />
+                </div>
+                <div className="flex items-center justify-end gap-2 mt-4">
+                  <button
+                    type="button"
+                    onClick={() => setAccountExistsNoEmail(false)}
+                    className="px-4 py-2 bg-gray-200 rounded-lg"
+                  >
+                    {t("login.buttons.cancel")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCheckProvidersByEmail}
+                    className="px-4 py-2 text-white bg-green-600 rounded-lg"
+                  >
+                    {t("login.buttons.checkProviders") || "Check providers"}
+                  </button>
+                </div>
               </div>
             </div>
           )}

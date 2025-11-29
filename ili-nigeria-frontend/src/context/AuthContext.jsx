@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { onAuthStateChanged, auth, signOut } from "../utility/firebase";
+import { onAuthStateChanged, auth, signOut, setPersistence, browserLocalPersistence } from "../utility/firebase";
 import { useNavigate } from "react-router-dom";
 
 const initialUserState = {
@@ -32,6 +32,12 @@ export const AuthProvider = ({ children }) => {
     try {
       const idTokenResult = await firebaseUser.getIdTokenResult();
       const role = idTokenResult.claims.role || "client";
+      console.info('Fetched ID token claims:', idTokenResult.claims);
+      try {
+        console.info('User providerData:', firebaseUser.providerData);
+      } catch (e) {
+        console.info('Failed to log providerData', e);
+      }
       const idToken = await firebaseUser.getIdToken();
       const response = await fetch(`${BASE_URL}/api/auth/profile`, {
         method: "GET",
@@ -86,8 +92,22 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     setAuthState((prev) => ({ ...prev, isLoading: true }));
+    // Set a default auth persistence so sign-in methods behave consistently
+    try {
+      setPersistence(auth, browserLocalPersistence).catch((e) => {
+        // Fail silently; login flows will set persistence explicitly
+        console.debug("Failed to set default auth persistence:", e);
+      });
+    } catch (e) {
+      console.debug("Persistence setup error:", e);
+    }
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
+        try {
+          console.info('onAuthStateChanged: user signed in', { uid: firebaseUser.uid, email: firebaseUser.email, providerData: firebaseUser.providerData });
+        } catch (e) {
+          console.info('onAuthStateChanged: failed to log user details', e);
+        }
         await fetchUserProfile(firebaseUser);
       } else {
         setAuthState({ ...initialUserState, isLoading: false });

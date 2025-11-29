@@ -1821,7 +1821,9 @@
       "sendResetLink": "Send Reset Link",
       "cancel": "Cancel",
       "close": "Close",
-      "signInWithGoogle": "Sign in with Google to link"
+      "signInWithGoogle": "Sign in with Google to link",
+      "checkProviders": "Check providers",
+      "signInWithPassword": "Sign in with Email/Password"
     },
     "errors": {
       "signInFailed": "Failed to sign in. Please try again.",
@@ -1837,11 +1839,17 @@
       "emailInUse": "This email is already registered.",
       "weakPassword": "Password is too weak. Use at least 6 characters.",
       "resetFailed": "Failed to send password reset email.",
+      "fetchMethodsFailed": "Failed to fetch providers for this email. Please try again later.",
       "userNotFound": "No user found with this email."
     },
+    
     "messages": {
       "accountCreated": "Account created. Please sign in.",
-      "resetEmailSent": "Password reset email sent. Check your inbox."
+      "resetEmailSent": "Password reset email sent. Check your inbox.",
+      "linkSuccess": "Account linked successfully.",
+      "provideEmailToCheck": "We couldn't determine the email from the provider error. Enter the email to check which sign-in methods exist for this account.",
+      "linkPendingDescription": "This Facebook sign-in will be linked to your existing account automatically after you sign in with the listed provider.",
+      "providerNotAvailable": "We couldn't detect which sign-in methods are linked to this email. Try the suggested options to sign in and link accounts."
     },
     "a11y": {
       "showPassword": "Show password",
@@ -1858,6 +1866,9 @@
       "resetPasswordDesc": "Enter your email to receive a password reset link.",
       "linkInstructions": "Sign in with an existing provider to link accounts."
     },
+    "linkPendingTitle": "Link Facebook Account",
+    "linkSuccessTitle": "Account Linked",
+    "linkSuccessDesc": "Your Facebook account has been linked successfully. You may unlink this account from Settings.",
     "footer": {
       "agreement": "By continuing, you agree to our ",
       "terms": "Terms of Service",

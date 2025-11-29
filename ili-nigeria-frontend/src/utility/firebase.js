@@ -27,7 +27,21 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+// Debug: log used Firebase config to ensure the frontend is using the expected project
+try {
+  // Avoid printing secret tokens; print public config fields only
+  const { apiKey, authDomain, projectId, appId } = firebaseConfig;
+  console.info("Firebase initialized with config:", { apiKey, authDomain, projectId, appId });
+} catch (e) {
+  console.info("Firebase config logging failed", e);
+}
 export const auth = getAuth(app);
+// Log auth.app options for runtime confirmation
+try {
+  console.info("Firebase auth.app.options:", auth?.app?.options || null);
+} catch (e) {
+  console.info("Firebase auth options logging failed:", e);
+}
 export const googleProvider = new GoogleAuthProvider();
 export const facebookProvider = new FacebookAuthProvider();
 
