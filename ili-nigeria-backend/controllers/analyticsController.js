@@ -1,25 +1,16 @@
-// controllers/analyticsController.js
 import Quote from "../models/Quote.js";
 import Contact from "../models/Contact.js";
 import Subscriber from "../models/Subscriber.js";
 import Message from "../models/Message.js";
 
-/**
- * Get Admin Analytics Dashboard Data
- * Real-time stats from database
- */
 export const getAdminAnalytics = async (req, res) => {
   try {
     const now = new Date();
     const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 6, 1);
 
-    // === KEY METRICS ===
-
-    // Total Revenue (sum of paid quotes)
     const paidQuotes = await Quote.find({ paymentStatus: "paid" });
     const totalRevenue = paidQuotes.reduce((sum, q) => sum + (q.price || 0), 0);
 
-    // Previous period revenue for comparison
     const threeMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 3, 1);
     const recentRevenue = paidQuotes
       .filter((q) => new Date(q.paidAt) >= threeMonthsAgo)
@@ -32,7 +23,6 @@ export const getAdminAnalytics = async (req, res) => {
         ? (((recentRevenue - oldRevenue) / oldRevenue) * 100).toFixed(1)
         : 0;
 
-    // Total Quotes
     const totalQuotes = await Quote.countDocuments();
     const lastMonthQuotes = await Quote.countDocuments({
       createdAt: { $gte: new Date(now.getFullYear(), now.getMonth() - 1, 1) },
@@ -51,18 +41,15 @@ export const getAdminAnalytics = async (req, res) => {
           ).toFixed(1)
         : 0;
 
-    // Conversion Rate
     const convertedQuotes = await Quote.countDocuments({
       status: { $in: ["paid", "complete"] },
     });
     const conversionRate =
       totalQuotes > 0 ? ((convertedQuotes / totalQuotes) * 100).toFixed(1) : 0;
 
-    // Average Project Value
     const avgProjectValue =
       paidQuotes.length > 0 ? Math.round(totalRevenue / paidQuotes.length) : 0;
 
-    // === REVENUE TREND (Last 6 months) ===
     const revenueData = [];
     for (let i = 5; i >= 0; i--) {
       const monthStart = new Date(now.getFullYear(), now.getMonth() - i, 1);
@@ -127,7 +114,7 @@ export const getAdminAnalytics = async (req, res) => {
     });
 
     const topLanguagePairs = Object.entries(languagePairs)
-      .map(([pair, count]) => ({ pair, count, change: 0 })) // Change calculation requires historical data
+      .map(([pair, count]) => ({ pair, count, change: 0 }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 5);
 

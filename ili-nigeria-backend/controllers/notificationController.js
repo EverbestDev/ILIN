@@ -3,11 +3,7 @@ import Contact from "../models/Contact.js";
 import Message from "../models/Message.js";
 import Quote from "../models/Quote.js";
 
-/**
- * Get Admin Notifications
- * Counts: New contacts + Unread messages + New quotes
- * Returns: Last 5 items
- */
+
 export const getAdminNotifications = async (req, res) => {
   try {
     // Count unread items
@@ -80,11 +76,7 @@ export const getAdminNotifications = async (req, res) => {
   }
 };
 
-/**
- * Get Client Notifications
- * Counts: Unread admin replies
- * Returns: Last 5 admin replies
- */
+
 export const getClientNotifications = async (req, res) => {
   try {
     const userId = req.user.uid;

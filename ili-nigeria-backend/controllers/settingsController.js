@@ -81,7 +81,6 @@ export const updateAdminSettings = async (req, res) => {
   }
 };
 
-// ==================== USER SETTINGS ====================
 
 // Get User Settings
 export const getUserSettings = async (req, res) => {
@@ -136,7 +135,6 @@ export const updateUserSettings = async (req, res) => {
       };
     }
 
-    // Update Firebase displayName if username changed
     if (username) {
       await admin.auth().updateUser(userId, {
         displayName: username,

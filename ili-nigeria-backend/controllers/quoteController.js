@@ -2,14 +2,14 @@ import Quote from "../models/Quote.js";
 import sendEmail from "../utils/email.js";
 import cloudinary from "cloudinary";
 
-// UPDATED: Restore Cloudinary configuration
+
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// UPDATED: Restore uploadToCloudinary helper
+
 const uploadToCloudinary = (fileBuffer, filename, mimetype) => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.v2.uploader.upload_stream(
@@ -104,8 +104,6 @@ export const deleteQuote = async (req, res) => {
   }
 };
 
-// UPDATED: Submit quote with improved error handling
-// CLEANED & FINAL submitQuote
 export const submitQuote = async (req, res) => {
   try {
     // Log summary only (no sensitive data)

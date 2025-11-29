@@ -10,7 +10,6 @@ export const getOverviewStats = async (req, res) => {
     const prevWeek = new Date(now);
     prevWeek.setDate(now.getDate() - 14);
 
-    // Helper function to compute growth rate
     const calculateChange = (current, previous) => {
       if (previous === 0) return current > 0 ? 100 : 0;
       const change = ((current - previous) / previous) * 100;

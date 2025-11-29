@@ -11,5 +11,3 @@ router.get("/profile", protect, getProfile);
 router.post("/set-claims-and-get-profile", protect, setClaimsAndGetProfile);
 
 export default router;
-
-

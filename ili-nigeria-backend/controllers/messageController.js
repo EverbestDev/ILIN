@@ -1,13 +1,8 @@
-// controllers/messageController.js
 import mongoose from "mongoose";
 import Message from "../models/Message.js";
 import admin from "firebase-admin";
 import sendEmail from "../utils/email.js";
 
-/**
- * CLIENT: Create new message thread
- * POST /api/messages
- */
 export const createMessage = async (req, res) => {
   try {
     const { subject, message } = req.body;
@@ -34,7 +29,7 @@ export const createMessage = async (req, res) => {
       originType: "client_initiated",
     });
 
-    // Send email notification to admin (only on thread creation)
+    // Send email notification to admin
     try {
       const adminEmails = process.env.ADMIN_EMAIL.split(",").map((e) =>
         e.trim()
@@ -54,7 +49,6 @@ Please login to the admin dashboard to respond.`
       );
     } catch (emailError) {
       console.error("Email notification failed:", emailError);
-      // Don't fail the request if email fails
     }
 
     // Emit to all admins via WebSocket
@@ -81,10 +75,6 @@ Please login to the admin dashboard to respond.`
   }
 };
 
-/**
- * GET all messages for user (client sees own, admin sees all)
- * GET /api/messages
- */
 export const getMessages = async (req, res) => {
   try {
     const isAdmin = req.user.role === "admin";
@@ -92,7 +82,6 @@ export const getMessages = async (req, res) => {
 
     const messages = await Message.find(query).sort({ createdAt: -1 });
 
-    // Group by threadId for easier frontend processing
     const threads = {};
     messages.forEach((msg) => {
       if (!threads[msg.threadId]) {
@@ -143,10 +132,6 @@ export const getMessages = async (req, res) => {
   }
 };
 
-/**
- * GET single thread messages
- * GET /api/messages/threads/:threadId
- */
 export const getThreadMessages = async (req, res) => {
   try {
     const { threadId } = req.params;
@@ -162,7 +147,6 @@ export const getThreadMessages = async (req, res) => {
       });
     }
 
-    // Check permission (client can only see their own threads)
     if (!isAdmin && messages[0].userId !== req.user.uid) {
       return res.status(403).json({
         success: false,
@@ -188,10 +172,6 @@ export const getThreadMessages = async (req, res) => {
   }
 };
 
-/**
- * REPLY to thread (both client and admin)
- * POST /api/messages/threads/:threadId/reply
- */
 export const replyToThread = async (req, res) => {
   try {
     const { threadId } = req.params;
@@ -207,7 +187,6 @@ export const replyToThread = async (req, res) => {
     const isAdmin = req.user.role === "admin";
     const sender = isAdmin ? "admin" : "client";
 
-    // Get original thread to verify it exists and get userId
     const originalMessage = await Message.findOne({ threadId });
     if (!originalMessage) {
       return res.status(404).json({
@@ -216,7 +195,6 @@ export const replyToThread = async (req, res) => {
       });
     }
 
-    // Check permission (client can only reply to their own threads)
     if (!isAdmin && originalMessage.userId !== req.user.uid) {
       return res.status(403).json({
         success: false,
@@ -227,7 +205,7 @@ export const replyToThread = async (req, res) => {
     // Create reply
     const reply = await Message.create({
       threadId,
-      userId: originalMessage.userId, // Always use original thread's userId
+      userId: originalMessage.userId,
       subject: originalMessage.subject,
       message: message.trim(),
       sender,
@@ -240,10 +218,8 @@ export const replyToThread = async (req, res) => {
     const io = req.app.get("io");
     if (io) {
       if (sender === "client") {
-        // Client replied → notify admins
         io.to("admins").emit("new_client_reply", reply);
       } else {
-        // Admin replied → notify specific client
         io.to(`user-${originalMessage.userId}`).emit("new_admin_reply", reply);
       }
     }
@@ -263,10 +239,6 @@ export const replyToThread = async (req, res) => {
   }
 };
 
-/**
- * MARK message as read/unread
- * PATCH /api/messages/:id/read
- */
 export const markReadUnread = async (req, res) => {
   try {
     const { id } = req.params;
@@ -323,10 +295,6 @@ export const markReadUnread = async (req, res) => {
   }
 };
 
-/**
- * DELETE entire thread (admin only)
- * DELETE /api/messages/threads/:threadId
- */
 export const deleteThread = async (req, res) => {
   try {
     const { threadId } = req.params;

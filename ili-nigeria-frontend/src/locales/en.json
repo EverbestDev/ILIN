@@ -8,8 +8,7 @@
     "login": "Login",
     "getQuote": "Get Quote"
   },
-      
-      
+
   "language": {
     "title": "Language",
     "en": "English",
@@ -136,11 +135,11 @@
       },
       "description": "Our certified translators don't just speak languages - they understand industries. From technical jargon to cultural nuances, we deliver translations that work in your specific field."
     },
-      "popular": {
-        "title": "Most Requested Industries",
-        "badge": "Popular",
-        "industrySelectPlaceholder": "Select your industry"
-      },
+    "popular": {
+      "title": "Most Requested Industries",
+      "badge": "Popular",
+      "industrySelectPlaceholder": "Select your industry"
+    },
     "stats": {
       "projectsLabel": "Projects",
       "accuracyLabel": "Accuracy",
@@ -1699,29 +1698,106 @@
       "description": "Get accurate pricing for your translation project. Our intelligent quote system provides instant estimates with transparent pricing and no hidden fees."
     },
     "quickBenefits": {
-      "instantEstimate": {"title": "Instant Estimate", "desc": "Get pricing in real-time as you complete the form"},
-      "secureUpload": {"title": "Secure Upload", "desc": "Your documents are encrypted and handled with confidentiality"},
-      "fastResponse": {"title": "Fast Response", "desc": "Detailed quote delivered to your inbox within 30 minutes"}
+      "instantEstimate": {
+        "title": "Instant Estimate",
+        "desc": "Get pricing in real-time as you complete the form"
+      },
+      "secureUpload": {
+        "title": "Secure Upload",
+        "desc": "Your documents are encrypted and handled with confidentiality"
+      },
+      "fastResponse": {
+        "title": "Fast Response",
+        "desc": "Detailed quote delivered to your inbox within 30 minutes"
+      }
     },
     "steps": {
-      "1": {"title": "Project Details", "desc": "Choose your service and languages"},
-      "2": {"title": "Documents & Size", "desc": "Upload files or provide word/page count"},
-      "3": {"title": "Additional Requirements", "desc": "Add instructions, glossary, or industry info"},
-      "4": {"title": "Contact Details", "desc": "Provide your contact details and submit"}
+      "1": {
+        "title": "Project Details",
+        "desc": "Choose your service and languages"
+      },
+      "2": {
+        "title": "Documents & Size",
+        "desc": "Upload files or provide word/page count"
+      },
+      "3": {
+        "title": "Additional Requirements",
+        "desc": "Add instructions, glossary, or industry info"
+      },
+      "4": {
+        "title": "Contact Details",
+        "desc": "Provide your contact details and submit"
+      }
     },
     "services": {
-      "document": {"name": "Document Translation", "unit": "word", "desc": "Human translation for documents"},
-      "localization": {"name": "Website Localization", "unit": "project", "desc": "Localization for web and app content"},
-      "interpretation": {"name": "Live Interpretation", "unit": "hour", "desc": "On-site and remote interpretation"},
-      "multimedia": {"name": "Voiceover & Subtitling", "unit": "project", "desc": "Voiceover and subtitles for multimedia"},
-      "certified": {"name": "Certified Translation", "unit": "word", "desc": "Certified and notarized translations"},
-      "enterprise": {"name": "Enterprise Solutions", "unit": "project", "desc": "Custom solutions for large teams"}
+      "document": {
+        "name": "Document Translation",
+        "unit": "word",
+        "desc": "Human translation for documents"
+      },
+      "localization": {
+        "name": "Website Localization",
+        "unit": "project",
+        "desc": "Localization for web and app content"
+      },
+      "interpretation": {
+        "name": "Live Interpretation",
+        "unit": "hour",
+        "desc": "On-site and remote interpretation"
+      },
+      "multimedia": {
+        "name": "Voiceover & Subtitling",
+        "unit": "project",
+        "desc": "Voiceover and subtitles for multimedia"
+      },
+      "certified": {
+        "name": "Certified Translation",
+        "unit": "word",
+        "desc": "Certified and notarized translations"
+      },
+      "enterprise": {
+        "name": "Enterprise Solutions",
+        "unit": "project",
+        "desc": "Custom solutions for large teams"
+      }
     },
     "languages": {
-      "list": ["English","Spanish","French","German","Italian","Portuguese","Russian","Chinese","Japanese","Korean","Arabic","Hindi","Yoruba","Igbo","Hausa","Swahili","Dutch","Polish","Turkish","Persian"]
+      "list": [
+        "English",
+        "Spanish",
+        "French",
+        "German",
+        "Italian",
+        "Portuguese",
+        "Russian",
+        "Chinese",
+        "Japanese",
+        "Korean",
+        "Arabic",
+        "Hindi",
+        "Yoruba",
+        "Igbo",
+        "Hausa",
+        "Swahili",
+        "Dutch",
+        "Polish",
+        "Turkish",
+        "Persian"
+      ]
     },
     "industries": {
-      "list": ["Legal & Immigration","Medical & Healthcare","Business & Finance","Education","Technology","Government","Tourism","Religious","Marketing","Other"]
+      "list": [
+        "Legal & Immigration",
+        "Medical & Healthcare",
+        "Business & Finance",
+        "Education",
+        "Technology",
+        "Government",
+        "Tourism",
+        "Religious",
+        "Marketing",
+        "Other"
+      ]
     },
     "form": {
       "serviceSelect": "Select a Service",
@@ -1842,7 +1918,7 @@
       "fetchMethodsFailed": "Failed to fetch providers for this email. Please try again later.",
       "userNotFound": "No user found with this email."
     },
-    
+
     "messages": {
       "accountCreated": "Account created. Please sign in.",
       "resetEmailSent": "Password reset email sent. Check your inbox.",
@@ -1858,7 +1934,7 @@
       "hideConfirmPassword": "Hide confirm password"
     },
     "modals": {
-       "loggingIn": "Logging you in...",
+      "loggingIn": "Logging you in...",
       "resolveAccountTitle": "Resolve account conflict",
       "comingSoon": "Coming Soon",
       "comingSoonDesc": "This authentication method is not yet available. Please use Google or email/password to sign in.",
@@ -1881,7 +1957,7 @@
     "goBack": "Go Back to Home",
     "translationServices": "Translation Services"
   },
-"cookie": {
+  "cookie": {
     "title": "We Value Your Privacy",
     "message": "We use cookies to enhance your experience, analyze site usage, and improve our services. By continuing, you consent to our use of cookies.",
     "accept": "Accept All"
@@ -1975,8 +2051,8 @@
       }
     }
   },
-  
-"errors": {
+
+  "errors": {
     "notFound": {
       "title": "Page Not Found",
       "message": "Oops! The page you're looking for doesn't exist.",
@@ -2014,8 +2090,7 @@
         ]
       }
     }
-  }
-  ,
+  },
   "quotepage": {
     "hero": {
       "badge": "Get a Quote",
@@ -2024,26 +2099,107 @@
       "description": "Get an accurate price for your translation project. Our smart system provides instant estimates with transparent pricing and no hidden fees."
     },
     "quickBenefits": {
-      "instantEstimate": {"title": "Instant Estimate", "desc": "Get real-time pricing as you fill out the form"},
-      "secureUpload": {"title": "Secure Uploads", "desc": "Your documents are encrypted and handled confidentially"},
-      "fastResponse": {"title": "Fast Response", "desc": "Detailed quotes delivered to your inbox within 30 minutes"}
+      "instantEstimate": {
+        "title": "Instant Estimate",
+        "desc": "Get real-time pricing as you fill out the form"
+      },
+      "secureUpload": {
+        "title": "Secure Uploads",
+        "desc": "Your documents are encrypted and handled confidentially"
+      },
+      "fastResponse": {
+        "title": "Fast Response",
+        "desc": "Detailed quotes delivered to your inbox within 30 minutes"
+      }
     },
     "steps": {
-      "1": {"title": "Project Details", "desc": "Choose your service and languages"},
-      "2": {"title": "Documents & Size", "desc": "Upload files or provide word/page counts"},
-      "3": {"title": "Additional Requirements", "desc": "Add instructions, glossaries, or choose industry"},
-      "4": {"title": "Contact Details", "desc": "Provide your contact info and submit"}
+      "1": {
+        "title": "Project Details",
+        "desc": "Choose your service and languages"
+      },
+      "2": {
+        "title": "Documents & Size",
+        "desc": "Upload files or provide word/page counts"
+      },
+      "3": {
+        "title": "Additional Requirements",
+        "desc": "Add instructions, glossaries, or choose industry"
+      },
+      "4": {
+        "title": "Contact Details",
+        "desc": "Provide your contact info and submit"
+      }
     },
     "services": {
-      "document": {"name": "Document Translation", "unit": "word", "desc": "Human translation for documents"},
-      "localization": {"name": "Website & App Localization", "unit": "project", "desc": "Localization for websites and applications"},
-      "interpretation": {"name": "Live Interpreting", "unit": "hour", "desc": "On-site and remote interpreting"},
-      "multimedia": {"name": "Voiceover & Subtitling", "unit": "project", "desc": "Voiceover and subtitle services for multimedia"},
-      "certified": {"name": "Certified Translation", "unit": "word", "desc": "Certified and notarized translations"},
-      "enterprise": {"name": "Enterprise Solutions", "unit": "project", "desc": "Custom solutions for large teams"}
+      "document": {
+        "name": "Document Translation",
+        "unit": "word",
+        "desc": "Human translation for documents"
+      },
+      "localization": {
+        "name": "Website & App Localization",
+        "unit": "project",
+        "desc": "Localization for websites and applications"
+      },
+      "interpretation": {
+        "name": "Live Interpreting",
+        "unit": "hour",
+        "desc": "On-site and remote interpreting"
+      },
+      "multimedia": {
+        "name": "Voiceover & Subtitling",
+        "unit": "project",
+        "desc": "Voiceover and subtitle services for multimedia"
+      },
+      "certified": {
+        "name": "Certified Translation",
+        "unit": "word",
+        "desc": "Certified and notarized translations"
+      },
+      "enterprise": {
+        "name": "Enterprise Solutions",
+        "unit": "project",
+        "desc": "Custom solutions for large teams"
+      }
     },
-    "languages": {"list": ["English","Spanish","French","German","Italian","Portuguese","Russian","Chinese","Japanese","Korean","Arabic","Hindi","Yoruba","Igbo","Hausa","Swahili","Dutch","Polish","Turkish","Persian"]},
-    "industries": {"list": ["Legal & Immigration","Medical & Healthcare","Business & Finance","Education","Technology","Government","Tourism","Religious","Marketing","Other"]},
+    "languages": {
+      "list": [
+        "English",
+        "Spanish",
+        "French",
+        "German",
+        "Italian",
+        "Portuguese",
+        "Russian",
+        "Chinese",
+        "Japanese",
+        "Korean",
+        "Arabic",
+        "Hindi",
+        "Yoruba",
+        "Igbo",
+        "Hausa",
+        "Swahili",
+        "Dutch",
+        "Polish",
+        "Turkish",
+        "Persian"
+      ]
+    },
+    "industries": {
+      "list": [
+        "Legal & Immigration",
+        "Medical & Healthcare",
+        "Business & Finance",
+        "Education",
+        "Technology",
+        "Government",
+        "Tourism",
+        "Religious",
+        "Marketing",
+        "Other"
+      ]
+    },
     "industrySelectPlaceholder": "Select your industry",
     "form": {
       "serviceSelect": "Choose a service",
@@ -2088,8 +2244,20 @@
       "standardPricing": "Standard pricing",
       "close": "Close"
     },
-    "urgency": {"standard": "Standard (48-72 hours)", "rush": "Rush (24-48 hours)", "urgent": "Urgent (Same day)"},
-    "validation": {"service": "Please select a service", "sourceLanguage": "Please select a source language", "targetLanguages": "Please select at least one target language", "documents": "Please upload files or provide word/pages count", "name": "Name is required", "email": "Email is required", "emailValid": "Please enter a valid email"},
+    "urgency": {
+      "standard": "Standard (48-72 hours)",
+      "rush": "Rush (24-48 hours)",
+      "urgent": "Urgent (Same day)"
+    },
+    "validation": {
+      "service": "Please select a service",
+      "sourceLanguage": "Please select a source language",
+      "targetLanguages": "Please select at least one target language",
+      "documents": "Please upload files or provide word/pages count",
+      "name": "Name is required",
+      "email": "Email is required",
+      "emailValid": "Please enter a valid email"
+    },
     "summary": {
       "title": "Project summary",
       "serviceLabel": "Service:",
@@ -2119,5 +2287,4 @@
       "happyClientsLabel": "Happy Clients"
     }
   }
-  
 }

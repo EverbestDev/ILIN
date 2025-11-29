@@ -18,8 +18,7 @@ function titleCase(str) {
         .join(" ")
     : "";
 }
-
-// PUBLIC: Submit contact form (no auth) - FIXED RESPONSE
+// Public: Submit contact form
 export const submitContact = async (req, res) => {
   try {
     const { name, email, phone, company, service, urgency, message } = req.body;
@@ -108,7 +107,6 @@ export const submitContact = async (req, res) => {
       io.to("admins").emit("new_public_contact", newContact);
     }
 
-    // FIXED: Return JSON with success flag
     res.json({
       success: true,
       message: "✅ Inquiry submitted successfully",

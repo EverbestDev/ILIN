@@ -179,9 +179,6 @@ io.on("connection", (socket) => {
 // Make io accessible to controllers
 app.set("io", io);
 
-
-
-
 //Make io available to routes/controllers
 app.set("io", io);
 
