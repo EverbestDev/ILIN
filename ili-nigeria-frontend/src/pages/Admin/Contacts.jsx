@@ -16,6 +16,7 @@ import {
   Search,
   Filter,
 } from "lucide-react";
+import Spinner from "../../components/UI/Spinner";
 
 const API_URL =
   import.meta.env.VITE_API_URL || "https://ilin-backend.onrender.com";
@@ -309,7 +310,7 @@ export default function Contacts() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
-          <div className="inline-block w-12 h-12 border-4 border-green-500 rounded-full animate-spin border-t-transparent"></div>
+          <Spinner size="lg" />
           <p className="mt-4 text-gray-600">Loading messages...</p>
         </div>
       </div>
@@ -421,7 +422,7 @@ export default function Contacts() {
         ) : (
           <>
             <div className="overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm">
-              <table className="w-full">
+              <table className="w-full overflow-x-auto divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-xs font-semibold tracking-wider text-left text-gray-600 uppercase">

@@ -7,6 +7,7 @@ import {
   Settings,
   MessageSquare,
 } from "lucide-react";
+import Spinner from "../components/UI/Spinner";
 import { useNavigate } from "react-router-dom";
 import DashboardNavbar from "../components/Dashboard/DashboardNavbar";
 import DashboardSidebar from "../components/Dashboard/DashboardSidebar";
@@ -127,7 +128,7 @@ const ClientLayout = ({ children }) => {
           {isLoading ? (
             <div className="flex items-center justify-center min-h-[50vh]">
               <div className="text-center">
-                <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                <Spinner size="md" />
                 <p className="text-gray-600">Loading...</p>
               </div>
             </div>

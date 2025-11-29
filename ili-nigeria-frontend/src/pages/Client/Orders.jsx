@@ -13,6 +13,7 @@ import {
   DollarSign,
   AlertCircle,
 } from "lucide-react";
+import Spinner from "../../components/UI/Spinner";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../utility/firebase";
 
@@ -215,7 +216,7 @@ export default function ClientOrders() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="inline-block w-12 h-12 border-b-2 border-green-600 rounded-full animate-spin"></div>
+          <Spinner size="lg" />
           <p className="mt-4 text-gray-600">Loading your orders...</p>
         </div>
       </div>

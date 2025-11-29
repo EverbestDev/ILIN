@@ -20,8 +20,8 @@ import {
   Shield,
   Zap,
   XCircle,
-  Loader2,
 } from "lucide-react";
+import Spinner from "../../components/UI/Spinner";
 
 // Helper: Convert English numerals to Arabic
 const toArabicNumerals = (num) => {
@@ -535,7 +535,7 @@ export default function ContactPage() {
     `}
                     >
                       {loading ? (
-                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <Spinner size="sm" />
                       ) : (
                         <Send className={`w-5 h-5 ${rtl ? "ml-2" : "mr-2"}`} />
                       )}

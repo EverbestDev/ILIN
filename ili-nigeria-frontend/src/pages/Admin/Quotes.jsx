@@ -24,6 +24,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { auth } from "../../utility/firebase";
+import Spinner from "../../components/UI/Spinner";
 
 const API_URL =
   import.meta.env.VITE_API_URL + "/api/quotes" ||
@@ -521,7 +522,7 @@ export default function AdminQuotes() {
       {/* Table */}
       {loading && (
         <div className="p-12 text-center bg-white border shadow-sm rounded-xl border-slate-200">
-          <div className="inline-block w-12 h-12 border-b-2 border-green-600 rounded-full animate-spin"></div>
+          <Spinner size="lg" />
           <p className="mt-4 text-slate-600">Loading translation requests...</p>
         </div>
       )}

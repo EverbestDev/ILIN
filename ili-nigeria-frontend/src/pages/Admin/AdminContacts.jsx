@@ -21,9 +21,9 @@ import {
   User,
   Calendar,
 } from "lucide-react";
+import Spinner from "../../components/UI/Spinner";
 
 import { auth } from "../../utility/firebase";
-
 const API_URL =
   import.meta.env.VITE_API_URL || "https://ilin-backend.onrender.com";
 
@@ -293,7 +293,7 @@ export default function AdminContacts() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
-          <div className="inline-block w-12 h-12 border-4 border-green-500 rounded-full animate-spin border-t-transparent"></div>
+          <Spinner size="lg" />
           <p className="mt-4 text-gray-600">Loading contacts...</p>
         </div>
       </div>

@@ -20,6 +20,7 @@ import {
   sendPasswordResetEmail,
   auth,
 } from "../../utility/firebase";
+import Spinner from "../../components/UI/Spinner";
 import { linkWithPopup } from "firebase/auth";
 
 // Helper: Check if RTL
@@ -814,7 +815,7 @@ export default function Login() {
                       className="flex-1 px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50"
                     >
                       {loading ? (
-                        <div className="w-5 h-5 mx-auto border-b-2 border-white rounded-full animate-spin"></div>
+                        <Spinner size="sm" className="mx-auto" color="#ffffff" />
                       ) : (
                         t("login.buttons.sendResetLink")
                       )}
@@ -834,8 +835,8 @@ export default function Login() {
           {/* Loading modal */}
           {loading && (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-              <div className="flex flex-col items-center justify-center gap-4 p-6 bg-white rounded-lg shadow-xl w-full max-w-xs">
-                <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin" />
+                <div className="flex flex-col items-center justify-center gap-4 p-6 bg-white rounded-lg shadow-xl w-full max-w-xs">
+                <Spinner size="lg" />
                 <p className="text-sm font-medium text-gray-800">{t("login.modals.loggingIn") || "Logging you in..."}</p>
               </div>
             </div>
@@ -874,7 +875,7 @@ export default function Login() {
                     disabled={resolvingPassword}
                   >
                     {resolvingPassword ? (
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <Spinner size="xs" color="#ffffff" />
                     ) : (
                       t("login.buttons.signIn")
                     )}

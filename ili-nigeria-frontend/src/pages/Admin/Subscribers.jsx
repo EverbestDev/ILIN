@@ -18,6 +18,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { auth } from "../../utility/firebase";
+import Spinner from "../../components/UI/Spinner";
 
 const API_URL =
   "https://ilin-backend.onrender.com/api/subscribe" ||
@@ -377,7 +378,7 @@ export default function AdminSubscribers() {
       {/* Subscribers Table */}
       {loading && (
         <div className="p-12 text-center bg-white border border-gray-200 shadow-sm rounded-xl">
-          <div className="inline-block w-12 h-12 border-b-2 border-green-600 rounded-full animate-spin"></div>
+          <Spinner size="lg" />
           <p className="mt-4 text-gray-600">Loading subscribers...</p>
         </div>
       )}

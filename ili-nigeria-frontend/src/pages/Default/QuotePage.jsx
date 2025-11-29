@@ -30,6 +30,7 @@ import {
   FileImage,
   FileSpreadsheet,
 } from "lucide-react";
+import Spinner from "../../components/UI/Spinner";
 
 // Debounce hook for performance optimization
 function useDebounce(value, delay) {
@@ -1439,7 +1440,7 @@ export default function QuotePage() {
                       >
                         {isSubmitting ? (
                           <>
-                            <div className="w-5 h-5 mr-2 border-2 border-white rounded-full border-t-transparent animate-spin"></div>
+                            <Spinner size="sm" className="mr-2" color="#ffffff" />
                             {t("quotepage.form.sending")}
                           </>
                         ) : (

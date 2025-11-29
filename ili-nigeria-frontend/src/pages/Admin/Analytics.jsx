@@ -15,11 +15,11 @@ import {
   Edit,
   Trash2,
   X,
-  Loader2,
   AlertCircle,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import Spinner from "../../components/UI/Spinner";
 import {
   LineChart,
   Line,
@@ -230,7 +230,7 @@ const Analytics = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 text-green-600 animate-spin" />
+        <Spinner size="lg" />
       </div>
     );
   }

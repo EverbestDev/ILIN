@@ -1,16 +1,11 @@
 // src/components/LoadingSpinner.jsx
 import React from "react";
-import { Loader2 } from "lucide-react";
+import Spinner from "./UI/Spinner";
 
-const LoadingSpinner = () => {
+const LoadingSpinner = ({ size = "lg" }) => {
   return (
-    <div
-      className="flex items-center justify-center p-4"
-      aria-label="Loading content"
-      role="status"
-    >
-      {/* Loader2 is the lucide-react spinner icon */}
-      <Loader2 className="w-8 h-8 text-green-600 animate-spin" />
+    <div className="flex items-center justify-center p-4" aria-label="Loading content" role="status">
+      <Spinner size={size} />
     </div>
   );
 };

@@ -1,9 +1,5 @@
-
 @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
 @import "tailwindcss";
-
-
-
 
 @theme {
   --color-dark-green: #1a3c2b;
@@ -31,7 +27,6 @@ body {
   overflow-x: hidden;
 }
 
-
 /* Admin */
 @keyframes slide-in {
   from {
@@ -47,7 +42,6 @@ body {
   animation: slide-in 0.3s ease-out;
 }
 
-
 @keyframes message-slide-in {
   from {
     transform: translateY(-100%);
@@ -59,8 +53,12 @@ body {
   }
 }
 @keyframes marquee-rtl {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 .animate-marquee-rtl {
   animation: marquee-rtl 30s linear infinite;
@@ -78,4 +76,76 @@ body {
 .app-toaster {
   z-index: 9999;
   pointer-events: auto;
+}
+
+/* Centralized spinner styles */
+.ili-spinner {
+  position: relative;
+  display: inline-block;
+  border-radius: 50%;
+  box-sizing: border-box;
+
+  /* Spinner variables */
+  --spinner-size: 48px;
+  --spinner-border: 4px;
+  --spinner-color-outer: #14532d; /* darker green (tailwind green-800/700-ish) */
+  --spinner-color-inner: #34d399; /* lighter green (tailwind green-400) */
+  --spinner-inner-offset: 6px; /* how much smaller the inner ring should be */
+
+  width: var(--spinner-size);
+  height: var(--spinner-size);
+
+  /* Make all sides transparent, color only the top for the outer ring */
+  border: var(--spinner-border) solid transparent;
+  border-top-color: var(--spinner-color-outer);
+
+  animation: ili-rotation 1s linear infinite;
+}
+
+.ili-spinner::after {
+  content: "";
+  position: absolute;
+  box-sizing: border-box;
+  border-radius: 50%;
+  left: var(--spinner-inner-offset);
+  top: var(--spinner-inner-offset);
+  right: var(--spinner-inner-offset);
+  bottom: var(--spinner-inner-offset);
+
+  /* Make all sides transparent, color only the left for inner ring */
+  border: var(--spinner-border) solid transparent;
+  border-left-color: var(--spinner-color-inner);
+
+  /* smaller inner ring spins opposite direction */
+  animation: ili-rotation 0.5s linear infinite reverse;
+}
+
+@keyframes ili-rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* SIZE VARIANTS — same system you use */
+.ili-spinner--xs {
+  --spinner-size: 16px;
+  --spinner-border: 2px;
+}
+
+.ili-spinner--sm {
+  --spinner-size: 20px;
+  --spinner-border: 2px;
+}
+
+.ili-spinner--md {
+  --spinner-size: 30px;
+  --spinner-border: 3px;
+}
+
+.ili-spinner--lg {
+  --spinner-size: 48px;
+  --spinner-border: 4px;
 }

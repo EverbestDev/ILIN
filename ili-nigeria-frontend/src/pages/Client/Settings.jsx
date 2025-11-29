@@ -5,8 +5,8 @@ import {
   Bell,
   CheckCircle,
   AlertCircle,
-  Loader2,
 } from "lucide-react";
+import Spinner from "../../components/UI/Spinner";
 import { auth, googleProvider, facebookProvider } from "../../utility/firebase";
 import {
   updatePassword,
@@ -362,7 +362,7 @@ const ClientSettings = () => {
                 disabled={loading}
                 className="flex items-center gap-2 px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+                {loading && <Spinner size="xs" />}
                 Save Profile Changes
               </button>
             </div>
@@ -461,7 +461,7 @@ const ClientSettings = () => {
                 disabled={loading}
                 className="flex items-center gap-2 px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+                {loading && <Spinner size="xs" />}
                 Save Preferences
               </button>
             </div>
@@ -530,7 +530,7 @@ const ClientSettings = () => {
                     className="flex items-center gap-2 px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {passwordLoading && (
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <Spinner size="xs" />
                     )}
                     Update Password
                   </button>

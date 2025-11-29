@@ -13,6 +13,7 @@ import {
   CheckCircle,
   Trash2,
 } from "lucide-react";
+import Spinner from "../../components/UI/Spinner";
 import { Line, Pie, Bar } from "react-chartjs-2";
 import { auth } from "../../utility/firebase";
 
@@ -428,7 +429,7 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="w-12 h-12 border-b-2 border-green-600 rounded-full animate-spin"></div>
+        <Spinner size="lg" />
       </div>
     );
   }

@@ -14,6 +14,7 @@ import {
   X,
   AlertCircle,
 } from "lucide-react";
+import Spinner from "../../components/UI/Spinner";
 
 const BASE_URL =
   import.meta.env.VITE_API_URL || "https://ilin-backend.onrender.com";
@@ -284,7 +285,7 @@ const ClientDashboard = () => {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="inline-block w-12 h-12 border-b-2 border-green-600 rounded-full animate-spin"></div>
+          <Spinner size="lg" />
           <p className="mt-4 text-gray-600">Loading dashboard...</p>
         </div>
       </div>
