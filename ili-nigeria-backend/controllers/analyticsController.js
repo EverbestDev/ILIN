@@ -180,3 +180,17 @@ export const getAdminAnalytics = async (req, res) => {
     });
   }
 };
+
+// POST /api/analytics/log - receive client-side telemetry for errors/events
+export const logEvent = async (req, res) => {
+  try {
+    const { event, provider, code, message, userAgent, url, timestamp } = req.body || {};
+    console.log(`Telemetry event received: ${event}`, { provider, code, message, userAgent, url, timestamp });
+    // Optionally: persist in DB for later analysis
+    // For now: we just respond with success
+    res.status(200).json({ success: true, message: "Telemetry logged" });
+  } catch (error) {
+    console.error("Telemetry log error:", error);
+    res.status(500).json({ success: false, message: "Failed to log telemetry" });
+  }
+};

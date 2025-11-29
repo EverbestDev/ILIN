@@ -1926,6 +1926,8 @@
       "provideEmailToCheck": "We couldn't determine the email from the provider error. Enter the email to check which sign-in methods exist for this account.",
       "linkPendingDescription": "This Facebook sign-in will be linked to your existing account automatically after you sign in with the listed provider.",
       "providerNotAvailable": "We couldn't detect which sign-in methods are linked to this email. Try the suggested options to sign in and link accounts."
+      ,
+      "openInBrowser": "Your browser blocked the sign-in popup. Please open this page in your device browser (e.g. Chrome or Safari) or use an alternate sign-in method."
     },
     "a11y": {
       "showPassword": "Show password",
@@ -1936,6 +1938,7 @@
     "modals": {
       "loggingIn": "Logging you in...",
       "resolveAccountTitle": "Resolve account conflict",
+      "resetSentTitle": "Reset Link Sent",
       "comingSoon": "Coming Soon",
       "comingSoonDesc": "This authentication method is not yet available. Please use Google or email/password to sign in.",
       "resetPassword": "Reset Password",

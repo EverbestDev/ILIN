@@ -10,6 +10,8 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   GoogleAuthProvider,
   FacebookAuthProvider,
   fetchSignInMethodsForEmail,
@@ -105,6 +107,7 @@ export default function Login() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showComingSoon, setShowComingSoon] = useState(false);
   const [showResetPassword, setShowResetPassword] = useState(false);
+  const [showResetSentModal, setShowResetSentModal] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -129,6 +132,79 @@ export default function Login() {
     return () => clearInterval(timer);
   }, []);
 
+  // Detect mobile browsers (simplistic approach) - used to select redirect vs popup flow
+  const isMobile = typeof navigator !== "undefined" && /Mobi|Android|iPhone|iPad|iPod|IEMobile|Opera Mini|CriOS/i.test(navigator.userAgent) || (typeof window !== 'undefined' && window.innerWidth <= 768);
+
+  // Telemetry helper - send sign-in failure events to backend for diagnostics
+  const logSignInTelemetry = async (providerId, error) => {
+    try {
+      await fetch(`${BASE_URL}/api/analytics/log`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          event: "signin_failure",
+          provider: providerId,
+          code: error?.code,
+          message: error?.message,
+          userAgent: navigator.userAgent,
+          url: window.location.href,
+          timestamp: new Date().toISOString(),
+        }),
+      });
+    } catch (e) {
+      console.error("Telemetry log failed:", e);
+    }
+  };
+
+  // Process redirect result when coming back from mobile redirect sign-in
+  useEffect(() => {
+    const processRedirectResult = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result && result.user) {
+          const user = result.user;
+          const idToken = await user.getIdToken();
+
+          const profileResponse = await fetch(
+            `${BASE_URL}/api/auth/set-claims-and-get-profile`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${idToken}`,
+              },
+              body: JSON.stringify({
+                name: name || user.displayName || user.email?.split("@")[0],
+                role: "client",
+              }),
+              credentials: "include",
+            }
+          );
+
+          if (!profileResponse.ok) {
+            const data = await profileResponse.json();
+            throw new Error(data.message || `HTTP error! Status: ${profileResponse.status}`);
+          }
+
+          const profileData = await profileResponse.json();
+          const { role } = profileData.user;
+          await user.getIdToken(true);
+          setLoading(false);
+          navigate(role === "admin" ? "/admin/dashboard" : `/client/dashboard`);
+        }
+      } catch (error) {
+        // If redirect sign-in fails, log telemetry and show friendly message
+        await logSignInTelemetry("redirect", error);
+        setErrorModalMessage(error?.message || t("login.errors.signInFailed"));
+        setShowErrorModal(true);
+        setLoading(false);
+      }
+    };
+    processRedirectResult();
+    // We want to run this only once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Removed diagnostic log for production
 
   const handleSignIn = async (provider) => {
@@ -148,9 +224,32 @@ export default function Login() {
         rememberMe ? browserLocalPersistence : browserSessionPersistence
       );
 
-      const userCredential = provider
-        ? await signInWithPopup(auth, provider)
-        : await signInWithEmailAndPassword(auth, email, password);
+      let userCredential = null;
+      if (provider) {
+        // On mobile browsers, prefer the redirect-based flow (more reliable)
+        if (isMobile) {
+          await signInWithRedirect(auth, provider);
+          // Redirecting — the rest of the flow will be handled after redirect
+          return;
+        }
+        try {
+          userCredential = await signInWithPopup(auth, provider);
+        } catch (popupErr) {
+          // If popup was closed or blocked, fallback to redirect
+          if (
+            popupErr?.code === "auth/popup-closed-by-user" ||
+            popupErr?.code === "auth/popup-blocked"
+          ) {
+            // Log telemetry for failure cause
+            await logSignInTelemetry(provider.providerId || provider, popupErr);
+            await signInWithRedirect(auth, provider);
+            return;
+          }
+          throw popupErr;
+        }
+      } else {
+        userCredential = await signInWithEmailAndPassword(auth, email, password);
+      }
       const user = userCredential.user;
       const idToken = await user.getIdToken();
 
@@ -280,7 +379,7 @@ export default function Login() {
               errorMessage = t("login.errors.popupClosed");
               break;
             case "auth/popup-blocked":
-              errorMessage = t("login.errors.popupBlocked");
+              errorMessage = t("login.errors.popupBlocked") + " " + (t("login.messages.openInBrowser") || "");
               break;
             default:
               errorMessage = error.message || t("login.errors.signInFailed");
@@ -293,6 +392,12 @@ export default function Login() {
 
       console.error("Sign-In Error:", error);
       setError(errorMessage);
+      try {
+        // Fire-and-forget telemetry; we don't await in case it slows the UI
+        logSignInTelemetry(provider?.providerId || provider || "email/password", error);
+      } catch (e) {
+        console.error("Telemetry send failed:", e);
+      }
     }
   };
 
@@ -388,7 +493,8 @@ export default function Login() {
 
     try {
       await sendPasswordResetEmail(auth, resetEmail);
-      setSuccess(t("login.messages.resetEmailSent"));
+      // Instead of showing a top-line success banner, show a modal confirmation
+      setShowResetSentModal(true);
       setResetEmail("");
       setShowResetPassword(false);
     } catch (error) {
@@ -408,6 +514,8 @@ export default function Login() {
       }
       console.error("Password Reset Error:", error);
       setError(errorMessage);
+      setErrorModalMessage(errorMessage);
+      setShowErrorModal(true);
     } finally {
       setLoading(false);
     }
@@ -1125,6 +1233,25 @@ export default function Login() {
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+          )}
+
+          {/* Password reset sent confirmation modal */}
+          {showResetSentModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+              <div className={`w-full max-w-sm p-6 bg-white rounded-lg shadow-xl ${rtl ? "text-right" : ""}`}>
+                <h3 className="mb-2 text-lg font-semibold">{t("login.modals.resetSentTitle") || "Password reset email sent"}</h3>
+                <p className="mb-4 text-sm text-gray-700">{t("login.messages.resetEmailSent") || "We sent a password reset link to your email. Please check your inbox."}</p>
+                <div className="flex items-center justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowResetSentModal(false)}
+                    className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700"
+                  >
+                    {t("login.buttons.close") || "Close"}
+                  </button>
+                </div>
               </div>
             </div>
           )}
